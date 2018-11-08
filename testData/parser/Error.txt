@@ -5,7 +5,5 @@ DEX_FILE
       <empty list>
   DexImportListImpl(IMPORT_LIST)
     <empty list>
-  PsiWhiteSpace(' ')
-  PsiElement(BAD_CHARACTER)('a')
-  PsiElement(BAD_CHARACTER)('b')
-  PsiElement(BAD_CHARACTER)('c')
+  PsiElement(GO_WHITESPACE)(' ')
+  PsiElement(identifier)('abc')
