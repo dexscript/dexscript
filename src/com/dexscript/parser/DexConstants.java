@@ -108,7 +108,7 @@ public class DexConstants {
   public static final String NIL = "nil";
 
   @NonNls
-  public static final String GO = "Go";
+  public static final String Dex = "Dex";
   @NonNls
   public static final String AMD64 = "amd64";
 

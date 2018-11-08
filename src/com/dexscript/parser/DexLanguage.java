@@ -31,7 +31,7 @@ public class DexLanguage extends Language {
   @NotNull
   @Override
   public String getDisplayName() {
-    return DexConstants.GO;
+    return DexConstants.Dex;
   }
 
   @Nullable

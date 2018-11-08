@@ -36,19 +36,19 @@ public class DexFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getName() {
-    return DexConstants.GO;
+    return DexConstants.Dex;
   }
 
   @NotNull
   @Override
   public String getDescription() {
-    return "Go files";
+    return "Dex files";
   }
 
   @NotNull
   @Override
   public String getDefaultExtension() {
-    return "go";
+    return "dex";
   }
 
   @Nullable

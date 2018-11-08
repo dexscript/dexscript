@@ -40,15 +40,6 @@ public class DexParserDefinition implements ParserDefinition {
   public static final TokenSet WHITESPACES = TokenSet.create(DexTokenType.WS, DexTokenType.NLS);
   public static final TokenSet COMMENTS = TokenSet.create(DexTokenType.LINE_COMMENT, DexTokenType.MULTILINE_COMMENT);
   public static final TokenSet STRING_LITERALS = TokenSet.create(STRING, RAW_STRING, CHAR);
-  public static final TokenSet NUMBERS = TokenSet.create(INT, FLOAT, FLOATI, DECIMALI, FLOATI); // todo: HEX, OCT,
-  public static final TokenSet KEYWORDS = TokenSet.create(
-    BREAK, CASE, CHAN, CONST, CONTINUE, DEFAULT, DEFER, ELSE, FALLTHROUGH, FOR, FUNC, GO, GOTO, IF, IMPORT,
-    INTERFACE, MAP, PACKAGE, RETURN, SELECT, STRUCT, SWITCH, TYPE_, VAR);
-  public static final TokenSet OPERATORS = TokenSet.create(
-    EQ, ASSIGN, NOT_EQ, NOT, PLUS_PLUS, PLUS_ASSIGN, PLUS, MINUS_MINUS, MINUS_ASSIGN, MINUS, COND_OR, BIT_OR_ASSIGN, BIT_OR,
-    BIT_CLEAR_ASSIGN, BIT_CLEAR, COND_AND, BIT_AND_ASSIGN, BIT_AND, SHIFT_LEFT_ASSIGN, SHIFT_LEFT, SEND_CHANNEL, LESS_OR_EQUAL,
-    LESS, BIT_XOR_ASSIGN, BIT_XOR, MUL_ASSIGN, MUL, QUOTIENT_ASSIGN, QUOTIENT, REMAINDER_ASSIGN, REMAINDER, SHIFT_RIGHT_ASSIGN,
-    SHIFT_RIGHT, GREATER_OR_EQUAL, GREATER, VAR_ASSIGN);
 
   @NotNull
   @Override
