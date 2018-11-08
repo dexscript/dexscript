@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface DexImportDeclaration extends GoCompositeElement {
+public interface DexImportDeclaration extends DexCompositeElement {
 
   @NotNull
   List<DexImportSpec> getImportSpecList();
@@ -21,6 +21,6 @@ public interface DexImportDeclaration extends GoCompositeElement {
 
   //WARNING: addImportSpec(...) is skipped
   //matching addImportSpec(DexImportDeclaration, ...)
-  //methods are not found in null
+  //methods are not found in DexPsiImplUtil
 
 }

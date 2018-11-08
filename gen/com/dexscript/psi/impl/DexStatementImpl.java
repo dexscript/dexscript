@@ -7,12 +7,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.dexscript.parser.GoTypes.*;
+import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
-public class DexStatementImpl extends GoCompositeElementImpl implements DexStatement {
+public class DexStatementImpl extends DexCompositeElementImpl implements DexStatement {
 
-  public DexStatementImpl(ASTNode node) {
+  public DexStatementImpl(@NotNull ASTNode node) {
     super(node);
   }
 

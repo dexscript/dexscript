@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface DexBlock extends GoCompositeElement {
+public interface DexBlock extends DexCompositeElement {
 
   @NotNull
   List<DexStatement> getStatementList();
@@ -18,6 +18,6 @@ public interface DexBlock extends GoCompositeElement {
 
   //WARNING: processDeclarations(...) is skipped
   //matching processDeclarations(DexBlock, ...)
-  //methods are not found in null
+  //methods are not found in DexPsiImplUtil
 
 }

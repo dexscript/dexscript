@@ -5,8 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiLanguageInjectionHost;
+import com.dexscript.psi.impl.DexStringLiteralEscaper;
+import com.dexscript.psi.impl.DexStringLiteralImpl;
 
-public interface DexStringLiteral extends PsiLanguageInjectionHost {
+public interface DexStringLiteral extends DexExpression, PsiLanguageInjectionHost {
 
   @Nullable
   PsiElement getRawString();
@@ -14,20 +16,15 @@ public interface DexStringLiteral extends PsiLanguageInjectionHost {
   @Nullable
   PsiElement getString();
 
-  //WARNING: isValidHost(...) is skipped
-  //matching isValidHost(DexStringLiteral, ...)
-  //methods are not found in null
+  boolean isValidHost();
 
-  //WARNING: updateText(...) is skipped
-  //matching updateText(DexStringLiteral, ...)
-  //methods are not found in null
+  @NotNull
+  DexStringLiteralImpl updateText(@NotNull String text);
 
-  //WARNING: createLiteralTextEscaper(...) is skipped
-  //matching createLiteralTextEscaper(DexStringLiteral, ...)
-  //methods are not found in null
+  @NotNull
+  DexStringLiteralEscaper createLiteralTextEscaper();
 
-  //WARNING: getDecodedText(...) is skipped
-  //matching getDecodedText(DexStringLiteral, ...)
-  //methods are not found in null
+  @NotNull
+  String getDecodedText();
 
 }

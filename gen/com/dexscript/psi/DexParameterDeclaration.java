@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
-import com.dexscript.stubs.GoParameterDeclarationStub;
+import com.dexscript.stubs.DexParamDeclarationStub;
 
-public interface DexParameterDeclaration extends GoCompositeElement, StubBasedPsiElement<GoParameterDeclarationStub> {
+public interface DexParameterDeclaration extends DexCompositeElement, StubBasedPsiElement<DexParamDeclarationStub> {
 
   @NotNull
   List<DexParamDefinition> getParamDefinitionList();
@@ -20,6 +20,6 @@ public interface DexParameterDeclaration extends GoCompositeElement, StubBasedPs
 
   //WARNING: isVariadic(...) is skipped
   //matching isVariadic(DexParameterDeclaration, ...)
-  //methods are not found in null
+  //methods are not found in DexPsiImplUtil
 
 }

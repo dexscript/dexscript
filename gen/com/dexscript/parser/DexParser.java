@@ -3,8 +3,8 @@ package com.dexscript.parser;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
-import static com.dexscript.parser.GoTypes.*;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.dexscript.psi.DexTypes.*;
+import static com.dexscript.parser.DexParserUtil.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
@@ -12,7 +12,7 @@ import com.intellij.lang.PsiParser;
 import com.intellij.lang.LightPsiParser;
 
 @SuppressWarnings({"SimplifiableIfStatement", "UnusedAssignment"})
-public class GoParser implements PsiParser, LightPsiParser {
+public class DexParser implements PsiParser, LightPsiParser {
 
   public ASTNode parse(IElementType t, PsiBuilder b) {
     parseLight(t, b);
@@ -25,6 +25,9 @@ public class GoParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
     if (t == BLOCK) {
       r = Block(b, 0);
+    }
+    else if (t == EXPRESSION) {
+      r = Expression(b, 0, -1);
     }
     else if (t == FUNCTION_DECLARATION) {
       r = FunctionDeclaration(b, 0);
@@ -99,6 +102,9 @@ public class GoParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(RETURN_STATEMENT, STATEMENT),
     create_token_set_(FUNCTION_TYPE, PAR_TYPE, TYPE, TYPE_LIST),
+    create_token_set_(ADD_EXPR, AND_EXPR, CONDITIONAL_EXPR, EXPRESSION,
+      MUL_EXPR, OR_EXPR, PARENTHESES_EXPR, STRING_LITERAL,
+      UNARY_EXPR),
   };
 
   /* ********************************************************** */
@@ -261,7 +267,7 @@ public class GoParser implements PsiParser, LightPsiParser {
   // ExpressionWithRecover (',' (ExpressionWithRecover | &')'))*
   static boolean ExpressionList(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExpressionList")) return false;
-    if (!nextTokenIs(b, EXPRESSION)) return false;
+    if (!nextTokenIsSmart(b, LPAREN, UNARYOP)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = ExpressionWithRecover(b, l + 1);
@@ -417,9 +423,8 @@ public class GoParser implements PsiParser, LightPsiParser {
   // Expression | LiteralTypeExpr
   static boolean ExpressionOrLiteralTypeExpr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExpressionOrLiteralTypeExpr")) return false;
-    if (!nextTokenIs(b, "", EXPRESSION, LITERALTYPEEXPR)) return false;
     boolean r;
-    r = consumeToken(b, EXPRESSION);
+    r = Expression(b, l + 1, -1);
     if (!r) r = consumeToken(b, LITERALTYPEEXPR);
     return r;
   }
@@ -479,7 +484,7 @@ public class GoParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "ExpressionWithRecover")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, EXPRESSION);
+    r = Expression(b, l + 1, -1);
     exit_section_(b, l, m, r, false, ExpressionListRecover_parser_);
     return r;
   }
@@ -720,11 +725,11 @@ public class GoParser implements PsiParser, LightPsiParser {
   // ExpressionList
   public static boolean LeftHandExprList(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "LeftHandExprList")) return false;
-    if (!nextTokenIs(b, EXPRESSION)) return false;
+    if (!nextTokenIsSmart(b, LPAREN, UNARYOP)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, LEFT_HAND_EXPR_LIST, "<left hand expr list>");
     r = ExpressionList(b, l + 1);
-    exit_section_(b, m, LEFT_HAND_EXPR_LIST, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1397,6 +1402,91 @@ public class GoParser implements PsiParser, LightPsiParser {
     if (!r) r = eof(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // Expression root: Expression
+  // Operator priority table:
+  // 0: BINARY(OrExpr)
+  // 1: BINARY(AndExpr)
+  // 2: BINARY(ConditionalExpr)
+  // 3: BINARY(AddExpr)
+  // 4: BINARY(MulExpr)
+  // 5: PREFIX(UnaryExpr)
+  // 6: ATOM(ParenthesesExpr)
+  public static boolean Expression(PsiBuilder b, int l, int g) {
+    if (!recursion_guard_(b, l, "Expression")) return false;
+    addVariant(b, "<expression>");
+    if (!nextTokenIsSmart(b, LPAREN, UNARYOP)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, "<expression>");
+    r = UnaryExpr(b, l + 1);
+    if (!r) r = ParenthesesExpr(b, l + 1);
+    p = r;
+    r = r && Expression_0(b, l + 1, g);
+    exit_section_(b, l, m, null, r, p, null);
+    return r || p;
+  }
+
+  public static boolean Expression_0(PsiBuilder b, int l, int g) {
+    if (!recursion_guard_(b, l, "Expression_0")) return false;
+    boolean r = true;
+    while (true) {
+      Marker m = enter_section_(b, l, _LEFT_, null);
+      if (g < 0 && consumeTokenSmart(b, COND_OR)) {
+        r = Expression(b, l, 0);
+        exit_section_(b, l, m, OR_EXPR, r, true, null);
+      }
+      else if (g < 1 && consumeTokenSmart(b, COND_AND)) {
+        r = Expression(b, l, 1);
+        exit_section_(b, l, m, AND_EXPR, r, true, null);
+      }
+      else if (g < 2 && consumeTokenSmart(b, RELOP)) {
+        r = Expression(b, l, 2);
+        exit_section_(b, l, m, CONDITIONAL_EXPR, r, true, null);
+      }
+      else if (g < 3 && consumeTokenSmart(b, ADDOP)) {
+        r = Expression(b, l, 3);
+        exit_section_(b, l, m, ADD_EXPR, r, true, null);
+      }
+      else if (g < 4 && consumeTokenSmart(b, MULOP)) {
+        r = Expression(b, l, 4);
+        exit_section_(b, l, m, MUL_EXPR, r, true, null);
+      }
+      else {
+        exit_section_(b, l, m, null, false, false, null);
+        break;
+      }
+    }
+    return r;
+  }
+
+  public static boolean UnaryExpr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "UnaryExpr")) return false;
+    if (!nextTokenIsSmart(b, UNARYOP)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeTokenSmart(b, UNARYOP);
+    p = r;
+    r = p && Expression(b, l, 5);
+    exit_section_(b, l, m, UNARY_EXPR, r, p, null);
+    return r || p;
+  }
+
+  // '(' <<enterMode "PAR">> Expression <<exitModeSafe "PAR">>')'
+  public static boolean ParenthesesExpr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ParenthesesExpr")) return false;
+    if (!nextTokenIsSmart(b, LPAREN)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PARENTHESES_EXPR, null);
+    r = consumeTokenSmart(b, LPAREN);
+    p = r; // pin = 1
+    r = r && report_error_(b, enterMode(b, l + 1, "PAR"));
+    r = p && report_error_(b, Expression(b, l + 1, -1)) && r;
+    r = p && report_error_(b, exitModeSafe(b, l + 1, "PAR")) && r;
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   static final Parser ExpressionListRecover_parser_ = new Parser() {

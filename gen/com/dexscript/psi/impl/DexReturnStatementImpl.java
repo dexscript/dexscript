@@ -7,12 +7,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.dexscript.parser.GoTypes.*;
+import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
 public class DexReturnStatementImpl extends DexStatementImpl implements DexReturnStatement {
 
-  public DexReturnStatementImpl(ASTNode node) {
+  public DexReturnStatementImpl(@NotNull ASTNode node) {
     super(node);
   }
 
@@ -23,6 +23,12 @@ public class DexReturnStatementImpl extends DexStatementImpl implements DexRetur
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof DexVisitor) accept((DexVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<DexExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, DexExpression.class);
   }
 
   @Override

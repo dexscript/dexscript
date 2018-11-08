@@ -18,6 +18,6 @@ public interface DexParType extends DexType {
 
   //WARNING: getActualType(...) is skipped
   //matching getActualType(DexParType, ...)
-  //methods are not found in null
+  //methods are not found in DexPsiImplUtil
 
 }

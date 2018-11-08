@@ -5,6 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface DexLeftHandExprList extends GoCompositeElement {
+public interface DexLeftHandExprList extends DexCompositeElement {
+
+  @NotNull
+  List<DexExpression> getExpressionList();
 
 }

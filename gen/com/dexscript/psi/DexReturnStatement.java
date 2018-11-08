@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface DexReturnStatement extends DexStatement {
 
   @NotNull
+  List<DexExpression> getExpressionList();
+
+  @NotNull
   PsiElement getReturn();
 
 }

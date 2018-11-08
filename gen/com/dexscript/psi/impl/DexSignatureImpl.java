@@ -7,19 +7,19 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.dexscript.parser.GoTypes.*;
+import static com.dexscript.psi.DexTypes.*;
+import com.dexscript.stubs.DexSignatureStub;
 import com.dexscript.psi.*;
 import com.intellij.psi.stubs.IStubElementType;
-import com.dexscript.stubs.GoSignatureStub;
 
-public class DexSignatureImpl extends GoCompositeElementImpl implements DexSignature {
+public class DexSignatureImpl extends DexStubbedElementImpl<DexSignatureStub> implements DexSignature {
 
-  public DexSignatureImpl(ASTNode node) {
-    super(node);
+  public DexSignatureImpl(@NotNull DexSignatureStub stub, @NotNull IStubElementType type) {
+    super(stub, type);
   }
 
-  public DexSignatureImpl(GoSignatureStub stub, IStubElementType stubType) {
-    super(stub, stubType);
+  public DexSignatureImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull DexVisitor visitor) {

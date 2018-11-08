@@ -7,12 +7,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.dexscript.parser.GoTypes.*;
+import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
-public class DexBlockImpl extends GoCompositeElementImpl implements DexBlock {
+public class DexBlockImpl extends DexCompositeElementImpl implements DexBlock {
 
-  public DexBlockImpl(ASTNode node) {
+  public DexBlockImpl(@NotNull ASTNode node) {
     super(node);
   }
 

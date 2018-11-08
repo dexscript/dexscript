@@ -1,18 +1,20 @@
 {
-  parserClass='com.dexscript.parser.GoParser'
+  parserClass='com.dexscript.parser.DexParser'
   classHeader='copyrightHeader.java'
 
-  implements='com.dexscript.psi.GoCompositeElement'
-  extends='com.dexscript.psi.impl.GoCompositeElementImpl'
+  implements='com.dexscript.psi.DexCompositeElement'
+  extends='com.dexscript.psi.impl.DexCompositeElementImpl'
 
-  elementTypeHolderClass='com.dexscript.parser.GoTypes'
-  elementTypeClass='com.dexscript.psi.GoCompositeElementType'
-  tokenTypeClass='com.dexscript.psi.GoTokenType'
+  elementTypeHolderClass='com.dexscript.psi.DexTypes'
+  elementTypeClass='com.dexscript.psi.DexCompositeElementType'
+  tokenTypeClass='com.dexscript.psi.DexTokenType'
 
   psiClassPrefix='Dex'
   psiImplClassSuffix='Impl'
   psiPackage='com.dexscript.psi'
   psiImplPackage='com.dexscript.psi.impl'
+  psiImplUtilClass="com.dexscript.psi.impl.DexPsiImplUtil"
+  parserUtilClass="com.dexscript.parser.DexParserUtil"
 
   tokens=[
     LBRACE               =  '{'
@@ -67,6 +69,17 @@
     raw_string           = 'raw_string'
   ]
 
+  extends("(Or|And|Add|Conversion|Mul|Selector|Conditional)Expr")=BinaryExpr
+  extends(".*(Expr|Literal|Lit|OperandName)")=Expression
+
+  implements("(Type|Import)Spec|(Var|Const|Param|(Anonymous)?Field|Label)Definition|Receiver")="com.dexscript.psi.DexNamedElement"
+  implements("FunctionLit")="com.dexscript.psi.DexSignatureOwner"
+  implements("FunctionDeclaration")="com.dexscript.psi.DexNamedSignatureOwner"
+
+  extends("(Function|Method)Declaration")="com.dexscript.psi.impl.DexNamedElementImpl<?>"
+  extends("(Type|Import|Method)Spec|(Var|Const|Param|(Anonymous)?Field|Label)Definition|Receiver")="com.dexscript.psi.impl.DexNamedElementImpl<?>"
+  extends("PackageClause|Parameters|Signature|ParameterDeclaration|Result|Type|(Const|Var|Import)Spec")="com.dexscript.psi.impl.DexStubbedElementImpl<?>"
+
   pin(".*Statement")=1
   extends(".*Statement")=Statement
   extends(".*Type|TypeList")=Type
@@ -78,7 +91,7 @@
 
 File ::= PackageClause semi ImportList TopLevelDeclaration* {pin(".*")=1}
 
-PackageClause ::= package identifier {pin=1 methods=[getName] stubClass="com.dexscript.stubs.GoPackageClauseStub"}
+PackageClause ::= package identifier {pin=1 methods=[getName] stubClass="com.dexscript.stubs.DexPackageClauseStub"}
 
 private semi ::= '<NL>' | ';' | <<eof>>
 
@@ -92,7 +105,7 @@ ImportDeclaration ::= import ( ImportSpec | '(' ImportSpecs? ')' ) {
 }
 
 ImportSpec ::= [ '.' | identifier ] ImportString {
-  stubClass="com.dexscript.stubs.GoImportSpecStub"
+  stubClass="com.dexscript.stubs.DexImportSpecStub"
   methods=[getAlias getLocalPackageName shouldGoDeeper isForSideEffects isDot getPath getName isCImport]
 }
 
@@ -114,37 +127,37 @@ private TopDeclaration ::=
 
 FunctionDeclaration ::= function identifier Signature BlockWithConsume? {
   pin=2
-  stubClass="com.dexscript.stubs.GoFunctionDeclarationStub"
+  stubClass="com.dexscript.stubs.DexFunctionDeclarationStub"
 }
 
-FunctionType ::= func Signature {pin=1 implements="com.dexscript.psi.GoSignatureOwner"}
+FunctionType ::= func Signature {pin=1 implements="com.dexscript.psi.DexSignatureOwner"}
 Signature ::= Parameters Result? {
   pin=1
-  stubClass="com.dexscript.stubs.GoSignatureStub"
+  stubClass="com.dexscript.stubs.DexSignatureStub"
 }
 Result ::= '(' TypeListNoPin ')' | Type | Parameters { // todo: reorder and pin (
-  stubClass="com.dexscript.stubs.GoResultStub"
+  stubClass="com.dexscript.stubs.DexResultStub"
   methods=[isVoid]
 }
 Parameters ::= '(' [ (ParameterList ','?| TypeListNoPin) ] ')' {
   pin=1
-  stubClass="com.dexscript.stubs.GoParametersStub"
+  stubClass="com.dexscript.stubs.DexParametersStub"
 }
 private ParameterList ::= ParameterDeclaration (',' (ParameterDeclaration | &')'))* {pin(".*")=1}
 ParameterDeclaration ::= ParamDefinitionListNoPin? '...'? Type | Type { // todo: use left rule
-  stubClass="com.dexscript.stubs.GoParameterDeclarationStub"
+  stubClass="com.dexscript.stubs.DexParamDeclarationStub"
   methods = [isVariadic]
 }
 private ParamDefinitionListNoPin ::= ParamDefinition &(!('.' | ')')) (',' ParamDefinition)* // todo
 ParamDefinition ::= identifier {
-  stubClass="com.dexscript.stubs.GoParamDefinitionStub"
+  stubClass="com.dexscript.stubs.DexParamDefinitionStub"
   methods = [isVariadic]
 }
 
 TypeList ::= Type ( ',' Type )* ','?
 TypeListNoPin ::= Type ( ',' Type )* ','? {elementType=TypeList}
 
-Type ::= TypeName | TypeLit | ParType {stubClass="com.dexscript.stubs.GoTypeStub" methods=[getUnderlyingType shouldGoDeeper]}
+Type ::= TypeName | TypeLit | ParType {stubClass="com.dexscript.stubs.DexTypeStub" methods=[getUnderlyingType shouldGoDeeper]}
 ParType ::= '(' Type ')' {methods=[getActualType]}
 private TypeName ::= TypeReferenceExpression QualifiedTypeReferenceExpression?
 TypeReferenceExpression ::= identifier { methods=[getReference getQualifier resolve resolveType] }
@@ -176,3 +189,23 @@ private ExpressionList ::= ExpressionWithRecover (',' (ExpressionWithRecover | &
 private ExpressionWithRecover ::= Expression {recoverWhile=ExpressionListRecover}
 private ExpressionListRecover ::= !('!' | '!=' | '%' | '%=' | '&&' | '&' | '&=' | '&^' | '&^=' | '(' | ')' | '*' | '*=' | '+' | '++' | '+=' | ',' | '-' | '--' | '-=' | '...' | '/' | '/=' | ':' | ';' | '<' | '<-' | '<<' | '<<=' | '<=' | '<NL>' | '=' | '==' | '>' | '>=' | '>>' | '>>=' | '[' | ']' | '^' | '^=' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | chan | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | raw_string | struct | switch | var)
 
+fake BinaryExpr ::= Expression+ {
+  methods=[left="Expression[0]" right="Expression[1]" getOperator]
+}
+
+OrExpr ::= Expression '||' Expression
+AndExpr ::= Expression '&&' Expression
+UnaryExpr ::=  UnaryOp Expression {methods=[getOperator]}
+ConditionalExpr ::= Expression RelOp Expression
+AddExpr ::= Expression AddOp Expression
+MulExpr ::= Expression MulOp Expression
+ParenthesesExpr ::= '(' <<enterMode "PAR">> Expression <<exitModeSafe "PAR">>')' {pin=1}
+
+Expression ::=
+    OrExpr
+  | AndExpr
+  | ConditionalExpr
+  | AddExpr
+  | MulExpr
+  | UnaryExpr
+  | ParenthesesExpr {methods=[getDexType] implements="com.dexscript.psi.DexTypeOwner"}

@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
-import com.dexscript.stubs.GoFunctionDeclarationStub;
+import com.dexscript.stubs.DexFunctionDeclarationStub;
 
-public interface DexFunctionDeclaration extends GoCompositeElement, StubBasedPsiElement<GoFunctionDeclarationStub> {
+public interface DexFunctionDeclaration extends DexNamedSignatureOwner, StubBasedPsiElement<DexFunctionDeclarationStub> {
 
   @Nullable
   DexBlock getBlock();

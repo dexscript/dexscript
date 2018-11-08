@@ -7,19 +7,19 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.dexscript.parser.GoTypes.*;
+import static com.dexscript.psi.DexTypes.*;
+import com.dexscript.stubs.DexFunctionDeclarationStub;
 import com.dexscript.psi.*;
 import com.intellij.psi.stubs.IStubElementType;
-import com.dexscript.stubs.GoFunctionDeclarationStub;
 
-public class DexFunctionDeclarationImpl extends GoCompositeElementImpl implements DexFunctionDeclaration {
+public class DexFunctionDeclarationImpl extends DexNamedElementImpl<DexFunctionDeclarationStub> implements DexFunctionDeclaration {
 
-  public DexFunctionDeclarationImpl(ASTNode node) {
-    super(node);
+  public DexFunctionDeclarationImpl(@NotNull DexFunctionDeclarationStub stub, @NotNull IStubElementType type) {
+    super(stub, type);
   }
 
-  public DexFunctionDeclarationImpl(GoFunctionDeclarationStub stub, IStubElementType stubType) {
-    super(stub, stubType);
+  public DexFunctionDeclarationImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull DexVisitor visitor) {

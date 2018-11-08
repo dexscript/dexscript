@@ -7,12 +7,12 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.dexscript.parser.GoTypes.*;
+import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
-public class DexStringLiteralImpl extends GoCompositeElementImpl implements DexStringLiteral {
+public class DexStringLiteralImpl extends DexExpressionImpl implements DexStringLiteral {
 
-  public DexStringLiteralImpl(ASTNode node) {
+  public DexStringLiteralImpl(@NotNull ASTNode node) {
     super(node);
   }
 
@@ -35,6 +35,25 @@ public class DexStringLiteralImpl extends GoCompositeElementImpl implements DexS
   @Nullable
   public PsiElement getString() {
     return findChildByType(STRING);
+  }
+
+  public boolean isValidHost() {
+    return DexPsiImplUtil.isValidHost(this);
+  }
+
+  @NotNull
+  public DexStringLiteralImpl updateText(@NotNull String text) {
+    return DexPsiImplUtil.updateText(this, text);
+  }
+
+  @NotNull
+  public DexStringLiteralEscaper createLiteralTextEscaper() {
+    return DexPsiImplUtil.createLiteralTextEscaper(this);
+  }
+
+  @NotNull
+  public String getDecodedText() {
+    return DexPsiImplUtil.getDecodedText(this);
   }
 
 }

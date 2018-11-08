@@ -5,15 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
-import com.dexscript.stubs.GoParamDefinitionStub;
+import com.dexscript.stubs.DexParamDefinitionStub;
 
-public interface DexParamDefinition extends GoCompositeElement, StubBasedPsiElement<GoParamDefinitionStub> {
+public interface DexParamDefinition extends DexNamedElement, StubBasedPsiElement<DexParamDefinitionStub> {
 
   @NotNull
   PsiElement getIdentifier();
 
   //WARNING: isVariadic(...) is skipped
   //matching isVariadic(DexParamDefinition, ...)
-  //methods are not found in null
+  //methods are not found in DexPsiImplUtil
 
 }

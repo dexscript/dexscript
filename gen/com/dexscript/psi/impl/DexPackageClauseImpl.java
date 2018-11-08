@@ -7,19 +7,19 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static com.dexscript.parser.GoTypes.*;
+import static com.dexscript.psi.DexTypes.*;
+import com.dexscript.stubs.DexPackageClauseStub;
 import com.dexscript.psi.*;
 import com.intellij.psi.stubs.IStubElementType;
-import com.dexscript.stubs.GoPackageClauseStub;
 
-public class DexPackageClauseImpl extends GoCompositeElementImpl implements DexPackageClause {
+public class DexPackageClauseImpl extends DexStubbedElementImpl<DexPackageClauseStub> implements DexPackageClause {
 
-  public DexPackageClauseImpl(ASTNode node) {
-    super(node);
+  public DexPackageClauseImpl(@NotNull DexPackageClauseStub stub, @NotNull IStubElementType type) {
+    super(stub, type);
   }
 
-  public DexPackageClauseImpl(GoPackageClauseStub stub, IStubElementType stubType) {
-    super(stub, stubType);
+  public DexPackageClauseImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull DexVisitor visitor) {
@@ -41,6 +41,11 @@ public class DexPackageClauseImpl extends GoCompositeElementImpl implements DexP
   @NotNull
   public PsiElement getPackage() {
     return notNullChild(findChildByType(PACKAGE));
+  }
+
+  @Nullable
+  public String getName() {
+    return DexPsiImplUtil.getName(this);
   }
 
 }

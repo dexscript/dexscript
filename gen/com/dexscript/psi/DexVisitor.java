@@ -7,41 +7,69 @@ import com.intellij.psi.PsiLanguageInjectionHost;
 
 public class DexVisitor extends PsiElementVisitor {
 
+  public void visitAddExpr(@NotNull DexAddExpr o) {
+    visitBinaryExpr(o);
+  }
+
+  public void visitAndExpr(@NotNull DexAndExpr o) {
+    visitBinaryExpr(o);
+  }
+
+  public void visitBinaryExpr(@NotNull DexBinaryExpr o) {
+    visitExpression(o);
+  }
+
   public void visitBlock(@NotNull DexBlock o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
+  }
+
+  public void visitConditionalExpr(@NotNull DexConditionalExpr o) {
+    visitBinaryExpr(o);
+  }
+
+  public void visitExpression(@NotNull DexExpression o) {
+    visitTypeOwner(o);
   }
 
   public void visitFunctionDeclaration(@NotNull DexFunctionDeclaration o) {
-    visitGoCompositeElement(o);
+    visitNamedSignatureOwner(o);
   }
 
   public void visitFunctionType(@NotNull DexFunctionType o) {
     visitType(o);
-    // visitGoSignatureOwner(o);
+    // visitSignatureOwner(o);
   }
 
   public void visitImportDeclaration(@NotNull DexImportDeclaration o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitImportList(@NotNull DexImportList o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitImportSpec(@NotNull DexImportSpec o) {
-    visitGoCompositeElement(o);
+    visitNamedElement(o);
   }
 
   public void visitImportString(@NotNull DexImportString o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitLeftHandExprList(@NotNull DexLeftHandExprList o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
+  }
+
+  public void visitMulExpr(@NotNull DexMulExpr o) {
+    visitBinaryExpr(o);
+  }
+
+  public void visitOrExpr(@NotNull DexOrExpr o) {
+    visitBinaryExpr(o);
   }
 
   public void visitPackageClause(@NotNull DexPackageClause o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitParType(@NotNull DexParType o) {
@@ -49,19 +77,23 @@ public class DexVisitor extends PsiElementVisitor {
   }
 
   public void visitParamDefinition(@NotNull DexParamDefinition o) {
-    visitGoCompositeElement(o);
+    visitNamedElement(o);
   }
 
   public void visitParameterDeclaration(@NotNull DexParameterDeclaration o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitParameters(@NotNull DexParameters o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
+  }
+
+  public void visitParenthesesExpr(@NotNull DexParenthesesExpr o) {
+    visitExpression(o);
   }
 
   public void visitResult(@NotNull DexResult o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitReturnStatement(@NotNull DexReturnStatement o) {
@@ -69,19 +101,20 @@ public class DexVisitor extends PsiElementVisitor {
   }
 
   public void visitSignature(@NotNull DexSignature o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitStatement(@NotNull DexStatement o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitStringLiteral(@NotNull DexStringLiteral o) {
-    visitPsiLanguageInjectionHost(o);
+    visitExpression(o);
+    // visitPsiLanguageInjectionHost(o);
   }
 
   public void visitType(@NotNull DexType o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitTypeList(@NotNull DexTypeList o) {
@@ -89,14 +122,26 @@ public class DexVisitor extends PsiElementVisitor {
   }
 
   public void visitTypeReferenceExpression(@NotNull DexTypeReferenceExpression o) {
-    visitGoCompositeElement(o);
+    visitCompositeElement(o);
   }
 
-  public void visitPsiLanguageInjectionHost(@NotNull PsiLanguageInjectionHost o) {
-    visitElement(o);
+  public void visitUnaryExpr(@NotNull DexUnaryExpr o) {
+    visitExpression(o);
   }
 
-  public void visitGoCompositeElement(@NotNull GoCompositeElement o) {
+  public void visitNamedElement(@NotNull DexNamedElement o) {
+    visitCompositeElement(o);
+  }
+
+  public void visitNamedSignatureOwner(@NotNull DexNamedSignatureOwner o) {
+    visitCompositeElement(o);
+  }
+
+  public void visitTypeOwner(@NotNull DexTypeOwner o) {
+    visitCompositeElement(o);
+  }
+
+  public void visitCompositeElement(@NotNull DexCompositeElement o) {
     visitElement(o);
   }
 

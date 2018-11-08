@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
-import com.dexscript.stubs.GoSignatureStub;
+import com.dexscript.stubs.DexSignatureStub;
 
-public interface DexSignature extends GoCompositeElement, StubBasedPsiElement<GoSignatureStub> {
+public interface DexSignature extends DexCompositeElement, StubBasedPsiElement<DexSignatureStub> {
 
   @NotNull
   DexParameters getParameters();
