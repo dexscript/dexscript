@@ -1,0 +1,14 @@
+GO_FILE
+  PsiErrorElement:package expected, got 'p'
+    PsiElement(BAD_CHARACTER)('p')
+  PsiElement(DUMMY_BLOCK)
+    PsiElement(BAD_CHARACTER)('a')
+    PsiElement(BAD_CHARACTER)('c')
+    PsiElement(BAD_CHARACTER)('k')
+    PsiElement(BAD_CHARACTER)('a')
+    PsiElement(BAD_CHARACTER)('g')
+    PsiElement(BAD_CHARACTER)('e')
+    PsiWhiteSpace(' ')
+    PsiElement(BAD_CHARACTER)('a')
+    PsiElement(BAD_CHARACTER)('b')
+    PsiElement(BAD_CHARACTER)('c')

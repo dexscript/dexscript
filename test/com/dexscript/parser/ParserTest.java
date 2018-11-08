@@ -1,10 +1,33 @@
 package com.dexscript.parser;
 
+import com.intellij.testFramework.ParsingTestCase;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
-public class ParserTest {
-    @Test
-    public void test() {
+public class ParserTest extends ParsingTestCase {
 
+    public ParserTest() {
+        super("parser", "dex", new DexParserDefinition());
+    }
+
+    @Test
+    public void testError() {
+        doTest(true);
+    }
+
+    @Override
+    protected void doTest(boolean checkErrors) {
+        super.doTest(true);
+        if (checkErrors) {
+            assertFalse(
+                    "PsiFile contains error elements",
+                    toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement")
+            );
+        }
+    }
+    @NotNull
+    @Override
+    protected String getTestDataPath() {
+        return "testData";
     }
 }
