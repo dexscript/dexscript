@@ -49,4 +49,21 @@ public class DexImportSpecImpl extends DexNamedElementImpl<DexImportSpecStub> im
     return findChildByType(IDENTIFIER);
   }
 
+  public String getAlias() {
+    return DexPsiImplUtil.getAlias(this);
+  }
+
+  public boolean isDot() {
+    return DexPsiImplUtil.isDot(this);
+  }
+
+  @NotNull
+  public String getPath() {
+    return DexPsiImplUtil.getPath(this);
+  }
+
+  public boolean isCImport() {
+    return DexPsiImplUtil.isCImport(this);
+  }
+
 }

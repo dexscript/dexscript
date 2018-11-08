@@ -18,9 +18,8 @@ public interface DexImportString extends DexCompositeElement {
   //matching resolve(DexImportString, ...)
   //methods are not found in DexPsiImplUtil
 
-  //WARNING: getPath(...) is skipped
-  //matching getPath(DexImportString, ...)
-  //methods are not found in DexPsiImplUtil
+  @NotNull
+  String getPath();
 
   //WARNING: getPathTextRange(...) is skipped
   //matching getPathTextRange(DexImportString, ...)

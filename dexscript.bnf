@@ -79,6 +79,7 @@
   extends("(Function|Method)Declaration")="com.dexscript.psi.impl.DexNamedElementImpl<?>"
   extends("(Type|Import|Method)Spec|(Var|Const|Param|(Anonymous)?Field|Label)Definition|Receiver")="com.dexscript.psi.impl.DexNamedElementImpl<?>"
   extends("PackageClause|Parameters|Signature|ParameterDeclaration|Result|Type|(Const|Var|Import)Spec")="com.dexscript.psi.impl.DexStubbedElementImpl<?>"
+  elementTypeFactory("PackageClause|(Function|Method|Parameter)Declaration|(Type|Import|Method|Const|Var)Spec|RangeClause|RecvStatement|ShortVarDeclaration|(Var|Const|Param|(Anonymous)?Field|Label)Definition|Receiver|Parameters|Signature|Result|.*Type|TypeList.*")='com.dexscript.stubs.DexElementTypeFactory.stubFactory'
 
   pin(".*Statement")=1
   extends(".*Statement")=Statement

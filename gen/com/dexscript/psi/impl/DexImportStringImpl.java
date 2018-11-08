@@ -31,4 +31,9 @@ public class DexImportStringImpl extends DexCompositeElementImpl implements DexI
     return notNullChild(PsiTreeUtil.getChildOfType(this, DexStringLiteral.class));
   }
 
+  @NotNull
+  public String getPath() {
+    return DexPsiImplUtil.getPath(this);
+  }
+
 }

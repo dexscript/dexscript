@@ -49,4 +49,8 @@ public class DexParameterDeclarationImpl extends DexStubbedElementImpl<DexParamD
     return findChildByType(TRIPLE_DOT);
   }
 
+  public boolean isVariadic() {
+    return DexPsiImplUtil.isVariadic(this);
+  }
+
 }

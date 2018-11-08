@@ -18,9 +18,7 @@ public interface DexImportSpec extends DexNamedElement, StubBasedPsiElement<DexI
   @Nullable
   PsiElement getIdentifier();
 
-  //WARNING: getAlias(...) is skipped
-  //matching getAlias(DexImportSpec, ...)
-  //methods are not found in DexPsiImplUtil
+  String getAlias();
 
   //WARNING: getLocalPackageName(...) is skipped
   //matching getLocalPackageName(DexImportSpec, ...)
@@ -34,20 +32,15 @@ public interface DexImportSpec extends DexNamedElement, StubBasedPsiElement<DexI
   //matching isForSideEffects(DexImportSpec, ...)
   //methods are not found in DexPsiImplUtil
 
-  //WARNING: isDot(...) is skipped
-  //matching isDot(DexImportSpec, ...)
-  //methods are not found in DexPsiImplUtil
+  boolean isDot();
 
-  //WARNING: getPath(...) is skipped
-  //matching getPath(DexImportSpec, ...)
-  //methods are not found in DexPsiImplUtil
+  @NotNull
+  String getPath();
 
   //WARNING: getName(...) is skipped
   //matching getName(DexImportSpec, ...)
   //methods are not found in DexPsiImplUtil
 
-  //WARNING: isCImport(...) is skipped
-  //matching isCImport(DexImportSpec, ...)
-  //methods are not found in DexPsiImplUtil
+  boolean isCImport();
 
 }

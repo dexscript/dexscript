@@ -4,6 +4,7 @@ package com.dexscript.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import com.dexscript.stubs.DexElementTypeFactory;
 import com.dexscript.psi.impl.*;
 
 public interface DexTypes {
@@ -13,28 +14,28 @@ public interface DexTypes {
   IElementType BLOCK = new DexCompositeElementType("BLOCK");
   IElementType CONDITIONAL_EXPR = new DexCompositeElementType("CONDITIONAL_EXPR");
   IElementType EXPRESSION = new DexCompositeElementType("EXPRESSION");
-  IElementType FUNCTION_DECLARATION = new DexCompositeElementType("FUNCTION_DECLARATION");
-  IElementType FUNCTION_TYPE = new DexCompositeElementType("FUNCTION_TYPE");
+  IElementType FUNCTION_DECLARATION = DexElementTypeFactory.stubFactory("FUNCTION_DECLARATION");
+  IElementType FUNCTION_TYPE = DexElementTypeFactory.stubFactory("FUNCTION_TYPE");
   IElementType IMPORT_DECLARATION = new DexCompositeElementType("IMPORT_DECLARATION");
   IElementType IMPORT_LIST = new DexCompositeElementType("IMPORT_LIST");
-  IElementType IMPORT_SPEC = new DexCompositeElementType("IMPORT_SPEC");
+  IElementType IMPORT_SPEC = DexElementTypeFactory.stubFactory("IMPORT_SPEC");
   IElementType IMPORT_STRING = new DexCompositeElementType("IMPORT_STRING");
   IElementType LEFT_HAND_EXPR_LIST = new DexCompositeElementType("LEFT_HAND_EXPR_LIST");
   IElementType MUL_EXPR = new DexCompositeElementType("MUL_EXPR");
   IElementType OR_EXPR = new DexCompositeElementType("OR_EXPR");
-  IElementType PACKAGE_CLAUSE = new DexCompositeElementType("PACKAGE_CLAUSE");
-  IElementType PARAMETERS = new DexCompositeElementType("PARAMETERS");
-  IElementType PARAMETER_DECLARATION = new DexCompositeElementType("PARAMETER_DECLARATION");
-  IElementType PARAM_DEFINITION = new DexCompositeElementType("PARAM_DEFINITION");
+  IElementType PACKAGE_CLAUSE = DexElementTypeFactory.stubFactory("PACKAGE_CLAUSE");
+  IElementType PARAMETERS = DexElementTypeFactory.stubFactory("PARAMETERS");
+  IElementType PARAMETER_DECLARATION = DexElementTypeFactory.stubFactory("PARAMETER_DECLARATION");
+  IElementType PARAM_DEFINITION = DexElementTypeFactory.stubFactory("PARAM_DEFINITION");
   IElementType PARENTHESES_EXPR = new DexCompositeElementType("PARENTHESES_EXPR");
-  IElementType PAR_TYPE = new DexCompositeElementType("PAR_TYPE");
-  IElementType RESULT = new DexCompositeElementType("RESULT");
+  IElementType PAR_TYPE = DexElementTypeFactory.stubFactory("PAR_TYPE");
+  IElementType RESULT = DexElementTypeFactory.stubFactory("RESULT");
   IElementType RETURN_STATEMENT = new DexCompositeElementType("RETURN_STATEMENT");
-  IElementType SIGNATURE = new DexCompositeElementType("SIGNATURE");
+  IElementType SIGNATURE = DexElementTypeFactory.stubFactory("SIGNATURE");
   IElementType STATEMENT = new DexCompositeElementType("STATEMENT");
   IElementType STRING_LITERAL = new DexCompositeElementType("STRING_LITERAL");
-  IElementType TYPE = new DexCompositeElementType("TYPE");
-  IElementType TYPE_LIST = new DexCompositeElementType("TYPE_LIST");
+  IElementType TYPE = DexElementTypeFactory.stubFactory("TYPE");
+  IElementType TYPE_LIST = DexElementTypeFactory.stubFactory("TYPE_LIST");
   IElementType TYPE_REFERENCE_EXPRESSION = new DexCompositeElementType("TYPE_REFERENCE_EXPRESSION");
   IElementType UNARY_EXPR = new DexCompositeElementType("UNARY_EXPR");
 

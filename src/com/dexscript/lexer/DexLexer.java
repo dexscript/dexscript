@@ -22,7 +22,7 @@ import com.intellij.lexer.MergingLexerAdapter;
 import com.intellij.psi.tree.TokenSet;
 
 public class DexLexer extends MergingLexerAdapter {
-  public DexLexer() {
-    super(new FlexAdapter(new _DexscriptLexer()), TokenSet.orSet(DexParserDefinition.COMMENTS, DexParserDefinition.WHITESPACES));
-  }
+    public DexLexer() {
+        super(new FlexAdapter(new _DexLexer()), TokenSet.orSet(DexParserDefinition.COMMENTS, DexParserDefinition.WHITESPACES));
+    }
 }

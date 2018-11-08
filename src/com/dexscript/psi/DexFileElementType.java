@@ -33,7 +33,7 @@ public class DexFileElementType extends IStubFileElementType<DexFileStub> {
   public static final int VERSION = 21;
 
   private DexFileElementType() {
-    super("GO_FILE", DexLanguage.INSTANCE);
+    super("DEX_FILE", DexLanguage.INSTANCE);
   }
 
   @Override
@@ -78,6 +78,6 @@ public class DexFileElementType extends IStubFileElementType<DexFileStub> {
   @NotNull
   @Override
   public String getExternalId() {
-    return "go.FILE";
+    return "dex.FILE";
   }
 }

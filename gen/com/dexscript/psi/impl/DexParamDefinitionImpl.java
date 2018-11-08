@@ -37,4 +37,8 @@ public class DexParamDefinitionImpl extends DexNamedElementImpl<DexParamDefiniti
     return notNullChild(findChildByType(IDENTIFIER));
   }
 
+  public boolean isVariadic() {
+    return DexPsiImplUtil.isVariadic(this);
+  }
+
 }

@@ -12,8 +12,6 @@ public interface DexParamDefinition extends DexNamedElement, StubBasedPsiElement
   @NotNull
   PsiElement getIdentifier();
 
-  //WARNING: isVariadic(...) is skipped
-  //matching isVariadic(DexParamDefinition, ...)
-  //methods are not found in DexPsiImplUtil
+  boolean isVariadic();
 
 }

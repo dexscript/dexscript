@@ -1,14 +1,19 @@
 package com.dexscript.psi.impl;
 
+import com.dexscript.parser.DexConstants;
 import com.dexscript.psi.*;
+import com.dexscript.stubs.DexImportSpecStub;
 import com.dexscript.stubs.DexPackageClauseStub;
+import com.dexscript.stubs.DexParamDeclarationStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.ElementManipulators;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.ResolveState;
 import com.intellij.psi.impl.source.tree.LeafElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,5 +67,73 @@ public class DexPsiImplUtil {
         if (stub != null) return stub.getName();
         PsiElement packageIdentifier = packageClause.getIdentifier();
         return packageIdentifier != null ? packageIdentifier.getText().trim() : null;
+    }
+
+    public static String getAlias(@NotNull DexImportSpec importSpec) {
+        DexImportSpecStub stub = importSpec.getStub();
+        if (stub != null) {
+            return stub.getAlias();
+        }
+
+        PsiElement identifier = importSpec.getIdentifier();
+        if (identifier != null) {
+            return identifier.getText();
+        }
+        return importSpec.isDot() ? "." : null;
+    }
+
+    public static boolean isDot(@NotNull DexImportSpec importSpec) {
+        DexImportSpecStub stub = importSpec.getStub();
+        return stub != null ? stub.isDot() : importSpec.getDot() != null;
+    }
+
+    public static String getLocalPackageName(@NotNull String importPath) {
+        String fileName = !StringUtil.endsWithChar(importPath, '/') && !StringUtil.endsWithChar(importPath, '\\')
+                ? PathUtil.getFileName(importPath)
+                : "";
+        StringBuilder name = null;
+        for (int i = 0; i < fileName.length(); i++) {
+            char c = fileName.charAt(i);
+            if (!(Character.isLetter(c) || c == '_' || i != 0 && Character.isDigit(c))) {
+                if (name == null) {
+                    name = new StringBuilder(fileName.length());
+                    name.append(fileName, 0, i);
+                }
+                name.append('_');
+            } else if (name != null) {
+                name.append(c);
+            }
+        }
+        return name == null ? fileName : name.toString();
+    }
+
+    public static boolean shouldDexDeeper(@SuppressWarnings("UnusedParameters") DexImportSpec o) {
+        return false;
+    }
+
+    public static boolean isCImport(@NotNull DexImportSpec importSpec) {
+        return DexConstants.C_PATH.equals(importSpec.getPath());
+    }
+
+    @NotNull
+    public static String getPath(@NotNull DexImportSpec importSpec) {
+        DexImportSpecStub stub = importSpec.getStub();
+        return stub != null ? stub.getPath() : importSpec.getImportString().getPath();
+    }
+
+    @NotNull
+    public static String getPath(@NotNull DexImportString o) {
+        return o.getStringLiteral().getDecodedText();
+    }
+
+
+    public static boolean isVariadic(@NotNull DexParamDefinition o) {
+        PsiElement parent = o.getParent();
+        return parent instanceof DexParameterDeclaration && ((DexParameterDeclaration)parent).isVariadic();
+    }
+
+    public static boolean isVariadic(@NotNull DexParameterDeclaration o) {
+        DexParamDeclarationStub stub = o.getStub();
+        return stub != null ? stub.isVariadic() : o.getTripleDot() != null;
     }
 }

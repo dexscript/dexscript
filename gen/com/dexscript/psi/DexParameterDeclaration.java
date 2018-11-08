@@ -18,8 +18,6 @@ public interface DexParameterDeclaration extends DexCompositeElement, StubBasedP
   @Nullable
   PsiElement getTripleDot();
 
-  //WARNING: isVariadic(...) is skipped
-  //matching isVariadic(DexParameterDeclaration, ...)
-  //methods are not found in DexPsiImplUtil
+  boolean isVariadic();
 
 }
