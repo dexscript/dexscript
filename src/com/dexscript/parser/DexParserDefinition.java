@@ -28,7 +28,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
@@ -36,14 +35,10 @@ import org.jetbrains.annotations.NotNull;
 import static com.dexscript.psi.DexTypes.*;
 
 public class DexParserDefinition implements ParserDefinition {
-  public static final IElementType LINE_COMMENT = new DexTokenType("GO_LINE_COMMENT");
-  public static final IElementType MULTILINE_COMMENT = new DexTokenType("GO_MULTILINE_COMMENT");
 
-  public static final IElementType WS = new DexTokenType("GO_WHITESPACE");
-  public static final IElementType NLS = new DexTokenType("GO_WS_NEW_LINES");
 
-  public static final TokenSet WHITESPACES = TokenSet.create(WS, NLS);
-  public static final TokenSet COMMENTS = TokenSet.create(LINE_COMMENT, MULTILINE_COMMENT);
+  public static final TokenSet WHITESPACES = TokenSet.create(DexTokenType.WS, DexTokenType.NLS);
+  public static final TokenSet COMMENTS = TokenSet.create(DexTokenType.LINE_COMMENT, DexTokenType.MULTILINE_COMMENT);
   public static final TokenSet STRING_LITERALS = TokenSet.create(STRING, RAW_STRING, CHAR);
   public static final TokenSet NUMBERS = TokenSet.create(INT, FLOAT, FLOATI, DECIMALI, FLOATI); // todo: HEX, OCT,
   public static final TokenSet KEYWORDS = TokenSet.create(

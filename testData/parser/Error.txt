@@ -1,9 +1,7 @@
 DEX_FILE
   PACKAGE_CLAUSE
     PsiElement(package)('package')
-    PsiErrorElement:identifier expected
-      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(identifier)('abc')
   DexImportListImpl(IMPORT_LIST)
     <empty list>
-  PsiElement(GO_WHITESPACE)(' ')
-  PsiElement(identifier)('abc')

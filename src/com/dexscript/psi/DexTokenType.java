@@ -22,10 +22,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class DexTokenType extends IElementType {
 
-  public static final IElementType LINE_COMMENT = new DexTokenType("GO_LINE_COMMENT");
-  public static final IElementType MULTILINE_COMMENT = new DexTokenType("GO_MULTILINE_COMMENT");
-  public static final IElementType WS = new DexTokenType("GO_WHITESPACE");
-  public static final IElementType NLS = new DexTokenType("GO_WS_NEW_LINES");
+  public static final IElementType LINE_COMMENT = new DexTokenType("DEX_LINE_COMMENT");
+  public static final IElementType MULTILINE_COMMENT = new DexTokenType("DEX_MULTILINE_COMMENT");
+  public static final IElementType WS = new DexTokenType("DEX_WHITESPACE");
+  public static final IElementType NLS = new DexTokenType("DEX_WS_NEW_LINES");
 
   public DexTokenType(@NotNull String debug) {
     super(debug, DexLanguage.INSTANCE);
