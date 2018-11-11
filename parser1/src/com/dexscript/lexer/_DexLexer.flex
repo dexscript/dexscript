@@ -46,6 +46,8 @@ IDENT = {LETTER} ({LETTER} | {DIGIT} )*
 
 STR =      "\""
 STRING = {STR} ( [^\"\\\n\r] | "\\" ("\\" | {STR} | {ESCAPES} | [0-8xuU] ) )* {STR}?
+SSTR =      "'"
+SSTRING = {SSTR} ( [^\'\\\n\r] | "\\" ("\\" | {SSTR} | {ESCAPES} | [0-8xuU] ) )* {SSTR}?
 ESCAPES = [abfnrtv]
 
 %state MAYBE_SEMICOLON
@@ -60,15 +62,7 @@ ESCAPES = [abfnrtv]
 {MULTILINE_COMMENT}                       { return MULTILINE_COMMENT; }
 
 {STRING}                                  { yybegin(MAYBE_SEMICOLON); return STRING; }
-
-"'\\'"                                    { yybegin(MAYBE_SEMICOLON); return BAD_CHARACTER; }
-"'" [^\\] "'"?                            { yybegin(MAYBE_SEMICOLON); return CHAR; }
-"'" \n "'"?                               { yybegin(MAYBE_SEMICOLON); return CHAR; }
-"'\\" [abfnrtv\\\'] "'"?                  { yybegin(MAYBE_SEMICOLON); return CHAR; }
-"'\\"  {OCT_DIGIT} {3} "'"?               { yybegin(MAYBE_SEMICOLON); return CHAR; }
-"'\\x" {HEX_DIGIT} {2} "'"?               { yybegin(MAYBE_SEMICOLON); return CHAR; }
-"'\\u" {HEX_DIGIT} {4} "'"?               { yybegin(MAYBE_SEMICOLON); return CHAR; }
-"'\\U" {HEX_DIGIT} {8} "'"?               { yybegin(MAYBE_SEMICOLON); return CHAR; }
+{SSTRING}                                  { yybegin(MAYBE_SEMICOLON); return SSTRING; }
 
 "`" [^`]* "`"?                            { yybegin(MAYBE_SEMICOLON); return RAW_STRING; }
 "..."                                     { return TRIPLE_DOT; }

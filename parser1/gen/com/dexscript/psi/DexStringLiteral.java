@@ -14,6 +14,9 @@ public interface DexStringLiteral extends DexExpression, PsiLanguageInjectionHos
   PsiElement getRawString();
 
   @Nullable
+  PsiElement getSstring();
+
+  @Nullable
   PsiElement getString();
 
   boolean isValidHost();

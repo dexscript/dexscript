@@ -1,0 +1,5 @@
+package abc
+
+function hello(): string {
+    return 'hello'
+}

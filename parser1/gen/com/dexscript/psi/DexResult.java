@@ -15,6 +15,9 @@ public interface DexResult extends DexCompositeElement, StubBasedPsiElement<DexR
   @Nullable
   DexType getType();
 
+  @NotNull
+  PsiElement getColon();
+
   @Nullable
   PsiElement getLparen();
 

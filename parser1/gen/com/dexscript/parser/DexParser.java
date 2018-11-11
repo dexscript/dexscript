@@ -77,9 +77,6 @@ public class DexParser implements PsiParser, LightPsiParser {
     else if (t == STATEMENT) {
       r = Statement(b, 0);
     }
-    else if (t == STRING_LITERAL) {
-      r = StringLiteral(b, 0);
-    }
     else if (t == TYPE) {
       r = Type(b, 0);
     }
@@ -267,7 +264,6 @@ public class DexParser implements PsiParser, LightPsiParser {
   // ExpressionWithRecover (',' (ExpressionWithRecover | &')'))*
   static boolean ExpressionList(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExpressionList")) return false;
-    if (!nextTokenIsSmart(b, LPAREN, UNARYOP)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = ExpressionWithRecover(b, l + 1);
@@ -322,7 +318,7 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !('!' | '!=' | '%' | '%=' | '&&' | '&' | '&=' | '&^' | '&^=' | '(' | ')' | '*' | '*=' | '+' | '++' | '+=' | ',' | '-' | '--' | '-=' | '...' | '/' | '/=' | ':' | ';' | '<' | '<-' | '<<' | '<<=' | '<=' | '<NL>' | '=' | '==' | '>' | '>=' | '>>' | '>>=' | '[' | ']' | '^' | '^=' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | chan | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | raw_string | struct | switch | var)
+  // !('!' | '!=' | '%' | '%=' | '&&' | '&' | '&=' | '&^' | '&^=' | '(' | ')' | '*' | '*=' | '+' | '++' | '+=' | ',' | '-' | '--' | '-=' | '...' | '/' | '/=' | ':' | ';' | '<' | '<-' | '<<' | '<<=' | '<=' | '<NL>' | '=' | '==' | '>' | '>=' | '>>' | '>>=' | '[' | ']' | '^' | '^=' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | chan | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | sstring | raw_string | struct | switch | var)
   static boolean ExpressionListRecover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExpressionListRecover")) return false;
     boolean r;
@@ -332,7 +328,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '!' | '!=' | '%' | '%=' | '&&' | '&' | '&=' | '&^' | '&^=' | '(' | ')' | '*' | '*=' | '+' | '++' | '+=' | ',' | '-' | '--' | '-=' | '...' | '/' | '/=' | ':' | ';' | '<' | '<-' | '<<' | '<<=' | '<=' | '<NL>' | '=' | '==' | '>' | '>=' | '>>' | '>>=' | '[' | ']' | '^' | '^=' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | chan | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | raw_string | struct | switch | var
+  // '!' | '!=' | '%' | '%=' | '&&' | '&' | '&=' | '&^' | '&^=' | '(' | ')' | '*' | '*=' | '+' | '++' | '+=' | ',' | '-' | '--' | '-=' | '...' | '/' | '/=' | ':' | ';' | '<' | '<-' | '<<' | '<<=' | '<=' | '<NL>' | '=' | '==' | '>' | '>=' | '>>' | '>>=' | '[' | ']' | '^' | '^=' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | chan | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | sstring | raw_string | struct | switch | var
   private static boolean ExpressionListRecover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ExpressionListRecover_0")) return false;
     boolean r;
@@ -411,6 +407,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, RETURN);
     if (!r) r = consumeToken(b, SELECT);
     if (!r) r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, SSTRING);
     if (!r) r = consumeToken(b, RAW_STRING);
     if (!r) r = consumeToken(b, STRUCT);
     if (!r) r = consumeToken(b, SWITCH);
@@ -539,13 +536,13 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // func Signature
+  // function Signature
   public static boolean FunctionType(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "FunctionType")) return false;
-    if (!nextTokenIs(b, FUNC)) return false;
+    if (!nextTokenIs(b, FUNCTION)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, FUNCTION_TYPE, null);
-    r = consumeToken(b, FUNC);
+    r = consumeToken(b, FUNCTION);
     p = r; // pin = 1
     r = r && Signature(b, l + 1);
     exit_section_(b, l, m, r, p, null);
@@ -713,7 +710,6 @@ public class DexParser implements PsiParser, LightPsiParser {
   // StringLiteral
   public static boolean ImportString(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ImportString")) return false;
-    if (!nextTokenIs(b, "<import string>", RAW_STRING, STRING)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, IMPORT_STRING, "<import string>");
     r = StringLiteral(b, l + 1);
@@ -725,7 +721,6 @@ public class DexParser implements PsiParser, LightPsiParser {
   // ExpressionList
   public static boolean LeftHandExprList(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "LeftHandExprList")) return false;
-    if (!nextTokenIsSmart(b, LPAREN, UNARYOP)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, LEFT_HAND_EXPR_LIST, "<left hand expr list>");
     r = ExpressionList(b, l + 1);
@@ -998,21 +993,33 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '(' TypeListNoPin ')' | Type | Parameters
+  // ':' ('(' TypeListNoPin ')' | Type | Parameters)
   public static boolean Result(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Result")) return false;
+    if (!nextTokenIs(b, COLON)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, RESULT, "<result>");
-    r = Result_0(b, l + 1);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COLON);
+    r = r && Result_1(b, l + 1);
+    exit_section_(b, m, RESULT, r);
+    return r;
+  }
+
+  // '(' TypeListNoPin ')' | Type | Parameters
+  private static boolean Result_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "Result_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = Result_1_0(b, l + 1);
     if (!r) r = Type(b, l + 1);
     if (!r) r = Parameters(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, null, r);
     return r;
   }
 
   // '(' TypeListNoPin ')'
-  private static boolean Result_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "Result_0")) return false;
+  private static boolean Result_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "Result_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LPAREN);
@@ -1079,7 +1086,7 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !('!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | '^' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | raw_string | struct | switch | var)
+  // !('!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | '^' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | sstring | raw_string | struct | switch | var)
   static boolean StatementRecover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StatementRecover")) return false;
     boolean r;
@@ -1089,7 +1096,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | '^' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | raw_string | struct | switch | var
+  // '!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | '^' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | sstring | raw_string | struct | switch | var
   private static boolean StatementRecover_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StatementRecover_0")) return false;
     boolean r;
@@ -1135,6 +1142,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, RETURN);
     if (!r) r = consumeToken(b, SELECT);
     if (!r) r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, SSTRING);
     if (!r) r = consumeToken(b, RAW_STRING);
     if (!r) r = consumeToken(b, STRUCT);
     if (!r) r = consumeToken(b, SWITCH);
@@ -1187,19 +1195,6 @@ public class DexParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "Statements", c)) break;
     }
     return true;
-  }
-
-  /* ********************************************************** */
-  // string | raw_string
-  public static boolean StringLiteral(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "StringLiteral")) return false;
-    if (!nextTokenIs(b, "<string literal>", RAW_STRING, STRING)) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STRING_LITERAL, "<string literal>");
-    r = consumeToken(b, STRING);
-    if (!r) r = consumeToken(b, RAW_STRING);
-    exit_section_(b, l, m, r, false, null);
-    return r;
   }
 
   /* ********************************************************** */
@@ -1413,14 +1408,15 @@ public class DexParser implements PsiParser, LightPsiParser {
   // 3: BINARY(AddExpr)
   // 4: BINARY(MulExpr)
   // 5: PREFIX(UnaryExpr)
-  // 6: ATOM(ParenthesesExpr)
+  // 6: ATOM(StringLiteral)
+  // 7: ATOM(ParenthesesExpr)
   public static boolean Expression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "Expression")) return false;
     addVariant(b, "<expression>");
-    if (!nextTokenIsSmart(b, LPAREN, UNARYOP)) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, "<expression>");
     r = UnaryExpr(b, l + 1);
+    if (!r) r = StringLiteral(b, l + 1);
     if (!r) r = ParenthesesExpr(b, l + 1);
     p = r;
     r = r && Expression_0(b, l + 1, g);
@@ -1471,6 +1467,18 @@ public class DexParser implements PsiParser, LightPsiParser {
     r = p && Expression(b, l, 5);
     exit_section_(b, l, m, UNARY_EXPR, r, p, null);
     return r || p;
+  }
+
+  // string | sstring | raw_string
+  public static boolean StringLiteral(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StringLiteral")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, STRING_LITERAL, "<string literal>");
+    r = consumeTokenSmart(b, STRING);
+    if (!r) r = consumeTokenSmart(b, SSTRING);
+    if (!r) r = consumeTokenSmart(b, RAW_STRING);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   // '(' <<enterMode "PAR">> Expression <<exitModeSafe "PAR">>')'

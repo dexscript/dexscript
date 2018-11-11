@@ -114,7 +114,7 @@ private ImportSpecs ::= ImportSpec (semi ImportSpec)* semi? {pin=1}
 
 ImportString ::= StringLiteral {methods=[getReferences resolve getPath getPathTextRange]}
 
-StringLiteral ::= string | raw_string {
+StringLiteral ::= string | sstring | raw_string {
   implements = "com.intellij.psi.PsiLanguageInjectionHost"
   methods = [isValidHost updateText createLiteralTextEscaper getDecodedText]
 }
@@ -131,12 +131,12 @@ FunctionDeclaration ::= function identifier Signature BlockWithConsume? {
   stubClass="com.dexscript.stubs.DexFunctionDeclarationStub"
 }
 
-FunctionType ::= func Signature {pin=1 implements="com.dexscript.psi.DexSignatureOwner"}
+FunctionType ::= function Signature {pin=1 implements="com.dexscript.psi.DexSignatureOwner"}
 Signature ::= Parameters Result? {
   pin=1
   stubClass="com.dexscript.stubs.DexSignatureStub"
 }
-Result ::= '(' TypeListNoPin ')' | Type | Parameters { // todo: reorder and pin (
+Result ::= ':' ('(' TypeListNoPin ')' | Type | Parameters) { // todo: reorder and pin (
   stubClass="com.dexscript.stubs.DexResultStub"
   methods=[isVoid]
 }
@@ -176,7 +176,7 @@ private StatementWithSemi ::= Statement (semi|&'}') { pin=1 recoverWhile=Stateme
 Statement ::=
     ReturnStatement
   | Block
-private StatementRecover ::= !('!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | '^' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | raw_string | struct | switch | var)
+private StatementRecover ::= !('!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | '^' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | sstring | raw_string | struct | switch | var)
 
 ReturnStatement ::= return ExpressionList?
 
@@ -188,7 +188,7 @@ private ExpressionOrLiteralTypeExpr ::= Expression | LiteralTypeExpr
 
 private ExpressionList ::= ExpressionWithRecover (',' (ExpressionWithRecover | &')'))* {pin(".*")=1}
 private ExpressionWithRecover ::= Expression {recoverWhile=ExpressionListRecover}
-private ExpressionListRecover ::= !('!' | '!=' | '%' | '%=' | '&&' | '&' | '&=' | '&^' | '&^=' | '(' | ')' | '*' | '*=' | '+' | '++' | '+=' | ',' | '-' | '--' | '-=' | '...' | '/' | '/=' | ':' | ';' | '<' | '<-' | '<<' | '<<=' | '<=' | '<NL>' | '=' | '==' | '>' | '>=' | '>>' | '>>=' | '[' | ']' | '^' | '^=' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | chan | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | raw_string | struct | switch | var)
+private ExpressionListRecover ::= !('!' | '!=' | '%' | '%=' | '&&' | '&' | '&=' | '&^' | '&^=' | '(' | ')' | '*' | '*=' | '+' | '++' | '+=' | ',' | '-' | '--' | '-=' | '...' | '/' | '/=' | ':' | ';' | '<' | '<-' | '<<' | '<<=' | '<=' | '<NL>' | '=' | '==' | '>' | '>=' | '>>' | '>>=' | '[' | ']' | '^' | '^=' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | chan | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | sstring | raw_string | struct | switch | var)
 
 fake BinaryExpr ::= Expression+ {
   methods=[left="Expression[0]" right="Expression[1]" getOperator]
@@ -209,4 +209,5 @@ Expression ::=
   | AddExpr
   | MulExpr
   | UnaryExpr
+  | StringLiteral
   | ParenthesesExpr {methods=[getDexType] implements="com.dexscript.psi.DexTypeOwner"}

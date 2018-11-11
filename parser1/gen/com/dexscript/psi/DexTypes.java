@@ -119,6 +119,7 @@ public interface DexTypes {
   IElementType SHIFT_LEFT_ASSIGN = new DexTokenType("<<=");
   IElementType SHIFT_RIGHT = new DexTokenType(">>");
   IElementType SHIFT_RIGHT_ASSIGN = new DexTokenType(">>=");
+  IElementType SSTRING = new DexTokenType("sstring");
   IElementType STRING = new DexTokenType("string");
   IElementType STRUCT = new DexTokenType("struct");
   IElementType SWITCH = new DexTokenType("switch");

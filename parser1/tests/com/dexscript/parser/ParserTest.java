@@ -15,6 +15,11 @@ public class ParserTest extends ParsingTestCase {
         doTest(true);
     }
 
+    @Test
+    public void testReturn() {
+        doTest(true);
+    }
+
     @Override
     protected void doTest(boolean checkErrors) {
         super.doTest(true);

@@ -39,8 +39,8 @@ public class DexFunctionTypeImpl extends DexTypeImpl implements DexFunctionType 
 
   @Override
   @NotNull
-  public PsiElement getFunc() {
-    return notNullChild(findChildByType(FUNC));
+  public PsiElement getFunction() {
+    return notNullChild(findChildByType(FUNCTION));
   }
 
 }

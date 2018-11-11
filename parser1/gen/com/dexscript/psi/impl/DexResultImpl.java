@@ -44,6 +44,12 @@ public class DexResultImpl extends DexStubbedElementImpl<DexResultStub> implemen
   }
 
   @Override
+  @NotNull
+  public PsiElement getColon() {
+    return notNullChild(findChildByType(COLON));
+  }
+
+  @Override
   @Nullable
   public PsiElement getLparen() {
     return findChildByType(LPAREN);

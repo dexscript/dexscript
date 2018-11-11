@@ -11,6 +11,6 @@ public interface DexFunctionType extends DexType, DexSignatureOwner {
   DexSignature getSignature();
 
   @NotNull
-  PsiElement getFunc();
+  PsiElement getFunction();
 
 }

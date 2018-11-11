@@ -33,6 +33,12 @@ public class DexStringLiteralImpl extends DexExpressionImpl implements DexString
 
   @Override
   @Nullable
+  public PsiElement getSstring() {
+    return findChildByType(SSTRING);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getString() {
     return findChildByType(STRING);
   }
