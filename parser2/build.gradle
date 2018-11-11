@@ -1,23 +1,33 @@
 plugins {
+    id "org.jetbrains.intellij" version "0.3.12"
     id 'com.github.johnrengelman.shadow' version '4.0.2'
 }
 
 repositories {
     mavenCentral()
-    flatDir {
-        dirs 'libs'
-    }
+}
+
+apply plugin: 'org.jetbrains.intellij'
+intellij {
+    version ideaVersion
+    plugins 'copyright'
+    downloadSources Boolean.valueOf(sources)
+    sameSinceUntilBuild Boolean.valueOf(isEAP)
+    alternativeIdePath localIdePath
+}
+
+apply plugin: 'com.github.johnrengelman.shadow'
+shadowJar {
+    zip64 true
+    configurations = [project.configurations.idea]
+    include '**/*.jar'
+    include '**/*.class'
+    minimize()
 }
 
 dependencies {
     implementation project(':parser1')
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompileOnly(
             'junit:junit:4.12'
     )
-}
-
-shadowJar {
-    zip64 true
-    minimize()
 }
