@@ -1,0 +1,19 @@
+plugins {
+    id "org.jetbrains.intellij" version "0.3.12"
+}
+
+apply plugin: 'org.jetbrains.intellij'
+intellij {
+    version ideaVersion
+    plugins 'copyright'
+    downloadSources Boolean.valueOf(sources)
+    sameSinceUntilBuild Boolean.valueOf(isEAP)
+    alternativeIdePath localIdePath
+}
+
+dependencies {
+    implementation project(':parser1')
+    testCompileOnly(
+            'junit:junit:4.12'
+    )
+}
