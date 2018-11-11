@@ -1,20 +1,22 @@
-buildscript {
-    dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
+
+
+apply plugin: 'idea'
+idea {
+    project {
+        jdkName = javaVersion
+        languageLevel = javaVersion
+    }
+    module {
+        generatedSourceDirs += file('gen')
     }
 }
 
-plugins {
-    id "org.jetbrains.intellij" version "0.3.12"
-}
-
-group 'com.dexscript'
-version '0.9-SNAPSHOT'
-
-version = "${version}.$buildNumber"
 allprojects {
+    group 'com.dexscript'
+    version '0.9-SNAPSHOT'
+    version = "${version}.$buildNumber"
+
     apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
@@ -27,15 +29,6 @@ allprojects {
         test {
             java.srcDir 'tests'
         }
-    }
-
-    apply plugin: 'org.jetbrains.intellij'
-    intellij {
-        version ideaVersion
-        plugins 'copyright'
-        downloadSources Boolean.valueOf(sources)
-        sameSinceUntilBuild Boolean.valueOf(isEAP)
-        alternativeIdePath localIdePath
     }
 
     test {
@@ -53,30 +46,6 @@ allprojects {
             exceptionFormat = 'full'
         }
     }
-
-    shadowJar {
-        zip64 true
-        configurations = [project.configurations.idea]
-        minimize()
-    }
-}
-
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-}
-
-dependencies {
-}
-
-apply plugin: 'idea'
-idea {
-    project {
-        jdkName = javaVersion
-        languageLevel = javaVersion
-    }
-    module {
-        generatedSourceDirs += file('gen')
-    }
+    
+    
 }
