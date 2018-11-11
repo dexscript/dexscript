@@ -11,7 +11,7 @@ public class ParserTest extends ParsingTestCase {
     }
 
     @Test
-    public void testError() {
+    public void testFunction() {
         doTest(true);
     }
 

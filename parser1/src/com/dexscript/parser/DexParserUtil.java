@@ -1,5 +1,8 @@
 package com.dexscript.parser;
 
+import com.dexscript.psi.DexTokenType;
+import com.dexscript.psi.DexType;
+import com.dexscript.psi.DexTypes;
 import com.intellij.lang.LighterASTNode;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.WhitespacesBinders;
@@ -31,40 +34,38 @@ public class DexParserUtil extends GeneratedParserUtilBase {
     }
 
     public static boolean consumeBlock(PsiBuilder builder_, @SuppressWarnings("UnusedParameters") int level) {
-        throw new UnsupportedOperationException();
-//        PsiFile file = builder_.getUserDataUnprotected(FileContextUtil.CONTAINING_FILE_KEY);
-//        VirtualFile data = file != null ? file.getUserData(IndexingDataKeys.VIRTUAL_FILE) : null;
-//        if (data == null) return false;
-//        int i = 0;
-//        PsiBuilder.Marker m = builder_.mark();
-//        do {
-//            IElementType type = builder_.getTokenType();
-//            if (type == GoTypes.TYPE_ && nextIdentifier(builder_)) { // don't count a.(type), only type <ident>
-//                m.rollbackTo();
-//                return false;
-//            }
-//            i += type == GoTypes.LBRACE ? 1 : type == GoTypes.RBRACE ? -1 : 0;
-//            builder_.advanceLexer();
-//        }
-//        while (i > 0 && !builder_.eof());
-//        boolean result = i == 0;
-//        if (result) {
-//            m.drop();
-//        }
-//        else {
-//            m.rollbackTo();
-//        }
-//        return result;
+        PsiFile file = builder_.getUserDataUnprotected(FileContextUtil.CONTAINING_FILE_KEY);
+        VirtualFile data = file != null ? file.getUserData(IndexingDataKeys.VIRTUAL_FILE) : null;
+        if (data == null) return false;
+        int i = 0;
+        PsiBuilder.Marker m = builder_.mark();
+        do {
+            IElementType type = builder_.getTokenType();
+            if (type == DexTypes.TYPE_ && nextIdentifier(builder_)) { // don't count a.(type), only type <ident>
+                m.rollbackTo();
+                return false;
+            }
+            i += type == DexTypes.LBRACE ? 1 : type == DexTypes.RBRACE ? -1 : 0;
+            builder_.advanceLexer();
+        }
+        while (i > 0 && !builder_.eof());
+        boolean result = i == 0;
+        if (result) {
+            m.drop();
+        }
+        else {
+            m.rollbackTo();
+        }
+        return result;
     }
 
     private static boolean nextIdentifier(PsiBuilder builder_) {
-        throw new UnsupportedOperationException();
-//        IElementType e;
-//        int i = 0;
-//        //noinspection StatementWithEmptyBody
-//        while ((e = builder_.rawLookup(++i)) == GoParserDefinition.WS || e == GoParserDefinition.NLS) {
-//        }
-//        return e == GoTypes.IDENTIFIER;
+        IElementType e;
+        int i = 0;
+        //noinspection StatementWithEmptyBody
+        while ((e = builder_.rawLookup(++i)) == DexTokenType.WS || e == DexTokenType.NLS) {
+        }
+        return e == DexTypes.IDENTIFIER;
     }
 
     public static boolean emptyImportList(PsiBuilder builder_, @SuppressWarnings("UnusedParameters") int level) {

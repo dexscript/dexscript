@@ -143,7 +143,7 @@ ESCAPES = [abfnrtv]
 
 "default"                                 { return DEFAULT; }
 "package"                                 { return PACKAGE; }
-"func"                                    { return FUNC; }
+"function"                                { return FUNCTION; }
 "interface"                               { return INTERFACE; }
 "select"                                  { return SELECT; }
 
