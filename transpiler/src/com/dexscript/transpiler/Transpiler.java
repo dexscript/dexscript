@@ -10,7 +10,7 @@ public class Transpiler implements AutoCloseable {
     public void transpile(String filename, String source) {
         DexFile dexFile = dexFileFactory.createDexFile(filename, source);
         TransOutput out = new TransOutput(filename, source);
-        dexFile.accept(new TranFile(out));
+        dexFile.accept(new TransFile(out));
         System.out.println(out.toString());
     }
 
