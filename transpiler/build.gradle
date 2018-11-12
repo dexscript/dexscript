@@ -11,6 +11,10 @@ intellij {
     alternativeIdePath localIdePath
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     implementation project(':parser1')
     compile group: 'net.openhft', name: 'compiler', version: '2.3.1'
