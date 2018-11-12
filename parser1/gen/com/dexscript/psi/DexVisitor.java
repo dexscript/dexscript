@@ -15,12 +15,20 @@ public class DexVisitor extends PsiElementVisitor {
     visitBinaryExpr(o);
   }
 
+  public void visitArgumentList(@NotNull DexArgumentList o) {
+    visitCompositeElement(o);
+  }
+
   public void visitBinaryExpr(@NotNull DexBinaryExpr o) {
     visitExpression(o);
   }
 
   public void visitBlock(@NotNull DexBlock o) {
     visitCompositeElement(o);
+  }
+
+  public void visitCallExpr(@NotNull DexCallExpr o) {
+    visitExpression(o);
   }
 
   public void visitConditionalExpr(@NotNull DexConditionalExpr o) {
@@ -89,6 +97,10 @@ public class DexVisitor extends PsiElementVisitor {
   }
 
   public void visitParenthesesExpr(@NotNull DexParenthesesExpr o) {
+    visitExpression(o);
+  }
+
+  public void visitReferenceExpression(@NotNull DexReferenceExpression o) {
     visitExpression(o);
   }
 

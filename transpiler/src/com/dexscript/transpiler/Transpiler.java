@@ -13,6 +13,7 @@ public class Transpiler implements AutoCloseable {
         TransOutput out = new TransOutput(filename, source);
         dexFile.accept(new TransFile(out));
         try {
+            System.out.println(out.toString());
             Class aClass = CompilerUtils.CACHED_COMPILER.loadFromJava("abc.hello", out.toString());
             System.out.println(aClass.newInstance());
         } catch (Exception e) {

@@ -202,6 +202,19 @@ AddExpr ::= Expression AddOp Expression
 MulExpr ::= Expression MulOp Expression
 ParenthesesExpr ::= '(' <<enterMode "PAR">> Expression <<exitModeSafe "PAR">>')' {pin=1}
 
+CallExpr ::= Expression ArgumentList
+ArgumentList ::= '(' [ ExpressionArgList '...'? ','? ] ')' {pin=1}
+
+
+OperandName ::= ReferenceExpression QualifiedReferenceExpression? {elementType=ReferenceExpression}
+left QualifiedReferenceExpression ::= '.' identifier {elementType=ReferenceExpression}
+ReferenceExpression ::= identifier { methods=[getReference getQualifier resolve getReadWriteAccess] extends=Expression}
+
+private MaxGroup ::=
+  StringLiteral
+  | CallExpr
+  | OperandName
+
 Expression ::=
     OrExpr
   | AndExpr
@@ -209,5 +222,5 @@ Expression ::=
   | AddExpr
   | MulExpr
   | UnaryExpr
-  | StringLiteral
+  | MaxGroup
   | ParenthesesExpr {methods=[getDexType] implements="com.dexscript.psi.DexTypeOwner"}

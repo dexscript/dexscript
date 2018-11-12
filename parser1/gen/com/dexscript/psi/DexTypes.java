@@ -11,7 +11,9 @@ public interface DexTypes {
 
   IElementType ADD_EXPR = new DexCompositeElementType("ADD_EXPR");
   IElementType AND_EXPR = new DexCompositeElementType("AND_EXPR");
+  IElementType ARGUMENT_LIST = new DexCompositeElementType("ARGUMENT_LIST");
   IElementType BLOCK = new DexCompositeElementType("BLOCK");
+  IElementType CALL_EXPR = new DexCompositeElementType("CALL_EXPR");
   IElementType CONDITIONAL_EXPR = new DexCompositeElementType("CONDITIONAL_EXPR");
   IElementType EXPRESSION = new DexCompositeElementType("EXPRESSION");
   IElementType FUNCTION_DECLARATION = DexElementTypeFactory.stubFactory("FUNCTION_DECLARATION");
@@ -29,6 +31,7 @@ public interface DexTypes {
   IElementType PARAM_DEFINITION = DexElementTypeFactory.stubFactory("PARAM_DEFINITION");
   IElementType PARENTHESES_EXPR = new DexCompositeElementType("PARENTHESES_EXPR");
   IElementType PAR_TYPE = DexElementTypeFactory.stubFactory("PAR_TYPE");
+  IElementType REFERENCE_EXPRESSION = new DexCompositeElementType("REFERENCE_EXPRESSION");
   IElementType RESULT = DexElementTypeFactory.stubFactory("RESULT");
   IElementType RETURN_STATEMENT = new DexCompositeElementType("RETURN_STATEMENT");
   IElementType SIGNATURE = DexElementTypeFactory.stubFactory("SIGNATURE");
@@ -138,8 +141,14 @@ public interface DexTypes {
       else if (type == AND_EXPR) {
         return new DexAndExprImpl(node);
       }
+      else if (type == ARGUMENT_LIST) {
+        return new DexArgumentListImpl(node);
+      }
       else if (type == BLOCK) {
         return new DexBlockImpl(node);
+      }
+      else if (type == CALL_EXPR) {
+        return new DexCallExprImpl(node);
       }
       else if (type == CONDITIONAL_EXPR) {
         return new DexConditionalExprImpl(node);
@@ -188,6 +197,9 @@ public interface DexTypes {
       }
       else if (type == PAR_TYPE) {
         return new DexParTypeImpl(node);
+      }
+      else if (type == REFERENCE_EXPRESSION) {
+        return new DexReferenceExpressionImpl(node);
       }
       else if (type == RESULT) {
         return new DexResultImpl(node);
