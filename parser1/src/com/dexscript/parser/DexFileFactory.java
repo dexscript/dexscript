@@ -5,17 +5,25 @@ import com.intellij.testFramework.ParsingTestCase;
 
 public class DexFileFactory extends ParsingTestCase implements AutoCloseable {
 
-    public DexFileFactory() throws Exception {
+    public DexFileFactory() {
         super("parser", "dex", new DexParserDefinition());
-        setUp();
+        try {
+            setUp();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public DexFile createDexFile(String name, String text) {
-        return (DexFile) createPsiFile(name, text);
+    public DexFile createDexFile(String filename, String source) {
+        return (DexFile) createPsiFile(filename, source);
     }
 
     @Override
-    public void close() throws Exception {
-        tearDown();
+    public void close() {
+        try {
+            tearDown();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

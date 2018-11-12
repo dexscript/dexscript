@@ -13,6 +13,7 @@ intellij {
 
 dependencies {
     implementation project(':parser1')
+    compile group: 'net.openhft', name: 'compiler', version: '2.3.1'
     testCompileOnly(
             'junit:junit:4.12'
     )
