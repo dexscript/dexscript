@@ -46,7 +46,7 @@
     BIT_OR               =  '|'
     SHIFT_LEFT_ASSIGN    =  '<<='
     SHIFT_LEFT           =  '<<'
-    SEND_CHANNEL         =  '<-'
+    GET_RESULT           =  '<-'
     LESS_OR_EQUAL        =  '<='
     LESS                 =  '<'
     BIT_XOR_ASSIGN       =  '^='
@@ -188,6 +188,7 @@ ReturnStatement ::= return ExpressionList?
 private MaxGroup ::=
   Literal
   | CallExpr
+  | NewExpr
   | OperandName
 
 
@@ -208,10 +209,6 @@ Expression ::=
 
 
 LeftHandExprList ::= ExpressionList
-private ExpressionArgList ::= ExpressionOrTypeWithRecover2 (',' (ExpressionOrTypeWithRecover2 | &')'))* {pin(".*")=1}
-private ExpressionOrTypeWithRecover2 ::= <<withOn "PAR" ExpressionOrTypeWithRecover>> | (!() ExpressionOrLiteralTypeExpr) {recoverWhile=ExpressionListRecover}
-private ExpressionOrTypeWithRecover ::= ExpressionOrLiteralTypeExpr {recoverWhile=ExpressionListRecover}
-private ExpressionOrLiteralTypeExpr ::= Expression | LiteralTypeExpr
 
 private ExpressionList ::= ExpressionWithRecover (',' (ExpressionWithRecover | &')'))* {pin(".*")=1}
 private ExpressionWithRecover ::= Expression {recoverWhile=ExpressionListRecover}
@@ -229,8 +226,14 @@ AddExpr ::= Expression AddOp Expression
 MulExpr ::= Expression MulOp Expression
 ParenthesesExpr ::= '(' <<enterMode "PAR">> Expression <<exitModeSafe "PAR">>')' {pin=1}
 
-CallExpr ::= Expression ArgumentList
-ArgumentList ::= '(' [ ExpressionArgList '...'? ','? ] ')' {pin=1}
+CallExpr ::= Expression CallExprArgs
+CallExprArgs ::= '(' [ ExpressionArgList '...'? ','? ] ')' {pin=1}
+NewExpr ::= Expression NewExprArgs
+NewExprArgs ::= '{' [ ExpressionArgList '...'? ','? ] '}' {pin=1}
+private ExpressionArgList ::= ExpressionOrTypeWithRecover2 (',' (ExpressionOrTypeWithRecover2 | &')'))* {pin(".*")=1}
+private ExpressionOrTypeWithRecover2 ::= <<withOn "PAR" ExpressionOrTypeWithRecover>> | (!() ExpressionOrLiteralTypeExpr) {recoverWhile=ExpressionListRecover}
+private ExpressionOrTypeWithRecover ::= ExpressionOrLiteralTypeExpr {recoverWhile=ExpressionListRecover}
+private ExpressionOrLiteralTypeExpr ::= Expression | LiteralTypeExpr
 
 OperandName ::= ReferenceExpression QualifiedReferenceExpression? {elementType=ReferenceExpression}
 left QualifiedReferenceExpression ::= '.' identifier {elementType=ReferenceExpression}

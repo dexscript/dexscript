@@ -11,9 +11,9 @@ public interface DexTypes {
 
   IElementType ADD_EXPR = new DexCompositeElementType("ADD_EXPR");
   IElementType AND_EXPR = new DexCompositeElementType("AND_EXPR");
-  IElementType ARGUMENT_LIST = new DexCompositeElementType("ARGUMENT_LIST");
   IElementType BLOCK = new DexCompositeElementType("BLOCK");
   IElementType CALL_EXPR = new DexCompositeElementType("CALL_EXPR");
+  IElementType CALL_EXPR_ARGS = new DexCompositeElementType("CALL_EXPR_ARGS");
   IElementType CONDITIONAL_EXPR = new DexCompositeElementType("CONDITIONAL_EXPR");
   IElementType EXPRESSION = new DexCompositeElementType("EXPRESSION");
   IElementType FUNCTION_DECLARATION = DexElementTypeFactory.stubFactory("FUNCTION_DECLARATION");
@@ -25,6 +25,8 @@ public interface DexTypes {
   IElementType LEFT_HAND_EXPR_LIST = new DexCompositeElementType("LEFT_HAND_EXPR_LIST");
   IElementType LITERAL = new DexCompositeElementType("LITERAL");
   IElementType MUL_EXPR = new DexCompositeElementType("MUL_EXPR");
+  IElementType NEW_EXPR = new DexCompositeElementType("NEW_EXPR");
+  IElementType NEW_EXPR_ARGS = new DexCompositeElementType("NEW_EXPR_ARGS");
   IElementType OR_EXPR = new DexCompositeElementType("OR_EXPR");
   IElementType PACKAGE_CLAUSE = DexElementTypeFactory.stubFactory("PACKAGE_CLAUSE");
   IElementType PARAMETERS = DexElementTypeFactory.stubFactory("PARAMETERS");
@@ -79,6 +81,7 @@ public interface DexTypes {
   IElementType FOR = new DexTokenType("for");
   IElementType FUNC = new DexTokenType("func");
   IElementType FUNCTION = new DexTokenType("function");
+  IElementType GET_RESULT = new DexTokenType("<-");
   IElementType GO = new DexTokenType("go");
   IElementType GOTO = new DexTokenType("goto");
   IElementType GREATER = new DexTokenType(">");
@@ -120,7 +123,6 @@ public interface DexTypes {
   IElementType SELECT = new DexTokenType("select");
   IElementType SEMICOLON = new DexTokenType(";");
   IElementType SEMICOLON_SYNTHETIC = new DexTokenType("<NL>");
-  IElementType SEND_CHANNEL = new DexTokenType("<-");
   IElementType SHIFT_LEFT = new DexTokenType("<<");
   IElementType SHIFT_LEFT_ASSIGN = new DexTokenType("<<=");
   IElementType SHIFT_RIGHT = new DexTokenType(">>");
@@ -143,14 +145,14 @@ public interface DexTypes {
       else if (type == AND_EXPR) {
         return new DexAndExprImpl(node);
       }
-      else if (type == ARGUMENT_LIST) {
-        return new DexArgumentListImpl(node);
-      }
       else if (type == BLOCK) {
         return new DexBlockImpl(node);
       }
       else if (type == CALL_EXPR) {
         return new DexCallExprImpl(node);
+      }
+      else if (type == CALL_EXPR_ARGS) {
+        return new DexCallExprArgsImpl(node);
       }
       else if (type == CONDITIONAL_EXPR) {
         return new DexConditionalExprImpl(node);
@@ -181,6 +183,12 @@ public interface DexTypes {
       }
       else if (type == MUL_EXPR) {
         return new DexMulExprImpl(node);
+      }
+      else if (type == NEW_EXPR) {
+        return new DexNewExprImpl(node);
+      }
+      else if (type == NEW_EXPR_ARGS) {
+        return new DexNewExprArgsImpl(node);
       }
       else if (type == OR_EXPR) {
         return new DexOrExprImpl(node);

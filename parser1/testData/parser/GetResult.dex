@@ -1,9 +1,10 @@
 package abc
 
 function hello(): string {
-    return world();
+    w := world{}
+    return <- w
 }
 
 function world(): string {
-    return 'hello';
+    return 'hello'
 }

@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
-public class DexArgumentListImpl extends DexCompositeElementImpl implements DexArgumentList {
+public class DexNewExprArgsImpl extends DexCompositeElementImpl implements DexNewExprArgs {
 
-  public DexArgumentListImpl(@NotNull ASTNode node) {
+  public DexNewExprArgsImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull DexVisitor visitor) {
-    visitor.visitArgumentList(this);
+    visitor.visitNewExprArgs(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -33,14 +33,14 @@ public class DexArgumentListImpl extends DexCompositeElementImpl implements DexA
 
   @Override
   @NotNull
-  public PsiElement getLparen() {
-    return notNullChild(findChildByType(LPAREN));
+  public PsiElement getLbrace() {
+    return notNullChild(findChildByType(LBRACE));
   }
 
   @Override
   @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
+  public PsiElement getRbrace() {
+    return findChildByType(RBRACE);
   }
 
   @Override

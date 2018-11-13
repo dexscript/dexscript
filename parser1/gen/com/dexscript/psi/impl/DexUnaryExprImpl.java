@@ -45,6 +45,12 @@ public class DexUnaryExprImpl extends DexExpressionImpl implements DexUnaryExpr 
 
   @Override
   @Nullable
+  public PsiElement getGetResult() {
+    return findChildByType(GET_RESULT);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getMinus() {
     return findChildByType(MINUS);
   }
@@ -65,12 +71,6 @@ public class DexUnaryExprImpl extends DexExpressionImpl implements DexUnaryExpr 
   @Nullable
   public PsiElement getPlus() {
     return findChildByType(PLUS);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSendChannel() {
-    return findChildByType(SEND_CHANNEL);
   }
 
 }

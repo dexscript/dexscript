@@ -23,11 +23,11 @@ public class DexParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == ARGUMENT_LIST) {
-      r = ArgumentList(b, 0);
-    }
-    else if (t == BLOCK) {
+    if (t == BLOCK) {
       r = Block(b, 0);
+    }
+    else if (t == CALL_EXPR_ARGS) {
+      r = CallExprArgs(b, 0);
     }
     else if (t == EXPRESSION) {
       r = Expression(b, 0, -1);
@@ -52,6 +52,9 @@ public class DexParser implements PsiParser, LightPsiParser {
     }
     else if (t == LEFT_HAND_EXPR_LIST) {
       r = LeftHandExprList(b, 0);
+    }
+    else if (t == NEW_EXPR_ARGS) {
+      r = NewExprArgs(b, 0);
     }
     else if (t == PACKAGE_CLAUSE) {
       r = PackageClause(b, 0);
@@ -125,8 +128,9 @@ public class DexParser implements PsiParser, LightPsiParser {
     create_token_set_(RETURN_STATEMENT, SIMPLE_STATEMENT, STATEMENT),
     create_token_set_(FUNCTION_TYPE, PAR_TYPE, TYPE, TYPE_LIST),
     create_token_set_(ADD_EXPR, AND_EXPR, CALL_EXPR, CONDITIONAL_EXPR,
-      EXPRESSION, LITERAL, MUL_EXPR, OR_EXPR,
-      PARENTHESES_EXPR, REFERENCE_EXPRESSION, STRING_LITERAL, UNARY_EXPR),
+      EXPRESSION, LITERAL, MUL_EXPR, NEW_EXPR,
+      OR_EXPR, PARENTHESES_EXPR, REFERENCE_EXPRESSION, STRING_LITERAL,
+      UNARY_EXPR),
   };
 
   /* ********************************************************** */
@@ -141,54 +145,6 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BIT_XOR);
     exit_section_(b, m, null, r);
     return r;
-  }
-
-  /* ********************************************************** */
-  // '(' [ ExpressionArgList '...'? ','? ] ')'
-  public static boolean ArgumentList(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ArgumentList")) return false;
-    if (!nextTokenIs(b, LPAREN)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, ARGUMENT_LIST, null);
-    r = consumeToken(b, LPAREN);
-    p = r; // pin = 1
-    r = r && report_error_(b, ArgumentList_1(b, l + 1));
-    r = p && consumeToken(b, RPAREN) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // [ ExpressionArgList '...'? ','? ]
-  private static boolean ArgumentList_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ArgumentList_1")) return false;
-    ArgumentList_1_0(b, l + 1);
-    return true;
-  }
-
-  // ExpressionArgList '...'? ','?
-  private static boolean ArgumentList_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ArgumentList_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = ExpressionArgList(b, l + 1);
-    r = r && ArgumentList_1_0_1(b, l + 1);
-    r = r && ArgumentList_1_0_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // '...'?
-  private static boolean ArgumentList_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ArgumentList_1_0_1")) return false;
-    consumeToken(b, TRIPLE_DOT);
-    return true;
-  }
-
-  // ','?
-  private static boolean ArgumentList_1_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ArgumentList_1_0_2")) return false;
-    consumeToken(b, COMMA);
-    return true;
   }
 
   /* ********************************************************** */
@@ -288,6 +244,54 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = BlockInner(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  /* ********************************************************** */
+  // '(' [ ExpressionArgList '...'? ','? ] ')'
+  public static boolean CallExprArgs(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CallExprArgs")) return false;
+    if (!nextTokenIs(b, LPAREN)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, CALL_EXPR_ARGS, null);
+    r = consumeToken(b, LPAREN);
+    p = r; // pin = 1
+    r = r && report_error_(b, CallExprArgs_1(b, l + 1));
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // [ ExpressionArgList '...'? ','? ]
+  private static boolean CallExprArgs_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CallExprArgs_1")) return false;
+    CallExprArgs_1_0(b, l + 1);
+    return true;
+  }
+
+  // ExpressionArgList '...'? ','?
+  private static boolean CallExprArgs_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CallExprArgs_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = ExpressionArgList(b, l + 1);
+    r = r && CallExprArgs_1_0_1(b, l + 1);
+    r = r && CallExprArgs_1_0_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // '...'?
+  private static boolean CallExprArgs_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CallExprArgs_1_0_1")) return false;
+    consumeToken(b, TRIPLE_DOT);
+    return true;
+  }
+
+  // ','?
+  private static boolean CallExprArgs_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CallExprArgs_1_0_2")) return false;
+    consumeToken(b, COMMA);
+    return true;
   }
 
   /* ********************************************************** */
@@ -446,7 +450,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, COLON);
     if (!r) r = consumeToken(b, SEMICOLON);
     if (!r) r = consumeToken(b, LESS);
-    if (!r) r = consumeToken(b, SEND_CHANNEL);
+    if (!r) r = consumeToken(b, GET_RESULT);
     if (!r) r = consumeToken(b, SHIFT_LEFT);
     if (!r) r = consumeToken(b, SHIFT_LEFT_ASSIGN);
     if (!r) r = consumeToken(b, LESS_OR_EQUAL);
@@ -830,6 +834,54 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BIT_CLEAR);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // '{' [ ExpressionArgList '...'? ','? ] '}'
+  public static boolean NewExprArgs(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NewExprArgs")) return false;
+    if (!nextTokenIs(b, LBRACE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, NEW_EXPR_ARGS, null);
+    r = consumeToken(b, LBRACE);
+    p = r; // pin = 1
+    r = r && report_error_(b, NewExprArgs_1(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // [ ExpressionArgList '...'? ','? ]
+  private static boolean NewExprArgs_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NewExprArgs_1")) return false;
+    NewExprArgs_1_0(b, l + 1);
+    return true;
+  }
+
+  // ExpressionArgList '...'? ','?
+  private static boolean NewExprArgs_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NewExprArgs_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = ExpressionArgList(b, l + 1);
+    r = r && NewExprArgs_1_0_1(b, l + 1);
+    r = r && NewExprArgs_1_0_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // '...'?
+  private static boolean NewExprArgs_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NewExprArgs_1_0_1")) return false;
+    consumeToken(b, TRIPLE_DOT);
+    return true;
+  }
+
+  // ','?
+  private static boolean NewExprArgs_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NewExprArgs_1_0_2")) return false;
+    consumeToken(b, COMMA);
+    return true;
   }
 
   /* ********************************************************** */
@@ -1280,7 +1332,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, PLUS);
     if (!r) r = consumeToken(b, MINUS);
     if (!r) r = consumeToken(b, SEMICOLON);
-    if (!r) r = consumeToken(b, SEND_CHANNEL);
+    if (!r) r = consumeToken(b, GET_RESULT);
     if (!r) r = consumeToken(b, BIT_XOR);
     if (!r) r = consumeToken(b, TYPE_);
     if (!r) r = consumeToken(b, LBRACE);
@@ -1583,7 +1635,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BIT_XOR);
     if (!r) r = consumeToken(b, MUL);
     if (!r) r = consumeToken(b, BIT_AND);
-    if (!r) r = consumeToken(b, SEND_CHANNEL);
+    if (!r) r = consumeToken(b, GET_RESULT);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1816,7 +1868,7 @@ public class DexParser implements PsiParser, LightPsiParser {
   // 3: BINARY(AddExpr)
   // 4: BINARY(MulExpr)
   // 5: PREFIX(UnaryExpr)
-  // 6: ATOM(Literal) POSTFIX(CallExpr) ATOM(OperandName)
+  // 6: ATOM(Literal) POSTFIX(CallExpr) POSTFIX(NewExpr) ATOM(OperandName)
   // 7: ATOM(ParenthesesExpr)
   public static boolean Expression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "Expression")) return false;
@@ -1858,9 +1910,13 @@ public class DexParser implements PsiParser, LightPsiParser {
         r = Expression(b, l, 4);
         exit_section_(b, l, m, MUL_EXPR, r, true, null);
       }
-      else if (g < 6 && ArgumentList(b, l + 1)) {
+      else if (g < 6 && CallExprArgs(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CALL_EXPR, r, true, null);
+      }
+      else if (g < 6 && NewExprArgs(b, l + 1)) {
+        r = true;
+        exit_section_(b, l, m, NEW_EXPR, r, true, null);
       }
       else {
         exit_section_(b, l, m, null, false, false, null);

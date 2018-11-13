@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
-public class DexCallExprImpl extends DexExpressionImpl implements DexCallExpr {
+public class DexCallExprArgsImpl extends DexCompositeElementImpl implements DexCallExprArgs {
 
-  public DexCallExprImpl(@NotNull ASTNode node) {
+  public DexCallExprArgsImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull DexVisitor visitor) {
-    visitor.visitCallExpr(this);
+    visitor.visitCallExprArgs(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,14 +27,26 @@ public class DexCallExprImpl extends DexExpressionImpl implements DexCallExpr {
 
   @Override
   @NotNull
-  public DexCallExprArgs getCallExprArgs() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, DexCallExprArgs.class));
+  public List<DexExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, DexExpression.class);
   }
 
   @Override
   @NotNull
-  public DexExpression getExpression() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, DexExpression.class));
+  public PsiElement getLparen() {
+    return notNullChild(findChildByType(LPAREN));
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getTripleDot() {
+    return findChildByType(TRIPLE_DOT);
   }
 
 }

@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
-public class DexCallExprImpl extends DexExpressionImpl implements DexCallExpr {
+public class DexNewExprImpl extends DexExpressionImpl implements DexNewExpr {
 
-  public DexCallExprImpl(@NotNull ASTNode node) {
+  public DexNewExprImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull DexVisitor visitor) {
-    visitor.visitCallExpr(this);
+    visitor.visitNewExpr(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,14 +27,14 @@ public class DexCallExprImpl extends DexExpressionImpl implements DexCallExpr {
 
   @Override
   @NotNull
-  public DexCallExprArgs getCallExprArgs() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, DexCallExprArgs.class));
+  public DexExpression getExpression() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, DexExpression.class));
   }
 
   @Override
   @NotNull
-  public DexExpression getExpression() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, DexExpression.class));
+  public DexNewExprArgs getNewExprArgs() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, DexNewExprArgs.class));
   }
 
 }

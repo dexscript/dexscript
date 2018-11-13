@@ -107,7 +107,7 @@ ESCAPES = [abfnrtv]
 
 "<<="                                     { return SHIFT_LEFT_ASSIGN; }
 "<<"                                      { return SHIFT_LEFT; }
-"<-"                                      { return SEND_CHANNEL; }
+"<-"                                      { return GET_RESULT; }
 "<="                                      { return LESS_OR_EQUAL; }
 "<"                                       { return LESS; }
 

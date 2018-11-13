@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface DexCallExpr extends DexExpression {
-
-  @NotNull
-  DexCallExprArgs getCallExprArgs();
+public interface DexNewExpr extends DexExpression {
 
   @NotNull
   DexExpression getExpression();
+
+  @NotNull
+  DexNewExprArgs getNewExprArgs();
 
 }

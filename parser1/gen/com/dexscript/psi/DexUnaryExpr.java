@@ -17,6 +17,9 @@ public interface DexUnaryExpr extends DexExpression {
   PsiElement getBitXor();
 
   @Nullable
+  PsiElement getGetResult();
+
+  @Nullable
   PsiElement getMinus();
 
   @Nullable
@@ -27,9 +30,6 @@ public interface DexUnaryExpr extends DexExpression {
 
   @Nullable
   PsiElement getPlus();
-
-  @Nullable
-  PsiElement getSendChannel();
 
   //WARNING: getOperator(...) is skipped
   //matching getOperator(DexUnaryExpr, ...)

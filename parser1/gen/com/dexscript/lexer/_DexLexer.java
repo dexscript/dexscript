@@ -1028,7 +1028,7 @@ public class _DexLexer implements FlexLexer, DexTypes {
             // fall through
           case 140: break;
           case 53: 
-            { return SEND_CHANNEL;
+            { return GET_RESULT;
             } 
             // fall through
           case 141: break;
