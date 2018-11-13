@@ -1,10 +1,9 @@
 package com.dexscript.transpiler;
 
-import com.dexscript.psi.DexExpression;
-import com.dexscript.psi.DexFunctionDeclaration;
-import com.dexscript.psi.DexReturnStatement;
-import com.dexscript.psi.DexVisitor;
+import com.dexscript.psi.*;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
 
 class TransFunc extends DexVisitor {
 
@@ -19,14 +18,13 @@ class TransFunc extends DexVisitor {
     @Override
     public void visitReturnStatement(@NotNull DexReturnStatement o) {
         super.visitReturnStatement(o);
-        TempVariableContext tempVarCtx = new TempVariableContext();
         out.appendSourceLine(o);
         DexExpression expr = o.getExpressionList().get(0);
-        expr.accept(new TransExpr(tempVarCtx, out));
-        out.append("result1__ = (");
-        out.append(decl.getSignature().getResult().getType());
-        out.append(')');
-        out.append(tempVarCtx.lastVariableName());
+        TransExpr.ExpectedValue val1 = new TransExpr.ExpectedValue();
+        val1.type = TransType.translateType(decl.getSignature().getResult().getType());
+        expr.accept(new TransExpr(out, Arrays.asList(val1)));
+        out.append("result1__ = ");
+        out.append(val1.out.toString());
         out.append(';');
         out.appendNewLine();
         out.append("finish();");

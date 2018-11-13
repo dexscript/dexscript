@@ -5,45 +5,52 @@ import com.dexscript.psi.DexStringLiteral;
 import com.dexscript.psi.DexVisitor;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 class TransExpr extends DexVisitor {
 
-    private final TempVariableContext tempVarCtx;
-    private final TranspiledClass out;
+    static class ExpectedValue {
+        public RuntimeType type;
+        public TranspiledCode out = new TranspiledCode();
+    }
 
-    public TransExpr(TempVariableContext tempVarCtx, TranspiledClass out) {
-        this.tempVarCtx = tempVarCtx;
-        this.out = out;
+    private final TranspiledClass tClass;
+    private final List<ExpectedValue> expectedValues;
+
+    public TransExpr(TranspiledClass tClass, List<ExpectedValue> expectedValues) {
+        this.tClass = tClass;
+        this.expectedValues = expectedValues;
     }
 
     @Override
     public void visitStringLiteral(@NotNull DexStringLiteral o) {
-        out.append("Object ");
-        String varName = tempVarCtx.assignVariableName();
-        out.append(varName);
-        out.append(" = ");
+        if (expectedValues.size() != 1) {
+            throw new IllegalStateException("string literal can only assign to one value");
+        }
+        ExpectedValue val = expectedValues.get(0);
         String text = o.getNode().getText();
-        out.append('"');
-        out.append(text.substring(1, text.length() - 1));
-        out.append('"');
-        out.append(';');
-        out.appendNewLine();
+        val.out.append('"');
+        val.out.append(text.substring(1, text.length() - 1));
+        val.out.append('"');
     }
 
     @Override
     public void visitCallExpr(@NotNull DexCallExpr o) {
-        out.append("Object ");
-        String varName = tempVarCtx.assignVariableName();
-        out.append(varName);
-        out.append(" = ");
-        out.append(o.getExpression());
-        out.append("__ctor.create();");
-        out.referenced(o);
-        out.appendNewLine();
-        out.append("Object ");
-        out.append(tempVarCtx.assignVariableName());
-        out.append(" = ((Result1Inf)");
-        out.append(varName);
-        out.append(").result1__();");
-        out.appendNewLine();
+        String funcName = o.getExpression().getNode().getText();
+        tClass.referenced(o);
+        String fieldName = tClass.assignResultField(funcName);
+        tClass.append(fieldName);
+        tClass.append(" = ");
+        tClass.append(tClass.shimClassName());
+        tClass.append('.');
+        tClass.append(funcName);
+        tClass.append("();");
+        tClass.appendNewLine();
+        ExpectedValue val = expectedValues.get(0);
+        val.out.append("((");
+        val.out.append(val.type.className);
+        val.out.append(")");
+        val.out.append(fieldName);
+        val.out.append(".result1__())");
     }
 }

@@ -2,7 +2,7 @@ package com.dexscript.transpiler;
 
 import com.dexscript.parser.DexFileFactory;
 import com.dexscript.psi.DexFile;
-import com.dexscript.runtime.Result1Inf;
+import com.dexscript.runtime.Result1;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.Map;
@@ -24,11 +24,11 @@ public class Transpiler implements AutoCloseable {
                 e.printStackTrace();
             }
         }
-        transFile.generateBootstrapper(compiler);
+        transFile.generateShim(compiler);
         try {
             Map<String, Class<?>> classes = compiler.compileAll();
             Object obj = classes.get("abc.hello").newInstance();
-            System.out.println(((Result1Inf)obj).result1__());
+            System.out.println(((Result1)obj).result1__());
         } catch (Exception e) {
             e.printStackTrace();
         }

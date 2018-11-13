@@ -1,17 +1,23 @@
 package com.dexscript.runtime;
 
-public class Actor {
+public class Actor implements Result {
 
-    private boolean isFinished;
+    private boolean isResultReady;
 
     protected void finish() {
-        if (isFinished) {
+        if (isResultReady) {
             throw new IllegalStateException("has already been finished");
         }
-        isFinished = true;
+        isResultReady = true;
     }
 
-    public boolean isFinished() {
-        return isFinished;
+    @Override
+    public boolean isResultReady() {
+        return isResultReady;
+    }
+
+    @Override
+    public Object result1__() {
+        return null;
     }
 }
