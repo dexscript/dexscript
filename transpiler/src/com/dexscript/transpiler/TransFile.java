@@ -109,7 +109,11 @@ class TransFile extends DexVisitor {
             for (TranspiledClass tClass : tClasses) {
                 for (DexExpression ref : tClass.references()) {
                     if (ref instanceof DexCallExpr) {
-                        genShim4CallExpr(out, (DexCallExpr) ref);
+                        DexCallExpr callExpr = (DexCallExpr) ref;
+                        genShim4CallExpr(out, callExpr, callExpr.getExpression().getNode().getText());
+                    } else if (ref instanceof DexNewExpr) {
+                        DexNewExpr newExpr = (DexNewExpr) ref;
+                        genShim4CallExpr(out, ref, newExpr.getExpression().getNode().getText());
                     } else if (ref instanceof DexAddExpr) {
                         genShim4Add(out, (DexAddExpr) ref);
                     } else {
@@ -131,14 +135,14 @@ class TransFile extends DexVisitor {
         out.appendNewLine("}");
     }
 
-    private void genShim4CallExpr(TranspiledClass out, DexCallExpr callExpr) {
+    private void genShim4CallExpr(TranspiledClass out, DexExpression callExpr, String funcName) {
         out.appendSourceLine(callExpr);
         out.append("public static Result ");
-        out.append(callExpr.getExpression().getNode().getText());
+        out.append(funcName);
         out.append("() {");
         out.indent(() -> {
             out.append("return new ");
-            out.append(callExpr.getExpression().getNode().getText());
+            out.append(funcName);
             out.append("();");
         });
         out.append("}");

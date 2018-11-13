@@ -24,19 +24,26 @@ class TransFunc extends DexVisitor {
 
     @Override
     public void visitShortVarDeclaration(@NotNull DexShortVarDeclaration o) {
-        List<TransExpr.ExpectedValue> expectedValues = new ArrayList<>();
         List<DexVarDefinition> varDefs = o.getVarDefinitionList();
-        for (DexVarDefinition varDef : varDefs) {
-            expectedValues.add(new TransExpr.ExpectedValue());
+        TranspiledValue[] outVals = new TranspiledValue[varDefs.size()];
+        for (int i = 0; i < outVals.length; i++) {
+            outVals[i] = new TranspiledValue();
         }
         DexExpression expr = o.getExpressionList().get(0);
-        expr.accept(new TransExpr(out, expectedValues));
+        expr.accept(new TransExpr(out, outVals));
         for (int i = 0; i < varDefs.size(); i++) {
-            String inVarName = varDefs.get(i).getIdentifier().getNode().getText();
-            String outFieldName = out.addField(inVarName, "Object");
+            DexVarDefinition inVar = varDefs.get(i);
+            String inVarName = inVar.getIdentifier().getNode().getText();
+            TranspiledValue outVal = outVals[i];
+            String fieldType = "Object";
+            if (outVal.type != null) {
+                fieldType = outVal.type.className;
+            }
+            String outFieldName = out.addField(inVarName, fieldType);
+            out.appendSourceLine(inVar);
             out.append(outFieldName);
             out.append(" = ");
-            out.append(expectedValues.get(i).out.toString());
+            out.append(outVal.out.toString());
             out.append(';');
             out.appendNewLine();
         }
@@ -47,9 +54,9 @@ class TransFunc extends DexVisitor {
         super.visitReturnStatement(o);
         out.appendSourceLine(o);
         DexExpression expr = o.getExpressionList().get(0);
-        TransExpr.ExpectedValue val1 = new TransExpr.ExpectedValue();
+        TranspiledValue val1 = new TranspiledValue();
         val1.type = TransType.translateType(decl.getSignature().getResult().getType());
-        expr.accept(new TransExpr(out, Arrays.asList(val1)));
+        expr.accept(new TransExpr(out, val1));
         out.append("result1__ = ");
         out.append(val1.out.toString());
         out.append(';');

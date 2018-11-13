@@ -48,8 +48,8 @@ class TranspiledClass extends TranspiledCode {
         append(lineNumber);
         appendNewLine();
         append("// ");
-        append(source, lineSet.getLineStart(lineNumber), lineSet.getLineEnd(lineNumber));
-        append(prefix);
+        append(source.substring(lineSet.getLineStart(lineNumber), lineSet.getLineEnd(lineNumber)).trim());
+        appendNewLine();
     }
 
     public void append(DexType type) {

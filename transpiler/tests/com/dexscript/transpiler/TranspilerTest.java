@@ -20,7 +20,7 @@ public class TranspilerTest {
 
     @Test
     public void testReturnStringLiteral() {
-        transpiler.transpile("hello.dex", "" +
+        transpiler.transpile("hello.ds", "" +
                 "package abc\n" +
                 "function hello(): string {\n" +
                 "   return 'hello'\n" +
@@ -29,7 +29,7 @@ public class TranspilerTest {
 
     @Test
     public void testFunctionCall() {
-        transpiler.transpile("hello.dex", "" +
+        transpiler.transpile("hello.ds", "" +
                 "package abc\n" +
                 "function hello(): string {\n" +
                 "   return world()\n" +
@@ -41,7 +41,7 @@ public class TranspilerTest {
 
     @Test
     public void testPlus() {
-        transpiler.transpile("hello.dex", "" +
+        transpiler.transpile("hello.ds", "" +
                 "package abc\n" +
                 "function hello(): int64 {\n" +
                 "   return 1+2\n" +
@@ -50,10 +50,25 @@ public class TranspilerTest {
 
     @Test
     public void testAssignment() {
-        transpiler.transpile("hello.dex", "" +
+        transpiler.transpile("hello.ds", "" +
                 "package abc\n" +
                 "function hello() {\n" +
                 "   val := 'hello'\n" +
                 "}\n");
+    }
+
+    @Test
+    public void testGetResult() {
+        transpiler.transpile("hello.ds", "" +
+                "package abc\n" +
+                "\n" +
+                "function hello(): string {\n" +
+                "    w := world{}\n" +
+                "    return <- w\n" +
+                "}\n" +
+                "\n" +
+                "function world(): string {\n" +
+                "    return 'hello'\n" +
+                "}");
     }
 }

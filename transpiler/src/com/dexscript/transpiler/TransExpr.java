@@ -3,36 +3,26 @@ package com.dexscript.transpiler;
 import com.dexscript.psi.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
-import java.util.List;
-
 class TransExpr extends DexVisitor {
 
-    static class ExpectedValue {
-        public RuntimeType type;
-        public TranspiledCode out = new TranspiledCode();
-    }
-
     private final TranspiledClass tClass;
-    private final List<ExpectedValue> expectedValues;
+    private final TranspiledValue[] vals;
 
-    public TransExpr(TranspiledClass tClass, List<ExpectedValue> expectedValues) {
+    public TransExpr(TranspiledClass tClass, TranspiledValue ...vals) {
         this.tClass = tClass;
-        this.expectedValues = expectedValues;
+        this.vals = vals;
     }
 
     public static String translateOneValue(TranspiledClass tClass, DexExpression expr) {
-        ExpectedValue val = new ExpectedValue();
-        expr.accept(new TransExpr(tClass, Arrays.asList(val)));
+        TranspiledValue val = new TranspiledValue();
+        expr.accept(new TransExpr(tClass, val));
         return val.out.toString();
     }
 
     @Override
     public void visitLiteral(@NotNull DexLiteral o) {
-        if (expectedValues.size() != 1) {
-            throw new IllegalStateException("literal can only assign to one value");
-        }
-        ExpectedValue val = expectedValues.get(0);
+        expectOneValue("literal can only assign to one value");
+        TranspiledValue val = vals[0];
         val.out.append("((long)");
         val.out.append(o.getNode().getText());
         val.out.append(')');
@@ -40,14 +30,18 @@ class TransExpr extends DexVisitor {
 
     @Override
     public void visitStringLiteral(@NotNull DexStringLiteral o) {
-        if (expectedValues.size() != 1) {
-            throw new IllegalStateException("string literal can only assign to one value");
-        }
-        ExpectedValue val = expectedValues.get(0);
+        expectOneValue("string literal can only assign to one value");
+        TranspiledValue val = vals[0];
         String text = o.getNode().getText();
         val.out.append('"');
         val.out.append(text.substring(1, text.length() - 1));
         val.out.append('"');
+    }
+
+    private void expectOneValue(String s) {
+        if (vals.length != 1) {
+            throw new IllegalStateException(s);
+        }
     }
 
     @Override
@@ -65,7 +59,7 @@ class TransExpr extends DexVisitor {
         tClass.append(',');
         tClass.append(translateOneValue(tClass, o.getRight()));
         tClass.appendNewLine(");");
-        ExpectedValue val = expectedValues.get(0);
+        TranspiledValue val = vals[0];
         val.out.append("((");
         val.out.append(val.type.className);
         val.out.append(")");
@@ -85,11 +79,54 @@ class TransExpr extends DexVisitor {
         tClass.append(funcName);
         tClass.append("();");
         tClass.appendNewLine();
-        ExpectedValue val = expectedValues.get(0);
+        TranspiledValue val = vals[0];
         val.out.append("((");
         val.out.append(val.type.className);
         val.out.append(")");
         val.out.append(fieldName);
         val.out.append(".result1__())");
+    }
+
+    @Override
+    public void visitNewExpr(@NotNull DexNewExpr o) {
+        TranspiledValue val = vals[0];
+        val.type = new RuntimeType(RuntimeTypeKind.GENERIC_OBJECT, "Result");
+        String funcName = o.getExpression().getNode().getText();
+        tClass.referenced(o);
+        val.out.append(tClass.shimClassName());
+        val.out.append('.');
+        val.out.append(funcName);
+        val.out.append("()");
+    }
+
+    @Override
+    public void visitUnaryExpr(@NotNull DexUnaryExpr o) {
+        if (o.getGetResult() != null) {
+            genGetResult(o.getExpression());
+        } else {
+            throw new UnsupportedOperationException("not implemented");
+        }
+    }
+
+    @Override
+    public void visitReferenceExpression(@NotNull DexReferenceExpression o) {
+        TranspiledValue val = vals[0];
+        val.out.append(o);
+    }
+
+    private void genGetResult(DexExpression o) {
+        expectOneValue("get result can only assign to one value");
+        TranspiledValue subVal = new TranspiledValue();
+        trans(o, subVal);
+        TranspiledValue val = vals[0];
+        val.out.append("((");
+        val.out.append(val.type.className);
+        val.out.append(")");
+        val.out.append(subVal.out.toString());
+        val.out.append(".result1__())");
+    }
+
+    private void trans(DexExpression expr, TranspiledValue ...vals) {
+        expr.accept(new TransExpr(tClass, vals));
     }
 }
