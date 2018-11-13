@@ -62,14 +62,10 @@ class TransFile extends DexVisitor {
             out.append("}");
             out.appendNewLine();
             out.appendNewLine();
-            for (Map.Entry<String, Integer> resultField : out.resultFieldNames().entrySet()) {
+            for (String resultFieldName : out.resultFieldNames()) {
                 out.append("private Result ");
-                out.append(resultField.getKey());
-                out.append(';');
-                out.appendNewLine();
-                if (resultField.getValue() > 1) {
-                    throw new UnsupportedOperationException("not implemented yet");
-                }
+                out.append(resultFieldName);
+                out.appendNewLine(';');
             }
         });
         out.append('}');
@@ -92,7 +88,7 @@ class TransFile extends DexVisitor {
         return Collections.unmodifiableList(tClasses);
     }
 
-    public void generateShim(InMemoryJavaCompiler compiler) {
+    public void genShim(InMemoryJavaCompiler compiler) {
         String shimClassName = tClasses.get(0).shimClassName();
         TranspiledClass out = new TranspiledClass(filename, source, packageName, shimClassName);
         out.appendNewLine("import com.dexscript.runtime.Result;");
@@ -102,17 +98,14 @@ class TransFile extends DexVisitor {
         out.append(" {");
         out.indent(() -> {
             for (TranspiledClass tClass : tClasses) {
-                for (DexCallExpr ref : tClass.references()) {
-                    out.appendSourceLine(ref);
-                    out.append("public static Result ");
-                    out.append(ref.getExpression().getNode().getText());
-                    out.append("() {");
-                    out.indent(() -> {
-                        out.append("return new ");
-                        out.append(ref.getExpression().getNode().getText());
-                        out.append("();");
-                    });
-                    out.append("}");
+                for (DexExpression ref : tClass.references()) {
+                    if (ref instanceof DexCallExpr) {
+                        genShim4CallExpr(out, (DexCallExpr) ref);
+                    } else if (ref instanceof DexAddExpr) {
+                        genShim4Add(out, (DexAddExpr) ref);
+                    } else {
+                        throw new UnsupportedOperationException("not implemented");
+                    }
                 }
             }
         });
@@ -120,5 +113,25 @@ class TransFile extends DexVisitor {
         out.appendNewLine();
         System.out.println(out.toString());
         out.addToCompiler(compiler);
+    }
+
+    private void genShim4Add(TranspiledClass out, DexAddExpr addExpr) {
+        out.appendSourceLine(addExpr);
+        out.appendNewLine("public static Result add(long left, long right) {");
+        out.appendNewLine("  return com.dexscript.runtime.Math.add(left, right);");
+        out.appendNewLine("}");
+    }
+
+    private void genShim4CallExpr(TranspiledClass out, DexCallExpr callExpr) {
+        out.appendSourceLine(callExpr);
+        out.append("public static Result ");
+        out.append(callExpr.getExpression().getNode().getText());
+        out.append("() {");
+        out.indent(() -> {
+            out.append("return new ");
+            out.append(callExpr.getExpression().getNode().getText());
+            out.append("();");
+        });
+        out.append("}");
     }
 }

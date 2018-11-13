@@ -1,10 +1,9 @@
 package com.dexscript.transpiler;
 
-import com.dexscript.psi.DexCallExpr;
-import com.dexscript.psi.DexStringLiteral;
-import com.dexscript.psi.DexVisitor;
+import com.dexscript.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.List;
 
 class TransExpr extends DexVisitor {
@@ -22,6 +21,21 @@ class TransExpr extends DexVisitor {
         this.expectedValues = expectedValues;
     }
 
+    public static String translateOneValue(TranspiledClass tClass, DexExpression expr) {
+        ExpectedValue val = new ExpectedValue();
+        expr.accept(new TransExpr(tClass, Arrays.asList(val)));
+        return val.out.toString();
+    }
+
+    @Override
+    public void visitLiteral(@NotNull DexLiteral o) {
+        if (expectedValues.size() != 1) {
+            throw new IllegalStateException("literal can only assign to one value");
+        }
+        ExpectedValue val = expectedValues.get(0);
+        val.out.append(o.getNode().getText());
+    }
+
     @Override
     public void visitStringLiteral(@NotNull DexStringLiteral o) {
         if (expectedValues.size() != 1) {
@@ -32,6 +46,29 @@ class TransExpr extends DexVisitor {
         val.out.append('"');
         val.out.append(text.substring(1, text.length() - 1));
         val.out.append('"');
+    }
+
+    @Override
+    public void visitAddExpr(@NotNull DexAddExpr o) {
+        String funcName = "add";
+        tClass.referenced(o);
+        String fieldName = tClass.assignResultField("addResult");
+        tClass.append(fieldName);
+        tClass.append(" = ");
+        tClass.append(tClass.shimClassName());
+        tClass.append('.');
+        tClass.append(funcName);
+        tClass.append('(');
+        tClass.append(translateOneValue(tClass, o.getLeft()));
+        tClass.append(',');
+        tClass.append(translateOneValue(tClass, o.getRight()));
+        tClass.appendNewLine(");");
+        ExpectedValue val = expectedValues.get(0);
+        val.out.append("((");
+        val.out.append(val.type.className);
+        val.out.append(")");
+        val.out.append(fieldName);
+        val.out.append(".result1__())");
     }
 
     @Override

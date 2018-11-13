@@ -7,6 +7,15 @@ public class TranspiledCode {
     private final StringBuilder out = new StringBuilder();
     protected String prefix = "";
 
+    public void indent(Operation op) {
+        String oldPrefix = prefix;
+        prefix += "  ";
+        appendNewLine();
+        op.call();
+        prefix = oldPrefix;
+        appendNewLine();
+    }
+
     public void appendNewLine() {
         out.append(System.lineSeparator());
         out.append(prefix);
@@ -38,12 +47,8 @@ public class TranspiledCode {
         out.append(str, begin, end);
     }
 
-    public void indent(Operation op) {
-        String oldPrefix = prefix;
-        prefix += "  ";
-        appendNewLine();
-        op.call();
-        prefix = oldPrefix;
+    public void appendNewLine(char c) {
+        append(c);
         appendNewLine();
     }
 

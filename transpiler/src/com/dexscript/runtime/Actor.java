@@ -20,4 +20,9 @@ public class Actor implements Result {
     public Object result1__() {
         return null;
     }
+
+    @Override
+    public long result1__long() {
+        return 0;
+    }
 }

@@ -24,7 +24,7 @@ public class Transpiler implements AutoCloseable {
                 e.printStackTrace();
             }
         }
-        transFile.generateShim(compiler);
+        transFile.genShim(compiler);
         try {
             Map<String, Class<?>> classes = compiler.compileAll();
             Object obj = classes.get("abc.hello").newInstance();

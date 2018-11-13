@@ -1,6 +1,7 @@
 package com.dexscript.transpiler;
 
 import com.dexscript.psi.DexCallExpr;
+import com.dexscript.psi.DexExpression;
 import com.dexscript.psi.DexType;
 import com.intellij.openapi.editor.impl.LineSet;
 import com.intellij.psi.PsiElement;
@@ -10,7 +11,7 @@ import java.util.*;
 
 class TranspiledClass extends TranspiledCode {
 
-    private final List<DexCallExpr> refs = new ArrayList<>();
+    private final List<DexExpression> refs = new ArrayList<>();
     private final String filename;
     private final LineSet lineSet;
     private final String source;
@@ -35,7 +36,7 @@ class TranspiledClass extends TranspiledCode {
         return packageName + "." + className;
     }
 
-    public void referenced(DexCallExpr ref) {
+    public void referenced(DexExpression ref) {
         refs.add(ref);
     }
 
@@ -63,7 +64,7 @@ class TranspiledClass extends TranspiledCode {
         return shimClassName;
     }
 
-    public List<DexCallExpr> references() {
+    public List<DexExpression> references() {
         return Collections.unmodifiableList(refs);
     }
 
@@ -78,14 +79,23 @@ class TranspiledClass extends TranspiledCode {
     public String assignResultField(String suggestedFieldName) {
         if (!resultFieldNames.containsKey(suggestedFieldName)) {
             resultFieldNames.put(suggestedFieldName, 1);
-            return suggestedFieldName;
+            return suggestedFieldName + "__";
         }
         int index = resultFieldNames.get(suggestedFieldName) + 1;
         resultFieldNames.put(suggestedFieldName, index);
-        return suggestedFieldName + index;
+        return suggestedFieldName + index + "__";
     }
 
-    public Map<String, Integer> resultFieldNames() {
-        return Collections.unmodifiableMap(resultFieldNames);
+    public List<String> resultFieldNames() {
+        ArrayList<String> fieldNames = new ArrayList<>();
+        for (Map.Entry<String, Integer> resultField : resultFieldNames.entrySet()) {
+            fieldNames.add(resultField.getKey() + "__");
+            if (resultField.getValue() > 1) {
+                for (int i = 2; i <= resultField.getValue(); i++) {
+                    fieldNames.add(resultField.getKey() + i + "__");
+                }
+            }
+        }
+        return fieldNames;
     }
 }

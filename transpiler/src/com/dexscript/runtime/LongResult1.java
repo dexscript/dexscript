@@ -1,10 +1,10 @@
 package com.dexscript.runtime;
 
-public class ObjectResult1 implements Result {
+public class LongResult1 implements Result {
 
-    private final Object result1__;
+    private final long result1__;
 
-    public ObjectResult1(Object result1__) {
+    public LongResult1(long result1__) {
         this.result1__ = result1__;
     }
 
@@ -20,6 +20,6 @@ public class ObjectResult1 implements Result {
 
     @Override
     public long result1__long() {
-        return (Long)result1__;
+        return result1__;
     }
 }

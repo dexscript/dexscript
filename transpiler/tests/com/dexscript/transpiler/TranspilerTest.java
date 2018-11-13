@@ -38,4 +38,13 @@ public class TranspilerTest {
                 "   return 'hello'\n" +
                 "}\n");
     }
+
+    @Test
+    public void testPlus() {
+        transpiler.transpile("hello.dex", "" +
+                "package abc\n" +
+                "function hello(): int64 {\n" +
+                "   return 1+2\n" +
+                "}\n");
+    }
 }
