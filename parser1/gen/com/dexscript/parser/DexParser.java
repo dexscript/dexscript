@@ -77,8 +77,14 @@ public class DexParser implements PsiParser, LightPsiParser {
     else if (t == RETURN_STATEMENT) {
       r = ReturnStatement(b, 0);
     }
+    else if (t == SHORT_VAR_DECLARATION) {
+      r = ShortVarDeclaration(b, 0);
+    }
     else if (t == SIGNATURE) {
       r = Signature(b, 0);
+    }
+    else if (t == SIMPLE_STATEMENT) {
+      r = SimpleStatement(b, 0);
     }
     else if (t == STATEMENT) {
       r = Statement(b, 0);
@@ -95,6 +101,15 @@ public class DexParser implements PsiParser, LightPsiParser {
     else if (t == TYPE_REFERENCE_EXPRESSION) {
       r = TypeReferenceExpression(b, 0);
     }
+    else if (t == VAR_DECLARATION) {
+      r = VarDeclaration(b, 0);
+    }
+    else if (t == VAR_DEFINITION) {
+      r = VarDefinition(b, 0);
+    }
+    else if (t == VAR_SPEC) {
+      r = VarSpec(b, 0);
+    }
     else {
       r = parse_root_(t, b, 0);
     }
@@ -106,7 +121,8 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(RETURN_STATEMENT, STATEMENT),
+    create_token_set_(SHORT_VAR_DECLARATION, VAR_SPEC),
+    create_token_set_(RETURN_STATEMENT, SIMPLE_STATEMENT, STATEMENT),
     create_token_set_(FUNCTION_TYPE, PAR_TYPE, TYPE, TYPE_LIST),
     create_token_set_(ADD_EXPR, AND_EXPR, CALL_EXPR, CONDITIONAL_EXPR,
       EXPRESSION, LITERAL, MUL_EXPR, OR_EXPR,
@@ -1179,6 +1195,21 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // VarDefinitionList ':=' ExpressionList
+  public static boolean ShortVarDeclaration(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ShortVarDeclaration")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, SHORT_VAR_DECLARATION, null);
+    r = VarDefinitionList(b, l + 1);
+    r = r && consumeToken(b, VAR_ASSIGN);
+    p = r; // pin = 2
+    r = r && ExpressionList(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
   // Parameters Result?
   public static boolean Signature(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Signature")) return false;
@@ -1200,15 +1231,28 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // ShortVarDeclaration
+  public static boolean SimpleStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "SimpleStatement")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = ShortVarDeclaration(b, l + 1);
+    exit_section_(b, m, SIMPLE_STATEMENT, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // ReturnStatement
   //   | Block
+  //   | SimpleStatement
   public static boolean Statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Statement")) return false;
-    if (!nextTokenIs(b, "<statement>", LBRACE, RETURN)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, STATEMENT, "<statement>");
     r = ReturnStatement(b, l + 1);
     if (!r) r = Block(b, l + 1);
+    if (!r) r = SimpleStatement(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1542,6 +1586,212 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, SEND_CHANNEL);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // var ( VarSpec | '(' VarSpecs? ')' )
+  public static boolean VarDeclaration(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarDeclaration")) return false;
+    if (!nextTokenIs(b, VAR)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, VAR_DECLARATION, null);
+    r = consumeToken(b, VAR);
+    p = r; // pin = 1
+    r = r && VarDeclaration_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // VarSpec | '(' VarSpecs? ')'
+  private static boolean VarDeclaration_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarDeclaration_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = VarSpec(b, l + 1);
+    if (!r) r = VarDeclaration_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // '(' VarSpecs? ')'
+  private static boolean VarDeclaration_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarDeclaration_1_1")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, LPAREN);
+    p = r; // pin = 1
+    r = r && report_error_(b, VarDeclaration_1_1_1(b, l + 1));
+    r = p && consumeToken(b, RPAREN) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // VarSpecs?
+  private static boolean VarDeclaration_1_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarDeclaration_1_1_1")) return false;
+    VarSpecs(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // identifier
+  public static boolean VarDefinition(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarDefinition")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, VAR_DEFINITION, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // VarDefinition ( ',' VarDefinition )*
+  static boolean VarDefinitionList(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarDefinitionList")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = VarDefinition(b, l + 1);
+    p = r; // pin = 1
+    r = r && VarDefinitionList_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // ( ',' VarDefinition )*
+  private static boolean VarDefinitionList_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarDefinitionList_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!VarDefinitionList_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "VarDefinitionList_1", c)) break;
+    }
+    return true;
+  }
+
+  // ',' VarDefinition
+  private static boolean VarDefinitionList_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarDefinitionList_1_0")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, COMMA);
+    p = r; // pin = 1
+    r = r && VarDefinition(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // VarDefinitionList ( Type [ '=' ExpressionList ] | '=' ExpressionList )
+  public static boolean VarSpec(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpec")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, VAR_SPEC, null);
+    r = VarDefinitionList(b, l + 1);
+    p = r; // pin = 1
+    r = r && VarSpec_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // Type [ '=' ExpressionList ] | '=' ExpressionList
+  private static boolean VarSpec_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpec_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = VarSpec_1_0(b, l + 1);
+    if (!r) r = VarSpec_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // Type [ '=' ExpressionList ]
+  private static boolean VarSpec_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpec_1_0")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = Type(b, l + 1);
+    p = r; // pin = 1
+    r = r && VarSpec_1_0_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // [ '=' ExpressionList ]
+  private static boolean VarSpec_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpec_1_0_1")) return false;
+    VarSpec_1_0_1_0(b, l + 1);
+    return true;
+  }
+
+  // '=' ExpressionList
+  private static boolean VarSpec_1_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpec_1_0_1_0")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, ASSIGN);
+    p = r; // pin = 1
+    r = r && ExpressionList(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // '=' ExpressionList
+  private static boolean VarSpec_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpec_1_1")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, ASSIGN);
+    p = r; // pin = 1
+    r = r && ExpressionList(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // VarSpec (semi VarSpec)* semi?
+  static boolean VarSpecs(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpecs")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = VarSpec(b, l + 1);
+    p = r; // pin = 1
+    r = r && report_error_(b, VarSpecs_1(b, l + 1));
+    r = p && VarSpecs_2(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // (semi VarSpec)*
+  private static boolean VarSpecs_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpecs_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!VarSpecs_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "VarSpecs_1", c)) break;
+    }
+    return true;
+  }
+
+  // semi VarSpec
+  private static boolean VarSpecs_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpecs_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = semi(b, l + 1);
+    r = r && VarSpec(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // semi?
+  private static boolean VarSpecs_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpecs_2")) return false;
+    semi(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */

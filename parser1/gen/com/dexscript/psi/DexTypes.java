@@ -35,13 +35,18 @@ public interface DexTypes {
   IElementType REFERENCE_EXPRESSION = new DexCompositeElementType("REFERENCE_EXPRESSION");
   IElementType RESULT = DexElementTypeFactory.stubFactory("RESULT");
   IElementType RETURN_STATEMENT = new DexCompositeElementType("RETURN_STATEMENT");
+  IElementType SHORT_VAR_DECLARATION = DexElementTypeFactory.stubFactory("SHORT_VAR_DECLARATION");
   IElementType SIGNATURE = DexElementTypeFactory.stubFactory("SIGNATURE");
+  IElementType SIMPLE_STATEMENT = new DexCompositeElementType("SIMPLE_STATEMENT");
   IElementType STATEMENT = new DexCompositeElementType("STATEMENT");
   IElementType STRING_LITERAL = new DexCompositeElementType("STRING_LITERAL");
   IElementType TYPE = DexElementTypeFactory.stubFactory("TYPE");
   IElementType TYPE_LIST = DexElementTypeFactory.stubFactory("TYPE_LIST");
   IElementType TYPE_REFERENCE_EXPRESSION = new DexCompositeElementType("TYPE_REFERENCE_EXPRESSION");
   IElementType UNARY_EXPR = new DexCompositeElementType("UNARY_EXPR");
+  IElementType VAR_DECLARATION = new DexCompositeElementType("VAR_DECLARATION");
+  IElementType VAR_DEFINITION = DexElementTypeFactory.stubFactory("VAR_DEFINITION");
+  IElementType VAR_SPEC = DexElementTypeFactory.stubFactory("VAR_SPEC");
 
   IElementType ASSIGN = new DexTokenType("=");
   IElementType BIT_AND = new DexTokenType("&");
@@ -207,8 +212,14 @@ public interface DexTypes {
       else if (type == RETURN_STATEMENT) {
         return new DexReturnStatementImpl(node);
       }
+      else if (type == SHORT_VAR_DECLARATION) {
+        return new DexShortVarDeclarationImpl(node);
+      }
       else if (type == SIGNATURE) {
         return new DexSignatureImpl(node);
+      }
+      else if (type == SIMPLE_STATEMENT) {
+        return new DexSimpleStatementImpl(node);
       }
       else if (type == STATEMENT) {
         return new DexStatementImpl(node);
@@ -227,6 +238,15 @@ public interface DexTypes {
       }
       else if (type == UNARY_EXPR) {
         return new DexUnaryExprImpl(node);
+      }
+      else if (type == VAR_DECLARATION) {
+        return new DexVarDeclarationImpl(node);
+      }
+      else if (type == VAR_DEFINITION) {
+        return new DexVarDefinitionImpl(node);
+      }
+      else if (type == VAR_SPEC) {
+        return new DexVarSpecImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

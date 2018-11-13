@@ -50,6 +50,9 @@ public class DexElementTypeFactory {
     if ("PARAM_DEFINITION".equals(name)) return new DexParamDefinitionStubElementType(name);
     if ("RESULT".equals(name)) return new DexResultStubElementType(name);
     if ("SIGNATURE".equals(name)) return new DexSignatureStubElementType(name);
+    if ("VAR_SPEC".equals(name)) return new DexVarSpecStubElementType(name);
+    if ("SHORT_VAR_DECLARATION".equals(name)) return new DexVarSpecStubElementType(name);
+    if ("VAR_DEFINITION".equals(name)) return new DexVarDefinitionStubElementType(name);
 
     Class c = TYPES.get(name);
     if (c != null) {

@@ -116,8 +116,16 @@ public class DexVisitor extends PsiElementVisitor {
     visitStatement(o);
   }
 
+  public void visitShortVarDeclaration(@NotNull DexShortVarDeclaration o) {
+    visitVarSpec(o);
+  }
+
   public void visitSignature(@NotNull DexSignature o) {
     visitCompositeElement(o);
+  }
+
+  public void visitSimpleStatement(@NotNull DexSimpleStatement o) {
+    visitStatement(o);
   }
 
   public void visitStatement(@NotNull DexStatement o) {
@@ -143,6 +151,18 @@ public class DexVisitor extends PsiElementVisitor {
 
   public void visitUnaryExpr(@NotNull DexUnaryExpr o) {
     visitExpression(o);
+  }
+
+  public void visitVarDeclaration(@NotNull DexVarDeclaration o) {
+    visitCompositeElement(o);
+  }
+
+  public void visitVarDefinition(@NotNull DexVarDefinition o) {
+    visitNamedElement(o);
+  }
+
+  public void visitVarSpec(@NotNull DexVarSpec o) {
+    visitCompositeElement(o);
   }
 
   public void visitNamedElement(@NotNull DexNamedElement o) {

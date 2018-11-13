@@ -180,6 +180,7 @@ private StatementWithSemi ::= Statement (semi|&'}') { pin=1 recoverWhile=Stateme
 Statement ::=
     ReturnStatement
   | Block
+  | SimpleStatement
 private StatementRecover ::= !('!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | '^' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | sstring | raw_string | struct | switch | var)
 
 ReturnStatement ::= return ExpressionList?
@@ -234,3 +235,21 @@ ArgumentList ::= '(' [ ExpressionArgList '...'? ','? ] ')' {pin=1}
 OperandName ::= ReferenceExpression QualifiedReferenceExpression? {elementType=ReferenceExpression}
 left QualifiedReferenceExpression ::= '.' identifier {elementType=ReferenceExpression}
 ReferenceExpression ::= identifier { methods=[getReference getQualifier resolve getReadWriteAccess] extends=Expression}
+
+SimpleStatement ::=
+    ShortVarDeclaration
+
+ShortVarDeclaration ::= VarDefinitionList ':=' ExpressionList {pin=2 extends=VarSpec}
+
+VarDeclaration ::= var ( VarSpec | '(' VarSpecs? ')' ) {pin(".*")=1 methods=[addSpec deleteSpec]}
+private VarSpecs ::= VarSpec (semi VarSpec)* semi? {pin=1}
+VarSpec ::= VarDefinitionList ( Type [ '=' ExpressionList ] | '=' ExpressionList ) {
+  pin(".*")=1
+  methods=[processDeclarations deleteDefinition getRightExpressionsList]
+  stubClass="com.dexscript.stubs.DexVarSpecStub"
+}
+private VarDefinitionList ::= VarDefinition ( ',' VarDefinition )*
+VarDefinition ::= identifier {
+  methods=[getDexTypeInner getReference getValue]
+  stubClass="com.dexscript.stubs.DexVarDefinitionStub"
+}
