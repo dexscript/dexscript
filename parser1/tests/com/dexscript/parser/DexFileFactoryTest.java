@@ -9,7 +9,7 @@ public class DexFileFactoryTest {
     @Test
     public void testCreate() {
         try (DexFileFactory dexFileFactory = new DexFileFactory()) {
-            PsiFile elem = dexFileFactory.createDexFile("test.dex", "package abc");
+            PsiFile elem = dexFileFactory.createDexFile("test.ds", "package abc");
             Assert.assertEquals("PACKAGE_CLAUSE", elem.getFirstChild().toString());
         }
     }

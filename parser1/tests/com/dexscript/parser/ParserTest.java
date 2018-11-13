@@ -7,7 +7,7 @@ import org.junit.Test;
 public class ParserTest extends ParsingTestCase {
 
     public ParserTest() {
-        super("parser", "dex", new DexParserDefinition());
+        super("parser", "ds", new DexParserDefinition());
     }
 
     @Test
