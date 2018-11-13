@@ -47,4 +47,13 @@ public class TranspilerTest {
                 "   return 1+2\n" +
                 "}\n");
     }
+
+    @Test
+    public void testAssignment() {
+        transpiler.transpile("hello.dex", "" +
+                "package abc\n" +
+                "function hello() {\n" +
+                "   val := 'hello'\n" +
+                "}\n");
+    }
 }

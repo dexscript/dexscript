@@ -8,7 +8,6 @@ import org.mdkt.compiler.InMemoryJavaCompiler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 class TransFile extends DexVisitor {
 
@@ -40,17 +39,7 @@ class TransFile extends DexVisitor {
         out.indent(() -> {
             out.appendNewLine();
             // fields for return value
-            DexType returnType = o.getSignature().getResult().getType();
-            out.append("public ");
-            out.append(returnType);
-            out.append(" result1__;");
-            out.appendNewLine();
-            out.append("public Object result1__() {");
-            out.indent(() -> {
-                out.append("return result1__;");
-            });
-            out.append("}");
-            out.appendNewLine();
+            genReturnValueFields(out, o);
             out.appendNewLine();
             // constructor
             out.append("public ");
@@ -62,13 +51,33 @@ class TransFile extends DexVisitor {
             out.append("}");
             out.appendNewLine();
             out.appendNewLine();
-            for (String resultFieldName : out.resultFieldNames()) {
-                out.append("private Result ");
-                out.append(resultFieldName);
+            for (TranspiledField field : out.fields()) {
+                out.append("private ");
+                out.append(field.type);
+                out.append(' ');
+                out.append(field.transpiledName);
                 out.appendNewLine(';');
             }
         });
         out.append('}');
+        out.appendNewLine();
+    }
+
+    private void genReturnValueFields(TranspiledClass out, @NotNull DexFunctionDeclaration o) {
+        DexResult result = o.getSignature().getResult();
+        if (result == null) {
+            return;
+        }
+        DexType returnType = result.getType();
+        out.append("public ");
+        out.append(returnType);
+        out.append(" result1__;");
+        out.appendNewLine();
+        out.append("public Object result1__() {");
+        out.indent(() -> {
+            out.append("return result1__;");
+        });
+        out.append("}");
         out.appendNewLine();
     }
 

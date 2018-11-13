@@ -1,6 +1,5 @@
 package com.dexscript.transpiler;
 
-import com.dexscript.psi.DexCallExpr;
 import com.dexscript.psi.DexExpression;
 import com.dexscript.psi.DexType;
 import com.intellij.openapi.editor.impl.LineSet;
@@ -18,7 +17,8 @@ class TranspiledClass extends TranspiledCode {
     private final String shimClassName;
     private final String packageName;
     private final String className;
-    private final Map<String, Integer> resultFieldNames = new HashMap<>();
+    private final Map<String, Integer> fieldNames = new HashMap<>();
+    private final List<TranspiledField> fields = new ArrayList<>();
 
     TranspiledClass(String filename, String source, String packageName, String className) {
         this.filename = filename;
@@ -76,26 +76,20 @@ class TranspiledClass extends TranspiledCode {
         }
     }
 
-    public String assignResultField(String suggestedFieldName) {
-        if (!resultFieldNames.containsKey(suggestedFieldName)) {
-            resultFieldNames.put(suggestedFieldName, 1);
-            return suggestedFieldName + "__";
+    public String addField(String originalName, String fieldType) {
+        if (!fieldNames.containsKey(originalName)) {
+            fieldNames.put(originalName, 1);
+            fields.add(new TranspiledField(originalName, originalName, fieldType));
+            return originalName;
         }
-        int index = resultFieldNames.get(suggestedFieldName) + 1;
-        resultFieldNames.put(suggestedFieldName, index);
-        return suggestedFieldName + index + "__";
+        int index = fieldNames.get(originalName) + 1;
+        fieldNames.put(originalName, index);
+        String transpiledName = originalName + index;
+        fields.add(new TranspiledField(originalName, transpiledName, fieldType));
+        return transpiledName;
     }
 
-    public List<String> resultFieldNames() {
-        ArrayList<String> fieldNames = new ArrayList<>();
-        for (Map.Entry<String, Integer> resultField : resultFieldNames.entrySet()) {
-            fieldNames.add(resultField.getKey() + "__");
-            if (resultField.getValue() > 1) {
-                for (int i = 2; i <= resultField.getValue(); i++) {
-                    fieldNames.add(resultField.getKey() + i + "__");
-                }
-            }
-        }
-        return fieldNames;
+    public List<TranspiledField> fields() {
+        return Collections.unmodifiableList(fields);
     }
 }

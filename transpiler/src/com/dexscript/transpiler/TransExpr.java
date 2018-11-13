@@ -54,7 +54,7 @@ class TransExpr extends DexVisitor {
     public void visitAddExpr(@NotNull DexAddExpr o) {
         String funcName = "add";
         tClass.referenced(o);
-        String fieldName = tClass.assignResultField("addResult");
+        String fieldName = tClass.addField("addResult", "Result");
         tClass.append(fieldName);
         tClass.append(" = ");
         tClass.append(tClass.shimClassName());
@@ -77,7 +77,7 @@ class TransExpr extends DexVisitor {
     public void visitCallExpr(@NotNull DexCallExpr o) {
         String funcName = o.getExpression().getNode().getText();
         tClass.referenced(o);
-        String fieldName = tClass.assignResultField(funcName);
+        String fieldName = tClass.addField(funcName, "Result");
         tClass.append(fieldName);
         tClass.append(" = ");
         tClass.append(tClass.shimClassName());

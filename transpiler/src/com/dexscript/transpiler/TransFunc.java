@@ -3,7 +3,9 @@ package com.dexscript.transpiler;
 import com.dexscript.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 class TransFunc extends DexVisitor {
 
@@ -13,6 +15,31 @@ class TransFunc extends DexVisitor {
     public TransFunc(TranspiledClass out, DexFunctionDeclaration decl) {
         this.out = out;
         this.decl = decl;
+    }
+
+    @Override
+    public void visitSimpleStatement(@NotNull DexSimpleStatement o) {
+        o.acceptChildren(this);
+    }
+
+    @Override
+    public void visitShortVarDeclaration(@NotNull DexShortVarDeclaration o) {
+        List<TransExpr.ExpectedValue> expectedValues = new ArrayList<>();
+        List<DexVarDefinition> varDefs = o.getVarDefinitionList();
+        for (DexVarDefinition varDef : varDefs) {
+            expectedValues.add(new TransExpr.ExpectedValue());
+        }
+        DexExpression expr = o.getExpressionList().get(0);
+        expr.accept(new TransExpr(out, expectedValues));
+        for (int i = 0; i < varDefs.size(); i++) {
+            String inVarName = varDefs.get(i).getIdentifier().getNode().getText();
+            String outFieldName = out.addField(inVarName, "Object");
+            out.append(outFieldName);
+            out.append(" = ");
+            out.append(expectedValues.get(i).out.toString());
+            out.append(';');
+            out.appendNewLine();
+        }
     }
 
     @Override
