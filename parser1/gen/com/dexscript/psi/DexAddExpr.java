@@ -7,7 +7,16 @@ import com.intellij.psi.PsiElement;
 
 public interface DexAddExpr extends DexBinaryExpr {
 
-  @NotNull
-  PsiElement getAddOp();
+  @Nullable
+  PsiElement getBitOr();
+
+  @Nullable
+  PsiElement getBitXor();
+
+  @Nullable
+  PsiElement getMinus();
+
+  @Nullable
+  PsiElement getPlus();
 
 }

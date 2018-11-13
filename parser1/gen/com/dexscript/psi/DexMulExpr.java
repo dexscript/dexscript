@@ -7,7 +7,25 @@ import com.intellij.psi.PsiElement;
 
 public interface DexMulExpr extends DexBinaryExpr {
 
-  @NotNull
-  PsiElement getMulOp();
+  @Nullable
+  PsiElement getBitAnd();
+
+  @Nullable
+  PsiElement getBitClear();
+
+  @Nullable
+  PsiElement getMul();
+
+  @Nullable
+  PsiElement getQuotient();
+
+  @Nullable
+  PsiElement getRemainder();
+
+  @Nullable
+  PsiElement getShiftLeft();
+
+  @Nullable
+  PsiElement getShiftRight();
 
 }

@@ -68,6 +68,10 @@ public class DexVisitor extends PsiElementVisitor {
     visitCompositeElement(o);
   }
 
+  public void visitLiteral(@NotNull DexLiteral o) {
+    visitExpression(o);
+  }
+
   public void visitMulExpr(@NotNull DexMulExpr o) {
     visitBinaryExpr(o);
   }

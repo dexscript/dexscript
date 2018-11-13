@@ -23,6 +23,7 @@ public interface DexTypes {
   IElementType IMPORT_SPEC = DexElementTypeFactory.stubFactory("IMPORT_SPEC");
   IElementType IMPORT_STRING = new DexCompositeElementType("IMPORT_STRING");
   IElementType LEFT_HAND_EXPR_LIST = new DexCompositeElementType("LEFT_HAND_EXPR_LIST");
+  IElementType LITERAL = new DexCompositeElementType("LITERAL");
   IElementType MUL_EXPR = new DexCompositeElementType("MUL_EXPR");
   IElementType OR_EXPR = new DexCompositeElementType("OR_EXPR");
   IElementType PACKAGE_CLAUSE = DexElementTypeFactory.stubFactory("PACKAGE_CLAUSE");
@@ -42,7 +43,6 @@ public interface DexTypes {
   IElementType TYPE_REFERENCE_EXPRESSION = new DexCompositeElementType("TYPE_REFERENCE_EXPRESSION");
   IElementType UNARY_EXPR = new DexCompositeElementType("UNARY_EXPR");
 
-  IElementType ADDOP = new DexTokenType("AddOp");
   IElementType ASSIGN = new DexTokenType("=");
   IElementType BIT_AND = new DexTokenType("&");
   IElementType BIT_AND_ASSIGN = new DexTokenType("&=");
@@ -95,7 +95,6 @@ public interface DexTypes {
   IElementType MINUS_ASSIGN = new DexTokenType("-=");
   IElementType MINUS_MINUS = new DexTokenType("--");
   IElementType MUL = new DexTokenType("*");
-  IElementType MULOP = new DexTokenType("MulOp");
   IElementType MUL_ASSIGN = new DexTokenType("*=");
   IElementType NOT = new DexTokenType("!");
   IElementType NOT_EQ = new DexTokenType("!=");
@@ -109,7 +108,6 @@ public interface DexTypes {
   IElementType RAW_STRING = new DexTokenType("raw_string");
   IElementType RBRACE = new DexTokenType("}");
   IElementType RBRACK = new DexTokenType("]");
-  IElementType RELOP = new DexTokenType("RelOp");
   IElementType REMAINDER = new DexTokenType("%");
   IElementType REMAINDER_ASSIGN = new DexTokenType("%=");
   IElementType RETURN = new DexTokenType("return");
@@ -128,7 +126,6 @@ public interface DexTypes {
   IElementType SWITCH = new DexTokenType("switch");
   IElementType TRIPLE_DOT = new DexTokenType("...");
   IElementType TYPE_ = new DexTokenType("type");
-  IElementType UNARYOP = new DexTokenType("UnaryOp");
   IElementType VAR = new DexTokenType("var");
   IElementType VAR_ASSIGN = new DexTokenType(":=");
 
@@ -173,6 +170,9 @@ public interface DexTypes {
       }
       else if (type == LEFT_HAND_EXPR_LIST) {
         return new DexLeftHandExprListImpl(node);
+      }
+      else if (type == LITERAL) {
+        return new DexLiteralImpl(node);
       }
       else if (type == MUL_EXPR) {
         return new DexMulExprImpl(node);

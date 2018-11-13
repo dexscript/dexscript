@@ -26,9 +26,39 @@ public class DexConditionalExprImpl extends DexBinaryExprImpl implements DexCond
   }
 
   @Override
-  @NotNull
-  public PsiElement getRelOp() {
-    return notNullChild(findChildByType(RELOP));
+  @Nullable
+  public PsiElement getEq() {
+    return findChildByType(EQ);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getGreater() {
+    return findChildByType(GREATER);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getGreaterOrEqual() {
+    return findChildByType(GREATER_OR_EQUAL);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLess() {
+    return findChildByType(LESS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLessOrEqual() {
+    return findChildByType(LESS_OR_EQUAL);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNotEq() {
+    return findChildByType(NOT_EQ);
   }
 
 }

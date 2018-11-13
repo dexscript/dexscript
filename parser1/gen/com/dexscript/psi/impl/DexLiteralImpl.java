@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
-public class DexAddExprImpl extends DexBinaryExprImpl implements DexAddExpr {
+public class DexLiteralImpl extends DexExpressionImpl implements DexLiteral {
 
-  public DexAddExprImpl(@NotNull ASTNode node) {
+  public DexLiteralImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull DexVisitor visitor) {
-    visitor.visitAddExpr(this);
+    visitor.visitLiteral(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,26 +27,8 @@ public class DexAddExprImpl extends DexBinaryExprImpl implements DexAddExpr {
 
   @Override
   @Nullable
-  public PsiElement getBitOr() {
-    return findChildByType(BIT_OR);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getBitXor() {
-    return findChildByType(BIT_XOR);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getMinus() {
-    return findChildByType(MINUS);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getPlus() {
-    return findChildByType(PLUS);
+  public PsiElement getInt() {
+    return findChildByType(INT);
   }
 
 }

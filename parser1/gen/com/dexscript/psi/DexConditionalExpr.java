@@ -7,7 +7,22 @@ import com.intellij.psi.PsiElement;
 
 public interface DexConditionalExpr extends DexBinaryExpr {
 
-  @NotNull
-  PsiElement getRelOp();
+  @Nullable
+  PsiElement getEq();
+
+  @Nullable
+  PsiElement getGreater();
+
+  @Nullable
+  PsiElement getGreaterOrEqual();
+
+  @Nullable
+  PsiElement getLess();
+
+  @Nullable
+  PsiElement getLessOrEqual();
+
+  @Nullable
+  PsiElement getNotEq();
 
 }

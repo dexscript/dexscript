@@ -1,0 +1,6 @@
+package abc
+
+function hello(): int64 {
+    return 1 + 2;
+}
+

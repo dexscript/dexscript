@@ -114,6 +114,10 @@ private ImportSpecs ::= ImportSpec (semi ImportSpec)* semi? {pin=1}
 
 ImportString ::= StringLiteral {methods=[getReferences resolve getPath getPathTextRange]}
 
+Literal ::=
+    int
+  | StringLiteral
+
 StringLiteral ::= string | sstring | raw_string {
   implements = "com.intellij.psi.PsiLanguageInjectionHost"
   methods = [isValidHost updateText createLiteralTextEscaper getDecodedText]
@@ -180,6 +184,28 @@ private StatementRecover ::= !('!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | 
 
 ReturnStatement ::= return ExpressionList?
 
+private MaxGroup ::=
+  Literal
+  | CallExpr
+  | OperandName
+
+
+private RelOp ::= '==' | '!=' | '<' | '<=' | '>' | '>='
+private AddOp ::= '+' | '-' | '|' | '^'
+private MulOp ::= '*' | '/' | '%' | '<<' | '>>' | '&' | '&^'
+private UnaryOp ::= '+' | '-' | '!' | '^' | '*' | '&' | '<-'
+
+Expression ::=
+    OrExpr
+  | AndExpr
+  | ConditionalExpr
+  | AddExpr
+  | MulExpr
+  | UnaryExpr
+  | MaxGroup
+  | ParenthesesExpr {methods=[getDexType] implements="com.dexscript.psi.DexTypeOwner"}
+
+
 LeftHandExprList ::= ExpressionList
 private ExpressionArgList ::= ExpressionOrTypeWithRecover2 (',' (ExpressionOrTypeWithRecover2 | &')'))* {pin(".*")=1}
 private ExpressionOrTypeWithRecover2 ::= <<withOn "PAR" ExpressionOrTypeWithRecover>> | (!() ExpressionOrLiteralTypeExpr) {recoverWhile=ExpressionListRecover}
@@ -205,22 +231,6 @@ ParenthesesExpr ::= '(' <<enterMode "PAR">> Expression <<exitModeSafe "PAR">>')'
 CallExpr ::= Expression ArgumentList
 ArgumentList ::= '(' [ ExpressionArgList '...'? ','? ] ')' {pin=1}
 
-
 OperandName ::= ReferenceExpression QualifiedReferenceExpression? {elementType=ReferenceExpression}
 left QualifiedReferenceExpression ::= '.' identifier {elementType=ReferenceExpression}
 ReferenceExpression ::= identifier { methods=[getReference getQualifier resolve getReadWriteAccess] extends=Expression}
-
-private MaxGroup ::=
-  StringLiteral
-  | CallExpr
-  | OperandName
-
-Expression ::=
-    OrExpr
-  | AndExpr
-  | ConditionalExpr
-  | AddExpr
-  | MulExpr
-  | UnaryExpr
-  | MaxGroup
-  | ParenthesesExpr {methods=[getDexType] implements="com.dexscript.psi.DexTypeOwner"}
