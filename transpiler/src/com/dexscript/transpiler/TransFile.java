@@ -117,7 +117,7 @@ class TransFile extends DexVisitor {
 
     private void genShim4Add(TranspiledClass out, DexAddExpr addExpr) {
         out.appendSourceLine(addExpr);
-        out.appendNewLine("public static Result add(long left, long right) {");
+        out.appendNewLine("public static Result add(Object left, Object right) {");
         out.appendNewLine("  return com.dexscript.runtime.Math.add(left, right);");
         out.appendNewLine("}");
     }

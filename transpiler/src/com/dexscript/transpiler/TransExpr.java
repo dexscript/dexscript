@@ -33,7 +33,9 @@ class TransExpr extends DexVisitor {
             throw new IllegalStateException("literal can only assign to one value");
         }
         ExpectedValue val = expectedValues.get(0);
+        val.out.append("((long)");
         val.out.append(o.getNode().getText());
+        val.out.append(')');
     }
 
     @Override

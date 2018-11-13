@@ -9,9 +9,9 @@ public class TransType {
             case "string":
                 return new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "String");
             case "int64":
-                return new RuntimeType(RuntimeTypeKind.LONG, "long");
+                return new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Long");
             case "uint64":
-                return new RuntimeType(RuntimeTypeKind.LONG, "long");
+                return new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Long");
             default:
                 return new RuntimeType(RuntimeTypeKind.GENERIC_OBJECT, type.getNode().getText());
         }
