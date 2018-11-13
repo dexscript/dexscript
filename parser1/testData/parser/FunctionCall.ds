@@ -1,9 +1,9 @@
 package abc
 
-function hello(): string {
-    return world();
+function Hello(): string {
+    return World()
 }
 
-function world(): string {
-    return 'hello';
+function World(): string {
+    return 'hello'
 }

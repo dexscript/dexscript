@@ -9,7 +9,7 @@ DEX_FILE
   FUNCTION_DECLARATION
     PsiElement(function)('function')
     PsiWhiteSpace(' ')
-    PsiElement(identifier)('hello')
+    PsiElement(identifier)('Hello')
     SIGNATURE
       PARAMETERS
         PsiElement(()('(')
@@ -30,18 +30,17 @@ DEX_FILE
         PsiWhiteSpace(' ')
         DexCallExprImpl(CALL_EXPR)
           DexReferenceExpressionImpl(REFERENCE_EXPRESSION)
-            PsiElement(identifier)('world')
+            PsiElement(identifier)('World')
           DexCallExprArgsImpl(CALL_EXPR_ARGS)
             PsiElement(()('(')
             PsiElement())(')')
-      PsiElement(;)(';')
       PsiWhiteSpace('\n')
       PsiElement(})('}')
   PsiWhiteSpace('\n\n')
   FUNCTION_DECLARATION
     PsiElement(function)('function')
     PsiWhiteSpace(' ')
-    PsiElement(identifier)('world')
+    PsiElement(identifier)('World')
     SIGNATURE
       PARAMETERS
         PsiElement(()('(')
@@ -62,6 +61,5 @@ DEX_FILE
         PsiWhiteSpace(' ')
         DexStringLiteralImpl(STRING_LITERAL)
           PsiElement(sstring)(''hello'')
-      PsiElement(;)(';')
       PsiWhiteSpace('\n')
       PsiElement(})('}')

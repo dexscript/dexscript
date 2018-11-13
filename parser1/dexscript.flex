@@ -108,6 +108,7 @@ ESCAPES = [abfnrtv]
 "<<="                                     { return SHIFT_LEFT_ASSIGN; }
 "<<"                                      { return SHIFT_LEFT; }
 "<-"                                      { return GET_RESULT; }
+"->"                                      { return SERVE; }
 "<="                                      { return LESS_OR_EQUAL; }
 "<"                                       { return LESS; }
 
@@ -160,6 +161,7 @@ ESCAPES = [abfnrtv]
 
 "type"                                    { return TYPE_; }
 "var"                                     { return VAR; }
+"await"                                   { return AWAIT; }
 
 {IDENT}                                   { yybegin(MAYBE_SEMICOLON); return IDENTIFIER; }
 

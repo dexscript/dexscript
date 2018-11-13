@@ -47,6 +47,7 @@
     SHIFT_LEFT_ASSIGN    =  '<<='
     SHIFT_LEFT           =  '<<'
     GET_RESULT           =  '<-'
+    SERVE                =  '->'
     LESS_OR_EQUAL        =  '<='
     LESS                 =  '<'
     BIT_XOR_ASSIGN       =  '^='
@@ -181,7 +182,15 @@ Statement ::=
     ReturnStatement
   | Block
   | SimpleStatement
+  | AwaitStatement
 private StatementRecover ::= !('!' | '&' | '(' | '*' | '+' | '-' | ';' | '<-' | '^' | 'type' | '{' | '|' | '|=' | '||' | '}' | break | case | char | const | continue | decimali | default | defer | else | fallthrough | float | floati | for | func | go | goto | hex | identifier | if | int | interface | map | oct | return | select | string | sstring | raw_string | struct | switch | var)
+
+AwaitStatement ::= await '{' AwaitableStatement '}'
+
+private AwaitableStatement ::=
+  ServeStatement
+
+ServeStatement ::= serve identifier Signature BlockWithConsume?
 
 ReturnStatement ::= return ExpressionList?
 

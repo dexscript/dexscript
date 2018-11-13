@@ -15,6 +15,10 @@ public class DexVisitor extends PsiElementVisitor {
     visitBinaryExpr(o);
   }
 
+  public void visitAwaitStatement(@NotNull DexAwaitStatement o) {
+    visitStatement(o);
+  }
+
   public void visitBinaryExpr(@NotNull DexBinaryExpr o) {
     visitExpression(o);
   }
@@ -121,6 +125,10 @@ public class DexVisitor extends PsiElementVisitor {
   }
 
   public void visitReturnStatement(@NotNull DexReturnStatement o) {
+    visitStatement(o);
+  }
+
+  public void visitServeStatement(@NotNull DexServeStatement o) {
     visitStatement(o);
   }
 

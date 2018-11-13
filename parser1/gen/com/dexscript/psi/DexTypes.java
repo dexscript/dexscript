@@ -11,6 +11,7 @@ public interface DexTypes {
 
   IElementType ADD_EXPR = new DexCompositeElementType("ADD_EXPR");
   IElementType AND_EXPR = new DexCompositeElementType("AND_EXPR");
+  IElementType AWAIT_STATEMENT = new DexCompositeElementType("AWAIT_STATEMENT");
   IElementType BLOCK = new DexCompositeElementType("BLOCK");
   IElementType CALL_EXPR = new DexCompositeElementType("CALL_EXPR");
   IElementType CALL_EXPR_ARGS = new DexCompositeElementType("CALL_EXPR_ARGS");
@@ -37,6 +38,7 @@ public interface DexTypes {
   IElementType REFERENCE_EXPRESSION = new DexCompositeElementType("REFERENCE_EXPRESSION");
   IElementType RESULT = DexElementTypeFactory.stubFactory("RESULT");
   IElementType RETURN_STATEMENT = new DexCompositeElementType("RETURN_STATEMENT");
+  IElementType SERVE_STATEMENT = new DexCompositeElementType("SERVE_STATEMENT");
   IElementType SHORT_VAR_DECLARATION = DexElementTypeFactory.stubFactory("SHORT_VAR_DECLARATION");
   IElementType SIGNATURE = DexElementTypeFactory.stubFactory("SIGNATURE");
   IElementType SIMPLE_STATEMENT = new DexCompositeElementType("SIMPLE_STATEMENT");
@@ -51,6 +53,7 @@ public interface DexTypes {
   IElementType VAR_SPEC = DexElementTypeFactory.stubFactory("VAR_SPEC");
 
   IElementType ASSIGN = new DexTokenType("=");
+  IElementType AWAIT = new DexTokenType("await");
   IElementType BIT_AND = new DexTokenType("&");
   IElementType BIT_AND_ASSIGN = new DexTokenType("&=");
   IElementType BIT_CLEAR = new DexTokenType("&^");
@@ -123,6 +126,7 @@ public interface DexTypes {
   IElementType SELECT = new DexTokenType("select");
   IElementType SEMICOLON = new DexTokenType(";");
   IElementType SEMICOLON_SYNTHETIC = new DexTokenType("<NL>");
+  IElementType SERVE = new DexTokenType("serve");
   IElementType SHIFT_LEFT = new DexTokenType("<<");
   IElementType SHIFT_LEFT_ASSIGN = new DexTokenType("<<=");
   IElementType SHIFT_RIGHT = new DexTokenType(">>");
@@ -144,6 +148,9 @@ public interface DexTypes {
       }
       else if (type == AND_EXPR) {
         return new DexAndExprImpl(node);
+      }
+      else if (type == AWAIT_STATEMENT) {
+        return new DexAwaitStatementImpl(node);
       }
       else if (type == BLOCK) {
         return new DexBlockImpl(node);
@@ -219,6 +226,9 @@ public interface DexTypes {
       }
       else if (type == RETURN_STATEMENT) {
         return new DexReturnStatementImpl(node);
+      }
+      else if (type == SERVE_STATEMENT) {
+        return new DexServeStatementImpl(node);
       }
       else if (type == SHORT_VAR_DECLARATION) {
         return new DexShortVarDeclarationImpl(node);

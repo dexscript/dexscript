@@ -23,7 +23,10 @@ public class DexParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == BLOCK) {
+    if (t == AWAIT_STATEMENT) {
+      r = AwaitStatement(b, 0);
+    }
+    else if (t == BLOCK) {
       r = Block(b, 0);
     }
     else if (t == CALL_EXPR_ARGS) {
@@ -80,6 +83,9 @@ public class DexParser implements PsiParser, LightPsiParser {
     else if (t == RETURN_STATEMENT) {
       r = ReturnStatement(b, 0);
     }
+    else if (t == SERVE_STATEMENT) {
+      r = ServeStatement(b, 0);
+    }
     else if (t == SHORT_VAR_DECLARATION) {
       r = ShortVarDeclaration(b, 0);
     }
@@ -125,8 +131,9 @@ public class DexParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(SHORT_VAR_DECLARATION, VAR_SPEC),
-    create_token_set_(RETURN_STATEMENT, SIMPLE_STATEMENT, STATEMENT),
     create_token_set_(FUNCTION_TYPE, PAR_TYPE, TYPE, TYPE_LIST),
+    create_token_set_(AWAIT_STATEMENT, RETURN_STATEMENT, SERVE_STATEMENT, SIMPLE_STATEMENT,
+      STATEMENT),
     create_token_set_(ADD_EXPR, AND_EXPR, CALL_EXPR, CONDITIONAL_EXPR,
       EXPRESSION, LITERAL, MUL_EXPR, NEW_EXPR,
       OR_EXPR, PARENTHESES_EXPR, REFERENCE_EXPRESSION, STRING_LITERAL,
@@ -145,6 +152,27 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BIT_XOR);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // await '{' AwaitableStatement '}'
+  public static boolean AwaitStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "AwaitStatement")) return false;
+    if (!nextTokenIs(b, AWAIT)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, AWAIT_STATEMENT, null);
+    r = consumeTokens(b, 1, AWAIT, LBRACE);
+    p = r; // pin = 1
+    r = r && report_error_(b, AwaitableStatement(b, l + 1));
+    r = p && consumeToken(b, RBRACE) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // ServeStatement
+  static boolean AwaitableStatement(PsiBuilder b, int l) {
+    return ServeStatement(b, l + 1);
   }
 
   /* ********************************************************** */
@@ -1247,6 +1275,28 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // serve identifier Signature BlockWithConsume?
+  public static boolean ServeStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ServeStatement")) return false;
+    if (!nextTokenIs(b, SERVE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, SERVE_STATEMENT, null);
+    r = consumeTokens(b, 1, SERVE, IDENTIFIER);
+    p = r; // pin = 1
+    r = r && report_error_(b, Signature(b, l + 1));
+    r = p && ServeStatement_3(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // BlockWithConsume?
+  private static boolean ServeStatement_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ServeStatement_3")) return false;
+    BlockWithConsume(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
   // VarDefinitionList ':=' ExpressionList
   public static boolean ShortVarDeclaration(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ShortVarDeclaration")) return false;
@@ -1298,6 +1348,7 @@ public class DexParser implements PsiParser, LightPsiParser {
   // ReturnStatement
   //   | Block
   //   | SimpleStatement
+  //   | AwaitStatement
   public static boolean Statement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Statement")) return false;
     boolean r;
@@ -1305,6 +1356,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     r = ReturnStatement(b, l + 1);
     if (!r) r = Block(b, l + 1);
     if (!r) r = SimpleStatement(b, l + 1);
+    if (!r) r = AwaitStatement(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
