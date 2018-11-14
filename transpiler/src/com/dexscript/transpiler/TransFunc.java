@@ -3,17 +3,17 @@ package com.dexscript.transpiler;
 import com.dexscript.psi.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 class TransFunc extends DexVisitor {
 
-    private final TranspiledClass out;
+    private final OutClass oClass;
+    private final OutMethod oMethod;
     private final DexFunctionDeclaration decl;
 
-    public TransFunc(TranspiledClass out, DexFunctionDeclaration decl) {
-        this.out = out;
+    public TransFunc(OutClass oClass, OutMethod oMethod, DexFunctionDeclaration decl) {
+        this.oClass = oClass;
+        this.oMethod = oMethod;
         this.decl = decl;
     }
 
@@ -25,42 +25,42 @@ class TransFunc extends DexVisitor {
     @Override
     public void visitShortVarDeclaration(@NotNull DexShortVarDeclaration o) {
         List<DexVarDefinition> varDefs = o.getVarDefinitionList();
-        TranspiledValue[] outVals = new TranspiledValue[varDefs.size()];
+        OutValue[] outVals = new OutValue[varDefs.size()];
         for (int i = 0; i < outVals.length; i++) {
-            outVals[i] = new TranspiledValue();
+            outVals[i] = new OutValue(oClass.iFile());
         }
         DexExpression expr = o.getExpressionList().get(0);
-        expr.accept(new TransExpr(out, outVals));
+        expr.accept(new TransExpr(oClass, outVals));
         for (int i = 0; i < varDefs.size(); i++) {
             DexVarDefinition inVar = varDefs.get(i);
             String inVarName = inVar.getIdentifier().getNode().getText();
-            TranspiledValue outVal = outVals[i];
+            OutValue outVal = outVals[i];
             String fieldType = "Object";
             if (outVal.type != null) {
                 fieldType = outVal.type.className;
             }
-            String outFieldName = out.addField(inVarName, fieldType);
-            out.appendSourceLine(inVar);
-            out.append(outFieldName);
-            out.append(" = ");
-            out.append(outVal.out.toString());
-            out.append(';');
-            out.appendNewLine();
+            String outFieldName = oClass.addField(inVarName, fieldType);
+            oMethod.appendSourceLine(inVar);
+            oMethod.append(outFieldName);
+            oMethod.append(" = ");
+            oMethod.append(outVal.toString());
+            oMethod.append(';');
+            oMethod.appendNewLine();
         }
     }
 
     @Override
     public void visitReturnStatement(@NotNull DexReturnStatement o) {
         super.visitReturnStatement(o);
-        out.appendSourceLine(o);
+        oMethod.appendSourceLine(o);
         DexExpression expr = o.getExpressionList().get(0);
-        TranspiledValue val1 = new TranspiledValue();
+        OutValue val1 = new OutValue(oClass.iFile());
         val1.type = TransType.translateType(decl.getSignature().getResult().getType());
-        expr.accept(new TransExpr(out, val1));
-        out.append("result1__ = ");
-        out.append(val1.out.toString());
-        out.append(';');
-        out.appendNewLine();
-        out.append("finish();");
+        expr.accept(new TransExpr(oClass, val1));
+        oMethod.append("result1__ = ");
+        oMethod.append(val1.toString());
+        oMethod.append(';');
+        oMethod.appendNewLine();
+        oMethod.append("finish();");
     }
 }

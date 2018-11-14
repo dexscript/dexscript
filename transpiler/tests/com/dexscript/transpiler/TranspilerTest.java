@@ -71,4 +71,22 @@ public class TranspilerTest {
                 "    return 'hello'\n" +
                 "}");
     }
+
+    @Test
+    public void testAwait() {
+        transpiler.transpile("hello.ds", "" +
+                "package abc\n" +
+                "\n" +
+                "function Hello(): string {\n" +
+                "    world := World{}\n" +
+                "    return w.Say()\n" +
+                "}\n" +
+                "\n" +
+                "function World() {\n" +
+                "    await {\n" +
+                "    -> Say(): string {\n" +
+                "        return 'hello'\n" +
+                "    }}\n" +
+                "}");
+    }
 }

@@ -1,30 +1,25 @@
 package com.dexscript.transpiler;
 
 import com.dexscript.psi.DexExpression;
+import com.dexscript.psi.DexFile;
 import com.dexscript.psi.DexType;
-import com.intellij.openapi.editor.impl.LineSet;
-import com.intellij.psi.PsiElement;
+import com.dexscript.psi.OutCode;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.*;
 
-class TranspiledClass extends TranspiledCode {
+class OutClass extends OutCode {
 
     private final List<DexExpression> refs = new ArrayList<>();
-    private final String filename;
-    private final LineSet lineSet;
-    private final String source;
     private final String shimClassName;
     private final String packageName;
     private final String className;
     private final Map<String, Integer> fieldNames = new HashMap<>();
-    private final List<TranspiledField> fields = new ArrayList<>();
+    private final List<OutField> fields = new ArrayList<>();
 
-    TranspiledClass(String filename, String source, String packageName, String className) {
-        this.filename = filename;
-        shimClassName = filename.replace(".", "__");
-        lineSet = LineSet.createLineSet(source);
-        this.source = source;
+    public OutClass(DexFile iFile, String packageName, String className) {
+        super(iFile);
+        shimClassName = iFile.getVirtualFile().getName().replace(".", "__");
         this.packageName = packageName;
         this.className = className;
         append("package ");
@@ -38,18 +33,6 @@ class TranspiledClass extends TranspiledCode {
 
     public void referenced(DexExpression ref) {
         refs.add(ref);
-    }
-
-    public void appendSourceLine(PsiElement elem) {
-        append("// ");
-        append(filename);
-        append(':');
-        int lineNumber = lineSet.findLineIndex(elem.getNode().getStartOffset());
-        append(lineNumber);
-        appendNewLine();
-        append("// ");
-        append(source.substring(lineSet.getLineStart(lineNumber), lineSet.getLineEnd(lineNumber)).trim());
-        appendNewLine();
     }
 
     public void append(DexType type) {
@@ -79,17 +62,17 @@ class TranspiledClass extends TranspiledCode {
     public String addField(String originalName, String fieldType) {
         if (!fieldNames.containsKey(originalName)) {
             fieldNames.put(originalName, 1);
-            fields.add(new TranspiledField(originalName, originalName, fieldType));
+            fields.add(new OutField(originalName, originalName, fieldType));
             return originalName;
         }
         int index = fieldNames.get(originalName) + 1;
         fieldNames.put(originalName, index);
         String transpiledName = originalName + index;
-        fields.add(new TranspiledField(originalName, transpiledName, fieldType));
+        fields.add(new OutField(originalName, transpiledName, fieldType));
         return transpiledName;
     }
 
-    public List<TranspiledField> fields() {
+    public List<OutField> fields() {
         return Collections.unmodifiableList(fields);
     }
 }

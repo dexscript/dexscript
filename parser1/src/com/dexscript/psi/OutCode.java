@@ -1,11 +1,16 @@
-package com.dexscript.transpiler;
+package com.dexscript.psi;
 
 import com.intellij.psi.PsiElement;
 
-public class TranspiledCode {
+public class OutCode {
 
+    private final DexFile iFile;
     private final StringBuilder out = new StringBuilder();
     protected String prefix = "";
+
+    public OutCode(DexFile iFile) {
+        this.iFile = iFile;
+    }
 
     public void indent(Operation op) {
         String oldPrefix = prefix;
@@ -50,6 +55,14 @@ public class TranspiledCode {
     public void appendNewLine(char c) {
         append(c);
         appendNewLine();
+    }
+
+    public void appendSourceLine(PsiElement elem) {
+        iFile.appendSourceLine(this, elem);
+    }
+
+    public DexFile iFile() {
+        return iFile;
     }
 
     public interface Operation {

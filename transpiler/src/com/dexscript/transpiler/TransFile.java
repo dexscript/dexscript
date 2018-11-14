@@ -11,14 +11,12 @@ import java.util.List;
 
 class TransFile extends DexVisitor {
 
-    private final List<TranspiledClass> tClasses = new ArrayList<>();
-    private final String filename;
-    private final String source;
+    private final List<OutClass> tClasses = new ArrayList<>();
+    private final DexFile iFile;
     private String packageName;
 
-    TransFile(String filename, String source) {
-        this.filename = filename;
-        this.source = source;
+    TransFile(DexFile iFile) {
+        this.iFile = iFile;
     }
 
     @Override
@@ -27,43 +25,45 @@ class TransFile extends DexVisitor {
     }
 
     @Override
-    public void visitFunctionDeclaration(@NotNull DexFunctionDeclaration o) {
-        TranspiledClass out = newTranspiledClass(packageName, o.getIdentifier().getNode().getText());
-        out.appendNewLine("import com.dexscript.runtime.Actor;");
-        out.appendNewLine("import com.dexscript.runtime.Result;");
-        out.appendNewLine();
-        out.appendSourceLine(o.getFunction());
-        out.append("public class ");
-        out.append(o.getIdentifier());
-        out.append(" extends Actor {");
-        out.indent(() -> {
-            out.appendNewLine();
+    public void visitFunctionDeclaration(@NotNull DexFunctionDeclaration iFuncDecl) {
+        OutClass oClass = newOutClass(packageName, iFuncDecl.getIdentifier().getNode().getText());
+        oClass.appendNewLine("import com.dexscript.runtime.Actor;");
+        oClass.appendNewLine("import com.dexscript.runtime.Result;");
+        oClass.appendNewLine();
+        oClass.appendSourceLine(iFuncDecl.getFunction());
+        oClass.append("public class ");
+        oClass.append(iFuncDecl.getIdentifier());
+        oClass.append(" extends Actor {");
+        oClass.indent(() -> {
+            oClass.appendNewLine();
             // fields for return value
-            genReturnValueFields(out, o);
-            out.appendNewLine();
+            genReturnValueFields(oClass, iFuncDecl);
+            oClass.appendNewLine();
             // constructor
-            out.append("public ");
-            out.append(o.getIdentifier());
-            out.append("() {");
-            out.indent(() -> {
-                o.getBlock().acceptChildren(new TransFunc(out, o));
+            OutMethod oMethod = new OutMethod(iFile);
+            oMethod.append("public ");
+            oMethod.append(iFuncDecl.getIdentifier());
+            oMethod.append("() {");
+            oMethod.indent(() -> {
+                iFuncDecl.getBlock().acceptChildren(new TransFunc(oClass, oMethod, iFuncDecl));
             });
-            out.append("}");
-            out.appendNewLine();
-            out.appendNewLine();
-            for (TranspiledField field : out.fields()) {
-                out.append("private ");
-                out.append(field.type);
-                out.append(' ');
-                out.append(field.transpiledName);
-                out.appendNewLine(';');
+            oMethod.append("}");
+            oClass.append(oMethod.toString());
+            oClass.appendNewLine();
+            oClass.appendNewLine();
+            for (OutField field : oClass.fields()) {
+                oClass.append("private ");
+                oClass.append(field.type);
+                oClass.append(' ');
+                oClass.append(field.outName);
+                oClass.appendNewLine(';');
             }
         });
-        out.append('}');
-        out.appendNewLine();
+        oClass.append('}');
+        oClass.appendNewLine();
     }
 
-    private void genReturnValueFields(TranspiledClass out, @NotNull DexFunctionDeclaration o) {
+    private void genReturnValueFields(OutClass out, @NotNull DexFunctionDeclaration o) {
         DexResult result = o.getSignature().getResult();
         if (result == null) {
             return;
@@ -82,8 +82,8 @@ class TransFile extends DexVisitor {
     }
 
     @NotNull
-    private TranspiledClass newTranspiledClass(String packageName, String className) {
-        TranspiledClass out = new TranspiledClass(filename, source, packageName, className);
+    private OutClass newOutClass(String packageName, String className) {
+        OutClass out = new OutClass(iFile, packageName, className);
         tClasses.add(out);
         return out;
     }
@@ -93,20 +93,20 @@ class TransFile extends DexVisitor {
         file.acceptChildren(this);
     }
 
-    public List<TranspiledClass> getTranspiledClasses() {
+    public List<OutClass> getTranspiledClasses() {
         return Collections.unmodifiableList(tClasses);
     }
 
     public void genShim(InMemoryJavaCompiler compiler) {
         String shimClassName = tClasses.get(0).shimClassName();
-        TranspiledClass out = new TranspiledClass(filename, source, packageName, shimClassName);
+        OutClass out = new OutClass(iFile, packageName, shimClassName);
         out.appendNewLine("import com.dexscript.runtime.Result;");
         out.appendNewLine();
         out.append("public class ");
         out.append(shimClassName);
         out.append(" {");
         out.indent(() -> {
-            for (TranspiledClass tClass : tClasses) {
+            for (OutClass tClass : tClasses) {
                 for (DexExpression ref : tClass.references()) {
                     if (ref instanceof DexCallExpr) {
                         DexCallExpr callExpr = (DexCallExpr) ref;
@@ -128,14 +128,14 @@ class TransFile extends DexVisitor {
         out.addToCompiler(compiler);
     }
 
-    private void genShim4Add(TranspiledClass out, DexAddExpr addExpr) {
+    private void genShim4Add(OutClass out, DexAddExpr addExpr) {
         out.appendSourceLine(addExpr);
         out.appendNewLine("public static Result add(Object left, Object right) {");
         out.appendNewLine("  return com.dexscript.runtime.Math.add(left, right);");
         out.appendNewLine("}");
     }
 
-    private void genShim4CallExpr(TranspiledClass out, DexExpression callExpr, String funcName) {
+    private void genShim4CallExpr(OutClass out, DexExpression callExpr, String funcName) {
         out.appendSourceLine(callExpr);
         out.append("public static Result ");
         out.append(funcName);

@@ -5,37 +5,37 @@ import org.jetbrains.annotations.NotNull;
 
 class TransExpr extends DexVisitor {
 
-    private final TranspiledClass tClass;
-    private final TranspiledValue[] vals;
+    private final OutClass oClass;
+    private final OutValue[] vals;
 
-    public TransExpr(TranspiledClass tClass, TranspiledValue ...vals) {
-        this.tClass = tClass;
+    public TransExpr(OutClass oClass, OutValue...vals) {
+        this.oClass = oClass;
         this.vals = vals;
     }
 
-    public static String translateOneValue(TranspiledClass tClass, DexExpression expr) {
-        TranspiledValue val = new TranspiledValue();
-        expr.accept(new TransExpr(tClass, val));
-        return val.out.toString();
+    public static String translateOneValue(OutClass oClass, DexExpression expr) {
+        OutValue val = new OutValue(oClass.iFile());
+        expr.accept(new TransExpr(oClass, val));
+        return val.toString();
     }
 
     @Override
     public void visitLiteral(@NotNull DexLiteral o) {
         expectOneValue("literal can only assign to one value");
-        TranspiledValue val = vals[0];
-        val.out.append("((long)");
-        val.out.append(o.getNode().getText());
-        val.out.append(')');
+        OutValue val = vals[0];
+        val.append("((long)");
+        val.append(o.getNode().getText());
+        val.append(')');
     }
 
     @Override
     public void visitStringLiteral(@NotNull DexStringLiteral o) {
         expectOneValue("string literal can only assign to one value");
-        TranspiledValue val = vals[0];
+        OutValue val = vals[0];
         String text = o.getNode().getText();
-        val.out.append('"');
-        val.out.append(text.substring(1, text.length() - 1));
-        val.out.append('"');
+        val.append('"');
+        val.append(text.substring(1, text.length() - 1));
+        val.append('"');
     }
 
     private void expectOneValue(String s) {
@@ -47,56 +47,56 @@ class TransExpr extends DexVisitor {
     @Override
     public void visitAddExpr(@NotNull DexAddExpr o) {
         String funcName = "add";
-        tClass.referenced(o);
-        String fieldName = tClass.addField("addResult", "Result");
-        tClass.append(fieldName);
-        tClass.append(" = ");
-        tClass.append(tClass.shimClassName());
-        tClass.append('.');
-        tClass.append(funcName);
-        tClass.append('(');
-        tClass.append(translateOneValue(tClass, o.getLeft()));
-        tClass.append(',');
-        tClass.append(translateOneValue(tClass, o.getRight()));
-        tClass.appendNewLine(");");
-        TranspiledValue val = vals[0];
-        val.out.append("((");
-        val.out.append(val.type.className);
-        val.out.append(")");
-        val.out.append(fieldName);
-        val.out.append(".result1__())");
+        oClass.referenced(o);
+        String fieldName = oClass.addField("addResult", "Result");
+        oClass.append(fieldName);
+        oClass.append(" = ");
+        oClass.append(oClass.shimClassName());
+        oClass.append('.');
+        oClass.append(funcName);
+        oClass.append('(');
+        oClass.append(translateOneValue(oClass, o.getLeft()));
+        oClass.append(',');
+        oClass.append(translateOneValue(oClass, o.getRight()));
+        oClass.appendNewLine(");");
+        OutValue val = vals[0];
+        val.append("((");
+        val.append(val.type.className);
+        val.append(")");
+        val.append(fieldName);
+        val.append(".result1__())");
     }
 
     @Override
     public void visitCallExpr(@NotNull DexCallExpr o) {
         String funcName = o.getExpression().getNode().getText();
-        tClass.referenced(o);
-        String fieldName = tClass.addField(funcName, "Result");
-        tClass.append(fieldName);
-        tClass.append(" = ");
-        tClass.append(tClass.shimClassName());
-        tClass.append('.');
-        tClass.append(funcName);
-        tClass.append("();");
-        tClass.appendNewLine();
-        TranspiledValue val = vals[0];
-        val.out.append("((");
-        val.out.append(val.type.className);
-        val.out.append(")");
-        val.out.append(fieldName);
-        val.out.append(".result1__())");
+        oClass.referenced(o);
+        String fieldName = oClass.addField(funcName, "Result");
+        oClass.append(fieldName);
+        oClass.append(" = ");
+        oClass.append(oClass.shimClassName());
+        oClass.append('.');
+        oClass.append(funcName);
+        oClass.append("();");
+        oClass.appendNewLine();
+        OutValue val = vals[0];
+        val.append("((");
+        val.append(val.type.className);
+        val.append(")");
+        val.append(fieldName);
+        val.append(".result1__())");
     }
 
     @Override
     public void visitNewExpr(@NotNull DexNewExpr o) {
-        TranspiledValue val = vals[0];
+        OutValue val = vals[0];
         val.type = new RuntimeType(RuntimeTypeKind.GENERIC_OBJECT, "Result");
         String funcName = o.getExpression().getNode().getText();
-        tClass.referenced(o);
-        val.out.append(tClass.shimClassName());
-        val.out.append('.');
-        val.out.append(funcName);
-        val.out.append("()");
+        oClass.referenced(o);
+        val.append(oClass.shimClassName());
+        val.append('.');
+        val.append(funcName);
+        val.append("()");
     }
 
     @Override
@@ -110,23 +110,23 @@ class TransExpr extends DexVisitor {
 
     @Override
     public void visitReferenceExpression(@NotNull DexReferenceExpression o) {
-        TranspiledValue val = vals[0];
-        val.out.append(o);
+        OutValue val = vals[0];
+        val.append(o);
     }
 
     private void genGetResult(DexExpression o) {
         expectOneValue("get result can only assign to one value");
-        TranspiledValue subVal = new TranspiledValue();
+        OutValue subVal = new OutValue(oClass.iFile());
         trans(o, subVal);
-        TranspiledValue val = vals[0];
-        val.out.append("((");
-        val.out.append(val.type.className);
-        val.out.append(")");
-        val.out.append(subVal.out.toString());
-        val.out.append(".result1__())");
+        OutValue val = vals[0];
+        val.append("((");
+        val.append(val.type.className);
+        val.append(")");
+        val.append(subVal.toString());
+        val.append(".result1__())");
     }
 
-    private void trans(DexExpression expr, TranspiledValue ...vals) {
-        expr.accept(new TransExpr(tClass, vals));
+    private void trans(DexExpression expr, OutValue...vals) {
+        expr.accept(new TransExpr(oClass, vals));
     }
 }
