@@ -68,26 +68,6 @@ class TransExpr extends DexVisitor {
     }
 
     @Override
-    public void visitCallExpr(@NotNull DexCallExpr o) {
-        String funcName = o.getExpression().getNode().getText();
-        oClass.referenced(o);
-        String fieldName = oClass.addField(funcName, "Result");
-        oClass.append(fieldName);
-        oClass.append(" = ");
-        oClass.append(oClass.shimClassName());
-        oClass.append('.');
-        oClass.append(funcName);
-        oClass.append("();");
-        oClass.appendNewLine();
-        OutValue val = vals[0];
-        val.append("((");
-        val.append(val.type.className);
-        val.append(")");
-        val.append(fieldName);
-        val.append(".result1__())");
-    }
-
-    @Override
     public void visitNewExpr(@NotNull DexNewExpr o) {
         OutValue val = vals[0];
         val.type = new RuntimeType(RuntimeTypeKind.GENERIC_OBJECT, "Result");

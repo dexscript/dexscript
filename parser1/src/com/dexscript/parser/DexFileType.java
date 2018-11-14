@@ -48,7 +48,7 @@ public class DexFileType extends LanguageFileType {
   @NotNull
   @Override
   public String getDefaultExtension() {
-    return "dex";
+    return "ds";
   }
 
   @Nullable

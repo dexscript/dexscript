@@ -25,7 +25,7 @@ public class DexLanguage extends Language {
   public static final Language INSTANCE = new DexLanguage();
 
   private DexLanguage() {
-    super("dex", "text/dex", "text/x-dex", "application/x-dex");
+    super("ds", "text/ds", "text/x-ds", "application/x-ds");
   }
 
   @NotNull

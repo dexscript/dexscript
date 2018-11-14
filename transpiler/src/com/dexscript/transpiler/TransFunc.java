@@ -52,11 +52,18 @@ class TransFunc extends DexVisitor {
         super.visitReturnStatement(o);
         oMethod.appendSourceLine(o);
         DexExpression expr = o.getExpressionList().get(0);
-        OutExpr val = new OutExpr(oMethod.iFile());
-        val.type = TransType.translateType(iSig.getResult().getType());
+        OutExpr val = new OutExpr(oMethod);
         expr.accept(val);
         oMethod.append("result1__ = ");
-        oMethod.append(val.toString());
+        if ("Result".equals(val.type.className)) {
+            oMethod.append("((");
+            oMethod.append(TransType.translateType(iSig.getResult().getType()).className);
+            oMethod.append(")");
+            oMethod.append(val.toString());
+            oMethod.append(".result1__())");
+        } else {
+            oMethod.append(val.toString());
+        }
         oMethod.append(';');
         oMethod.appendNewLine();
         oMethod.append("finish();");

@@ -6,7 +6,7 @@ import com.intellij.testFramework.ParsingTestCase;
 public class DexFileFactory extends ParsingTestCase implements AutoCloseable {
 
     public DexFileFactory() {
-        super("parser", "dex", new DexParserDefinition());
+        super("parser", "ds", new DexParserDefinition());
         try {
             setUp();
         } catch (Exception e) {

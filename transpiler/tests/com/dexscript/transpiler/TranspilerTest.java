@@ -20,7 +20,7 @@ public class TranspilerTest {
 
     @Test
     public void testReturnStringLiteral() {
-        transpiler.transpile("hello.ds", "" +
+        transpiler.transpile("hello", "" +
                 "package abc\n" +
                 "function hello(): string {\n" +
                 "   return 'hello'\n" +
@@ -29,7 +29,7 @@ public class TranspilerTest {
 
     @Test
     public void testFunctionCall() {
-        transpiler.transpile("hello.ds", "" +
+        transpiler.transpile("hello", "" +
                 "package abc\n" +
                 "function hello(): string {\n" +
                 "   return world()\n" +
@@ -41,7 +41,7 @@ public class TranspilerTest {
 
     @Test
     public void testPlus() {
-        transpiler.transpile("hello.ds", "" +
+        transpiler.transpile("hello", "" +
                 "package abc\n" +
                 "function hello(): int64 {\n" +
                 "   return 1+2\n" +
@@ -50,7 +50,7 @@ public class TranspilerTest {
 
     @Test
     public void testAssignment() {
-        transpiler.transpile("hello.ds", "" +
+        transpiler.transpile("hello", "" +
                 "package abc\n" +
                 "function hello() {\n" +
                 "   val := 'hello'\n" +
@@ -59,7 +59,7 @@ public class TranspilerTest {
 
     @Test
     public void testGetResult() {
-        transpiler.transpile("hello.ds", "" +
+        transpiler.transpile("hello", "" +
                 "package abc\n" +
                 "\n" +
                 "function hello(): string {\n" +
@@ -74,7 +74,7 @@ public class TranspilerTest {
 
     @Test
     public void testAwait() {
-        transpiler.transpile("hello.ds", "" +
+        transpiler.transpile("hello", "" +
                 "package abc\n" +
                 "\n" +
                 "function Hello(): string {\n" +
