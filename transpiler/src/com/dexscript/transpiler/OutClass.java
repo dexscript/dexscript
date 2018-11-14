@@ -1,9 +1,7 @@
 package com.dexscript.transpiler;
 
-import com.dexscript.psi.DexExpression;
-import com.dexscript.psi.DexFile;
-import com.dexscript.psi.DexType;
-import com.dexscript.psi.OutCode;
+import com.dexscript.psi.*;
+import org.jetbrains.annotations.NotNull;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.*;
@@ -104,5 +102,23 @@ class OutClass extends OutCode {
             append(field.outName);
             appendNewLine(';');
         }
+    }
+
+    public void appendReturnValueFields(@NotNull DexSignature iSig) {
+        DexResult result = iSig.getResult();
+        if (result == null) {
+            return;
+        }
+        DexType returnType = result.getType();
+        append("public ");
+        append(returnType);
+        append(" result1__;");
+        appendNewLine();
+        append("public Object result1__() {");
+        indent(() -> {
+            append("return result1__;");
+        });
+        append("}");
+        appendNewLine();
     }
 }

@@ -9,13 +9,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-class TransFile extends DexVisitor {
+class OutFile extends DexVisitor {
 
-    private final List<OutClass> tClasses = new ArrayList<>();
+    private final List<OutClass> oClasses = new ArrayList<>();
     private final DexFile iFile;
     private String packageName;
 
-    TransFile(DexFile iFile) {
+    OutFile(DexFile iFile) {
         this.iFile = iFile;
     }
 
@@ -37,15 +37,15 @@ class TransFile extends DexVisitor {
         oClass.indent(() -> {
             oClass.appendNewLine();
             // oFields for return value
-            TransFunc.genReturnValueFields(oClass, iFuncDecl.getSignature());
+            oClass.appendReturnValueFields(iFuncDecl.getSignature());
             oClass.appendNewLine();
             // constructor
-            OutMethod oMethod = new OutMethod(oClass);
+            OutMethod oMethod = new OutMethod(oClass, iFuncDecl.getSignature());
             oMethod.append("public ");
             oMethod.append(iFuncDecl.getIdentifier());
             oMethod.append("() {");
             oMethod.indent(() -> {
-                iFuncDecl.getBlock().acceptChildren(new TransFunc(oMethod, iFuncDecl.getSignature()));
+                iFuncDecl.getBlock().acceptChildren(oMethod);
             });
             oMethod.appendNewLine('}');
             oClass.genClassBody();
@@ -57,7 +57,7 @@ class TransFile extends DexVisitor {
     @NotNull
     private OutClass newOutClass(String packageName, String className) {
         OutClass out = new OutClass(iFile, packageName, className);
-        tClasses.add(out);
+        oClasses.add(out);
         return out;
     }
 
@@ -66,12 +66,12 @@ class TransFile extends DexVisitor {
         file.acceptChildren(this);
     }
 
-    public List<OutClass> getTranspiledClasses() {
-        return Collections.unmodifiableList(tClasses);
+    public List<OutClass> oClasses() {
+        return Collections.unmodifiableList(oClasses);
     }
 
     public void genShim(InMemoryJavaCompiler compiler) {
-        String shimClassName = tClasses.get(0).shimClassName();
+        String shimClassName = oClasses.get(0).shimClassName();
         OutClass out = new OutClass(iFile, packageName, shimClassName);
         out.appendNewLine("import com.dexscript.runtime.Result;");
         out.appendNewLine();
@@ -79,7 +79,7 @@ class TransFile extends DexVisitor {
         out.append(shimClassName);
         out.append(" {");
         out.indent(() -> {
-            for (OutClass tClass : tClasses) {
+            for (OutClass tClass : oClasses) {
                 for (DexExpression ref : tClass.references()) {
                     if (ref instanceof DexCallExpr) {
                         DexCallExpr callExpr = (DexCallExpr) ref;
