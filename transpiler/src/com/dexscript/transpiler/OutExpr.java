@@ -14,7 +14,7 @@ public class OutExpr extends OutValue {
         oClass = oMethod.oClass();
         iExpr.accept(this);
         if (type == null) {
-            throw new IllegalStateException("failed to translate expression");
+            throw new IllegalStateException("failed to translate expression: " + iExpr.getNode().getText());
         }
     }
 
@@ -33,6 +33,17 @@ public class OutExpr extends OutValue {
         append('"');
         append(text.substring(1, text.length() - 1));
         append('"');
+    }
+
+    @Override
+    public void visitNewExpr(@NotNull DexNewExpr iNewExpr) {
+        type = new RuntimeType(RuntimeTypeKind.GENERIC_OBJECT, "Result");
+        String funcName = iNewExpr.getExpression().getNode().getText();
+        oClass.referenced(iNewExpr);
+        append(oClass.shimClassName());
+        append('.');
+        append(funcName);
+        append("()");
     }
 
     @Override
@@ -70,5 +81,27 @@ public class OutExpr extends OutValue {
         oMethod.append(oRightExpr);
         oMethod.appendNewLine(");");
         append(fieldName);
+    }
+
+    @Override
+    public void visitUnaryExpr(@NotNull DexUnaryExpr iExpr) {
+        if (iExpr.getGetResult() != null) {
+            genGetResult(iExpr.getExpression());
+        } else {
+            throw new UnsupportedOperationException("not implemented");
+        }
+    }
+
+    @Override
+    public void visitReferenceExpression(@NotNull DexReferenceExpression oRefExpr) {
+        type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Object");
+        append(oRefExpr);
+    }
+
+    private void genGetResult(DexExpression iExpr) {
+        type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Object");
+        append("(");
+        append(new OutExpr(oMethod, iExpr));
+        append(".result1__())");
     }
 }

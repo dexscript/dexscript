@@ -21,30 +21,19 @@ class TransFunc extends DexVisitor {
     }
 
     @Override
-    public void visitShortVarDeclaration(@NotNull DexShortVarDeclaration o) {
-        List<DexVarDefinition> varDefs = o.getVarDefinitionList();
-        OutValue[] outVals = new OutValue[varDefs.size()];
-        for (int i = 0; i < outVals.length; i++) {
-            outVals[i] = new OutValue(oMethod.iFile());
-        }
-        DexExpression expr = o.getExpressionList().get(0);
-        expr.accept(new TransExpr(oMethod.oClass(), outVals));
-        for (int i = 0; i < varDefs.size(); i++) {
-            DexVarDefinition inVar = varDefs.get(i);
-            String inVarName = inVar.getIdentifier().getNode().getText();
-            OutValue outVal = outVals[i];
-            String fieldType = "Object";
-            if (outVal.type != null) {
-                fieldType = outVal.type.className;
-            }
-            String outFieldName = oMethod.oClass().addField(inVarName, fieldType);
-            oMethod.appendSourceLine(inVar);
-            oMethod.append(outFieldName);
-            oMethod.append(" = ");
-            oMethod.append(outVal.toString());
-            oMethod.append(';');
-            oMethod.appendNewLine();
-        }
+    public void visitShortVarDeclaration(@NotNull DexShortVarDeclaration iShortVarDecl) {
+        DexExpression iExpr = iShortVarDecl.getExpressionList().get(0);
+        OutExpr oExpr = new OutExpr(oMethod, iExpr);
+        List<DexVarDefinition> iVarDefs = iShortVarDecl.getVarDefinitionList();
+        DexVarDefinition iVarDef = iVarDefs.get(0);
+        String inVarName = iVarDef.getIdentifier().getNode().getText();
+        String oFieldName = oMethod.oClass().addField(inVarName, oExpr.type.className);
+        oMethod.appendSourceLine(iVarDef);
+        oMethod.append(oFieldName);
+        oMethod.append(" = ");
+        oMethod.append(oExpr);
+        oMethod.append(';');
+        oMethod.appendNewLine();
     }
 
     @Override
@@ -61,6 +50,9 @@ class TransFunc extends DexVisitor {
             oMethod.append(val.toString());
             oMethod.append(".result1__())");
         } else {
+            oMethod.append("(");
+            oMethod.append(TransType.translateType(iSig.getResult().getType()).className);
+            oMethod.append(")");
             oMethod.append(val.toString());
         }
         oMethod.append(';');
