@@ -70,6 +70,10 @@ public class OutCode extends DexVisitor {
         return iFile;
     }
 
+    public void append(OutCode oCode) {
+        append(oCode.toString());
+    }
+
     public interface Operation {
         void call();
     }

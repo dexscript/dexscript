@@ -51,9 +51,8 @@ class TransFunc extends DexVisitor {
     public void visitReturnStatement(@NotNull DexReturnStatement o) {
         super.visitReturnStatement(o);
         oMethod.appendSourceLine(o);
-        DexExpression expr = o.getExpressionList().get(0);
-        OutExpr val = new OutExpr(oMethod);
-        expr.accept(val);
+        DexExpression iExpr = o.getExpressionList().get(0);
+        OutExpr val = new OutExpr(oMethod, iExpr);
         oMethod.append("result1__ = ");
         if ("Result".equals(val.type.className)) {
             oMethod.append("((");

@@ -19,52 +19,10 @@ class TransExpr extends DexVisitor {
         return val.toString();
     }
 
-    @Override
-    public void visitLiteral(@NotNull DexLiteral o) {
-        expectOneValue("literal can only assign to one value");
-        OutValue val = vals[0];
-        val.append("((long)");
-        val.append(o.getNode().getText());
-        val.append(')');
-    }
-
-    @Override
-    public void visitStringLiteral(@NotNull DexStringLiteral o) {
-        expectOneValue("string literal can only assign to one value");
-        OutValue val = vals[0];
-        String text = o.getNode().getText();
-        val.append('"');
-        val.append(text.substring(1, text.length() - 1));
-        val.append('"');
-    }
-
     private void expectOneValue(String s) {
         if (vals.length != 1) {
             throw new IllegalStateException(s);
         }
-    }
-
-    @Override
-    public void visitAddExpr(@NotNull DexAddExpr o) {
-        String funcName = "add";
-        oClass.referenced(o);
-        String fieldName = oClass.addField("addResult", "Result");
-        oClass.append(fieldName);
-        oClass.append(" = ");
-        oClass.append(oClass.shimClassName());
-        oClass.append('.');
-        oClass.append(funcName);
-        oClass.append('(');
-        oClass.append(translateOneValue(oClass, o.getLeft()));
-        oClass.append(',');
-        oClass.append(translateOneValue(oClass, o.getRight()));
-        oClass.appendNewLine(");");
-        OutValue val = vals[0];
-        val.append("((");
-        val.append(val.type.className);
-        val.append(")");
-        val.append(fieldName);
-        val.append(".result1__())");
     }
 
     @Override
