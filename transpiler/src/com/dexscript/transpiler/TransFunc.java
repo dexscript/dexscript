@@ -7,12 +7,12 @@ import java.util.List;
 
 class TransFunc extends DexVisitor {
 
-    private final OutMethod oMethod;
-    private final DexFunctionDeclaration decl;
+    private OutMethod oMethod;
+    private final DexSignature iSig;
 
-    public TransFunc(OutMethod oMethod, DexFunctionDeclaration decl) {
+    public TransFunc(OutMethod oMethod, DexSignature iSig) {
         this.oMethod = oMethod;
-        this.decl = decl;
+        this.iSig = iSig;
     }
 
     @Override
@@ -52,13 +52,58 @@ class TransFunc extends DexVisitor {
         super.visitReturnStatement(o);
         oMethod.appendSourceLine(o);
         DexExpression expr = o.getExpressionList().get(0);
-        OutValue val1 = new OutValue(oMethod.iFile());
-        val1.type = TransType.translateType(decl.getSignature().getResult().getType());
-        expr.accept(new TransExpr(oMethod.oClass(), val1));
+        OutExpr val = new OutExpr(oMethod.iFile());
+        val.type = TransType.translateType(iSig.getResult().getType());
+        expr.accept(val);
         oMethod.append("result1__ = ");
-        oMethod.append(val1.toString());
+        oMethod.append(val.toString());
         oMethod.append(';');
         oMethod.appendNewLine();
         oMethod.append("finish();");
+    }
+
+
+    @Override
+    public void visitAwaitStatement(@NotNull DexAwaitStatement iAwaitStmt) {
+        DexServeStatement iServeStmt = iAwaitStmt.getServeStatement();
+        oMethod = new OutMethod(oMethod.oClass());
+        oMethod.append("public Result ");
+        oMethod.append(iServeStmt.getIdentifier());
+        oMethod.append("() {");
+        oMethod.indent(() -> {
+            oMethod.append("return new Actor() {");
+            oMethod.indent(() -> {
+                OutClass oClass = new OutClass(oMethod);
+                genReturnValueFields(oClass, iServeStmt.getSignature());
+                OutMethod oSubMethod = new OutMethod(oClass);
+                oSubMethod.append("{");
+                oSubMethod.indent(() -> {
+                    iServeStmt.getBlock().acceptChildren(new TransFunc(oSubMethod, iServeStmt.getSignature()));
+                });
+                oSubMethod.appendNewLine('}');
+                oClass.genClassBody();
+                oMethod.append(oClass.toString());
+            });
+            oMethod.append('}');
+        });
+        oMethod.appendNewLine("}");
+    }
+
+    public static void genReturnValueFields(OutClass oClass, @NotNull DexSignature iSig) {
+        DexResult result = iSig.getResult();
+        if (result == null) {
+            return;
+        }
+        DexType returnType = result.getType();
+        oClass.append("public ");
+        oClass.append(returnType);
+        oClass.append(" result1__;");
+        oClass.appendNewLine();
+        oClass.append("public Object result1__() {");
+        oClass.indent(() -> {
+            oClass.append("return result1__;");
+        });
+        oClass.append("}");
+        oClass.appendNewLine();
     }
 }

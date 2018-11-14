@@ -28,6 +28,13 @@ class OutClass extends OutCode {
         append(";\n\n");
     }
 
+    public OutClass(OutMethod parent) {
+        super(parent);
+        shimClassName = parent.oClass().shimClassName;
+        this.packageName = parent.oClass().packageName;
+        this.className = "";
+    }
+
     public String qualifiedClassName() {
         return packageName + "." + className;
     }
@@ -83,5 +90,19 @@ class OutClass extends OutCode {
 
     public void addMethod(OutMethod oMethod) {
         oMethods.add(oMethod);
+    }
+
+    void genClassBody() {
+        for (OutMethod oMethod : oMethods()) {
+            append(oMethod.toString());
+            appendNewLine();
+        }
+        for (OutField field : oFields()) {
+            append("private ");
+            append(field.type);
+            append(' ');
+            append(field.outName);
+            appendNewLine(';');
+        }
     }
 }

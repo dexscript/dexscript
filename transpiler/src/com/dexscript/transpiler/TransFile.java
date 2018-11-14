@@ -37,7 +37,7 @@ class TransFile extends DexVisitor {
         oClass.indent(() -> {
             oClass.appendNewLine();
             // oFields for return value
-            genReturnValueFields(oClass, iFuncDecl);
+            TransFunc.genReturnValueFields(oClass, iFuncDecl.getSignature());
             oClass.appendNewLine();
             // constructor
             OutMethod oMethod = new OutMethod(oClass);
@@ -45,46 +45,13 @@ class TransFile extends DexVisitor {
             oMethod.append(iFuncDecl.getIdentifier());
             oMethod.append("() {");
             oMethod.indent(() -> {
-                iFuncDecl.getBlock().acceptChildren(new TransFunc(oMethod, iFuncDecl));
+                iFuncDecl.getBlock().acceptChildren(new TransFunc(oMethod, iFuncDecl.getSignature()));
             });
-            oMethod.append("}");
-            genClassBody(oClass);
+            oMethod.appendNewLine('}');
+            oClass.genClassBody();
         });
         oClass.append('}');
         oClass.appendNewLine();
-    }
-
-    private void genClassBody(OutClass oClass) {
-        for (OutMethod oMethod : oClass.oMethods()) {
-            oClass.append(oMethod.toString());
-            oClass.appendNewLine();
-        }
-        oClass.appendNewLine();
-        for (OutField field : oClass.oFields()) {
-            oClass.append("private ");
-            oClass.append(field.type);
-            oClass.append(' ');
-            oClass.append(field.outName);
-            oClass.appendNewLine(';');
-        }
-    }
-
-    private void genReturnValueFields(OutClass out, @NotNull DexFunctionDeclaration o) {
-        DexResult result = o.getSignature().getResult();
-        if (result == null) {
-            return;
-        }
-        DexType returnType = result.getType();
-        out.append("public ");
-        out.append(returnType);
-        out.append(" result1__;");
-        out.appendNewLine();
-        out.append("public Object result1__() {");
-        out.indent(() -> {
-            out.append("return result1__;");
-        });
-        out.append("}");
-        out.appendNewLine();
     }
 
     @NotNull

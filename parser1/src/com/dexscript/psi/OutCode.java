@@ -2,7 +2,7 @@ package com.dexscript.psi;
 
 import com.intellij.psi.PsiElement;
 
-public class OutCode {
+public class OutCode extends DexVisitor {
 
     private final DexFile iFile;
     private final StringBuilder out = new StringBuilder();
