@@ -14,8 +14,9 @@ class OutClass extends OutCode {
     private final String shimClassName;
     private final String packageName;
     private final String className;
-    private final Map<String, Integer> fieldNames = new HashMap<>();
-    private final List<OutField> fields = new ArrayList<>();
+    private final Map<String, Integer> oFieldNames = new HashMap<>();
+    private final List<OutField> oFields = new ArrayList<>();
+    private final List<OutMethod> oMethods = new ArrayList<>();
 
     public OutClass(DexFile iFile, String packageName, String className) {
         super(iFile);
@@ -60,19 +61,27 @@ class OutClass extends OutCode {
     }
 
     public String addField(String originalName, String fieldType) {
-        if (!fieldNames.containsKey(originalName)) {
-            fieldNames.put(originalName, 1);
-            fields.add(new OutField(originalName, originalName, fieldType));
+        if (!oFieldNames.containsKey(originalName)) {
+            oFieldNames.put(originalName, 1);
+            oFields.add(new OutField(originalName, originalName, fieldType));
             return originalName;
         }
-        int index = fieldNames.get(originalName) + 1;
-        fieldNames.put(originalName, index);
+        int index = oFieldNames.get(originalName) + 1;
+        oFieldNames.put(originalName, index);
         String transpiledName = originalName + index;
-        fields.add(new OutField(originalName, transpiledName, fieldType));
+        oFields.add(new OutField(originalName, transpiledName, fieldType));
         return transpiledName;
     }
 
-    public List<OutField> fields() {
-        return Collections.unmodifiableList(fields);
+    public List<OutField> oFields() {
+        return Collections.unmodifiableList(oFields);
+    }
+
+    public List<OutMethod> oMethods() {
+        return Collections.unmodifiableList(oMethods);
+    }
+
+    public void addMethod(OutMethod oMethod) {
+        oMethods.add(oMethod);
     }
 }

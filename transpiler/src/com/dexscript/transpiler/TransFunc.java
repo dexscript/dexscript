@@ -7,12 +7,10 @@ import java.util.List;
 
 class TransFunc extends DexVisitor {
 
-    private final OutClass oClass;
     private final OutMethod oMethod;
     private final DexFunctionDeclaration decl;
 
-    public TransFunc(OutClass oClass, OutMethod oMethod, DexFunctionDeclaration decl) {
-        this.oClass = oClass;
+    public TransFunc(OutMethod oMethod, DexFunctionDeclaration decl) {
         this.oMethod = oMethod;
         this.decl = decl;
     }
@@ -27,10 +25,10 @@ class TransFunc extends DexVisitor {
         List<DexVarDefinition> varDefs = o.getVarDefinitionList();
         OutValue[] outVals = new OutValue[varDefs.size()];
         for (int i = 0; i < outVals.length; i++) {
-            outVals[i] = new OutValue(oClass.iFile());
+            outVals[i] = new OutValue(oMethod.iFile());
         }
         DexExpression expr = o.getExpressionList().get(0);
-        expr.accept(new TransExpr(oClass, outVals));
+        expr.accept(new TransExpr(oMethod.oClass(), outVals));
         for (int i = 0; i < varDefs.size(); i++) {
             DexVarDefinition inVar = varDefs.get(i);
             String inVarName = inVar.getIdentifier().getNode().getText();
@@ -39,7 +37,7 @@ class TransFunc extends DexVisitor {
             if (outVal.type != null) {
                 fieldType = outVal.type.className;
             }
-            String outFieldName = oClass.addField(inVarName, fieldType);
+            String outFieldName = oMethod.oClass().addField(inVarName, fieldType);
             oMethod.appendSourceLine(inVar);
             oMethod.append(outFieldName);
             oMethod.append(" = ");
@@ -54,9 +52,9 @@ class TransFunc extends DexVisitor {
         super.visitReturnStatement(o);
         oMethod.appendSourceLine(o);
         DexExpression expr = o.getExpressionList().get(0);
-        OutValue val1 = new OutValue(oClass.iFile());
+        OutValue val1 = new OutValue(oMethod.iFile());
         val1.type = TransType.translateType(decl.getSignature().getResult().getType());
-        expr.accept(new TransExpr(oClass, val1));
+        expr.accept(new TransExpr(oMethod.oClass(), val1));
         oMethod.append("result1__ = ");
         oMethod.append(val1.toString());
         oMethod.append(';');

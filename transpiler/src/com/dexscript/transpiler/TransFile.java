@@ -36,31 +36,37 @@ class TransFile extends DexVisitor {
         oClass.append(" extends Actor {");
         oClass.indent(() -> {
             oClass.appendNewLine();
-            // fields for return value
+            // oFields for return value
             genReturnValueFields(oClass, iFuncDecl);
             oClass.appendNewLine();
             // constructor
-            OutMethod oMethod = new OutMethod(iFile);
+            OutMethod oMethod = new OutMethod(oClass);
             oMethod.append("public ");
             oMethod.append(iFuncDecl.getIdentifier());
             oMethod.append("() {");
             oMethod.indent(() -> {
-                iFuncDecl.getBlock().acceptChildren(new TransFunc(oClass, oMethod, iFuncDecl));
+                iFuncDecl.getBlock().acceptChildren(new TransFunc(oMethod, iFuncDecl));
             });
             oMethod.append("}");
-            oClass.append(oMethod.toString());
-            oClass.appendNewLine();
-            oClass.appendNewLine();
-            for (OutField field : oClass.fields()) {
-                oClass.append("private ");
-                oClass.append(field.type);
-                oClass.append(' ');
-                oClass.append(field.outName);
-                oClass.appendNewLine(';');
-            }
+            genClassBody(oClass);
         });
         oClass.append('}');
         oClass.appendNewLine();
+    }
+
+    private void genClassBody(OutClass oClass) {
+        for (OutMethod oMethod : oClass.oMethods()) {
+            oClass.append(oMethod.toString());
+            oClass.appendNewLine();
+        }
+        oClass.appendNewLine();
+        for (OutField field : oClass.oFields()) {
+            oClass.append("private ");
+            oClass.append(field.type);
+            oClass.append(' ');
+            oClass.append(field.outName);
+            oClass.appendNewLine(';');
+        }
     }
 
     private void genReturnValueFields(OutClass out, @NotNull DexFunctionDeclaration o) {

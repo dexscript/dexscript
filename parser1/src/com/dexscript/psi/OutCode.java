@@ -12,6 +12,11 @@ public class OutCode {
         this.iFile = iFile;
     }
 
+    public OutCode(OutCode base) {
+        this.iFile = base.iFile;
+        this.prefix = base.prefix;
+    }
+
     public void indent(Operation op) {
         String oldPrefix = prefix;
         prefix += "  ";
