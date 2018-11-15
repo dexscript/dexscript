@@ -26,20 +26,18 @@ public class OutMethod extends OutCode {
     public void visitReturnStatement(@NotNull DexReturnStatement o) {
         super.visitReturnStatement(o);
         appendSourceLine(o);
-        if (iSig.getResult() != null && o.getExpressionList().size() == 1) {
-            DexExpression iExpr = o.getExpressionList().get(0);
-            OutExpr val = new OutExpr(this, iExpr);
-            append("result1__ = ");
-            append("(");
-            append(TransType.translateType(iSig.getResult().getType()).className);
-            append(")");
-            append(val.toString());
-            if ("Result".equals(val.type.className)) {
-                append(".result1__()");
-            }
-            append(';');
-            appendNewLine();
+        DexExpression iExpr = o.getExpressionList().get(0);
+        OutExpr val = new OutExpr(this, iExpr);
+        append("result1__ = ");
+        append("(");
+        append(TransType.translateType(iSig.getResult().getType()).className);
+        append(")");
+        append(val.toString());
+        if ("Result".equals(val.type.className)) {
+            append(".result1__()");
         }
+        append(';');
+        appendNewLine();
         append("finish();");
     }
 
@@ -76,7 +74,7 @@ public class OutMethod extends OutCode {
             oMethod.indent(() -> {
                 OutClass oClass = new OutClass(oMethod);
                 oClass.appendReturnValueFields(iServeStmt.getSignature());
-                OutMethod oSubMethod = new OutMethod(oClass, iSig);
+                OutMethod oSubMethod = new OutMethod(oClass, iServeStmt.getSignature());
                 oSubMethod.append("{");
                 oSubMethod.indent(() -> {
                     iServeStmt.getBlock().acceptChildren(oSubMethod);
@@ -85,7 +83,7 @@ public class OutMethod extends OutCode {
                 oClass.genClassBody();
                 oMethod.append(oClass.toString());
             });
-            oMethod.append('}');
+            oMethod.append("};");
         });
         oMethod.appendNewLine("}");
     }

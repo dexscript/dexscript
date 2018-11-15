@@ -49,16 +49,24 @@ public class OutExpr extends OutValue {
     @Override
     public void visitCallExpr(@NotNull DexCallExpr o) {
         type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Result");
-        String funcName = o.getExpression().getNode().getText();
+        String symbolName = o.getExpression().getNode().getText();
         oClass.referenced(o);
+        String[] parts = symbolName.split("\\.");
+        String funcName = parts[parts.length - 1];
         String fieldName = oMethod.oClass().addField(funcName, "Result");
         oMethod.append(fieldName);
         oMethod.append(" = ");
         oMethod.append(oMethod.oClass().shimClassName());
         oMethod.append('.');
         oMethod.append(funcName);
-        oMethod.append("();");
-        oMethod.appendNewLine();
+        oMethod.append('(');
+        if (parts.length == 1) {
+        } else if (parts.length == 2) {
+            oMethod.append(parts[0]);
+        } else {
+            throw new UnsupportedOperationException("not implemented");
+        }
+        oMethod.appendNewLine(");");
         append(fieldName);
     }
 

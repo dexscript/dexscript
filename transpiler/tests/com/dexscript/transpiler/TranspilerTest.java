@@ -78,7 +78,7 @@ public class TranspilerTest {
                 "package abc\n" +
                 "\n" +
                 "function Hello(): string {\n" +
-                "    world := World{}\n" +
+                "    w := World{}\n" +
                 "    return w.Say()\n" +
                 "}\n" +
                 "\n" +

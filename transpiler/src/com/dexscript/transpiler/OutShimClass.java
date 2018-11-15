@@ -41,16 +41,30 @@ public class OutShimClass extends OutClass {
         appendNewLine("}");
     }
 
-    private void genShim4CallExpr(DexExpression callExpr, String funcName) {
+    private void genShim4CallExpr(DexExpression callExpr, String symbolName) {
+        String[] parts = symbolName.split("\\.");
+        String funcName = parts[parts.length - 1];
         appendSourceLine(callExpr);
         append("public static Result ");
         append(funcName);
-        append("() {");
-        indent(() -> {
-            append("return new ");
-            append(funcName);
-            append("();");
-        });
-        append("}");
+        if (parts.length == 1) {
+            append("() {");
+            indent(() -> {
+                append("return new ");
+                append(symbolName);
+                append("();");
+            });
+            appendNewLine("}");
+        } else if (parts.length == 2) {
+            append("(Object obj) {");
+            indent(() -> {
+                append("return ((World)obj).");
+                append(funcName);
+                append("();");
+            });
+            appendNewLine("}");
+        } else {
+            throw new UnsupportedOperationException("not implemented");
+        }
     }
 }

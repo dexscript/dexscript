@@ -22,7 +22,7 @@ public class Transpiler implements AutoCloseable {
         oFile.genShim(compiler);
         try {
             Map<String, Class<?>> classes = compiler.compileAll();
-            Object obj = classes.get("abc.hello").newInstance();
+            Object obj = classes.get("abc.Hello").newInstance();
             System.out.println(((Result1) obj).result1__());
         } catch (Exception e) {
             e.printStackTrace();
