@@ -79,24 +79,21 @@ public class TranspilerTest {
 
     @Test
     public void testGetResult() {
-        transpiler.transpile("hello", "" +
-                "package abc\n" +
-                "\n" +
-                "function hello(): string {\n" +
-                "    w := world{}\n" +
+        String src = "" +
+                "function Hello(): string {\n" +
+                "    w := World{}\n" +
                 "    return <- w\n" +
                 "}\n" +
                 "\n" +
-                "function world(): string {\n" +
+                "function World(): string {\n" +
                 "    return 'hello'\n" +
-                "}");
+                "}";
+        Assert.assertEquals("hello", transpile1(src));
     }
 
     @Test
     public void testAwait() {
-        transpiler.transpile("hello", "" +
-                "package abc\n" +
-                "\n" +
+        String src = "" +
                 "function Hello(): string {\n" +
                 "    w := World{}\n" +
                 "    return w.Say()\n" +
@@ -107,6 +104,7 @@ public class TranspilerTest {
                 "    -> Say(): string {\n" +
                 "        return 'hello'\n" +
                 "    }}\n" +
-                "}");
+                "}";
+        Assert.assertEquals("hello", transpile1(src));
     }
 }

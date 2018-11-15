@@ -73,7 +73,11 @@ public class OutMethod extends OutCode {
         oMethod.append(iServeStmt.getIdentifier());
         oMethod.append("() {");
         oMethod.indent(() -> {
-            oMethod.append("return new Actor() {");
+            if (iServeStmt.getSignature().getResult() == null) {
+                oMethod.append("return new Actor() {");
+            } else {
+                oMethod.append("return new Actor1() {");
+            }
             oMethod.indent(() -> {
                 OutClass oClass = new OutClass(oMethod);
                 oClass.appendReturnValueFields(iServeStmt.getSignature());

@@ -108,8 +108,8 @@ public class OutExpr extends OutValue {
 
     private void genGetResult(DexExpression iExpr) {
         type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Object");
-        append("(");
+        append("((Result1)");
         append(new OutExpr(oMethod, iExpr));
-        append(".result1__())");
+        append(").result1__()");
     }
 }
