@@ -59,6 +59,7 @@ class OutClass extends OutCode {
 
     public void addToCompiler(InMemoryJavaCompiler compiler) {
         try {
+            System.out.println(qualifiedClassName());
             String lines[] = toString().split("\\r?\\n");
             for (int i = 0; i < lines.length; i++) {
                 String line = lines[i];

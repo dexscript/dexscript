@@ -1,6 +1,8 @@
 package com.dexscript.transpiler;
 
+import com.dexscript.runtime.Result1;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,22 +21,27 @@ public class TranspilerTest {
     }
 
     @Test
-    public void testReturnStringLiteral() {
-        transpiler.transpile("hello", "" +
-                "package abc\n" +
-                "function hello(): string {\n" +
+    public void testReturnStringLiteral() throws Exception {
+        String src = "" +
+                "function Hello(): string {\n" +
                 "   return 'hello'\n" +
-                "}\n");
+                "}\n";
+        Assert.assertEquals("hello", transpile1(src));
+    }
+
+    private Object transpile1(String source) throws Exception {
+        Class clazz = transpiler.transpile("hello", "package abc\n" + source).get("abc.Hello");
+        return ((Result1) clazz.getConstructor().newInstance()).result1__();
     }
 
     @Test
     public void testFunctionCall() {
         transpiler.transpile("hello", "" +
                 "package abc\n" +
-                "function hello(): string {\n" +
-                "   return world()\n" +
+                "function Hello(): string {\n" +
+                "   return World()\n" +
                 "}\n" +
-                "function world(): string {\n" +
+                "function World(): string {\n" +
                 "   return 'hello'\n" +
                 "}\n");
     }
@@ -43,7 +50,7 @@ public class TranspilerTest {
     public void testPlus() {
         transpiler.transpile("hello", "" +
                 "package abc\n" +
-                "function hello(): int64 {\n" +
+                "function Hello(): int64 {\n" +
                 "   return 1+2\n" +
                 "}\n");
     }
@@ -52,7 +59,7 @@ public class TranspilerTest {
     public void testAssignment() {
         transpiler.transpile("hello", "" +
                 "package abc\n" +
-                "function hello() {\n" +
+                "function Hello() {\n" +
                 "   val := 'hello'\n" +
                 "}\n");
     }

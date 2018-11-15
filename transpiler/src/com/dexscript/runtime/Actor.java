@@ -15,9 +15,4 @@ public class Actor implements Result {
     public boolean isResultReady() {
         return isResultReady;
     }
-
-    @Override
-    public Object result1__() {
-        return null;
-    }
 }
