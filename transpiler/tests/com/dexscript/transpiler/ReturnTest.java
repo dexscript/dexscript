@@ -22,4 +22,22 @@ public class ReturnTest extends TranspilerTest {
                 "}\n";
         Assert.assertEquals("hello", transpile1(src));
     }
+
+    @Test
+    public void testReturnInt64() {
+        String src = "" +
+                "function Hello(): int64 {\n" +
+                "   return 1\n" +
+                "}\n";
+        Assert.assertEquals((long)1, transpile1(src));
+    }
+
+    @Test
+    public void testReturnInt32() {
+        String src = "" +
+                "function Hello(): int32 {\n" +
+                "   return (int32)1\n" +
+                "}\n";
+        Assert.assertEquals(1, transpile1(src));
+    }
 }

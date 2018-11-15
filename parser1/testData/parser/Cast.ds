@@ -1,0 +1,5 @@
+package abc
+
+function hello(): int32 {
+    return (int32)1
+}

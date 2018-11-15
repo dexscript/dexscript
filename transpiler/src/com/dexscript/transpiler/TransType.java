@@ -11,7 +11,9 @@ public class TransType {
             case "int64":
                 return new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Long");
             case "uint64":
-                return new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Long");
+                throw new UnsupportedOperationException("not implemented");
+            case "int32":
+                return new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Integer");
             default:
                 return new RuntimeType(RuntimeTypeKind.GENERIC_OBJECT, type.getNode().getText());
         }

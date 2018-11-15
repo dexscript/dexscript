@@ -134,10 +134,10 @@ public class DexParser implements PsiParser, LightPsiParser {
     create_token_set_(FUNCTION_TYPE, PAR_TYPE, TYPE, TYPE_LIST),
     create_token_set_(AWAIT_STATEMENT, RETURN_STATEMENT, SERVE_STATEMENT, SIMPLE_STATEMENT,
       STATEMENT),
-    create_token_set_(ADD_EXPR, AND_EXPR, CALL_EXPR, CONDITIONAL_EXPR,
-      EXPRESSION, LITERAL, MUL_EXPR, NEW_EXPR,
-      OR_EXPR, PARENTHESES_EXPR, REFERENCE_EXPRESSION, STRING_LITERAL,
-      UNARY_EXPR),
+    create_token_set_(ADD_EXPR, AND_EXPR, CALL_EXPR, CAST_EXPR,
+      CONDITIONAL_EXPR, EXPRESSION, LITERAL, MUL_EXPR,
+      NEW_EXPR, OR_EXPR, PARENTHESES_EXPR, REFERENCE_EXPRESSION,
+      STRING_LITERAL, UNARY_EXPR),
   };
 
   /* ********************************************************** */
@@ -1920,14 +1920,16 @@ public class DexParser implements PsiParser, LightPsiParser {
   // 3: BINARY(AddExpr)
   // 4: BINARY(MulExpr)
   // 5: PREFIX(UnaryExpr)
-  // 6: ATOM(Literal) POSTFIX(CallExpr) POSTFIX(NewExpr) ATOM(OperandName)
-  // 7: ATOM(ParenthesesExpr)
+  // 6: PREFIX(CastExpr)
+  // 7: ATOM(Literal) POSTFIX(CallExpr) POSTFIX(NewExpr) ATOM(OperandName)
+  // 8: ATOM(ParenthesesExpr)
   public static boolean Expression(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "Expression")) return false;
     addVariant(b, "<expression>");
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, "<expression>");
     r = UnaryExpr(b, l + 1);
+    if (!r) r = CastExpr(b, l + 1);
     if (!r) r = Literal(b, l + 1);
     if (!r) r = OperandName(b, l + 1);
     if (!r) r = ParenthesesExpr(b, l + 1);
@@ -1962,11 +1964,11 @@ public class DexParser implements PsiParser, LightPsiParser {
         r = Expression(b, l, 4);
         exit_section_(b, l, m, MUL_EXPR, r, true, null);
       }
-      else if (g < 6 && CallExprArgs(b, l + 1)) {
+      else if (g < 7 && CallExprArgs(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CALL_EXPR, r, true, null);
       }
-      else if (g < 6 && NewExprArgs(b, l + 1)) {
+      else if (g < 7 && NewExprArgs(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, NEW_EXPR, r, true, null);
       }
@@ -1987,6 +1989,30 @@ public class DexParser implements PsiParser, LightPsiParser {
     r = p && Expression(b, l, 5);
     exit_section_(b, l, m, UNARY_EXPR, r, p, null);
     return r || p;
+  }
+
+  public static boolean CastExpr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CastExpr")) return false;
+    if (!nextTokenIsSmart(b, LPAREN)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = CastExpr_0(b, l + 1);
+    p = r;
+    r = p && Expression(b, l, 6);
+    exit_section_(b, l, m, CAST_EXPR, r, p, null);
+    return r || p;
+  }
+
+  // '(' Type ')'
+  private static boolean CastExpr_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CastExpr_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenSmart(b, LPAREN);
+    r = r && Type(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // int

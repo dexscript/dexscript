@@ -28,17 +28,17 @@ public class OutMethod extends OutCode {
         appendSourceLine(o);
         if (o.getExpressionList().size() == 1) {
             DexExpression iExpr = o.getExpressionList().get(0);
-            OutExpr val = new OutExpr(this, iExpr);
+            OutExpr oExpr = new OutExpr(this, iExpr);
             append("result1__ = ");
             append("(");
             append(TransType.translateType(iSig.getResult().getType()).className);
             append(")");
-            if ("Result".equals(val.type.className)) {
+            if ("Result".equals(oExpr.type.className)) {
                 append("((Result1)");
-                append(val.toString());
+                append(oExpr.toString());
                 append(").result1__()");
             } else {
-                append(val.toString());
+                append(oExpr.toString());
             }
             append(';');
             appendNewLine();

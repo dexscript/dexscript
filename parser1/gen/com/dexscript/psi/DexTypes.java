@@ -15,6 +15,7 @@ public interface DexTypes {
   IElementType BLOCK = new DexCompositeElementType("BLOCK");
   IElementType CALL_EXPR = new DexCompositeElementType("CALL_EXPR");
   IElementType CALL_EXPR_ARGS = new DexCompositeElementType("CALL_EXPR_ARGS");
+  IElementType CAST_EXPR = new DexCompositeElementType("CAST_EXPR");
   IElementType CONDITIONAL_EXPR = new DexCompositeElementType("CONDITIONAL_EXPR");
   IElementType EXPRESSION = new DexCompositeElementType("EXPRESSION");
   IElementType FUNCTION_DECLARATION = DexElementTypeFactory.stubFactory("FUNCTION_DECLARATION");
@@ -160,6 +161,9 @@ public interface DexTypes {
       }
       else if (type == CALL_EXPR_ARGS) {
         return new DexCallExprArgsImpl(node);
+      }
+      else if (type == CAST_EXPR) {
+        return new DexCastExprImpl(node);
       }
       else if (type == CONDITIONAL_EXPR) {
         return new DexConditionalExprImpl(node);

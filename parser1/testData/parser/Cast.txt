@@ -1,0 +1,40 @@
+DEX_FILE
+  PACKAGE_CLAUSE
+    PsiElement(package)('package')
+    PsiWhiteSpace(' ')
+    PsiElement(identifier)('abc')
+  PsiWhiteSpace('\n\n')
+  DexImportListImpl(IMPORT_LIST)
+    <empty list>
+  FUNCTION_DECLARATION
+    PsiElement(function)('function')
+    PsiWhiteSpace(' ')
+    PsiElement(identifier)('hello')
+    SIGNATURE
+      PARAMETERS
+        PsiElement(()('(')
+        PsiElement())(')')
+      RESULT
+        PsiElement(:)(':')
+        PsiWhiteSpace(' ')
+        TYPE
+          DexTypeReferenceExpressionImpl(TYPE_REFERENCE_EXPRESSION)
+            PsiElement(identifier)('int32')
+    PsiWhiteSpace(' ')
+    DexBlockImpl(BLOCK)
+      PsiElement({)('{')
+      PsiWhiteSpace('\n')
+      PsiWhiteSpace('    ')
+      DexReturnStatementImpl(RETURN_STATEMENT)
+        PsiElement(return)('return')
+        PsiWhiteSpace(' ')
+        DexCastExprImpl(CAST_EXPR)
+          PsiElement(()('(')
+          TYPE
+            DexTypeReferenceExpressionImpl(TYPE_REFERENCE_EXPRESSION)
+              PsiElement(identifier)('int32')
+          PsiElement())(')')
+          DexLiteralImpl(LITERAL)
+            PsiElement(int)('1')
+      PsiWhiteSpace('\n')
+      PsiElement(})('}')

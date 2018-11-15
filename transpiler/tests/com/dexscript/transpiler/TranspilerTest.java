@@ -22,6 +22,8 @@ public class TranspilerTest {
         try {
             Class clazz = transpiler.transpile("hello", "package abc\n" + source).get("abc.Hello");
             return ((Result1) clazz.getConstructor().newInstance()).result1__();
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -31,6 +33,8 @@ public class TranspilerTest {
         try {
             Class clazz = transpiler.transpile("hello", "package abc\n" + source).get("abc.Hello");
             clazz.getConstructor().newInstance();
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -35,6 +35,10 @@ public class DexVisitor extends PsiElementVisitor {
     visitCompositeElement(o);
   }
 
+  public void visitCastExpr(@NotNull DexCastExpr o) {
+    visitExpression(o);
+  }
+
   public void visitConditionalExpr(@NotNull DexConditionalExpr o) {
     visitBinaryExpr(o);
   }

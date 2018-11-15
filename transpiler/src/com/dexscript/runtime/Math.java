@@ -2,7 +2,7 @@ package com.dexscript.runtime;
 
 public class Math {
 
-    public static Result add(Object left, Object right) {
+    public static Result Add__(Object left, Object right) {
         if (can__addLong(left, right)) {
             return addLong(left, right);
         }

@@ -1,6 +1,7 @@
 package com.dexscript.transpiler;
 
 import com.dexscript.psi.*;
+import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
 public class OutExpr extends OutValue {
@@ -19,17 +20,25 @@ public class OutExpr extends OutValue {
     }
 
     @Override
-    public void visitLiteral(@NotNull DexLiteral o) {
+    public void visitLiteral(@NotNull DexLiteral iLit) {
+        if (iLit.getInt() != null) {
+            genIntLiteral(iLit.getInt());
+        } else {
+            throw new UnsupportedOperationException("not implemented");
+        }
+    }
+
+    private void genIntLiteral(PsiElement iIntLit) {
         type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Long");
-        append("((long)");
-        append(o.getNode().getText());
-        append(')');
+        append("((Long)");
+        append(iIntLit);
+        append("L)");
     }
 
     @Override
-    public void visitStringLiteral(@NotNull DexStringLiteral o) {
+    public void visitStringLiteral(@NotNull DexStringLiteral iStrLit) {
         type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "String");
-        String text = o.getNode().getText();
+        String text = iStrLit.getNode().getText();
         append('"');
         append(text.substring(1, text.length() - 1));
         append('"');
@@ -47,10 +56,10 @@ public class OutExpr extends OutValue {
     }
 
     @Override
-    public void visitCallExpr(@NotNull DexCallExpr o) {
+    public void visitCallExpr(@NotNull DexCallExpr iCallExpr) {
         type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Result");
-        String symbolName = o.getExpression().getNode().getText();
-        oClass.referenced(o);
+        String symbolName = iCallExpr.getExpression().getNode().getText();
+        oClass.referenced(iCallExpr);
         String[] parts = symbolName.split("\\.");
         String funcName = parts[parts.length - 1];
         String fieldName = oMethod.oClass().addField(funcName, "Result");
@@ -71,13 +80,13 @@ public class OutExpr extends OutValue {
     }
 
     @Override
-    public void visitAddExpr(@NotNull DexAddExpr o) {
+    public void visitAddExpr(@NotNull DexAddExpr iAddExpr) {
         type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Result");
-        String funcName = "add";
-        oClass.referenced(o);
+        String funcName = "Add__";
+        oClass.referenced(iAddExpr);
         String fieldName = oClass.addField("addResult", "Result");
-        OutExpr oLeftExpr = new OutExpr(oMethod, o.getLeft());
-        OutExpr oRightExpr = new OutExpr(oMethod, o.getRight());
+        OutExpr oLeftExpr = new OutExpr(oMethod, iAddExpr.getLeft());
+        OutExpr oRightExpr = new OutExpr(oMethod, iAddExpr.getRight());
         oMethod.append(fieldName);
         oMethod.append(" = ");
         oMethod.append(oClass.shimClassName());
@@ -101,9 +110,9 @@ public class OutExpr extends OutValue {
     }
 
     @Override
-    public void visitReferenceExpression(@NotNull DexReferenceExpression oRefExpr) {
+    public void visitReferenceExpression(@NotNull DexReferenceExpression iRefExpr) {
         type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Object");
-        append(oRefExpr);
+        append(iRefExpr);
     }
 
     private void genGetResult(DexExpression iExpr) {
@@ -111,5 +120,25 @@ public class OutExpr extends OutValue {
         append("((Result1)");
         append(new OutExpr(oMethod, iExpr));
         append(").result1__()");
+    }
+
+    @Override
+    public void visitCastExpr(@NotNull DexCastExpr iCastExpr) {
+        type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Result");
+        String funcName = "Cast__";
+        oClass.referenced(iCastExpr);
+        String fieldName = oClass.addField("castResult", "Result");
+        OutExpr oCastFrom = new OutExpr(oMethod, iCastExpr.getExpression());
+        oMethod.append(fieldName);
+        oMethod.append(" = ");
+        oMethod.append(oClass.shimClassName());
+        oMethod.append('.');
+        oMethod.append(funcName);
+        oMethod.append('(');
+        oMethod.append(oCastFrom);
+        oMethod.append(", ");
+        oMethod.append(TransType.translateType(iCastExpr.getType()).className);
+        oMethod.appendNewLine(".class);");
+        append(fieldName);
     }
 }

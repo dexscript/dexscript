@@ -213,6 +213,7 @@ Expression ::=
   | AddExpr
   | MulExpr
   | UnaryExpr
+  | CastExpr
   | MaxGroup
   | ParenthesesExpr {methods=[getDexType] implements="com.dexscript.psi.DexTypeOwner"}
 
@@ -227,6 +228,7 @@ fake BinaryExpr ::= Expression+ {
   methods=[left="Expression[0]" right="Expression[1]" getOperator]
 }
 
+CastExpr ::= '(' Type ')' Expression
 OrExpr ::= Expression '||' Expression
 AndExpr ::= Expression '&&' Expression
 UnaryExpr ::=  UnaryOp Expression {methods=[getOperator]}

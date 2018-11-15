@@ -24,6 +24,8 @@ public class OutShimClass extends OutClass {
                         genShim4CallExpr(ref, newExpr.getExpression().getNode().getText());
                     } else if (ref instanceof DexAddExpr) {
                         genShim4Add((DexAddExpr) ref);
+                    } else if (ref instanceof DexCastExpr) {
+                        genShim4Cast((DexCastExpr) ref);
                     } else {
                         throw new UnsupportedOperationException("not implemented");
                     }
@@ -34,17 +36,24 @@ public class OutShimClass extends OutClass {
         appendNewLine();
     }
 
-    private void genShim4Add(DexAddExpr addExpr) {
-        appendSourceLine(addExpr);
-        appendNewLine("public static Result add(Object left, Object right) {");
-        appendNewLine("  return com.dexscript.runtime.Math.add(left, right);");
+    private void genShim4Cast(DexCastExpr iCastExpr) {
+        appendSourceLine(iCastExpr);
+        appendNewLine("public static Result Cast__(Object castFrom, Object castToType) {");
+        appendNewLine("  return com.dexscript.runtime.Cast.Cast__(castFrom, castToType);");
         appendNewLine("}");
     }
 
-    private void genShim4CallExpr(DexExpression callExpr, String symbolName) {
+    private void genShim4Add(DexAddExpr iAddExpr) {
+        appendSourceLine(iAddExpr);
+        appendNewLine("public static Result Add__(Object left, Object right) {");
+        appendNewLine("  return com.dexscript.runtime.Math.Add__(left, right);");
+        appendNewLine("}");
+    }
+
+    private void genShim4CallExpr(DexExpression iCallExpr, String symbolName) {
         String[] parts = symbolName.split("\\.");
         String funcName = parts[parts.length - 1];
-        appendSourceLine(callExpr);
+        appendSourceLine(iCallExpr);
         append("public static Result ");
         append(funcName);
         if (parts.length == 1) {
