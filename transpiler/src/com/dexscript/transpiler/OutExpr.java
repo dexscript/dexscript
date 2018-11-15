@@ -19,6 +19,13 @@ public class OutExpr extends OutValue {
         }
     }
 
+    public String expectOne() {
+        if (type.kind != RuntimeTypeKind.RESULT) {
+            return toString();
+        }
+        return "((Result1)" + toString() + ").result1__()";
+    }
+
     @Override
     public void visitLiteral(@NotNull DexLiteral iLit) {
         if (iLit.getInt() != null) {
@@ -46,7 +53,7 @@ public class OutExpr extends OutValue {
 
     @Override
     public void visitNewExpr(@NotNull DexNewExpr iNewExpr) {
-        type = new RuntimeType(RuntimeTypeKind.GENERIC_OBJECT, "Result");
+        type = RuntimeType.RESULT;
         String funcName = iNewExpr.getExpression().getNode().getText();
         oClass.referenced(iNewExpr);
         append(oClass.shimClassName());
@@ -57,7 +64,7 @@ public class OutExpr extends OutValue {
 
     @Override
     public void visitCallExpr(@NotNull DexCallExpr iCallExpr) {
-        type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Result");
+        type = RuntimeType.RESULT;
         String symbolName = iCallExpr.getExpression().getNode().getText();
         oClass.referenced(iCallExpr);
         String[] parts = symbolName.split("\\.");
@@ -81,12 +88,12 @@ public class OutExpr extends OutValue {
 
     @Override
     public void visitAddExpr(@NotNull DexAddExpr iAddExpr) {
-        type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Result");
+        type = RuntimeType.RESULT;
         String funcName = "Add__";
         oClass.referenced(iAddExpr);
         String fieldName = oClass.addField("addResult", "Result");
-        OutExpr oLeftExpr = new OutExpr(oMethod, iAddExpr.getLeft());
-        OutExpr oRightExpr = new OutExpr(oMethod, iAddExpr.getRight());
+        String oLeftExpr = new OutExpr(oMethod, iAddExpr.getLeft()).expectOne();
+        String oRightExpr = new OutExpr(oMethod, iAddExpr.getRight()).expectOne();
         oMethod.append(fieldName);
         oMethod.append(" = ");
         oMethod.append(oClass.shimClassName());
@@ -124,7 +131,7 @@ public class OutExpr extends OutValue {
 
     @Override
     public void visitCastExpr(@NotNull DexCastExpr iCastExpr) {
-        type = new RuntimeType(RuntimeTypeKind.CONCRETE_OBJECT, "Result");
+        type = RuntimeType.RESULT;
         String funcName = "Cast__";
         oClass.referenced(iCastExpr);
         String fieldName = oClass.addField("castResult", "Result");

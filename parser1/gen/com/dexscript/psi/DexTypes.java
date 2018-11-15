@@ -37,6 +37,7 @@ public interface DexTypes {
   IElementType PARENTHESES_EXPR = new DexCompositeElementType("PARENTHESES_EXPR");
   IElementType PAR_TYPE = DexElementTypeFactory.stubFactory("PAR_TYPE");
   IElementType REFERENCE_EXPRESSION = new DexCompositeElementType("REFERENCE_EXPRESSION");
+  IElementType REPLY_STATEMENT = new DexCompositeElementType("REPLY_STATEMENT");
   IElementType RESULT = DexElementTypeFactory.stubFactory("RESULT");
   IElementType RETURN_STATEMENT = new DexCompositeElementType("RETURN_STATEMENT");
   IElementType SERVE_STATEMENT = new DexCompositeElementType("SERVE_STATEMENT");
@@ -122,6 +123,7 @@ public interface DexTypes {
   IElementType RBRACK = new DexTokenType("]");
   IElementType REMAINDER = new DexTokenType("%");
   IElementType REMAINDER_ASSIGN = new DexTokenType("%=");
+  IElementType REPLY = new DexTokenType("reply");
   IElementType RETURN = new DexTokenType("return");
   IElementType RPAREN = new DexTokenType(")");
   IElementType SELECT = new DexTokenType("select");
@@ -224,6 +226,9 @@ public interface DexTypes {
       }
       else if (type == REFERENCE_EXPRESSION) {
         return new DexReferenceExpressionImpl(node);
+      }
+      else if (type == REPLY_STATEMENT) {
+        return new DexReplyStatementImpl(node);
       }
       else if (type == RESULT) {
         return new DexResultImpl(node);

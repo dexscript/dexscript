@@ -77,6 +77,9 @@ public class DexParser implements PsiParser, LightPsiParser {
     else if (t == REFERENCE_EXPRESSION) {
       r = ReferenceExpression(b, 0);
     }
+    else if (t == REPLY_STATEMENT) {
+      r = ReplyStatement(b, 0);
+    }
     else if (t == RESULT) {
       r = Result(b, 0);
     }
@@ -132,8 +135,8 @@ public class DexParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(SHORT_VAR_DECLARATION, VAR_SPEC),
     create_token_set_(FUNCTION_TYPE, PAR_TYPE, TYPE, TYPE_LIST),
-    create_token_set_(AWAIT_STATEMENT, RETURN_STATEMENT, SERVE_STATEMENT, SIMPLE_STATEMENT,
-      STATEMENT),
+    create_token_set_(AWAIT_STATEMENT, REPLY_STATEMENT, RETURN_STATEMENT, SERVE_STATEMENT,
+      SIMPLE_STATEMENT, STATEMENT),
     create_token_set_(ADD_EXPR, AND_EXPR, CALL_EXPR, CAST_EXPR,
       CONDITIONAL_EXPR, EXPRESSION, LITERAL, MUL_EXPR,
       NEW_EXPR, OR_EXPR, PARENTHESES_EXPR, REFERENCE_EXPRESSION,
@@ -1217,6 +1220,27 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // reply ExpressionList?
+  public static boolean ReplyStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ReplyStatement")) return false;
+    if (!nextTokenIs(b, REPLY)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, REPLY_STATEMENT, null);
+    r = consumeToken(b, REPLY);
+    p = r; // pin = 1
+    r = r && ReplyStatement_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // ExpressionList?
+  private static boolean ReplyStatement_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ReplyStatement_1")) return false;
+    ExpressionList(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
   // ':' ('(' TypeListNoPin ')' | Type | Parameters)
   public static boolean Result(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "Result")) return false;
@@ -1346,6 +1370,7 @@ public class DexParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // ReturnStatement
+  //   | ReplyStatement
   //   | Block
   //   | SimpleStatement
   //   | AwaitStatement
@@ -1354,6 +1379,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, STATEMENT, "<statement>");
     r = ReturnStatement(b, l + 1);
+    if (!r) r = ReplyStatement(b, l + 1);
     if (!r) r = Block(b, l + 1);
     if (!r) r = SimpleStatement(b, l + 1);
     if (!r) r = AwaitStatement(b, l + 1);

@@ -124,6 +124,10 @@ public class DexVisitor extends PsiElementVisitor {
     visitExpression(o);
   }
 
+  public void visitReplyStatement(@NotNull DexReplyStatement o) {
+    visitStatement(o);
+  }
+
   public void visitResult(@NotNull DexResult o) {
     visitCompositeElement(o);
   }

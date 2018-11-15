@@ -2,9 +2,13 @@ package com.dexscript.transpiler;
 
 import com.dexscript.psi.*;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class OutShimClass extends OutClass {
+
+    private final Set<String> generated = new HashSet<String>();
 
     public OutShimClass(DexFile iFile, String packageName, List<OutClass> oClasses) {
         super(iFile, packageName, oClasses.get(0).shimClassName());
@@ -37,15 +41,29 @@ public class OutShimClass extends OutClass {
     }
 
     private void genShim4Cast(DexCastExpr iCastExpr) {
+        String sig = "Result Cast__(Object castFrom, Object castToType)";
+        if (generated.contains(sig)) {
+            return;
+        }
+        generated.add(sig);
         appendSourceLine(iCastExpr);
-        appendNewLine("public static Result Cast__(Object castFrom, Object castToType) {");
+        append("public static ");
+        append(sig);
+        appendNewLine(" {");
         appendNewLine("  return com.dexscript.runtime.Cast.Cast__(castFrom, castToType);");
         appendNewLine("}");
     }
 
     private void genShim4Add(DexAddExpr iAddExpr) {
+        String sig = "Add__(Object left, Object right)";
+        if (generated.contains(sig)) {
+            return;
+        }
+        generated.add(sig);
         appendSourceLine(iAddExpr);
-        appendNewLine("public static Result Add__(Object left, Object right) {");
+        append("public static Result ");
+        append(sig);
+        appendNewLine(" {");
         appendNewLine("  return com.dexscript.runtime.Math.Add__(left, right);");
         appendNewLine("}");
     }

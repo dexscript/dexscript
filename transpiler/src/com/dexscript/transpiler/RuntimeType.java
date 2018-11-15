@@ -9,4 +9,6 @@ public class RuntimeType {
         this.kind = kind;
         this.className = className;
     }
+
+    public static RuntimeType RESULT = new RuntimeType(RuntimeTypeKind.RESULT, "Result");
 }

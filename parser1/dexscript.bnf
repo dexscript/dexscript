@@ -180,6 +180,7 @@ private Statements ::= StatementWithSemi*
 private StatementWithSemi ::= Statement (semi|&'}') { pin=1 recoverWhile=StatementRecover }
 Statement ::=
     ReturnStatement
+  | ReplyStatement
   | Block
   | SimpleStatement
   | AwaitStatement
@@ -193,6 +194,8 @@ private AwaitableStatement ::=
 ServeStatement ::= serve identifier Signature BlockWithConsume?
 
 ReturnStatement ::= return ExpressionList?
+
+ReplyStatement ::= reply ExpressionList?
 
 private MaxGroup ::=
   Literal

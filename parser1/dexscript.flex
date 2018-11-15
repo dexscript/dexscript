@@ -162,6 +162,7 @@ ESCAPES = [abfnrtv]
 "type"                                    { return TYPE_; }
 "var"                                     { return VAR; }
 "await"                                   { return AWAIT; }
+"reply"                                   { return REPLY; }
 
 {IDENT}                                   { yybegin(MAYBE_SEMICOLON); return IDENTIFIER; }
 
