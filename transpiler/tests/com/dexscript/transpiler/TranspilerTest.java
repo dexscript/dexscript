@@ -29,6 +29,15 @@ public class TranspilerTest {
         }
     }
 
+    private void transpile0(String source) {
+        try {
+            Class clazz = transpiler.transpile("hello", "package abc\n" + source).get("abc.Hello");
+            clazz.getConstructor().newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
     public void testReturnStringLiteral() {
         String src = "" +
@@ -52,20 +61,20 @@ public class TranspilerTest {
 
     @Test
     public void testPlus() {
-        transpiler.transpile("hello", "" +
-                "package abc\n" +
+        String src = "" +
                 "function Hello(): int64 {\n" +
                 "   return 1+2\n" +
-                "}\n");
+                "}\n";
+        Assert.assertEquals((long) 3, transpile1(src));
     }
 
     @Test
     public void testAssignment() {
-        transpiler.transpile("hello", "" +
-                "package abc\n" +
+        String src = "" +
                 "function Hello() {\n" +
                 "   val := 'hello'\n" +
-                "}\n");
+                "}\n";
+        transpile0(src);
     }
 
     @Test
