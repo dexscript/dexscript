@@ -59,6 +59,7 @@ class OutClass extends OutCode {
 
     public void addToCompiler(InMemoryJavaCompiler compiler) {
         try {
+            System.out.println(toString());
             compiler.addSource(qualifiedClassName(), toString());
         } catch (Exception e) {
             throw new RuntimeException(e);

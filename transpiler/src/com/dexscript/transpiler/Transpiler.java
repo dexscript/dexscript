@@ -16,19 +16,14 @@ public class Transpiler implements AutoCloseable {
         OutFile oFile = new OutFile(iFile);
         iFile.accept(oFile);
         InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
-        for (OutClass transpiledClass : oFile.oClasses()) {
-            try {
-                System.out.println(transpiledClass.toString());
-                transpiledClass.addToCompiler(compiler);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        for (OutClass oClass : oFile.oClasses()) {
+            oClass.addToCompiler(compiler);
         }
         oFile.genShim(compiler);
         try {
             Map<String, Class<?>> classes = compiler.compileAll();
             Object obj = classes.get("abc.hello").newInstance();
-            System.out.println(((Result1)obj).result1__());
+            System.out.println(((Result1) obj).result1__());
         } catch (Exception e) {
             e.printStackTrace();
         }
