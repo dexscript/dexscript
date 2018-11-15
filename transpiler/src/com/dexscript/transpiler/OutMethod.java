@@ -26,18 +26,20 @@ public class OutMethod extends OutCode {
     public void visitReturnStatement(@NotNull DexReturnStatement o) {
         super.visitReturnStatement(o);
         appendSourceLine(o);
-        DexExpression iExpr = o.getExpressionList().get(0);
-        OutExpr val = new OutExpr(this, iExpr);
-        append("result1__ = ");
-        append("(");
-        append(TransType.translateType(iSig.getResult().getType()).className);
-        append(")");
-        append(val.toString());
-        if ("Result".equals(val.type.className)) {
-            append(".result1__()");
+        if (iSig.getResult() != null && o.getExpressionList().size() == 1) {
+            DexExpression iExpr = o.getExpressionList().get(0);
+            OutExpr val = new OutExpr(this, iExpr);
+            append("result1__ = ");
+            append("(");
+            append(TransType.translateType(iSig.getResult().getType()).className);
+            append(")");
+            append(val.toString());
+            if ("Result".equals(val.type.className)) {
+                append(".result1__()");
+            }
+            append(';');
+            appendNewLine();
         }
-        append(';');
-        appendNewLine();
         append("finish();");
     }
 

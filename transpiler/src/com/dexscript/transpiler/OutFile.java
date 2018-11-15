@@ -26,39 +26,7 @@ class OutFile extends DexVisitor {
 
     @Override
     public void visitFunctionDeclaration(@NotNull DexFunctionDeclaration iFuncDecl) {
-        OutClass oClass = newOutClass(packageName, iFuncDecl.getIdentifier().getNode().getText());
-        oClass.appendNewLine("import com.dexscript.runtime.Actor;");
-        oClass.appendNewLine("import com.dexscript.runtime.Result;");
-        oClass.appendNewLine();
-        oClass.appendSourceLine(iFuncDecl.getFunction());
-        oClass.append("public class ");
-        oClass.append(iFuncDecl.getIdentifier());
-        oClass.append(" extends Actor {");
-        oClass.indent(() -> {
-            oClass.appendNewLine();
-            // oFields for return value
-            oClass.appendReturnValueFields(iFuncDecl.getSignature());
-            oClass.appendNewLine();
-            // constructor
-            OutMethod oMethod = new OutMethod(oClass, iFuncDecl.getSignature());
-            oMethod.append("public ");
-            oMethod.append(iFuncDecl.getIdentifier());
-            oMethod.append("() {");
-            oMethod.indent(() -> {
-                iFuncDecl.getBlock().acceptChildren(oMethod);
-            });
-            oMethod.appendNewLine('}');
-            oClass.genClassBody();
-        });
-        oClass.append('}');
-        oClass.appendNewLine();
-    }
-
-    @NotNull
-    private OutClass newOutClass(String packageName, String className) {
-        OutClass out = new OutClass(iFile, packageName, className);
-        oClasses.add(out);
-        return out;
+        oClasses.add(new OutRootClass(iFile, packageName, iFuncDecl));
     }
 
     @Override
