@@ -1,6 +1,6 @@
 package com.dexscript.runtime;
 
-public class Actor implements Result {
+public class Actor extends Result {
 
     private boolean isResultReady;
 

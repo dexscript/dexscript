@@ -1,6 +1,6 @@
 package com.dexscript.runtime;
 
-public class Result1Impl implements Result1 {
+public class Result1Impl extends Result implements Result1 {
 
     private final Object result1__;
 

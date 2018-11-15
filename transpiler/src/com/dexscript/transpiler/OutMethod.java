@@ -32,9 +32,12 @@ public class OutMethod extends OutCode {
         append("(");
         append(TransType.translateType(iSig.getResult().getType()).className);
         append(")");
-        append(val.toString());
         if ("Result".equals(val.type.className)) {
-            append(".result1__()");
+            append("((Result1)");
+            append(val.toString());
+            append(").result1__()");
+        } else {
+            append(val.toString());
         }
         append(';');
         appendNewLine();

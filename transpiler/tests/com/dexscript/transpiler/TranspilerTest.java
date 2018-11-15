@@ -20,8 +20,17 @@ public class TranspilerTest {
         transpiler.close();
     }
 
+    private Object transpile1(String source) {
+        try {
+            Class clazz = transpiler.transpile("hello", "package abc\n" + source).get("abc.Hello");
+            return ((Result1) clazz.getConstructor().newInstance()).result1__();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Test
-    public void testReturnStringLiteral() throws Exception {
+    public void testReturnStringLiteral() {
         String src = "" +
                 "function Hello(): string {\n" +
                 "   return 'hello'\n" +
@@ -29,21 +38,16 @@ public class TranspilerTest {
         Assert.assertEquals("hello", transpile1(src));
     }
 
-    private Object transpile1(String source) throws Exception {
-        Class clazz = transpiler.transpile("hello", "package abc\n" + source).get("abc.Hello");
-        return ((Result1) clazz.getConstructor().newInstance()).result1__();
-    }
-
     @Test
     public void testFunctionCall() {
-        transpiler.transpile("hello", "" +
-                "package abc\n" +
+        String src = "" +
                 "function Hello(): string {\n" +
                 "   return World()\n" +
                 "}\n" +
                 "function World(): string {\n" +
                 "   return 'hello'\n" +
-                "}\n");
+                "}\n";
+        Assert.assertEquals("hello", transpile1(src));
     }
 
     @Test
