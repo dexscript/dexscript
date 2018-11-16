@@ -1,0 +1,9 @@
+package abc
+
+function Hello(): string {
+    return World()
+}
+
+function World(): string {
+    return 'hello'
+}

@@ -11,6 +11,8 @@ public interface DexTypes {
 
   IElementType ADD_EXPR = new DexCompositeElementType("ADD_EXPR");
   IElementType AND_EXPR = new DexCompositeElementType("AND_EXPR");
+  IElementType ASSIGNMENT_STATEMENT = new DexCompositeElementType("ASSIGNMENT_STATEMENT");
+  IElementType ASSIGN_OP = new DexCompositeElementType("ASSIGN_OP");
   IElementType AWAIT_STATEMENT = new DexCompositeElementType("AWAIT_STATEMENT");
   IElementType BLOCK = new DexCompositeElementType("BLOCK");
   IElementType CALL_EXPR = new DexCompositeElementType("CALL_EXPR");
@@ -151,6 +153,12 @@ public interface DexTypes {
       }
       else if (type == AND_EXPR) {
         return new DexAndExprImpl(node);
+      }
+      else if (type == ASSIGNMENT_STATEMENT) {
+        return new DexAssignmentStatementImpl(node);
+      }
+      else if (type == ASSIGN_OP) {
+        return new DexAssignOpImpl(node);
       }
       else if (type == AWAIT_STATEMENT) {
         return new DexAwaitStatementImpl(node);

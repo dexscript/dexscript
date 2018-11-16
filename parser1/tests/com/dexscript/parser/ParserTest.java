@@ -26,6 +26,11 @@ public class ParserTest extends ParsingTestCase {
     }
 
     @Test
+    public void testReturnFunctionCall() {
+        doTest(true);
+    }
+
+    @Test
     public void testPlus() {
         doTest(true);
     }

@@ -255,8 +255,13 @@ ReferenceExpression ::= identifier { methods=[getReference getQualifier resolve 
 
 SimpleStatement ::=
     ShortVarDeclaration
+  | (LeftHandExprList [AssignmentStatement]) {pin(".*")=LeftHandExprList}
+
+
+left AssignmentStatement ::= assign_op ExpressionList {pin=1}
 
 ShortVarDeclaration ::= VarDefinitionList ':=' ExpressionList {pin=2 extends=VarSpec}
+assign_op ::= '=' | '+=' | '-=' | '|=' | '^=' | '*=' | '/=' | '%=' | '<<=' | '>>=' | '&=' | '&^='
 
 VarDeclaration ::= var ( VarSpec | '(' VarSpecs? ')' ) {pin(".*")=1 methods=[addSpec deleteSpec]}
 private VarSpecs ::= VarSpec (semi VarSpec)* semi? {pin=1}

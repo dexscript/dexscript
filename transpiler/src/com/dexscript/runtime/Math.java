@@ -1,5 +1,7 @@
 package com.dexscript.runtime;
 
+import static com.dexscript.runtime.DexScriptException.reportMissingImplementation;
+
 public class Math {
 
     public static Result Add__(Object left, Object right) {
@@ -9,8 +11,7 @@ public class Math {
         if (can__addInt(left, right)) {
             return addInt(left, right);
         }
-        DexScriptException.reportMissingImplementation("Add__", left, right);
-        throw new UnsupportedOperationException("not implemented");
+        throw reportMissingImplementation("Add__", left, right);
     }
 
     public static Result addLong(Object left, Object right) {

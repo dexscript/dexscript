@@ -21,7 +21,7 @@ public class DexScriptException extends RuntimeException {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
-    public static void reportMissingImplementation(String funcName, Object ...args) {
+    public static RuntimeException reportMissingImplementation(String funcName, Object ...args) {
         StringBuilder msg = new StringBuilder("can not find implementation for function ");
         msg.append(funcName);
         msg.append(", args:");

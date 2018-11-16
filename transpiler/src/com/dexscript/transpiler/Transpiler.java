@@ -13,7 +13,6 @@ public class Transpiler implements AutoCloseable {
     public Map<String, Class<?>> transpile(String filename, String source) {
         DexFile iFile = dexFileFactory.createDexFile(filename, source);
         OutFile oFile = new OutFile(iFile);
-        iFile.accept(oFile);
         InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
         for (OutClass oClass : oFile.oClasses()) {
             oClass.addToCompiler(compiler);

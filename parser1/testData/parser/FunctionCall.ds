@@ -1,9 +1,6 @@
 package abc
 
 function Hello(): string {
-    return World()
+    Sleep(100)
 }
 
-function World(): string {
-    return 'hello'
-}

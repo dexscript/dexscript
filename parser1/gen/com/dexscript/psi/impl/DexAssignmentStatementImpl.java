@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.dexscript.psi.DexTypes.*;
 import com.dexscript.psi.*;
 
-public class DexSimpleStatementImpl extends DexStatementImpl implements DexSimpleStatement {
+public class DexAssignmentStatementImpl extends DexStatementImpl implements DexAssignmentStatement {
 
-  public DexSimpleStatementImpl(@NotNull ASTNode node) {
+  public DexAssignmentStatementImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull DexVisitor visitor) {
-    visitor.visitSimpleStatement(this);
+    visitor.visitAssignmentStatement(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -26,21 +26,21 @@ public class DexSimpleStatementImpl extends DexStatementImpl implements DexSimpl
   }
 
   @Override
-  @Nullable
-  public DexAssignmentStatement getAssignmentStatement() {
-    return PsiTreeUtil.getChildOfType(this, DexAssignmentStatement.class);
+  @NotNull
+  public List<DexExpression> getExpressionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, DexExpression.class);
   }
 
   @Override
-  @Nullable
+  @NotNull
   public DexLeftHandExprList getLeftHandExprList() {
-    return PsiTreeUtil.getChildOfType(this, DexLeftHandExprList.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, DexLeftHandExprList.class));
   }
 
   @Override
-  @Nullable
-  public DexShortVarDeclaration getShortVarDeclaration() {
-    return PsiTreeUtil.getChildOfType(this, DexShortVarDeclaration.class);
+  @NotNull
+  public DexAssignOp getAssignOp() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, DexAssignOp.class));
   }
 
 }

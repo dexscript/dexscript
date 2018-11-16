@@ -5,15 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface DexSimpleStatement extends DexStatement {
+public interface DexAssignmentStatement extends DexStatement {
 
-  @Nullable
-  DexAssignmentStatement getAssignmentStatement();
+  @NotNull
+  List<DexExpression> getExpressionList();
 
-  @Nullable
+  @NotNull
   DexLeftHandExprList getLeftHandExprList();
 
-  @Nullable
-  DexShortVarDeclaration getShortVarDeclaration();
+  @NotNull
+  DexAssignOp getAssignOp();
 
 }

@@ -1,6 +1,10 @@
 package com.dexscript.transpiler;
 
-import com.dexscript.psi.*;
+import com.dexscript.psi.DexFile;
+import com.dexscript.psi.DexFunctionDeclaration;
+import com.dexscript.psi.DexPackageClause;
+import com.dexscript.psi.DexVisitor;
+import com.dexscript.runtime.DexScriptException;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.mdkt.compiler.InMemoryJavaCompiler;
@@ -17,6 +21,10 @@ class OutFile extends DexVisitor {
 
     OutFile(DexFile iFile) {
         this.iFile = iFile;
+        iFile.accept(this);
+        if (oClasses.size() == 0) {
+            throw new DexScriptException("transpile failed");
+        }
     }
 
     @Override
@@ -39,6 +47,9 @@ class OutFile extends DexVisitor {
     }
 
     public void genShim(InMemoryJavaCompiler compiler) {
+        if (oClasses.size() == 0) {
+            return;
+        }
         new OutShimClass(iFile, packageName, oClasses).addToCompiler(compiler);
     }
 }

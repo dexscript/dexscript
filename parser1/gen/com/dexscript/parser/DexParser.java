@@ -23,7 +23,10 @@ public class DexParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, EXTENDS_SETS_);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == AWAIT_STATEMENT) {
+    if (t == ASSIGNMENT_STATEMENT) {
+      r = AssignmentStatement(b, 0);
+    }
+    else if (t == AWAIT_STATEMENT) {
       r = AwaitStatement(b, 0);
     }
     else if (t == BLOCK) {
@@ -122,6 +125,9 @@ public class DexParser implements PsiParser, LightPsiParser {
     else if (t == VAR_SPEC) {
       r = VarSpec(b, 0);
     }
+    else if (t == ASSIGN_OP) {
+      r = assign_op(b, 0);
+    }
     else {
       r = parse_root_(t, b, 0);
     }
@@ -135,8 +141,8 @@ public class DexParser implements PsiParser, LightPsiParser {
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(SHORT_VAR_DECLARATION, VAR_SPEC),
     create_token_set_(FUNCTION_TYPE, PAR_TYPE, TYPE, TYPE_LIST),
-    create_token_set_(AWAIT_STATEMENT, REPLY_STATEMENT, RETURN_STATEMENT, SERVE_STATEMENT,
-      SIMPLE_STATEMENT, STATEMENT),
+    create_token_set_(ASSIGNMENT_STATEMENT, AWAIT_STATEMENT, REPLY_STATEMENT, RETURN_STATEMENT,
+      SERVE_STATEMENT, SIMPLE_STATEMENT, STATEMENT),
     create_token_set_(ADD_EXPR, AND_EXPR, CALL_EXPR, CAST_EXPR,
       CONDITIONAL_EXPR, EXPRESSION, LITERAL, MUL_EXPR,
       NEW_EXPR, OR_EXPR, PARENTHESES_EXPR, REFERENCE_EXPRESSION,
@@ -155,6 +161,19 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, BIT_XOR);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // assign_op ExpressionList
+  public static boolean AssignmentStatement(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "AssignmentStatement")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _LEFT_, ASSIGNMENT_STATEMENT, "<assignment statement>");
+    r = assign_op(b, l + 1);
+    p = r; // pin = 1
+    r = r && ExpressionList(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1358,14 +1377,34 @@ public class DexParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // ShortVarDeclaration
+  //   | (LeftHandExprList [AssignmentStatement])
   public static boolean SimpleStatement(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "SimpleStatement")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _COLLAPSE_, SIMPLE_STATEMENT, "<simple statement>");
     r = ShortVarDeclaration(b, l + 1);
-    exit_section_(b, m, SIMPLE_STATEMENT, r);
+    if (!r) r = SimpleStatement_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
+  }
+
+  // LeftHandExprList [AssignmentStatement]
+  private static boolean SimpleStatement_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "SimpleStatement_1")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = LeftHandExprList(b, l + 1);
+    p = r; // pin = LeftHandExprList
+    r = r && SimpleStatement_1_1(b, l + 1);
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // [AssignmentStatement]
+  private static boolean SimpleStatement_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "SimpleStatement_1_1")) return false;
+    AssignmentStatement(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -1922,6 +1961,28 @@ public class DexParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "VarSpecs_2")) return false;
     semi(b, l + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // '=' | '+=' | '-=' | '|=' | '^=' | '*=' | '/=' | '%=' | '<<=' | '>>=' | '&=' | '&^='
+  public static boolean assign_op(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "assign_op")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, ASSIGN_OP, "<assign op>");
+    r = consumeToken(b, ASSIGN);
+    if (!r) r = consumeToken(b, PLUS_ASSIGN);
+    if (!r) r = consumeToken(b, MINUS_ASSIGN);
+    if (!r) r = consumeToken(b, BIT_OR_ASSIGN);
+    if (!r) r = consumeToken(b, BIT_XOR_ASSIGN);
+    if (!r) r = consumeToken(b, MUL_ASSIGN);
+    if (!r) r = consumeToken(b, QUOTIENT_ASSIGN);
+    if (!r) r = consumeToken(b, REMAINDER_ASSIGN);
+    if (!r) r = consumeToken(b, SHIFT_LEFT_ASSIGN);
+    if (!r) r = consumeToken(b, SHIFT_RIGHT_ASSIGN);
+    if (!r) r = consumeToken(b, BIT_AND_ASSIGN);
+    if (!r) r = consumeToken(b, BIT_CLEAR_ASSIGN);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
