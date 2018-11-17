@@ -11,6 +11,9 @@ public class Math {
         if (can__addInt(left, right)) {
             return addInt(left, right);
         }
+        if (can__addString(left, right)) {
+            return addString(left, right);
+        }
         throw reportMissingImplementation("Add__", left, right);
     }
 
@@ -28,5 +31,13 @@ public class Math {
 
     public static boolean can__addInt(Object left, Object right) {
         return left.getClass() == Integer.class && right.getClass() == Integer.class;
+    }
+
+    public static Result addString(Object left, Object right) {
+        return new Result1Impl((String)left + (String)right);
+    }
+
+    public static boolean can__addString(Object left, Object right) {
+        return left.getClass() == String.class && right.getClass() == String.class;
     }
 }
