@@ -41,14 +41,15 @@ public class AwaitTest extends TranspilerTest {
         String src = "" +
                 "function Hello(): string {\n" +
                 "    w := World{}\n" +
-                "    return GetResult(w)\n" +
+                "    return Dummy(w)\n" +
                 "}\n" +
                 "\n" +
                 "function World(): string {\n" +
                 "    return 'hello'\n" +
                 "}\n" +
-                "function GetResult(result: any): string {\n" +
-                "   return <-result\n" +
+                "\n" +
+                "function Dummy(w: World): string {\n" +
+                "   return <-w\n" +
                 "}";
         Assert.assertEquals("hello", transpile1(src));
     }

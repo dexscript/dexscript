@@ -6,18 +6,22 @@ import com.dexscript.stubs.DexImportSpecStub;
 import com.dexscript.stubs.DexPackageClauseStub;
 import com.dexscript.stubs.DexParamDeclarationStub;
 import com.intellij.lang.ASTNode;
+import com.intellij.lang.parser.GeneratedParserUtilBase;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.psi.ElementManipulators;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.ResolveState;
+import com.intellij.psi.*;
 import com.intellij.psi.impl.source.tree.LeafElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.intellij.openapi.util.Conditions.equalTo;
+
 public class DexPsiImplUtil {
+
+    private static final Key<SmartPsiElementPointer<PsiElement>> CONTEXT = Key.create("CONTEXT");
 
     @Nullable
     public static DexType getDexType(@NotNull DexExpression o, @Nullable ResolveState context) {
@@ -129,11 +133,31 @@ public class DexPsiImplUtil {
 
     public static boolean isVariadic(@NotNull DexParamDefinition o) {
         PsiElement parent = o.getParent();
-        return parent instanceof DexParameterDeclaration && ((DexParameterDeclaration)parent).isVariadic();
+        return parent instanceof DexParameterDeclaration && ((DexParameterDeclaration) parent).isVariadic();
     }
 
     public static boolean isVariadic(@NotNull DexParameterDeclaration o) {
         DexParamDeclarationStub stub = o.getStub();
         return stub != null ? stub.isVariadic() : o.getTripleDot() != null;
     }
+
+    @NotNull
+    public static SyntaxTraverser<PsiElement> dexTraverser() {
+        return SyntaxTraverser.psiTraverser().forceDisregardTypes(equalTo(GeneratedParserUtilBase.DUMMY_BLOCK));
+    }
+
+    @NotNull
+    public static ResolveState createContextOnElement(@NotNull PsiElement element) {
+        SmartPointerManager smartPointerManager = SmartPointerManager.getInstance(element.getProject());
+        if (smartPointerManager == null) {
+            return ResolveState.initial();
+        }
+        return ResolveState.initial().put(CONTEXT, smartPointerManager.createSmartPsiElementPointer(element));
+    }
+
+    @NotNull
+    public static DexReference getReference(@NotNull DexReferenceExpression o) {
+        return new DexReference(o);
+    }
+
 }

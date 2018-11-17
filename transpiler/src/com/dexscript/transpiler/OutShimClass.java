@@ -1,6 +1,8 @@
 package com.dexscript.transpiler;
 
 import com.dexscript.psi.*;
+import com.dexscript.runtime.DexScriptException;
+import com.intellij.psi.ResolveResult;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,11 +23,11 @@ public class OutShimClass extends OutClass {
             for (OutClass tClass : oClasses) {
                 for (DexExpression ref : tClass.references()) {
                     if (ref instanceof DexCallExpr) {
-                        DexCallExpr callExpr = (DexCallExpr) ref;
-                        genShim4CallExpr(callExpr, callExpr.getExpression().getNode().getText());
+                        DexCallExpr iCallExpr = (DexCallExpr) ref;
+                        genShim4CallExpr(iCallExpr, (DexReferenceExpression) iCallExpr.getExpression());
                     } else if (ref instanceof DexNewExpr) {
                         DexNewExpr newExpr = (DexNewExpr) ref;
-                        genShim4CallExpr(ref, newExpr.getExpression().getNode().getText());
+                        genShim4CallExpr(ref, ((DexReferenceExpression) newExpr.getExpression()));
                     } else if (ref instanceof DexAddExpr) {
                         genShim4Add((DexAddExpr) ref);
                     } else if (ref instanceof DexCastExpr) {
@@ -68,18 +70,32 @@ public class OutShimClass extends OutClass {
         appendNewLine("}");
     }
 
-    private void genShim4CallExpr(DexExpression iCallExpr, String symbolName) {
+    private void genShim4CallExpr(DexExpression iCallExpr, DexReferenceExpression iRefExpr) {
+        String symbolName = iRefExpr.getIdentifier().getNode().getText();
+        ResolveResult[] resolved = iRefExpr.getReference().multiResolve(false);
+        if (resolved.length == 0) {
+            throw DexScriptException.reportMissingImplementation(symbolName);
+        }
+        if (resolved.length > 1) {
+            throw new UnsupportedOperationException("not implemented");
+        }
         String[] parts = symbolName.split("\\.");
         String funcName = parts[parts.length - 1];
         appendSourceLine(iCallExpr);
         append("public static Result ");
         append(funcName);
         if (parts.length == 1) {
-            append("() {");
+            append('(');
+            DexFunctionDeclaration iFuncDecl = (DexFunctionDeclaration) resolved[0].getElement();
+            List<DexParameterDeclaration> iParams = iFuncDecl.getSignature().getParameters().getParameterDeclarationList();
+            appendParamDef(iParams);
+            append(") {");
             indent(() -> {
                 append("return new ");
                 append(symbolName);
-                append("();");
+                append('(');
+                appendParamInvocation(iParams);
+                append(");");
             });
             appendNewLine("}");
         } else if (parts.length == 2) {
@@ -92,6 +108,35 @@ public class OutShimClass extends OutClass {
             appendNewLine("}");
         } else {
             throw new UnsupportedOperationException("not implemented");
+        }
+    }
+
+    private void appendParamDef(List<DexParameterDeclaration> iParams) {
+        boolean isFirst = true;
+        for (DexParameterDeclaration iParam : iParams) {
+            for (DexParamDefinition iParamDef : iParam.getParamDefinitionList()) {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    append(", ");
+                }
+                append("Object ");
+                append(iParamDef.getIdentifier());
+            }
+        }
+    }
+
+    private void appendParamInvocation(List<DexParameterDeclaration> iParams) {
+        boolean isFirst = true;
+        for (DexParameterDeclaration iParam : iParams) {
+            for (DexParamDefinition iParamDef : iParam.getParamDefinitionList()) {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    append(", ");
+                }
+                append(iParamDef.getIdentifier());
+            }
         }
     }
 }

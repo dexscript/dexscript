@@ -31,4 +31,9 @@ public class DexReferenceExpressionImpl extends DexExpressionImpl implements Dex
     return notNullChild(findChildByType(IDENTIFIER));
   }
 
+  @NotNull
+  public DexReference getReference() {
+    return DexPsiImplUtil.getReference(this);
+  }
+
 }

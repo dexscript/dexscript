@@ -76,6 +76,7 @@
   implements("(Type|Import)Spec|(Var|Const|Param|(Anonymous)?Field|Label)Definition|Receiver")="com.dexscript.psi.DexNamedElement"
   implements("FunctionLit")="com.dexscript.psi.DexSignatureOwner"
   implements("FunctionDeclaration")="com.dexscript.psi.DexNamedSignatureOwner"
+  implements(".*ReferenceExpression|FieldName")="com.dexscript.psi.DexReferenceExpressionBase"
 
   extends("(Function|Method)Declaration")="com.dexscript.psi.impl.DexNamedElementImpl<?>"
   extends("(Type|Import|Method)Spec|(Var|Const|Param|(Anonymous)?Field|Label)Definition|Receiver")="com.dexscript.psi.impl.DexNamedElementImpl<?>"

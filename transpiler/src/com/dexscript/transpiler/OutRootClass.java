@@ -1,7 +1,8 @@
 package com.dexscript.transpiler;
 
-import com.dexscript.psi.DexFile;
-import com.dexscript.psi.DexFunctionDeclaration;
+import com.dexscript.psi.*;
+
+import java.util.List;
 
 public class OutRootClass extends OutClass {
 
@@ -13,20 +14,34 @@ public class OutRootClass extends OutClass {
         append("public class ");
         append(iFuncDecl.getIdentifier());
         append(" extends Actor implements Result");
-        append(iFuncDecl.getSignature().getResult() == null ? 0 : 1);
+        DexSignature iSig = iFuncDecl.getSignature();
+        List<DexParameterDeclaration> iParams = iSig.getParameters().getParameterDeclarationList();
+        append(iSig.getResult() == null ? 0 : 1);
         append(" {");
         indent(() -> {
             appendNewLine();
             // oFields for return value
-            appendReturnValueFields(iFuncDecl.getSignature());
+            appendReturnValueFields(iSig);
             appendNewLine();
             // constructor
-            OutMethod oMethod = new OutMethod(this, iFuncDecl.getSignature());
+            OutMethod oMethod = new OutMethod(this, iSig);
             oMethod.append("public ");
             oMethod.append(iFuncDecl.getIdentifier());
-            oMethod.append("() {");
+            oMethod.append('(');
+            boolean isFirst = true;
+            for (DexParameterDeclaration iParam : iParams) {
+                for (DexParamDefinition iParamDef : iParam.getParamDefinitionList()) {
+                    if (isFirst) {
+                        isFirst = false;
+                    } else {
+                        oMethod.append(", ");
+                    }
+                    oMethod.append("Object ");
+                    oMethod.append(iParamDef.getIdentifier());
+                }
+            }
+            oMethod.append(") {");
             oMethod.indent(() -> {
-                System.out.println("!!! " + iFuncDecl.getBlock());
                 iFuncDecl.getBlock().acceptChildren(oMethod);
             });
             oMethod.appendNewLine('}');

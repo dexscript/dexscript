@@ -126,6 +126,7 @@ public class DexVisitor extends PsiElementVisitor {
 
   public void visitReferenceExpression(@NotNull DexReferenceExpression o) {
     visitExpression(o);
+    // visitReferenceExpressionBase(o);
   }
 
   public void visitReplyStatement(@NotNull DexReplyStatement o) {
@@ -174,7 +175,7 @@ public class DexVisitor extends PsiElementVisitor {
   }
 
   public void visitTypeReferenceExpression(@NotNull DexTypeReferenceExpression o) {
-    visitCompositeElement(o);
+    visitReferenceExpressionBase(o);
   }
 
   public void visitUnaryExpr(@NotNull DexUnaryExpr o) {
@@ -202,6 +203,10 @@ public class DexVisitor extends PsiElementVisitor {
   }
 
   public void visitNamedSignatureOwner(@NotNull DexNamedSignatureOwner o) {
+    visitCompositeElement(o);
+  }
+
+  public void visitReferenceExpressionBase(@NotNull DexReferenceExpressionBase o) {
     visitCompositeElement(o);
   }
 

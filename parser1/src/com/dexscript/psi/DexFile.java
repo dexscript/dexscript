@@ -18,7 +18,9 @@ package com.dexscript.psi;
 
 import com.dexscript.parser.DexFileType;
 import com.dexscript.parser.DexLanguage;
+import com.dexscript.psi.impl.DexPsiImplUtil;
 import com.dexscript.stubs.DexFileStub;
+import com.dexscript.stubs.types.DexFunctionDeclarationStubElementType;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.editor.impl.LineSet;
 import com.intellij.openapi.fileTypes.FileType;
@@ -26,8 +28,16 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.SearchScope;
+import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.CachedValueProvider;
+import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.util.ArrayFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class DexFile extends PsiFileBase {
 
@@ -79,5 +89,24 @@ public class DexFile extends PsiFileBase {
     CharSequence line = contents.subSequence(lineSet.getLineStart(lineNumber), lineSet.getLineEnd(lineNumber));
     out.append(line.toString().trim());
     out.appendNewLine();
+  }
+
+  @NotNull
+  public List<DexFunctionDeclaration> getFunctions() {
+    return CachedValuesManager.getCachedValue(this, () -> {
+      DexFileStub stub = getStub();
+      List<DexFunctionDeclaration> functions = stub != null
+              ? getChildrenByType(stub, DexTypes.FUNCTION_DECLARATION, DexFunctionDeclarationStubElementType.ARRAY_FACTORY)
+              : DexPsiImplUtil.dexTraverser().children(this).filter(DexFunctionDeclaration.class).toList();
+      return CachedValueProvider.Result.create(functions, this);
+    });
+  }
+
+
+  @NotNull
+  private static <E extends PsiElement> List<E> getChildrenByType(@NotNull StubElement<? extends PsiElement> stub,
+                                                                  IElementType elementType,
+                                                                  ArrayFactory<E> f) {
+    return Arrays.asList(stub.getChildrenByType(elementType, f));
   }
 }

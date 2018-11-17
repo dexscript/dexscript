@@ -4,6 +4,9 @@ import com.dexscript.psi.*;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OutExpr extends OutValue {
 
     private OutMethod oMethod;
@@ -64,6 +67,10 @@ public class OutExpr extends OutValue {
 
     @Override
     public void visitCallExpr(@NotNull DexCallExpr iCallExpr) {
+        List<OutExpr> oArgs = new ArrayList<>();
+        for (DexExpression iArg : iCallExpr.getCallExprArgs().getExpressionList()) {
+            oArgs.add(new OutExpr(oMethod, iArg));
+        }
         type = RuntimeType.RESULT;
         String symbolName = iCallExpr.getExpression().getNode().getText();
         oClass.referenced(iCallExpr);
@@ -76,11 +83,21 @@ public class OutExpr extends OutValue {
         oMethod.append('.');
         oMethod.append(funcName);
         oMethod.append('(');
+        boolean isFirst = true;
         if (parts.length == 1) {
         } else if (parts.length == 2) {
             oMethod.append(parts[0]);
+            isFirst = false;
         } else {
             throw new UnsupportedOperationException("not implemented");
+        }
+        for (OutExpr oArg : oArgs) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                oMethod.append(", ");
+            }
+            oMethod.append(oArg);
         }
         oMethod.appendNewLine(");");
         append(fieldName);

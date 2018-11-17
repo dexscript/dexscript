@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface DexTypeReferenceExpression extends DexCompositeElement {
+public interface DexTypeReferenceExpression extends DexReferenceExpressionBase {
 
   @NotNull
   PsiElement getIdentifier();

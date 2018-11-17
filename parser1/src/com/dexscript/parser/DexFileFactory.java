@@ -1,6 +1,7 @@
 package com.dexscript.parser;
 
 import com.dexscript.psi.DexFile;
+import com.intellij.psi.impl.source.resolve.ResolveCache;
 import com.intellij.testFramework.ParsingTestCase;
 
 public class DexFileFactory extends ParsingTestCase implements AutoCloseable {
@@ -9,6 +10,7 @@ public class DexFileFactory extends ParsingTestCase implements AutoCloseable {
         super("parser", "ds", new DexParserDefinition());
         try {
             setUp();
+            registerApplicationService(ResolveCache.class, new ResolveCache(getApplication().getMessageBus()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
