@@ -26,6 +26,7 @@ public class OutRootClass extends OutClass {
             oMethod.append(iFuncDecl.getIdentifier());
             oMethod.append("() {");
             oMethod.indent(() -> {
+                System.out.println("!!! " + iFuncDecl.getBlock());
                 iFuncDecl.getBlock().acceptChildren(oMethod);
             });
             oMethod.appendNewLine('}');

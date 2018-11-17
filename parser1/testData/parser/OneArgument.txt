@@ -1,0 +1,75 @@
+DEX_FILE
+  PACKAGE_CLAUSE
+    PsiElement(package)('package')
+    PsiWhiteSpace(' ')
+    PsiElement(identifier)('abc')
+  PsiWhiteSpace('\n\n')
+  DexImportListImpl(IMPORT_LIST)
+    <empty list>
+  FUNCTION_DECLARATION
+    PsiElement(function)('function')
+    PsiWhiteSpace(' ')
+    PsiElement(identifier)('Hello')
+    SIGNATURE
+      PARAMETERS
+        PsiElement(()('(')
+        PsiElement())(')')
+      RESULT
+        PsiElement(:)(':')
+        PsiWhiteSpace(' ')
+        TYPE
+          DexTypeReferenceExpressionImpl(TYPE_REFERENCE_EXPRESSION)
+            PsiElement(identifier)('string')
+    PsiWhiteSpace(' ')
+    DexBlockImpl(BLOCK)
+      PsiElement({)('{')
+      PsiWhiteSpace('\n')
+      PsiWhiteSpace('    ')
+      DexReturnStatementImpl(RETURN_STATEMENT)
+        PsiElement(return)('return')
+        PsiWhiteSpace(' ')
+        DexCallExprImpl(CALL_EXPR)
+          DexReferenceExpressionImpl(REFERENCE_EXPRESSION)
+            PsiElement(identifier)('World')
+          DexCallExprArgsImpl(CALL_EXPR_ARGS)
+            PsiElement(()('(')
+            DexStringLiteralImpl(STRING_LITERAL)
+              PsiElement(sstring)(''world!'')
+            PsiElement())(')')
+      PsiWhiteSpace('\n')
+      PsiElement(})('}')
+  PsiWhiteSpace('\n\n')
+  FUNCTION_DECLARATION
+    PsiElement(function)('function')
+    PsiWhiteSpace(' ')
+    PsiElement(identifier)('World')
+    SIGNATURE
+      PARAMETERS
+        PsiElement(()('(')
+        PARAMETER_DECLARATION
+          PARAM_DEFINITION
+            PsiElement(identifier)('msg')
+          PsiElement(:)(':')
+          PsiWhiteSpace(' ')
+          TYPE
+            DexTypeReferenceExpressionImpl(TYPE_REFERENCE_EXPRESSION)
+              PsiElement(identifier)('string')
+        PsiElement())(')')
+      RESULT
+        PsiElement(:)(':')
+        PsiWhiteSpace(' ')
+        TYPE
+          DexTypeReferenceExpressionImpl(TYPE_REFERENCE_EXPRESSION)
+            PsiElement(identifier)('string')
+    PsiWhiteSpace(' ')
+    DexBlockImpl(BLOCK)
+      PsiElement({)('{')
+      PsiWhiteSpace('\n')
+      PsiWhiteSpace('    ')
+      DexReturnStatementImpl(RETURN_STATEMENT)
+        PsiElement(return)('return')
+        PsiWhiteSpace(' ')
+        DexReferenceExpressionImpl(REFERENCE_EXPRESSION)
+          PsiElement(identifier)('msg')
+      PsiWhiteSpace('\n')
+      PsiElement(})('}')

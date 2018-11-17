@@ -12,7 +12,7 @@ public class OutShimClass extends OutClass {
 
     public OutShimClass(DexFile iFile, String packageName, List<OutClass> oClasses) {
         super(iFile, packageName, oClasses.get(0).shimClassName());
-        appendNewLine("import com.dexscript.runtime.Result;");
+        appendNewLine("import com.dexscript.runtime.*;");
         appendNewLine();
         append("public class ");
         append(className());

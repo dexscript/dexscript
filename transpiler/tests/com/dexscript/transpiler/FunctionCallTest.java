@@ -16,13 +16,4 @@ public class FunctionCallTest extends TranspilerTest {
                 "}\n";
         Assert.assertEquals("hello", transpile1(src));
     }
-
-    @Test
-    public void test_call_sleep() {
-        String src = "" +
-                "function Hello() {\n" +
-                "   Sleep(1000)\n" +
-                "}";
-        transpile0(src);
-    }
 }

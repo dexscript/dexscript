@@ -16,6 +16,9 @@ public interface DexParameterDeclaration extends DexCompositeElement, StubBasedP
   DexType getType();
 
   @Nullable
+  PsiElement getColon();
+
+  @Nullable
   PsiElement getTripleDot();
 
   boolean isVariadic();

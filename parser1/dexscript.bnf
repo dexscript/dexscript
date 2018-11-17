@@ -150,7 +150,7 @@ Parameters ::= '(' [ (ParameterList ','?| TypeListNoPin) ] ')' {
   stubClass="com.dexscript.stubs.DexParametersStub"
 }
 private ParameterList ::= ParameterDeclaration (',' (ParameterDeclaration | &')'))* {pin(".*")=1}
-ParameterDeclaration ::= ParamDefinitionListNoPin? '...'? Type | Type { // todo: use left rule
+ParameterDeclaration ::= ParamDefinitionListNoPin? ':' '...'? Type | Type { // todo: use left rule
   stubClass="com.dexscript.stubs.DexParamDeclarationStub"
   methods = [isVariadic]
 }

@@ -45,6 +45,12 @@ public class DexParameterDeclarationImpl extends DexStubbedElementImpl<DexParamD
 
   @Override
   @Nullable
+  public PsiElement getColon() {
+    return findChildByType(COLON);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getTripleDot() {
     return findChildByType(TRIPLE_DOT);
   }

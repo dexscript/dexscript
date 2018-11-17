@@ -1041,7 +1041,7 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ParamDefinitionListNoPin? '...'? Type | Type
+  // ParamDefinitionListNoPin? ':' '...'? Type | Type
   public static boolean ParameterDeclaration(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ParameterDeclaration")) return false;
     boolean r;
@@ -1052,13 +1052,14 @@ public class DexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ParamDefinitionListNoPin? '...'? Type
+  // ParamDefinitionListNoPin? ':' '...'? Type
   private static boolean ParameterDeclaration_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ParameterDeclaration_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = ParameterDeclaration_0_0(b, l + 1);
-    r = r && ParameterDeclaration_0_1(b, l + 1);
+    r = r && consumeToken(b, COLON);
+    r = r && ParameterDeclaration_0_2(b, l + 1);
     r = r && Type(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1072,8 +1073,8 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   // '...'?
-  private static boolean ParameterDeclaration_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ParameterDeclaration_0_1")) return false;
+  private static boolean ParameterDeclaration_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "ParameterDeclaration_0_2")) return false;
     consumeToken(b, TRIPLE_DOT);
     return true;
   }

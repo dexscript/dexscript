@@ -48,7 +48,16 @@ public class OutMethod extends OutCode {
 
     @Override
     public void visitSimpleStatement(@NotNull DexSimpleStatement o) {
-        o.acceptChildren(this);
+        if (o.getShortVarDeclaration() != null) {
+            o.acceptChildren(this);
+            return;
+        }
+        if (o.getLeftHandExprList() != null) {
+            for (DexExpression iExpr : o.getLeftHandExprList().getExpressionList()) {
+                new OutExpr(this, iExpr);
+            }
+            return;
+        }
     }
 
     @Override
