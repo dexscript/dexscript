@@ -1,6 +1,7 @@
 package com.dexscript.transpiler;
 
-import com.dexscript.psi.*;
+import com.dexscript.psi.DexFile;
+import com.dexscript.psi.OutCode;
 import com.dexscript.runtime.DexScriptException;
 
 import java.util.*;
@@ -63,17 +64,17 @@ public class OutShim extends OutCode {
                     append(");");
                 });
                 appendNewLine("}");
-                append("throw reportMissingImplementation(\"");
-                append(pier.name);
-                append('"');
-                if (pier.argsCount > 0) {
-                    append(", ");
-                }
-                appendParamsInvocation(pier.argsCount);
-                append(");");
             }
+            append("throw reportMissingImplementation(\"");
+            append(pier.name);
+            append('"');
+            if (pier.argsCount > 0) {
+                append(", ");
+            }
+            appendParamsInvocation(pier.argsCount);
+            append(");");
         });
-        append("}");
+        appendNewLine("}");
     }
 
 //    public void genNewExpr(DexNewExpr iNewExpr) {
@@ -133,7 +134,7 @@ public class OutShim extends OutCode {
 //        append("public static Result ");
 //        append(sig);
 //        appendNewLine(" {");
-//        appendNewLine("  return com.dexscript.runtime.Math.Add__(left, right);");
+//        appendNewLine("  return com.dexscript.runtime.AddBoats.Add__(left, right);");
 //        appendNewLine("}");
     }
 

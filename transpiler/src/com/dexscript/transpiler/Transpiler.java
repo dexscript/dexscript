@@ -2,6 +2,7 @@ package com.dexscript.transpiler;
 
 import com.dexscript.parser.DexFileFactory;
 import com.dexscript.psi.DexFile;
+import com.dexscript.runtime.AddBoats;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.Map;
@@ -13,6 +14,7 @@ public class Transpiler implements AutoCloseable {
     public Map<String, Class<?>> transpile(String filename, String source) {
         DexFile iFile = dexFileFactory.createDexFile(filename, source);
         OutShim oShim = new OutShim(null);
+        AddBoats.init(oShim);
         OutFile oFile = new OutFile(iFile, oShim);
         InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
         for (OutClass oClass : oFile.oClasses()) {
