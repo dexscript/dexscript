@@ -2,12 +2,10 @@ package com.dexscript.transpiler;
 
 import com.dexscript.psi.DexFile;
 import com.dexscript.psi.DexFunctionDeclaration;
-import com.dexscript.psi.DexPackageClause;
 import com.dexscript.psi.DexVisitor;
 import com.dexscript.runtime.DexScriptException;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
-import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,11 +14,10 @@ import java.util.List;
 class OutFile extends DexVisitor {
 
     private final List<OutClass> oClasses = new ArrayList<>();
-    private final DexFile iFile;
-    private String packageName;
+    private final OutShim oShim;
 
-    OutFile(DexFile iFile) {
-        this.iFile = iFile;
+    OutFile(DexFile iFile, OutShim oShim) {
+        this.oShim = oShim;
         iFile.accept(this);
         if (oClasses.size() == 0) {
             throw new DexScriptException("transpile failed");
@@ -28,13 +25,8 @@ class OutFile extends DexVisitor {
     }
 
     @Override
-    public void visitPackageClause(@NotNull DexPackageClause o) {
-        packageName = o.getIdentifier().getNode().getText();
-    }
-
-    @Override
     public void visitFunctionDeclaration(@NotNull DexFunctionDeclaration iFuncDecl) {
-        oClasses.add(new OutRootClass(iFile, packageName, iFuncDecl));
+        oClasses.add(new OutRootClass(iFuncDecl, oShim));
     }
 
     @Override
@@ -44,12 +36,5 @@ class OutFile extends DexVisitor {
 
     public List<OutClass> oClasses() {
         return Collections.unmodifiableList(oClasses);
-    }
-
-    public void genShim(InMemoryJavaCompiler compiler) {
-        if (oClasses.size() == 0) {
-            return;
-        }
-        new OutShimClass(iFile, packageName, oClasses).addToCompiler(compiler);
     }
 }

@@ -90,16 +90,7 @@ public class OutMethod extends OutCode {
                 oMethod.append("return new Actor1() {");
             }
             oMethod.indent(() -> {
-                OutClass oClass = new OutClass(oMethod);
-                oClass.appendReturnValueFields(iServeStmt.getSignature());
-                OutMethod oSubMethod = new OutMethod(oClass, iServeStmt.getSignature());
-                oSubMethod.append("{");
-                oSubMethod.indent(() -> {
-                    iServeStmt.getBlock().acceptChildren(oSubMethod);
-                });
-                oSubMethod.appendNewLine('}');
-                oClass.genClassBody();
-                oMethod.append(oClass.toString());
+                oMethod.append(new OutInnerClass(iServeStmt, oMethod));
             });
             oMethod.append("};");
         });

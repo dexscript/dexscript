@@ -9,6 +9,7 @@ import java.util.List;
 
 public class OutExpr extends OutValue {
 
+    private final OutShim oShim;
     private OutMethod oMethod;
     private OutClass oClass;
 
@@ -16,6 +17,7 @@ public class OutExpr extends OutValue {
         super(oMethod.iFile());
         this.oMethod = oMethod;
         oClass = oMethod.oClass();
+        oShim = oClass.oShim();
         iExpr.accept(this);
         if (type == null) {
             throw new IllegalStateException("failed to translate expression: " + iExpr.getNode().getText());
@@ -58,8 +60,8 @@ public class OutExpr extends OutValue {
     public void visitNewExpr(@NotNull DexNewExpr iNewExpr) {
         type = RuntimeType.RESULT;
         String funcName = iNewExpr.getExpression().getNode().getText();
-        oClass.referenced(iNewExpr);
-        append(oClass.shimClassName());
+        oShim.addPier(funcName, iNewExpr.getNewExprArgs().getExpressionList().size());
+        append(OutShim.SHIM_CLASS);
         append('.');
         append(funcName);
         append("()");
@@ -73,19 +75,20 @@ public class OutExpr extends OutValue {
         }
         type = RuntimeType.RESULT;
         String symbolName = iCallExpr.getExpression().getNode().getText();
-        oClass.referenced(iCallExpr);
         String[] parts = symbolName.split("\\.");
         String funcName = parts[parts.length - 1];
         String fieldName = oMethod.oClass().addField(funcName, "Result");
         oMethod.append(fieldName);
         oMethod.append(" = ");
-        oMethod.append(oMethod.oClass().shimClassName());
+        oMethod.append(OutShim.SHIM_CLASS);
         oMethod.append('.');
         oMethod.append(funcName);
         oMethod.append('(');
         boolean isFirst = true;
         if (parts.length == 1) {
+            oShim.addPier(funcName, oArgs.size());
         } else if (parts.length == 2) {
+            oShim.addPier(funcName, oArgs.size()  + 1);
             oMethod.append(parts[0]);
             isFirst = false;
         } else {
@@ -107,13 +110,13 @@ public class OutExpr extends OutValue {
     public void visitAddExpr(@NotNull DexAddExpr iAddExpr) {
         type = RuntimeType.RESULT;
         String funcName = "Add__";
-        oClass.referenced(iAddExpr);
+        oShim.addPier(funcName, 2);
         String fieldName = oClass.addField("addResult", "Result");
         String oLeftExpr = new OutExpr(oMethod, iAddExpr.getLeft()).expectOne();
         String oRightExpr = new OutExpr(oMethod, iAddExpr.getRight()).expectOne();
         oMethod.append(fieldName);
         oMethod.append(" = ");
-        oMethod.append(oClass.shimClassName());
+        oMethod.append(OutShim.SHIM_CLASS);
         oMethod.append('.');
         oMethod.append(funcName);
         oMethod.append('(');
@@ -150,12 +153,12 @@ public class OutExpr extends OutValue {
     public void visitCastExpr(@NotNull DexCastExpr iCastExpr) {
         type = RuntimeType.RESULT;
         String funcName = "Cast__";
-        oClass.referenced(iCastExpr);
+        oShim.addPier(funcName, 2);
         String fieldName = oClass.addField("castResult", "Result");
         OutExpr oCastFrom = new OutExpr(oMethod, iCastExpr.getExpression());
         oMethod.append(fieldName);
         oMethod.append(" = ");
-        oMethod.append(oClass.shimClassName());
+        oMethod.append(OutShim.SHIM_CLASS);
         oMethod.append('.');
         oMethod.append(funcName);
         oMethod.append('(');

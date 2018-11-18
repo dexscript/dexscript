@@ -17,6 +17,10 @@ public class OutCode extends DexVisitor {
         this.prefix = base.prefix;
     }
 
+    public DexFile iFile() {
+        return iFile;
+    }
+
     public void indent(Operation op) {
         String oldPrefix = prefix;
         prefix += "  ";
@@ -66,12 +70,28 @@ public class OutCode extends DexVisitor {
         iFile.appendSourceLine(this, elem);
     }
 
-    public DexFile iFile() {
-        return iFile;
-    }
-
     public void append(OutCode oCode) {
         append(oCode.toString());
+    }
+
+    public void appendParamsDeclaration(int paramsCount) {
+        for (int i = 1; i <= paramsCount; i++) {
+            if (i != 1) {
+                append(", ");
+            }
+            append("Object arg");
+            append(i);
+        }
+    }
+
+    public void appendParamsInvocation(int paramsCount) {
+        for (int i = 1; i <= paramsCount; i++) {
+            if (i != 1) {
+                append(", ");
+            }
+            append("arg");
+            append(i);
+        }
     }
 
     public interface Operation {

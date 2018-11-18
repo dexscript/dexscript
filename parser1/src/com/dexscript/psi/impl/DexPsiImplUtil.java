@@ -160,4 +160,11 @@ public class DexPsiImplUtil {
         return new DexReference(o);
     }
 
+    public static int getParamsCount(DexSignature signature) {
+        int paramsCount = 0;
+        for (DexParameterDeclaration iParam : signature.getParameters().getParameterDeclarationList()) {
+            paramsCount += iParam.getParamDefinitionList().size();
+        }
+        return paramsCount;
+    }
 }

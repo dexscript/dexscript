@@ -10,7 +10,7 @@
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * See the License for the specific language Dexverning permissions and
  * limitations under the License.
  */
 
@@ -73,10 +73,6 @@ public class DexFile extends PsiFileBase {
     return (DexFileStub)super.getStub();
   }
 
-  public String getPackageName() {
-    throw new UnsupportedOperationException();
-  }
-
   public void appendSourceLine(OutCode out, PsiElement elem) {
     out.append("// ");
     out.append(getVirtualFile().getName());
@@ -89,6 +85,30 @@ public class DexFile extends PsiFileBase {
     CharSequence line = contents.subSequence(lineSet.getLineStart(lineNumber), lineSet.getLineEnd(lineNumber));
     out.append(line.toString().trim());
     out.appendNewLine();
+  }
+
+  @Nullable
+  public String getPackageName() {
+    return CachedValuesManager.getCachedValue(this, () -> {
+      DexFileStub stub = getStub();
+      if (stub != null) {
+        return CachedValueProvider.Result.create(stub.getPackageName(), this);
+      }
+      DexPackageClause packageClause = getPackage();
+      return CachedValueProvider.Result.create(packageClause != null ? packageClause.getName() : null, this);
+    });
+  }
+
+  @Nullable
+  public DexPackageClause getPackage() {
+    return CachedValuesManager.getCachedValue(this, () -> {
+      DexFileStub stub = getStub();
+      if (stub != null) {
+        StubElement<DexPackageClause> packageClauseStub = stub.getPackageClauseStub();
+        return CachedValueProvider.Result.create(packageClauseStub != null ? packageClauseStub.getPsi() : null, this);
+      }
+      return CachedValueProvider.Result.create(findChildByClass(DexPackageClause.class), this);
+    });
   }
 
   @NotNull

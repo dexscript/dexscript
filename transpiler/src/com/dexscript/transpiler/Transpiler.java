@@ -12,14 +12,29 @@ public class Transpiler implements AutoCloseable {
 
     public Map<String, Class<?>> transpile(String filename, String source) {
         DexFile iFile = dexFileFactory.createDexFile(filename, source);
-        OutFile oFile = new OutFile(iFile);
+        OutShim oShim = new OutShim(null);
+        OutFile oFile = new OutFile(iFile, oShim);
         InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
         for (OutClass oClass : oFile.oClasses()) {
-            oClass.addToCompiler(compiler);
+            addToCompiler(compiler, oClass.qualifiedClassName(), oClass.toString());
         }
-        oFile.genShim(compiler);
+        addToCompiler(compiler, OutShim.SHIM_PACKAGE + "." + OutShim.SHIM_CLASS, oShim.generate());
         try {
             return compiler.compileAll();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void addToCompiler(InMemoryJavaCompiler compiler, String className, String src) {
+        try {
+            System.out.println(className);
+            String lines[] = src.split("\\r?\\n");
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i];
+                System.out.println((i+1) + ":\t" + line);
+            }
+            compiler.addSource(className, src);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
