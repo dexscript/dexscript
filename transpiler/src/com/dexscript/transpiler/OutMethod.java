@@ -61,6 +61,38 @@ public class OutMethod extends OutCode {
     }
 
     @Override
+    public void visitVarDeclaration(@NotNull DexVarDeclaration iVarDecl) {
+        for (DexVarSpec iVarSpec : iVarDecl.getVarSpecList()) {
+            for (DexVarDefinition iVarDef : iVarSpec.getVarDefinitionList()) {
+                String varName = iVarDef.getIdentifier().getNode().getText();
+                String varType = TransType.translateType(iVarSpec.getType()).className;
+                oClass.addField(varName, varType);
+            }
+        }
+    }
+
+    @Override
+    public void visitAssignmentStatement(@NotNull DexAssignmentStatement iAssignStmt) {
+        List<DexExpression> iLeftExprs = iAssignStmt.getLeftHandExprList().getExpressionList();
+        List<DexExpression> iRightExprs = iAssignStmt.getExpressionList();
+        for (int i = 0; i < iLeftExprs.size(); i++) {
+            DexExpression iLeftExpr = iLeftExprs.get(i);
+            DexExpression iRightExpr = iRightExprs.get(i);
+            OutExpr oLeftExpr = new OutExpr(this, iLeftExpr);
+            OutExpr oRightExpr = new OutExpr(this, iRightExpr);
+            append(oLeftExpr);
+            append(iAssignStmt.getAssignOp());
+            append(oRightExpr);
+            appendNewLine(';');
+        }
+    }
+
+    @Override
+    public void visitStatement(@NotNull DexStatement iStmt) {
+        iStmt.acceptChildren(this);
+    }
+
+    @Override
     public void visitShortVarDeclaration(@NotNull DexShortVarDeclaration iShortVarDecl) {
         DexExpression iExpr = iShortVarDecl.getExpressionList().get(0);
         OutExpr oExpr = new OutExpr(this, iExpr);

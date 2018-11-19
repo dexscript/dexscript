@@ -37,6 +37,26 @@ public class AwaitTest extends TranspilerTest {
     }
 
     @Test
+    public void test_await_with_assignment() {
+        String src = "" +
+                "function Hello(): string {\n" +
+                "   w := World{}\n" +
+                "   w.Say('hello')\n" +
+                "   return <-w\n" +
+                "}\n" +
+                "\n" +
+                "function World():string {\n" +
+                "   var msg: string\n" +
+                "   await {\n" +
+                "   -> Say(msg_: string) {\n" +
+                "       msg = msg_\n" +
+                "   }}\n" +
+                "   return msg\n" +
+                "}";
+        Assert.assertEquals("hello", transpile1(src));
+    }
+
+    @Test
     public void test_pass_result() {
         String src = "" +
                 "function Hello(): string {\n" +
