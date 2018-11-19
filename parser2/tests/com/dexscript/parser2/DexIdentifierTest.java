@@ -14,4 +14,9 @@ public class DexIdentifierTest {
         Assert.assertEquals("hello", new DexIdentifier("\nhello\n").toString());
         Assert.assertEquals("hello", new DexIdentifier(" hello()").toString());
     }
+
+    @Test
+    public void invalid() {
+        Assert.assertFalse(new DexIdentifier("+ hello").valid());
+    }
 }

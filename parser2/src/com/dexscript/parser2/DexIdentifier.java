@@ -59,12 +59,8 @@ public class DexIdentifier {
                     case IDENTIFIER:
                         state = parseIdentifier();
                         continue;
-                    case PRE_BLANK_ERROR:
-                        state = parsePreBlankError();
-                        continue;
-                    case DONE:
-                        return;
                 }
+                return;
             }
         }
 
@@ -100,17 +96,6 @@ public class DexIdentifier {
                 }
             }
             matched = new Text(src.bytes, identifierBegin, src.end);
-            return State.DONE;
-        }
-
-        @Expect("blank")
-        State parsePreBlankError() {
-            for (; i < src.end; i++) {
-                byte b = src.bytes[i];
-                if (Blank.__(b)) {
-                    return State.PRE_BLANK;
-                }
-            }
             return State.DONE;
         }
 
