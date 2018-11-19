@@ -88,7 +88,7 @@ public class OutExpr extends OutValue {
         if (parts.length == 1) {
             oShim.addPier(funcName, oArgs.size());
         } else if (parts.length == 2) {
-            oShim.addPier(funcName, oArgs.size()  + 1);
+            oShim.addPier(funcName, oArgs.size() + 1);
             oMethod.append(parts[0]);
             isFirst = false;
         } else {

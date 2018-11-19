@@ -1,6 +1,7 @@
 package com.dexscript.transpiler;
 
 import com.dexscript.psi.*;
+import com.dexscript.psi.impl.DexPsiImplUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -114,12 +115,17 @@ public class OutMethod extends OutCode {
         OutMethod oMethod = new OutMethod(oClass, iSig);
         oMethod.append("public Result ");
         oMethod.append(iServeStmt.getIdentifier());
-        oMethod.append("() {");
+        oMethod.append('(');
+        int paramsCount = DexPsiImplUtil.getParamsCount(iServeStmt.getSignature());
+        oMethod.appendParamsDeclaration(paramsCount);
+        oMethod.append(") {");
         oMethod.indent(() -> {
             OutInnerClass oInnerClass = new OutInnerClass(iServeStmt, oMethod);
             oMethod.append("return new ");
             oMethod.append(oInnerClass.className());
-            oMethod.append("();");
+            oMethod.append('(');
+            oMethod.appendParamsInvocation(paramsCount);
+            oMethod.append(");");
             oClass.addServeBoat("", iServeStmt);
         });
         oMethod.appendNewLine("}");
