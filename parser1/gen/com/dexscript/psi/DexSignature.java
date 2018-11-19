@@ -1,11 +1,10 @@
 // copyrightHeader.java
 package com.dexscript.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
 import com.dexscript.stubs.DexSignatureStub;
+import com.intellij.psi.StubBasedPsiElement;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface DexSignature extends DexCompositeElement, StubBasedPsiElement<DexSignatureStub> {
 

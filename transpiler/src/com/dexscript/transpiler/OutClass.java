@@ -2,9 +2,9 @@ package com.dexscript.transpiler;
 
 import com.dexscript.psi.*;
 import org.jetbrains.annotations.NotNull;
-import org.mdkt.compiler.InMemoryJavaCompiler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 class OutClass extends OutCode {
 
@@ -12,14 +12,24 @@ class OutClass extends OutCode {
     private final String packageName;
     private final String className;
     private final Namer oFieldNames = new Namer();
+    private final Namer oInnerClassNames = new Namer();
     private final List<OutField> oFields = new ArrayList<>();
     private final List<OutMethod> oMethods = new ArrayList<>();
+    private final List<OutClass> oInnerClasses = new ArrayList<>();
 
     public OutClass(DexFile iFile, String className, OutShim oShim) {
         super(iFile);
         this.oShim = oShim;
         this.packageName = iFile.getPackageName();
         this.className = className;
+    }
+
+    public OutClass(OutClass oParent, String suggestedClassName) {
+        super(oParent);
+        oParent.addInnerClass(this);
+        this.oShim = oParent.oShim();
+        this.packageName = iFile().getPackageName();
+        this.className = oInnerClassNames.giveName(suggestedClassName);
     }
 
     public String qualifiedClassName() {
@@ -42,29 +52,29 @@ class OutClass extends OutCode {
         return transpiledName;
     }
 
-    public List<OutField> oFields() {
-        return Collections.unmodifiableList(oFields);
-    }
-
-    public List<OutMethod> oMethods() {
-        return Collections.unmodifiableList(oMethods);
-    }
-
     public void addMethod(OutMethod oMethod) {
         oMethods.add(oMethod);
     }
 
+    public void addInnerClass(OutClass oInnerClass) {
+        oInnerClasses.add(oInnerClass);
+    }
+
     void genClassBody() {
-        for (OutMethod oMethod : oMethods()) {
-            append(oMethod.toString());
+        for (OutMethod oMethod : oMethods) {
+            append(oMethod);
             appendNewLine();
         }
-        for (OutField field : oFields()) {
+        for (OutField field : oFields) {
             append("private ");
             append(field.type);
             append(' ');
             append(field.outName);
             appendNewLine(';');
+        }
+        for (OutClass oInnerClass : oInnerClasses) {
+            append(oInnerClass);
+            appendNewLine();
         }
     }
 
@@ -88,5 +98,9 @@ class OutClass extends OutCode {
 
     protected OutShim oShim() {
         return oShim;
+    }
+
+    public void addServeBoat(String prefix, DexServeStatement iServeStmt) {
+        throw new UnsupportedOperationException("not implemented");
     }
 }

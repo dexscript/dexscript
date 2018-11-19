@@ -84,15 +84,11 @@ public class OutMethod extends OutCode {
         oMethod.append(iServeStmt.getIdentifier());
         oMethod.append("() {");
         oMethod.indent(() -> {
-            if (iServeStmt.getSignature().getResult() == null) {
-                oMethod.append("return new Actor() {");
-            } else {
-                oMethod.append("return new Actor1() {");
-            }
-            oMethod.indent(() -> {
-                oMethod.append(new OutInnerClass(iServeStmt, oMethod));
-            });
-            oMethod.append("};");
+            OutInnerClass oInnerClass = new OutInnerClass(iServeStmt, oMethod);
+            oMethod.append("return new ");
+            oMethod.append(oInnerClass.className());
+            oMethod.append("();");
+            oClass.addServeBoat("", iServeStmt);
         });
         oMethod.appendNewLine("}");
     }

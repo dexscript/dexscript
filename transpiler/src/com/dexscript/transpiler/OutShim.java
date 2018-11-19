@@ -77,65 +77,12 @@ public class OutShim extends OutCode {
         appendNewLine("}");
     }
 
-//    public void genNewExpr(DexNewExpr iNewExpr) {
-//        int paramsCount = iNewExpr.getNewExprArgs().getExpressionList().size();
-//        String name = iNewExpr.getExpression().getNode().getText();
-//        genCallExpr(name, paramsCount);
-//    }
-//
-//    public void genCallExpr(DexCallExpr iCallExpr) {
-//        int paramsCount = iCallExpr.getCallExprArgs().getExpressionList().size();
-//        String name = iCallExpr.getExpression().getNode().getText();
-//        genCallExpr(name, paramsCount);
-//    }
-//
-//    public void genCallExpr(String name, int paramsCount) {
-//        String[] parts = name.split("\\.");
-//        String funcName = parts[parts.length - 1];
-//        append("public static Result ");
-//        append(funcName);
-//        if (parts.length == 1) {
-//            append('(');
-//            appendParamDef(paramsCount);
-//            append(") {");
-//            indent(() -> {
-//                append("return new ");
-//                append(name);
-//                append('(');
-//                appendParamInvocation(paramsCount);
-//                append(");");
-//            });
-//            appendNewLine("}");
-//        } else if (parts.length == 2) {
-//            append("(Object obj) {");
-//            indent(() -> {
-//                append("return ((World)obj).");
-//                append(funcName);
-//                append("();");
-//            });
-//            appendNewLine("}");
-//        } else {
-//            throw new UnsupportedOperationException("not implemented");
-//        }
-//    }
-//
-
     public void addPier(String name, int argsCount) {
         addPier(new Pier(name, argsCount));
     }
 
     public void addPier(Pier pier) {
         piers.add(pier);
-//        String sig = "Add__(Object left, Object right)";
-//        if (generated.contains(sig)) {
-//            return;
-//        }
-//        generated.add(sig);
-//        append("public static Result ");
-//        append(sig);
-//        appendNewLine(" {");
-//        appendNewLine("  return com.dexscript.runtime.AddBoats.Add__(left, right);");
-//        appendNewLine("}");
     }
 
     public void addBoat(Boat boat) {
@@ -146,19 +93,4 @@ public class OutShim extends OutCode {
         }
         pierBoats.add(boat);
     }
-
-//    public void genCastExpr(DexCastExpr iCastExpr) {
-//        String sig = "Result Cast__(Object castFrom, Object castToType)";
-//        if (generated.contains(sig)) {
-//            return;
-//        }
-//        generated.add(sig);
-//        append("public static ");
-//        append(sig);
-//        appendNewLine(" {");
-//        appendNewLine("  return com.dexscript.runtime.Cast.Cast__(castFrom, castToType);");
-//        appendNewLine("}");
-//    }
-
-
 }
