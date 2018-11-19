@@ -1,0 +1,10 @@
+package abc
+
+function World(): string {
+   var msg: string
+   await {
+   -> setMessage(msg_: string) {
+       msg = msg_
+   }}
+   return msg
+}
