@@ -46,7 +46,7 @@ public class ParserTest extends ParsingTestCase {
     }
 
     @Test
-    public void testAwait() {
+    public void testServe() {
         doTest(true);
     }
 
@@ -56,12 +56,19 @@ public class ParserTest extends ParsingTestCase {
     }
 
     @Test
-    public void testOneArgument() {
+    public void testOneArgumentFunctionCall() {
         doTest(true);
     }
 
     @Test
-    public void testVariable() { doTest(true); }
+    public void testVariable() {
+        doTest(true);
+    }
+
+    @Test
+    public void testOneArgumentServe() {
+        doTest(true);
+    }
 
     @Override
     protected void doTest(boolean checkErrors) {
@@ -73,6 +80,7 @@ public class ParserTest extends ParsingTestCase {
             );
         }
     }
+
     @NotNull
     @Override
     protected String getTestDataPath() {

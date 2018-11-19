@@ -1,0 +1,13 @@
+package abc
+
+function Hello(): string {
+    world := World{}
+    return w.Say('hello')
+}
+
+function World() {
+    await {
+    -> Say(msg: string): string {
+        return msg
+    }}
+}
