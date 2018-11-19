@@ -55,4 +55,10 @@ public class DexVarSpecImpl extends DexStubbedElementImpl<DexVarSpecStub> implem
     return findChildByType(ASSIGN);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getColon() {
+    return findChildByType(COLON);
+  }
+
 }

@@ -31,4 +31,10 @@ public class DexStatementImpl extends DexCompositeElementImpl implements DexStat
     return PsiTreeUtil.getChildOfType(this, DexBlock.class);
   }
 
+  @Override
+  @Nullable
+  public DexVarDeclaration getVarDeclaration() {
+    return PsiTreeUtil.getChildOfType(this, DexVarDeclaration.class);
+  }
+
 }

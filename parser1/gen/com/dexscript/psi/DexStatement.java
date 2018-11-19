@@ -10,4 +10,7 @@ public interface DexStatement extends DexCompositeElement {
   @Nullable
   DexBlock getBlock();
 
+  @Nullable
+  DexVarDeclaration getVarDeclaration();
+
 }

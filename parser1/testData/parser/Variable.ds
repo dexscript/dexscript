@@ -1,0 +1,6 @@
+package abc
+
+function hello() {
+    var val: string
+    val = 'hello'
+}

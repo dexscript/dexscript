@@ -20,7 +20,7 @@ public class AwaitTest extends TranspilerTest {
     }
 
     @Test
-    public void test_await() {
+    public void test_await_without_blocking() {
         String src = "" +
                 "function Hello(): string {\n" +
                 "    w := World{}\n" +
@@ -51,6 +51,32 @@ public class AwaitTest extends TranspilerTest {
                 "function Dummy(w: World): string {\n" +
                 "   return <-w\n" +
                 "}";
+        Assert.assertEquals("hello", transpile1(src));
+    }
+
+    @Test
+    public void test_await_with_blocking() {
+        String src = "" +
+                "function Hello(): string {\n" +
+                "   w := World{}\n" +
+                "   d := Dummy{w}\n" +
+                "   w.setMessage('hello')\n" +
+                "   return <-d\n" +
+                "}\n" +
+                "\n" +
+                "function World(): string {\n" +
+                "   var msg: string\n" +
+                "   await {\n" +
+                "   -> setMessage(msg_: string) {\n" +
+                "       msg = msg_\n" +
+                "   }}\n" +
+                "   return msg\n" +
+                "}\n" +
+                "\n" +
+                "function Dummy(w: World): string {\n" +
+                "   return <-w\n" +
+                "}";
+        System.out.println(src);
         Assert.assertEquals("hello", transpile1(src));
     }
 }

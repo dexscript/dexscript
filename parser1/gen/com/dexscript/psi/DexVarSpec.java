@@ -21,6 +21,9 @@ public interface DexVarSpec extends DexCompositeElement, StubBasedPsiElement<Dex
   @Nullable
   PsiElement getAssign();
 
+  @Nullable
+  PsiElement getColon();
+
   //WARNING: processDeclarations(...) is skipped
   //matching processDeclarations(DexVarSpec, ...)
   //methods are not found in DexPsiImplUtil

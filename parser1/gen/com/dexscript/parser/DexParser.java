@@ -1412,6 +1412,7 @@ public class DexParser implements PsiParser, LightPsiParser {
   // ReturnStatement
   //   | ReplyStatement
   //   | Block
+  //   | VarDeclaration
   //   | SimpleStatement
   //   | AwaitStatement
   public static boolean Statement(PsiBuilder b, int l) {
@@ -1421,6 +1422,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     r = ReturnStatement(b, l + 1);
     if (!r) r = ReplyStatement(b, l + 1);
     if (!r) r = Block(b, l + 1);
+    if (!r) r = VarDeclaration(b, l + 1);
     if (!r) r = SimpleStatement(b, l + 1);
     if (!r) r = AwaitStatement(b, l + 1);
     exit_section_(b, l, m, r, false, null);
@@ -1853,7 +1855,7 @@ public class DexParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // VarDefinitionList ( Type [ '=' ExpressionList ] | '=' ExpressionList )
+  // VarDefinitionList ( ':' Type [ '=' ExpressionList ] | '=' ExpressionList )
   public static boolean VarSpec(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VarSpec")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
@@ -1866,7 +1868,7 @@ public class DexParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // Type [ '=' ExpressionList ] | '=' ExpressionList
+  // ':' Type [ '=' ExpressionList ] | '=' ExpressionList
   private static boolean VarSpec_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VarSpec_1")) return false;
     boolean r;
@@ -1877,28 +1879,29 @@ public class DexParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // Type [ '=' ExpressionList ]
+  // ':' Type [ '=' ExpressionList ]
   private static boolean VarSpec_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "VarSpec_1_0")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
-    r = Type(b, l + 1);
+    r = consumeToken(b, COLON);
     p = r; // pin = 1
-    r = r && VarSpec_1_0_1(b, l + 1);
+    r = r && report_error_(b, Type(b, l + 1));
+    r = p && VarSpec_1_0_2(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
   // [ '=' ExpressionList ]
-  private static boolean VarSpec_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "VarSpec_1_0_1")) return false;
-    VarSpec_1_0_1_0(b, l + 1);
+  private static boolean VarSpec_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpec_1_0_2")) return false;
+    VarSpec_1_0_2_0(b, l + 1);
     return true;
   }
 
   // '=' ExpressionList
-  private static boolean VarSpec_1_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "VarSpec_1_0_1_0")) return false;
+  private static boolean VarSpec_1_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "VarSpec_1_0_2_0")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = consumeToken(b, ASSIGN);

@@ -1,0 +1,47 @@
+DEX_FILE
+  PACKAGE_CLAUSE
+    PsiElement(package)('package')
+    PsiWhiteSpace(' ')
+    PsiElement(identifier)('abc')
+  PsiWhiteSpace('\n\n')
+  DexImportListImpl(IMPORT_LIST)
+    <empty list>
+  FUNCTION_DECLARATION
+    PsiElement(function)('function')
+    PsiWhiteSpace(' ')
+    PsiElement(identifier)('hello')
+    SIGNATURE
+      PARAMETERS
+        PsiElement(()('(')
+        PsiElement())(')')
+    PsiWhiteSpace(' ')
+    DexBlockImpl(BLOCK)
+      PsiElement({)('{')
+      PsiWhiteSpace('\n')
+      PsiWhiteSpace('    ')
+      DexStatementImpl(STATEMENT)
+        DexVarDeclarationImpl(VAR_DECLARATION)
+          PsiElement(var)('var')
+          PsiWhiteSpace(' ')
+          VAR_SPEC
+            VAR_DEFINITION
+              PsiElement(identifier)('val')
+            PsiElement(:)(':')
+            PsiWhiteSpace(' ')
+            TYPE
+              DexTypeReferenceExpressionImpl(TYPE_REFERENCE_EXPRESSION)
+                PsiElement(identifier)('string')
+      PsiWhiteSpace('\n')
+      PsiWhiteSpace('    ')
+      DexAssignmentStatementImpl(ASSIGNMENT_STATEMENT)
+        DexLeftHandExprListImpl(LEFT_HAND_EXPR_LIST)
+          DexReferenceExpressionImpl(REFERENCE_EXPRESSION)
+            PsiElement(identifier)('val')
+        PsiWhiteSpace(' ')
+        DexAssignOpImpl(ASSIGN_OP)
+          PsiElement(=)('=')
+        PsiWhiteSpace(' ')
+        DexStringLiteralImpl(STRING_LITERAL)
+          PsiElement(sstring)(''hello'')
+      PsiWhiteSpace('\n')
+      PsiElement(})('}')
