@@ -28,8 +28,7 @@ public class OutInnerClass extends OutClass {
             oCtor.append("public ");
             oCtor.append(className());
             oCtor.append('(');
-            int paramsCount = DexPsiImplUtil.getParamsCount(iSig);
-            oCtor.appendParamsDeclaration(paramsCount);
+            oCtor.appendParamsDeclaration(iSig);
             oCtor.append(") {");
             oCtor.indent(() -> {
                 iServeStmt.getBlock().acceptChildren(oCtor);

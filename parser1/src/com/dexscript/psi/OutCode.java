@@ -2,6 +2,8 @@ package com.dexscript.psi;
 
 import com.intellij.psi.PsiElement;
 
+import java.util.List;
+
 public class OutCode extends DexVisitor {
 
     private final DexFile iFile;
@@ -91,6 +93,21 @@ public class OutCode extends DexVisitor {
             }
             append("arg");
             append(i);
+        }
+    }
+
+    public void appendParamsDeclaration(DexSignature iSig) {
+        int i = 0;
+        List<DexParameterDeclaration> iParams = iSig.getParameters().getParameterDeclarationList();
+        for (DexParameterDeclaration iParam : iParams) {
+            for (DexParamDefinition iParamDef : iParam.getParamDefinitionList()) {
+                i++;
+                if (i != 1) {
+                    append(", ");
+                }
+                append("Object ");
+                append(iParamDef);
+            }
         }
     }
 

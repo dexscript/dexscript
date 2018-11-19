@@ -7,12 +7,10 @@ public class OutRootClass extends OutClass {
 
     private final Namer oGatewayNames = new Namer();
     private final DexFunctionDeclaration iFuncDecl;
-    private int ctorParamsCount;
 
     public OutRootClass(DexFunctionDeclaration iFuncDecl, OutShim oShim) {
         super((DexFile) iFuncDecl.getContainingFile(), iFuncDecl.getIdentifier().getNode().getText(), oShim);
         this.iFuncDecl = iFuncDecl;
-        ctorParamsCount = DexPsiImplUtil.getParamsCount(iFuncDecl.getSignature());
         String packageName = iFile().getPackageName();
         String className = iFuncDecl.getIdentifier().getNode().getText();
         append("package ");
@@ -38,8 +36,7 @@ public class OutRootClass extends OutClass {
             oMethod.append("public ");
             oMethod.append(iFuncDecl.getIdentifier());
             oMethod.append('(');
-            int paramsCount = DexPsiImplUtil.getParamsCount(iSig);
-            oMethod.appendParamsDeclaration(paramsCount);
+            oMethod.appendParamsDeclaration(iSig);
             oMethod.append(") {");
             oMethod.indent(() -> {
                 iFuncDecl.getBlock().acceptChildren(oMethod);
@@ -53,14 +50,15 @@ public class OutRootClass extends OutClass {
     }
 
     private void addCtorBoat() {
-        addCtorBoatApply();
-        addCtorBoatCheck();
+        int ctorParamsCount = DexPsiImplUtil.getParamsCount(iFuncDecl.getSignature());
+        addCtorBoatApply(ctorParamsCount);
+        addCtorBoatCheck(ctorParamsCount);
         Pier pier = new Pier(className(), ctorParamsCount);
         Boat boat = new Boat(pier, qualifiedClassName(), "create__");
         oShim().addBoat(boat);
     }
 
-    private void addCtorBoatCheck() {
+    private void addCtorBoatCheck(int ctorParamsCount) {
         String checkFuncName = oGatewayNames.giveName("can__create__");
         append("public static boolean ");
         append(checkFuncName);
@@ -71,7 +69,7 @@ public class OutRootClass extends OutClass {
         appendNewLine("}");
     }
 
-    private void addCtorBoatApply() {
+    private void addCtorBoatApply(int ctorParamsCount) {
         String applyFuncName = oGatewayNames.giveName("create__");
         append("public static Result ");
         append(applyFuncName);
