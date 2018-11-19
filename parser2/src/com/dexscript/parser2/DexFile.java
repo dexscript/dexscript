@@ -1,9 +1,14 @@
 package com.dexscript.parser2;
 
+import com.dexscript.parser2.core.Text;
+
+import java.util.List;
+
 public class DexFile {
 
     private final Text src;
     private DexPackageClause packageClause;
+    private List<DexRootDeclaration> rootDeclarations;
 
     public DexFile(Text src) {
         this.src = src;
@@ -19,5 +24,13 @@ public class DexFile {
         }
         packageClause = new DexPackageClause(src);
         return packageClause;
+    }
+
+    public List<DexRootDeclaration> rootDeclarations() {
+        if (rootDeclarations != null) {
+            return rootDeclarations;
+        }
+        rootDeclarations = DexRootDeclaration.parse(src);
+        return rootDeclarations;
     }
 }

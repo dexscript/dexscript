@@ -1,4 +1,4 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.core;
 
 public class Text {
 
@@ -10,6 +10,10 @@ public class Text {
         this.bytes = bytes;
         this.begin = begin;
         this.end = end;
+    }
+
+    public Text(String src) {
+        this(src.getBytes(), 0, src.getBytes().length);
     }
 
     @Override

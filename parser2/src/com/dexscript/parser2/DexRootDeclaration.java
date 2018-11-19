@@ -2,45 +2,36 @@ package com.dexscript.parser2;
 
 import com.dexscript.parser2.core.Text;
 
-public class DexPackageKeyword {
+import java.util.Arrays;
+import java.util.List;
+
+public class DexRootDeclaration {
 
     private enum State {
         PRE_BLANK,
-        PACKAGE,
+        FUNCTION,
         PRE_BLANK_ERROR,
         DONE
     }
 
     private final Text src;
     private DexErrorElement err;
-    private Text matched;
+    private DexFunction function;
 
-    public DexPackageKeyword(Text src) {
+    public DexRootDeclaration(Text src) {
         this.src = src;
         new Parser();
     }
 
-
-    public int end() {
-        if (matched == null) {
-            return src.end;
-        }
-        return matched.end;
-    }
-
-    @Override
-    public String toString() {
-        if (matched == null) {
-            return "<unmatched>";
-        }
-        return matched.toString();
+    public DexFunction function() {
+        return function;
     }
 
     private class Parser {
 
         private int i;
         private State state = State.PRE_BLANK;
-        private int packageBegin;
+        private int symbolBegin;
 
         Parser() {
             i = src.begin;
@@ -49,8 +40,8 @@ public class DexPackageKeyword {
                     case PRE_BLANK:
                         parsePreBlank();
                         break;
-                    case PACKAGE:
-                        parsePackage();
+                    case FUNCTION:
+                        parseFunction();
                         break;
                     case PRE_BLANK_ERROR:
                         parsePreBlankError();
@@ -70,33 +61,34 @@ public class DexPackageKeyword {
                     case '\r':
                     case '\n':
                         continue;
-                    case 'p':
-                        if (src.bytes[i + 1] == 'a'
-                                && src.bytes[i + 2] == 'c'
-                                && src.bytes[i + 3] == 'k'
-                                && src.bytes[i + 4] == 'a'
-                                && src.bytes[i + 5] == 'g'
-                                && src.bytes[i + 6] == 'e') {
-                            packageBegin = i;
-                            i = i + 7;
-                            switchState(State.PACKAGE);
+                    case 'f':
+                        if (src.bytes[i + 1] == 'u'
+                                && src.bytes[i + 2] == 'n'
+                                && src.bytes[i + 3] == 'c'
+                                && src.bytes[i + 4] == 't'
+                                && src.bytes[i + 5] == 'i'
+                                && src.bytes[i + 6] == 'o'
+                                && src.bytes[i + 7] == 'n') {
+                            symbolBegin = i;
+                            i = i + 8;
+                            switchState(State.FUNCTION);
                             return;
                         }
                     default:
-                        reportError("blank", "package");
+                        reportError("blank", "function");
                         switchState(State.PRE_BLANK_ERROR);
                         return;
                 }
             }
         }
 
-        void parsePackage() {
+        void parseFunction() {
             switch (src.bytes[i]) {
                 case ' ':
                 case '\t':
                 case '\r':
                 case '\n':
-                    matched = new Text(src.bytes, packageBegin, i);
+                    function = new DexFunction(new Text(src.bytes, symbolBegin, src.end));
                     switchState(State.DONE);
                     return;
                 default:
@@ -129,5 +121,10 @@ public class DexPackageKeyword {
             }
             err = new DexErrorElement(src, i, expectations);
         }
+    }
+
+    public static List<DexRootDeclaration> parse(Text src) {
+        DexRootDeclaration rootDecl = new DexRootDeclaration(src);
+        return Arrays.asList(rootDecl);
     }
 }

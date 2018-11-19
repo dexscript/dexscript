@@ -13,4 +13,14 @@ public class DexFileTest {
         Assert.assertEquals("abc", pkgClause.identifier().toString());
     }
 
+    @Test
+    public void functions() {
+        String src = "" +
+                "function hello() {\n" +
+                "}";
+        DexFile file = new DexFile(src);
+        Assert.assertEquals(1, file.rootDeclarations().size());
+        DexRootDeclaration rootDecl = file.rootDeclarations().get(0);
+        Assert.assertEquals("hello", rootDecl.function().identifier().toString());
+    }
 }
