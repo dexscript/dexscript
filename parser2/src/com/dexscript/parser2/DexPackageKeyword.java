@@ -83,7 +83,7 @@ public class DexPackageKeyword {
                             return;
                         }
                     default:
-                        reportError("blank", "package");
+                        reportError();
                         switchState(State.PRE_BLANK_ERROR);
                         return;
                 }
@@ -100,7 +100,7 @@ public class DexPackageKeyword {
                     switchState(State.DONE);
                     return;
                 default:
-                    reportError("blank");
+                    reportError();
                     switchState(State.PRE_BLANK_ERROR);
             }
         }
@@ -123,11 +123,11 @@ public class DexPackageKeyword {
             state = toState;
         }
 
-        void reportError(String... expectations) {
+        void reportError() {
             if (err != null) {
                 return;
             }
-            err = new DexErrorElement(src, i, expectations);
+            err = new DexErrorElement(src, i);
         }
     }
 }

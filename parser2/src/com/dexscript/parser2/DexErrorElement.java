@@ -6,12 +6,10 @@ public class DexErrorElement {
 
     public final Text src;
     public final int errorBegin;
-    public final String[] expectations;
 
-    public DexErrorElement(Text src, int errorBegin, String[] expectations) {
+    public DexErrorElement(Text src, int errorBegin) {
         this.src = src;
         this.errorBegin = errorBegin;
-        this.expectations = expectations;
     }
 
     @Override
@@ -22,10 +20,6 @@ public class DexErrorElement {
         msg.append(new String(new byte[]{src.bytes[errorBegin]}));
         msg.append("|, ");
         msg.append("expected: ");
-        for (String expectation : expectations) {
-            msg.append(expectation);
-            msg.append(", ");
-        }
         msg.append("\n");
         return msg.toString();
     }

@@ -27,6 +27,14 @@ public class DexIdentifier {
         new Parser();
     }
 
+    public boolean valid() {
+        return matched != null;
+    }
+
+    public int end() {
+        return matched.end;
+    }
+
     @Override
     public String toString() {
         if (matched == null) {
@@ -86,7 +94,7 @@ public class DexIdentifier {
         State parseIdentifier() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.__(b) || b == '(') {
                     matched = new Text(src.bytes, identifierBegin, i);
                     return State.DONE;
                 }
@@ -106,11 +114,11 @@ public class DexIdentifier {
             return State.DONE;
         }
 
-        State reportError(String... expectations) {
+        State reportError() {
             if (err != null) {
                 return State.PRE_BLANK_ERROR;
             }
-            err = new DexErrorElement(src, i, expectations);
+            err = new DexErrorElement(src, i);
             return State.PRE_BLANK_ERROR;
         }
     }

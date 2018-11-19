@@ -75,7 +75,7 @@ public class DexRootDeclaration {
                             return;
                         }
                     default:
-                        reportError("blank", "function");
+                        reportError();
                         switchState(State.PRE_BLANK_ERROR);
                         return;
                 }
@@ -92,7 +92,7 @@ public class DexRootDeclaration {
                     switchState(State.DONE);
                     return;
                 default:
-                    reportError("blank");
+                    reportError();
                     switchState(State.PRE_BLANK_ERROR);
             }
         }
@@ -115,11 +115,11 @@ public class DexRootDeclaration {
             state = toState;
         }
 
-        void reportError(String... expectations) {
+        void reportError() {
             if (err != null) {
                 return;
             }
-            err = new DexErrorElement(src, i, expectations);
+            err = new DexErrorElement(src, i);
         }
     }
 
