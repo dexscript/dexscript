@@ -23,6 +23,16 @@ public class DexFunctionTest {
                 "}\n";
         DexFunction function = new DexFunction(src);
         Assert.assertFalse(function.matched());
-        Assert.assertEquals(15, function.err().errorBegin);
+        Assert.assertEquals(15, function.err().errorPos);
+    }
+
+    @Test
+    public void skip_garbage_in_prelude() {
+        String src = "" +
+                " abc function hello () {\n" +
+                "}\n";
+        DexFunction function = new DexFunction(src);
+        Assert.assertEquals(1, function.err().errorPos);
+        Assert.assertTrue(function.err().toString().contains("function"));
     }
 }
