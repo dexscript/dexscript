@@ -5,7 +5,7 @@ import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.A2Z;
 import com.dexscript.parser2.token.Blank;
-import com.dexscript.parser2.token.DecDigit;
+import com.dexscript.parser2.token.Zero2Nine;
 
 public class DexReference implements DexExpr {
 
@@ -95,7 +95,7 @@ public class DexReference implements DexExpr {
         State remainingChars() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (A2Z.__(b) || DecDigit.__(b) || b == '_') {
+                if (A2Z.__(b) || Zero2Nine.__(b) || b == '_') {
                     continue;
                 }
                 break;
