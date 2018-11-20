@@ -1,4 +1,4 @@
-package com.dexscript.parser2.read;
+package com.dexscript.parser2.token;
 
 import com.dexscript.parser2.core.Text;
 

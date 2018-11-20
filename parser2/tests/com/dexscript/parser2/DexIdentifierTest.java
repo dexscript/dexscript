@@ -6,7 +6,7 @@ import org.junit.Test;
 public class DexIdentifierTest {
 
     @Test
-    public void hello() {
+    public void matched() {
         Assert.assertEquals("hello", new DexIdentifier("hello").toString());
         Assert.assertEquals("hello", new DexIdentifier(" hello ").toString());
         Assert.assertEquals("hello", new DexIdentifier("\thello\t").toString());

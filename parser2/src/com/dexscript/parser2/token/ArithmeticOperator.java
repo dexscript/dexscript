@@ -1,4 +1,4 @@
-package com.dexscript.parser2.read;
+package com.dexscript.parser2.token;
 
 public class ArithmeticOperator {
     public static boolean __(byte b) {

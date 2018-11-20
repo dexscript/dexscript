@@ -509,7 +509,7 @@ public class _DexLexer implements FlexLexer, DexTypes {
   /** startRead marks the beginning of the yytext() string in the buffer */
   private int zzStartRead;
 
-  /** endRead marks the last character in the buffer, that has been read
+  /** endRead marks the last character in the buffer, that has been token
       from input */
   private int zzEndRead;
 
@@ -533,7 +533,7 @@ public class _DexLexer implements FlexLexer, DexTypes {
   /**
    * Creates a new scanner
    *
-   * @param   in  the java.io.Reader to read input from.
+   * @param   in  the java.io.Reader to token input from.
    */
   public _DexLexer(java.io.Reader in) {
     this.zzReader = in;
@@ -671,9 +671,9 @@ public class _DexLexer implements FlexLexer, DexTypes {
   /**
    * Pushes the specified amount of characters back into the input stream.
    *
-   * They will be read again by then next call of the scanning method
+   * They will be token again by then next call of the scanning method
    *
-   * @param number  the number of characters to be read again.
+   * @param number  the number of characters to be token again.
    *                This number must not be greater than yylength()!
    */
   public void yypushback(int number)  {

@@ -3,8 +3,8 @@ package com.dexscript.parser2;
 import com.dexscript.parser2.core.Expect;
 import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
-import com.dexscript.parser2.read.Blank;
-import com.dexscript.parser2.read.MatchKeyword;
+import com.dexscript.parser2.token.Blank;
+import com.dexscript.parser2.token.MatchKeyword;
 
 public class DexFunction implements DexElement {
 

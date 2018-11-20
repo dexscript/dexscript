@@ -7,17 +7,17 @@ import com.dexscript.parser2.token.A2Z;
 import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.DecDigit;
 
-public class DexIdentifier implements DexElement {
+public class DexReference implements DexElement {
 
     private final Text src;
     private DexError err;
     private Text matched;
 
-    public DexIdentifier(String src) {
+    public DexReference(String src) {
         this(new Text(src));
     }
 
-    public DexIdentifier(Text src) {
+    public DexReference(Text src) {
         this.src = src;
         new Parser();
     }
