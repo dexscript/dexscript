@@ -18,7 +18,7 @@ public interface DexExpr extends DexElement {
         while (true) {
             DexExpr expr = parseRight(src, left);
             if (!expr.matched()) {
-                return null;
+                return left;
             }
             if (rightRank >= expr.leftRank()) {
                 return left;
@@ -36,6 +36,10 @@ public interface DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
+        expr = new DexNegativeExpr(src);
+        if (expr.matched()) {
+            return expr;
+        }
         expr = new DexEndExpr(src);
         if (expr.matched()) {
             return expr;
@@ -46,6 +50,10 @@ public interface DexExpr extends DexElement {
     private static DexExpr parseRight(Text src, DexElement left) {
         src = new Text(src.bytes, left.end(), src.end);
         DexExpr expr = new DexAddExpr(left, src);
+        if (expr.matched()) {
+            return expr;
+        }
+        expr = new DexSubExpr(left, src);
         if (expr.matched()) {
             return expr;
         }
