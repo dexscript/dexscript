@@ -56,4 +56,9 @@ public class DexEndExpr implements DexExpr {
     public DexError err() {
         return null;
     }
+
+    @Override
+    public String toString() {
+        return DexElement.describe(this);
+    }
 }

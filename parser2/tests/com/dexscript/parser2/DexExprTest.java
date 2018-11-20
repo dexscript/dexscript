@@ -46,4 +46,11 @@ public class DexExprTest {
         Assert.assertEquals("a/b", left(left(expr)).toString());
         Assert.assertEquals("c", right(left(expr)).toString());
     }
+
+    @Test
+    public void paren_override_rank() {
+        DexMulExpr expr = (DexMulExpr) DexExpr.parse("(a+b)*c");
+        Assert.assertEquals("(a+b)", expr.left().toString());
+        Assert.assertEquals("c", expr.right().toString());
+    }
 }

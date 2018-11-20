@@ -40,6 +40,10 @@ public interface DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
+        expr = new DexParenExpr(src);
+        if (expr.matched()) {
+            return expr;
+        }
         expr = new DexEndExpr(src);
         if (expr.matched()) {
             return expr;
