@@ -7,7 +7,7 @@ import com.dexscript.parser2.token.A2Z;
 import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.DecDigit;
 
-public class DexReference implements DexElement {
+public class DexReference implements DexExpr {
 
     private final Text src;
     private DexError err;
@@ -54,6 +54,11 @@ public class DexReference implements DexElement {
         return err;
     }
 
+    @Override
+    public int leftRank() {
+        return 0;
+    }
+
     private class Parser {
 
         int i;
@@ -93,13 +98,9 @@ public class DexReference implements DexElement {
                 if (A2Z.__(b) || DecDigit.__(b) || b == '_') {
                     continue;
                 }
-                if (Blank.__(b) || b == '(') {
-                    matched = new Text(src.bytes, identifierBegin, i);
-                    return null;
-                }
-                return reportError();
+                break;
             }
-            matched = new Text(src.bytes, identifierBegin, src.end);
+            matched = new Text(src.bytes, identifierBegin, i);
             return null;
         }
 
