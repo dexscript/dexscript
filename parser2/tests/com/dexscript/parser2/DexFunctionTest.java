@@ -17,12 +17,12 @@ public class DexFunctionTest {
     }
 
     @Test
-    public void missing_lbrace() {
+    public void missing_left_paren() {
         String src = "" +
                 "function hello ) {\n" +
                 "}\n";
         DexFunction function = new DexFunction(src);
-        Assert.assertNull(function.identifier());
+        Assert.assertFalse(function.matched());
         Assert.assertEquals(15, function.err().errorBegin);
     }
 }

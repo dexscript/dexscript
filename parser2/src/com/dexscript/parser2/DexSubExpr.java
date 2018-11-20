@@ -3,16 +3,16 @@ package com.dexscript.parser2;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
 
-public class DexSubExpr implements DexExpr {
+public class DexSubExpr implements DexBinaryOperator {
 
     private static final int LEFT_RANK = 10;
     private static final int RIGHT_RANK = 10;
 
-    private final DexElement left;
     private final Text src;
-    private DexElement right;
+    private final DexExpr left;
+    private DexExpr right;
 
-    public DexSubExpr(DexElement left, Text src) {
+    public DexSubExpr(Text src, DexExpr left) {
         this.left = left;
         this.src = src;
         for (int i = src.begin; i < src.end; i++) {
@@ -22,10 +22,6 @@ public class DexSubExpr implements DexExpr {
             }
             if (b == '-') {
                 right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
-                if (right.matched()) {
-                    return;
-                }
-                right = null;
                 return;
             }
             // not plus
@@ -33,11 +29,11 @@ public class DexSubExpr implements DexExpr {
         }
     }
 
-    public DexElement left() {
+    public DexExpr left() {
         return left;
     }
 
-    public DexElement right() {
+    public DexExpr right() {
         return right;
     }
 
@@ -63,7 +59,7 @@ public class DexSubExpr implements DexExpr {
 
     @Override
     public boolean matched() {
-        return right != null;
+        return right != null && right.matched();
     }
 
     @Override

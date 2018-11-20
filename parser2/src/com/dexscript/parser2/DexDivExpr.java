@@ -3,16 +3,16 @@ package com.dexscript.parser2;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
 
-public class DexAddExpr implements DexBinaryOperator {
+public class DexDivExpr implements DexBinaryOperator {
 
-    private static final int LEFT_RANK = 10;
-    private static final int RIGHT_RANK = 10;
+    private static final int LEFT_RANK = 20;
+    private static final int RIGHT_RANK = 20;
 
     private final Text src;
     private final DexExpr left;
     private DexExpr right;
 
-    public DexAddExpr(Text src, DexExpr left) {
+    public DexDivExpr(Text src, DexExpr left) {
         this.left = left;
         this.src = src;
         for (int i = src.begin; i < src.end; i++) {
@@ -20,7 +20,7 @@ public class DexAddExpr implements DexBinaryOperator {
             if (Blank.__(b)) {
                 continue;
             }
-            if (b == '+') {
+            if (b == '/') {
                 right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
                 return;
             }

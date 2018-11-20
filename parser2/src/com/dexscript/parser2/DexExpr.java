@@ -47,13 +47,21 @@ public interface DexExpr extends DexElement {
         return expr;
     }
 
-    private static DexExpr parseRight(Text src, DexElement left) {
+    private static DexExpr parseRight(Text src, DexExpr left) {
         src = new Text(src.bytes, left.end(), src.end);
-        DexExpr expr = new DexAddExpr(left, src);
+        DexExpr expr = new DexAddExpr(src, left);
         if (expr.matched()) {
             return expr;
         }
-        expr = new DexSubExpr(left, src);
+        expr = new DexSubExpr(src, left);
+        if (expr.matched()) {
+            return expr;
+        }
+        expr = new DexMulExpr(src, left);
+        if (expr.matched()) {
+            return expr;
+        }
+        expr = new DexDivExpr(src, left);
         if (expr.matched()) {
             return expr;
         }

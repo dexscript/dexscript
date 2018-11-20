@@ -103,13 +103,13 @@ public class DexFunction implements DexElement {
             identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
             if (identifier.matched()) {
                 i = identifier.end();
-                return this::leftBrace;
+                return this::leftParen;
             }
             return reportError();
         }
 
         @Expect("(")
-        State leftBrace() {
+        State leftParen() {
             for (; i < src.end; i++) {
                 if (!Blank.__(src.bytes[i])) {
                     break;
