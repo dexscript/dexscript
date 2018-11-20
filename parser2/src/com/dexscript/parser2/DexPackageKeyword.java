@@ -12,7 +12,7 @@ public class DexPackageKeyword {
     }
 
     private final Text src;
-    private DexErrorElement err;
+    private DexError err;
     private Text matched;
 
     public DexPackageKeyword(Text src) {
@@ -127,7 +127,7 @@ public class DexPackageKeyword {
             if (err != null) {
                 return;
             }
-            err = new DexErrorElement(src, i);
+            err = new DexError(src, i);
         }
     }
 }

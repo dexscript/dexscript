@@ -11,9 +11,9 @@ public class DexFunctionTest {
                 " function hello() {\n" +
                 "}\n";
         DexFunction function = new DexFunction(src);
-        Assert.assertTrue(function.valid());
+        Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
-        Assert.assertEquals(1, function.begin());
+        Assert.assertEquals(src.substring(1), function.toString());
     }
 
     @Test

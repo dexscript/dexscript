@@ -15,7 +15,7 @@ public class DexRootDeclaration {
     }
 
     private final Text src;
-    private DexErrorElement err;
+    private DexError err;
     private DexFunction function;
 
     public DexRootDeclaration(Text src) {
@@ -119,7 +119,7 @@ public class DexRootDeclaration {
             if (err != null) {
                 return;
             }
-            err = new DexErrorElement(src, i);
+            err = new DexError(src, i);
         }
     }
 

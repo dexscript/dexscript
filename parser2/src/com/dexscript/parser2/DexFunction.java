@@ -1,24 +1,18 @@
 package com.dexscript.parser2;
 
 import com.dexscript.parser2.core.Expect;
+import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.read.Blank;
 import com.dexscript.parser2.read.MatchKeyword;
 
-public class DexFunction {
-
-    private enum State {
-        FUNCTION,
-        IDENTIFIER,
-        LBRACE,
-        ERROR,
-        DONE
-    }
+public class DexFunction implements DexElement {
 
     private final Text src;
-    private DexErrorElement err;
+    private DexError err;
     private int functionBegin = -1;
     private DexIdentifier identifier;
+    private DexFunctionBody body;
 
     public DexFunction(String src) {
         this(new Text(src));
@@ -29,51 +23,62 @@ public class DexFunction {
         new Parser();
     }
 
-    public boolean valid() {
+    public boolean matched() {
         return identifier != null;
     }
 
+    @Override
+    public Text src() {
+        return src;
+    }
+
+    @Override
     public int begin() {
+        if (functionBegin == -1) {
+            throw new IllegalStateException();
+        }
         return functionBegin;
     }
 
+    @Override
+    public int end() {
+        return body().end();
+    }
+
     public DexIdentifier identifier() {
+        if (identifier == null) {
+            throw new IllegalStateException();
+        }
         return identifier;
     }
 
-    public DexErrorElement err() {
+    public DexFunctionBody body() {
+        if (body != null) {
+            return body;
+        }
+        body = new DexFunctionBody(new Text(src.bytes, identifier().end(), src.end));
+        return body;
+    }
+
+    public DexError err() {
         return err;
+    }
+
+    public String toString() {
+        return DexElement.describe(this);
     }
 
     private class Parser {
 
-        private int i;
-        private State state = State.FUNCTION;
+        int i;
 
         Parser() {
             i = src.begin;
-            while (i < src.end) {
-                switch (state) {
-                    case FUNCTION:
-                        state = parseFunction();
-                        continue;
-                    case IDENTIFIER:
-                        state = parseIdentifier();
-                        continue;
-                    case LBRACE:
-                        state = parseLBrace();
-                        continue;
-                    case ERROR:
-                        state = skipError();
-                        continue;
-                }
-                reportError();
-                return;
-            }
+            State.Play(this::function);
         }
 
         @Expect("function")
-        State parseFunction() {
+        State function() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
@@ -83,28 +88,28 @@ public class DexFunction {
                         'u', 'n', 'c', 't', 'i', 'o', 'n')) {
                     functionBegin = i;
                     i = i + 8;
-                    return State.IDENTIFIER;
+                    return this::identifier;
                 }
                 return reportError();
             }
-            return State.DONE;
+            return null;
         }
 
         @Expect("a~z")
         @Expect("A~Z")
         @Expect("0~9")
         @Expect("_")
-        State parseIdentifier() {
+        State identifier() {
             identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
-            if (identifier.valid()) {
+            if (identifier.matched()) {
                 i = identifier.end();
-                return State.LBRACE;
+                return this::leftBrace;
             }
-            return State.ERROR;
+            return reportError();
         }
 
         @Expect("(")
-        State parseLBrace() {
+        State leftBrace() {
             for (; i < src.end; i++) {
                 if (!Blank.__(src.bytes[i])) {
                     break;
@@ -113,7 +118,7 @@ public class DexFunction {
             if (src.bytes[i] != '(') {
                 return reportError();
             }
-            return State.DONE;
+            return null;
         }
 
         @Expect("blank")
@@ -123,21 +128,18 @@ public class DexFunction {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
-                    return State.FUNCTION;
+                    return this::function;
                 }
             }
-            return State.DONE;
+            return null;
         }
 
         State reportError() {
-            if (state == State.DONE) {
-                return State.DONE;
-            }
             if (err != null) {
-                return State.ERROR;
+                return this::skipError;
             }
-            err = new DexErrorElement(src, i);
-            return State.ERROR;
+            err = new DexError(src, i);
+            return this::skipError;
         }
     }
 }

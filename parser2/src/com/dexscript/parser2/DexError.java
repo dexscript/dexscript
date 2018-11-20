@@ -2,12 +2,12 @@ package com.dexscript.parser2;
 
 import com.dexscript.parser2.core.Text;
 
-public class DexErrorElement {
+public class DexError {
 
     public final Text src;
     public final int errorBegin;
 
-    public DexErrorElement(Text src, int errorBegin) {
+    public DexError(Text src, int errorBegin) {
         this.src = src;
         this.errorBegin = errorBegin;
     }
