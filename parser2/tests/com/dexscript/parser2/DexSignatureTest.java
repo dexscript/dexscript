@@ -30,6 +30,14 @@ public class DexSignatureTest {
     }
 
     @Test
+    public void return_value() {
+        DexSignature sig = new DexSignature("() : string");
+        Assert.assertEquals("() : string", sig.toString());
+        Assert.assertEquals(0, sig.params().size());
+        Assert.assertEquals("string", sig.ret().toString());
+    }
+
+    @Test
     public void invalid_param_name_recover_by_comma() {
         DexSignature sig = new DexSignature("(msg?:string, msg2:string)");
         Assert.assertEquals("(<error/>msg?:string, msg2:string)", sig.toString());
@@ -94,5 +102,13 @@ public class DexSignatureTest {
         Assert.assertEquals("(msg:string<error/>", sig.toString());
         Assert.assertEquals(1, sig.params().size());
         Assert.assertEquals("msg:string", sig.params().get(0).toString());
+    }
+
+    @Test
+    public void missing_return_type() {
+        DexSignature sig = new DexSignature("():?");
+        Assert.assertEquals("():<error/>", sig.toString());
+        Assert.assertEquals(0, sig.params().size());
+        Assert.assertEquals("<unmatched>?</unmatched>", sig.ret().toString());
     }
 }

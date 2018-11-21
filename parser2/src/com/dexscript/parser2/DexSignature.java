@@ -1,6 +1,7 @@
 package com.dexscript.parser2;
 
 import com.dexscript.parser2.core.*;
+import com.dexscript.parser2.expr.DexReference;
 import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.LineEnd;
 
@@ -14,6 +15,7 @@ public class DexSignature implements DexElement {
     private int sigBegin = -1;
     private int sigEnd = -1;
     private DexError err;
+    private DexReference ret;
 
     public DexSignature(Text src) {
         this.src = src;
@@ -26,6 +28,10 @@ public class DexSignature implements DexElement {
 
     public List<DexParam> params() {
         return params;
+    }
+
+    public DexReference ret() {
+        return ret;
     }
 
     @Override
@@ -97,8 +103,8 @@ public class DexSignature implements DexElement {
                     continue;
                 }
                 if (b == ')') {
-                    sigEnd = i + 1;
-                    return null;
+                    i += 1;
+                    return this::colon;
                 }
                 break;
             }
@@ -117,8 +123,8 @@ public class DexSignature implements DexElement {
                     return this::parameter;
                 }
                 if (b == ')') {
-                    sigEnd = i + 1;
-                    return null;
+                    i += 1;
+                    return this::colon;
                 }
                 if (LineEnd.__(b)) {
                     sigEnd = i;
@@ -129,6 +135,8 @@ public class DexSignature implements DexElement {
             return null;
         }
 
+        @Expect(",")
+        @Expect(")")
         State commaOrRightParen() {
             int originalCursor = i;
             for (; i < src.end; i++) {
@@ -141,8 +149,8 @@ public class DexSignature implements DexElement {
                     return this::parameter;
                 }
                 if (b == ')') {
-                    sigEnd = i + 1;
-                    return null;
+                    i += 1;
+                    return this::colon;
                 }
             }
             i = originalCursor;
@@ -159,6 +167,36 @@ public class DexSignature implements DexElement {
                 }
             }
             sigEnd = i;
+            return null;
+        }
+
+        @Expect(":")
+        State colon() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.__(b)) {
+                    continue;
+                }
+                if (b == ':') {
+                    i += 1;
+                    return this::ret;
+                }
+                sigEnd = i;
+                return null;
+            }
+            sigEnd = i;
+            return null;
+        }
+
+        @Expect("type")
+        State ret() {
+            ret = new DexReference(new Text(src.bytes, i, src.end));
+            if (ret.matched()) {
+                sigEnd = ret.end();
+            } else {
+                reportError();
+                sigEnd = i;
+            }
             return null;
         }
 
