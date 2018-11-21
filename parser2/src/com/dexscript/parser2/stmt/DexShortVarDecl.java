@@ -1,6 +1,5 @@
 package com.dexscript.parser2.stmt;
 
-import com.dexscript.parser2.DexIdentifier;
 import com.dexscript.parser2.core.*;
 import com.dexscript.parser2.expr.DexExpr;
 import com.dexscript.parser2.token.Blank;

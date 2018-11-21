@@ -49,7 +49,7 @@ public class DexError {
         for (StackTraceElement frame : frames) {
             try {
                 describeExpectation(msg, frame);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
 
             }
         }

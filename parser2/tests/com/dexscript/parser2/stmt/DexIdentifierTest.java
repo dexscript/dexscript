@@ -1,4 +1,4 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.stmt;
 
 import org.junit.Assert;
 import org.junit.Test;

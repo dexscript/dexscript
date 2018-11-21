@@ -1,4 +1,4 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.stmt;
 
 import com.dexscript.parser2.core.*;
 import com.dexscript.parser2.token.A2Z;
