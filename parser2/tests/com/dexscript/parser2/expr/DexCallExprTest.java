@@ -107,4 +107,10 @@ public class DexCallExprTest {
         Assert.assertEquals(1, call.args().size());
         Assert.assertEquals("a", call.args().get(0).toString());
     }
+
+    @Test
+    public void two_call_separated_by_new_line() {
+        DexExpr parse = DexExpr.parse("hello()\nworld()");
+        Assert.assertEquals("hello()", parse.toString());
+    }
 }

@@ -94,6 +94,7 @@ public class DexCallExpr implements DexExpr {
                     args = new ArrayList<>();
                     return this::argument;
                 }
+                break;
             }
             return null;
         }

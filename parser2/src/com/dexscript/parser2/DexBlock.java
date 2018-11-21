@@ -5,12 +5,16 @@ import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DexBlock implements DexElement {
 
     private final Text src;
     private DexError err;
     private int blockBegin = -1;
     private int blockEnd = -1;
+    private List<DexStatement> stmts;
 
     public DexBlock(String src) {
         this(new Text(src));
@@ -57,7 +61,11 @@ public class DexBlock implements DexElement {
         return DexElement.describe(this);
     }
 
-    private class Parser{
+    public List<DexStatement> stmts() {
+        return stmts;
+    }
+
+    private class Parser {
 
         int i = src.begin;
 
@@ -67,12 +75,13 @@ public class DexBlock implements DexElement {
 
         @Expect("{")
         State leftBrace() {
-            for (;i<src.end;i++) {
+            for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
                     continue;
                 }
                 if (b == '{') {
+                    stmts = new ArrayList<>();
                     blockBegin = i;
                     i += 1;
                     return this::statement;
@@ -83,9 +92,12 @@ public class DexBlock implements DexElement {
 
         @Expect("statement")
         State statement() {
-            for (;i<src.end;i++) {
+            for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
+                    continue;
+                }
+                if (b == ';') {
                     continue;
                 }
                 if (b == '}') {
@@ -93,6 +105,12 @@ public class DexBlock implements DexElement {
                     return null;
                 }
                 break;
+            }
+            DexStatement stmt = new DexStatement(new Text(src.bytes, i, src.end));
+            stmts.add(stmt);
+            if (stmt.matched()) {
+                i = stmt.end();
+                return this::statement;
             }
             throw new UnsupportedOperationException("not implemented");
         }
