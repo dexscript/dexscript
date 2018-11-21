@@ -1,6 +1,7 @@
 package com.dexscript.parser2;
 
 import com.dexscript.parser2.core.*;
+import com.dexscript.parser2.stmt.DexBlock;
 import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.MatchKeyword;
 

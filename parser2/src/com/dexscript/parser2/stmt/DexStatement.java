@@ -12,6 +12,10 @@ public class DexStatement implements DexElement {
 
     public DexStatement(Text src) {
         this.src = src;
+        elem = new DexBlock(src);
+        if (elem.matched()) {
+            return;
+        }
         elem = new DexShortVarDecl(src);
         if (elem.matched()) {
             return;
@@ -66,6 +70,13 @@ public class DexStatement implements DexElement {
     public DexShortVarDecl shortVarDecl() {
         if (elem instanceof DexShortVarDecl) {
             return (DexShortVarDecl) elem;
+        }
+        return null;
+    }
+
+    public DexBlock block() {
+        if (elem instanceof DexBlock) {
+            return (DexBlock) elem;
         }
         return null;
     }
