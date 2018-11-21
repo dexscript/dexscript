@@ -57,6 +57,10 @@ public class DexFunction implements DexElement {
         return body().signature();
     }
 
+    public DexBlock block() {
+        return body().block();
+    }
+
     public DexFunctionBody body() {
         if (body != null) {
             return body;

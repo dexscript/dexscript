@@ -6,6 +6,7 @@ public class DexFunctionBody implements DexElement {
 
     private final Text matched;
     private DexSignature signature;
+    private DexBlock block;
 
     public DexFunctionBody(Text src) {
         DexFunction nextFunction = new DexFunction(src);
@@ -50,5 +51,12 @@ public class DexFunctionBody implements DexElement {
             signature = new DexSignature(matched);
         }
         return signature;
+    }
+
+    public DexBlock block() {
+        if (block == null) {
+            block = new DexBlock(new Text(matched.bytes, signature().end(), matched.end));
+        }
+        return block;
     }
 }
