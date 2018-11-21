@@ -4,6 +4,7 @@ import com.dexscript.parser2.core.Expect;
 import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
+import com.dexscript.parser2.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ public class DexCallExpr implements DexExpr {
     private final DexExpr target;
     private List<DexExpr> args;
     private int callExprEnd = -1;
+    private DexError err;
 
     public DexCallExpr(Text src, DexExpr target) {
         this.target = target;
@@ -62,7 +64,7 @@ public class DexCallExpr implements DexExpr {
 
     @Override
     public DexError err() {
-        return null;
+        return err;
     }
 
     @Override
@@ -96,17 +98,48 @@ public class DexCallExpr implements DexExpr {
 
         @Expect("expression")
         State argument() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.__(b)) {
+                    continue;
+                }
+                if (b == ')') {
+                    callExprEnd = i + 1;
+                    return null;
+                }
+                break;
+            }
             DexExpr arg = DexExpr.parse(new Text(src.bytes, i, src.end), RIGHT_RANK);
+            args.add(arg);
             if (arg.matched()) {
-                args.add(arg);
+                i = arg.end();
                 return this::commaOrRightParen;
             }
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            // try to recover from invalid argument
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (b == ',') {
+                    i += 1;
+                    return this::argument;
+                }
+                if (b == ')') {
+                    callExprEnd = i + 1;
+                    return null;
+                }
+                if (LineEnd.__(b)) {
+                    callExprEnd = i;
+                    return null;
+                }
+            }
+            callExprEnd = i;
+            return null;
         }
 
         @Expect(",")
         @Expect(")")
         State commaOrRightParen() {
+            int originalCursor = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
@@ -120,8 +153,29 @@ public class DexCallExpr implements DexExpr {
                     callExprEnd = i + 1;
                     return null;
                 }
+                break;
             }
-            throw new UnsupportedOperationException("not implemented");
+            i = originalCursor;
+            return this::missingRightParen;
+        }
+
+        private State missingRightParen() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.__(b)) {
+                    callExprEnd = i;
+                    return null;
+                }
+            }
+            callExprEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (err == null) {
+                err = new DexError(src, i);
+            }
         }
     }
 }
