@@ -70,6 +70,10 @@ public class DexIntegerLiteral implements DexExpr {
                 if (Blank.__(b)) {
                     continue;
                 }
+                if (b == '0') {
+                    matched = new Text(src.bytes, i, i+1);
+                    return null;
+                }
                 if (One2Nine.__(b)) {
                     integerBegin = i;
                     return this::remainingChars;
