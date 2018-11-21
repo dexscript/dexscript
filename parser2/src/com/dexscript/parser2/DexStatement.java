@@ -6,12 +6,16 @@ import com.dexscript.parser2.expr.DexExpr;
 public class DexStatement implements DexElement {
 
     private final Text src;
-    private DexElement matched;
+    private DexElement elem;
 
     public DexStatement(Text src) {
         this.src = src;
-        matched = DexExpr.parse(src, 0);
-        if (matched.matched()) {
+        elem = new DexShortVarDecl(src);
+        if (elem.matched()) {
+            return;
+        }
+        elem = DexExpr.parse(src, 0);
+        if (elem.matched()) {
             return;
         }
     }
@@ -27,22 +31,22 @@ public class DexStatement implements DexElement {
 
     @Override
     public int begin() {
-        return matched.begin();
+        return elem.begin();
     }
 
     @Override
     public int end() {
-        return matched.end();
+        return elem.end();
     }
 
     @Override
     public boolean matched() {
-        return matched.matched();
+        return elem.matched();
     }
 
     @Override
     public DexError err() {
-        return matched.err();
+        return elem.err();
     }
 
     @Override
@@ -51,8 +55,15 @@ public class DexStatement implements DexElement {
     }
 
     public DexExpr exprStmt() {
-        if (matched instanceof DexExpr) {
-            return (DexExpr) matched;
+        if (elem instanceof DexExpr) {
+            return (DexExpr) elem;
+        }
+        return null;
+    }
+
+    public DexShortVarDecl shortVarDecl() {
+        if (elem instanceof DexShortVarDecl) {
+            return (DexShortVarDecl) elem;
         }
         return null;
     }
