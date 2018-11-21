@@ -4,6 +4,7 @@ import com.dexscript.parser2.core.Expect;
 import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
+import com.dexscript.parser2.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,16 +93,47 @@ public class DexSignature implements DexElement {
 
         @Expect("parameter")
         State parameter() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.__(b)) {
+                    continue;
+                }
+                if (b == ')') {
+                    sigEnd = i + 1;
+                    return null;
+                }
+                break;
+            }
             DexParam param = new DexParam(new Text(src.bytes, i, src.end));
+            params.add(param);
             if (param.matched()) {
-                params.add(param);
+                i = param.end();
                 return this::commaOrRightParen;
             }
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            // try to recover from invalid argument
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (b == ',') {
+                    i += 1;
+                    return this::parameter;
+                }
+                if (b == ')') {
+                    sigEnd = i + 1;
+                    return null;
+                }
+                if (LineEnd.__(b)) {
+                    sigEnd = i;
+                    return null;
+                }
+            }
+            sigEnd = i;
+            return null;
         }
 
         State commaOrRightParen() {
-            for (; i < src.end;i++) {
+            int originalCursor = i;
+            for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
                     continue;
@@ -111,11 +143,25 @@ public class DexSignature implements DexElement {
                     return this::parameter;
                 }
                 if (b == ')') {
-                    sigEnd = i+1;
+                    sigEnd = i + 1;
                     return null;
                 }
             }
-            throw new UnsupportedOperationException("not implemented");
+            i = originalCursor;
+            return this::missingRightParen;
+        }
+
+        State missingRightParen() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.__(b)) {
+                    sigEnd = i;
+                    return null;
+                }
+            }
+            sigEnd = i;
+            return null;
         }
 
         void reportError() {

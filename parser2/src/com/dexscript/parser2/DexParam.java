@@ -75,7 +75,7 @@ public class DexParam implements DexElement {
                 i = paramName.end();
                 return this::colon;
             }
-            throw new UnsupportedOperationException("not implemented");
+            return null;
         }
 
         @Expect(":")
@@ -89,8 +89,9 @@ public class DexParam implements DexElement {
                     i += 1;
                     return this::paramType;
                 }
+                return null;
             }
-            throw new UnsupportedOperationException("not implemented");
+            return null;
         }
 
         @Expect("reference")
@@ -99,7 +100,7 @@ public class DexParam implements DexElement {
             if (paramType.matched()) {
                 return null;
             }
-            throw new UnsupportedOperationException("not implemented");
+            return null;
         }
     }
 }
