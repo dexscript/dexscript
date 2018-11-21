@@ -1,6 +1,6 @@
 package com.dexscript.parser2.expr;
 
-import com.dexscript.parser2.DexElement;
+import com.dexscript.parser2.core.DexElement;
 import com.dexscript.parser2.core.Text;
 
 public interface DexExpr extends DexElement {

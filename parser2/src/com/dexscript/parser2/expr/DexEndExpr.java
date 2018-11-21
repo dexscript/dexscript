@@ -1,6 +1,6 @@
 package com.dexscript.parser2.expr;
 
-import com.dexscript.parser2.DexError;
+import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
 

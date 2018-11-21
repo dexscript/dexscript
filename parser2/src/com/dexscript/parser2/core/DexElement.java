@@ -1,6 +1,4 @@
-package com.dexscript.parser2;
-
-import com.dexscript.parser2.core.Text;
+package com.dexscript.parser2.core;
 
 public interface DexElement {
 

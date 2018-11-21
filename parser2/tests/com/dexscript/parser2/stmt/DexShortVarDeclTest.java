@@ -1,5 +1,6 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.stmt;
 
+import com.dexscript.parser2.stmt.DexShortVarDecl;
 import org.junit.Assert;
 import org.junit.Test;
 

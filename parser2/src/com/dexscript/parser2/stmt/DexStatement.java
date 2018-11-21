@@ -1,5 +1,7 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.stmt;
 
+import com.dexscript.parser2.core.DexElement;
+import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.expr.DexExpr;
 

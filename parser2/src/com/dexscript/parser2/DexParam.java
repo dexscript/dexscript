@@ -1,8 +1,6 @@
 package com.dexscript.parser2;
 
-import com.dexscript.parser2.core.Expect;
-import com.dexscript.parser2.core.State;
-import com.dexscript.parser2.core.Text;
+import com.dexscript.parser2.core.*;
 import com.dexscript.parser2.expr.DexReference;
 import com.dexscript.parser2.token.Blank;
 

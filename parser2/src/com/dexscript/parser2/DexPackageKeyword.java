@@ -1,5 +1,6 @@
 package com.dexscript.parser2;
 
+import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
 
 public class DexPackageKeyword {
