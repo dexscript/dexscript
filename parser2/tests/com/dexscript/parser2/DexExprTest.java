@@ -53,4 +53,11 @@ public class DexExprTest {
         Assert.assertEquals("(a+b)", expr.left().toString());
         Assert.assertEquals("c", expr.right().toString());
     }
+
+    @Test
+    public void float_literal_is_preferred_over_integer_literal() {
+        Assert.assertEquals("1.34e100", DexExpr.parse("1.34e100").toString());
+        DexIntegerLiteral parsed = (DexIntegerLiteral) DexExpr.parse("100");
+        Assert.assertEquals("100", parsed.toString());
+    }
 }

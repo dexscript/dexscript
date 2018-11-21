@@ -17,7 +17,7 @@ public class DexFloatLiteralTest {
     }
 
     @Test
-    public void unmatched() {
-        Assert.assertEquals("<unmatched>3.14e-</unmatched>", new DexFloatLiteral("3.14e-").toString());
+    public void with_error() {
+        Assert.assertEquals("3.14e-<error/>", new DexFloatLiteral("3.14e-").toString());
     }
 }

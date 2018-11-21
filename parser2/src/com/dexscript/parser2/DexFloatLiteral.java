@@ -49,7 +49,7 @@ public class DexFloatLiteral implements DexExpr {
 
     @Override
     public DexError err() {
-        return null;
+        return err;
     }
 
     @Override
@@ -151,10 +151,10 @@ public class DexFloatLiteral implements DexExpr {
                 }
                 break;
             }
+            matched = new Text(src.bytes, integerBegin, i);
             if (j == 0) {
                 return reportError();
             }
-            matched = new Text(src.bytes, integerBegin, i);
             return null;
         }
 

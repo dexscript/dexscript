@@ -44,6 +44,14 @@ public interface DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
+        expr = new DexFloatLiteral(src);
+        if (expr.matched()) {
+            DexExpr intExpr = new DexIntegerLiteral(src);
+            if (intExpr.matched() && intExpr.end() == expr.end()) {
+                return intExpr;
+            }
+            return expr;
+        }
         expr = new DexEndExpr(src);
         if (expr.matched()) {
             return expr;
