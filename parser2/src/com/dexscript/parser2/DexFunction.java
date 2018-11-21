@@ -11,7 +11,9 @@ public class DexFunction implements DexElement {
     private final Text src;
     private DexError err;
     private int functionBegin = -1;
+    private int signatureBegin = -1;
     private DexIdentifier identifier;
+    private DexSignature signature;
     private DexFunctionBody body;
 
     public DexFunction(String src) {
@@ -50,6 +52,13 @@ public class DexFunction implements DexElement {
             throw new IllegalStateException();
         }
         return identifier;
+    }
+
+    public DexSignature signature() {
+        if (signature == null) {
+            signature = new DexSignature(new Text(src.bytes, signatureBegin, src.end));
+        }
+        return signature;
     }
 
     public DexFunctionBody body() {
@@ -118,6 +127,7 @@ public class DexFunction implements DexElement {
             if (src.bytes[i] != '(') {
                 return reportError();
             }
+            signatureBegin = i;
             return null;
         }
 

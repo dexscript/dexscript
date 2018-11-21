@@ -19,6 +19,7 @@ public class DexIdentifierTest {
     public void unmatched() {
         Assert.assertFalse(new DexIdentifier("+ hello").matched());
         Assert.assertEquals("<unmatched>+ hello</unmatched>", new DexIdentifier("+ hello").toString());
+        Assert.assertEquals("<unmatched>hello?</unmatched>", new DexIdentifier("hello?").toString());
         Assert.assertFalse(new DexIdentifier("0").matched());
         Assert.assertFalse(new DexIdentifier("hello+").matched());
     }

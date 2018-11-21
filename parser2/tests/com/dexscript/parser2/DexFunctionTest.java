@@ -17,6 +17,18 @@ public class DexFunctionTest {
     }
 
     @Test
+    public void one_argument() {
+        String src = "" +
+                " function hello(msg:string) {\n" +
+                "}\n";
+        DexFunction function = new DexFunction(src);
+        Assert.assertTrue(function.matched());
+        Assert.assertEquals("hello", function.identifier().toString());
+        Assert.assertEquals("(msg:string)", function.signature().toString());
+        Assert.assertEquals(src.substring(1), function.toString());
+    }
+
+    @Test
     public void missing_left_paren() {
         String src = "" +
                 "function hello ) {\n" +

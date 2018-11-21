@@ -10,7 +10,6 @@ import com.dexscript.parser2.token.Zero2Nine;
 public class DexIdentifier implements DexElement {
 
     private final Text src;
-    private DexError err;
     private Text matched;
 
     public DexIdentifier(String src) {
@@ -51,7 +50,7 @@ public class DexIdentifier implements DexElement {
     }
 
     public DexError err() {
-        return err;
+        return null;
     }
 
     private class Parser {
@@ -78,7 +77,7 @@ public class DexIdentifier implements DexElement {
                     i += 1;
                     return this::remainingChars;
                 }
-                return reportError();
+                return null;
             }
             return null;
         }
@@ -93,21 +92,12 @@ public class DexIdentifier implements DexElement {
                 if (A2Z.__(b) || Zero2Nine.__(b) || b == '_') {
                     continue;
                 }
-                if (Blank.__(b) || b == '(') {
+                if (Blank.__(b) || b == '(' || b == ':') {
                     matched = new Text(src.bytes, identifierBegin, i);
                     return null;
                 }
-                return reportError();
-            }
-            matched = new Text(src.bytes, identifierBegin, src.end);
-            return null;
-        }
-
-        State reportError() {
-            if (err != null) {
                 return null;
             }
-            err = new DexError(src, i);
             return null;
         }
     }
