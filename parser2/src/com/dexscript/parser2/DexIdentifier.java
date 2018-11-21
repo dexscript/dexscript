@@ -92,7 +92,7 @@ public class DexIdentifier implements DexElement {
                 if (A2Z.__(b) || Zero2Nine.__(b) || b == '_') {
                     continue;
                 }
-                if (Blank.__(b) || b == '(' || b == ':') {
+                if (Blank.__(b) || b == '(' || b == ':' || b == ',') {
                     matched = new Text(src.bytes, identifierBegin, i);
                     return null;
                 }

@@ -53,11 +53,7 @@ public interface DexExpr extends DexElement {
             }
             return expr;
         }
-        expr = new DexEndExpr(src);
-        if (expr.matched()) {
-            return expr;
-        }
-        return expr;
+        return new DexEndExpr(src);
     }
 
     private static DexExpr parseRight(Text src, DexExpr left) {
@@ -82,10 +78,6 @@ public interface DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
-        expr = new DexEndExpr(src);
-        if (expr.matched()) {
-            return expr;
-        }
-        return expr;
+        return new DexEndExpr(src);
     }
 }

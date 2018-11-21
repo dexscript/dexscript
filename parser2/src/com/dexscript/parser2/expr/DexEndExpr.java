@@ -1,6 +1,5 @@
 package com.dexscript.parser2.expr;
 
-import com.dexscript.parser2.DexElement;
 import com.dexscript.parser2.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
@@ -8,7 +7,7 @@ import com.dexscript.parser2.token.Blank;
 public class DexEndExpr implements DexExpr {
 
     private final Text src;
-    private int matchedEnd = -1;
+    private int matchedEnd;
 
     public DexEndExpr(Text src) {
         this.src = src;
@@ -18,9 +17,10 @@ public class DexEndExpr implements DexExpr {
                 continue;
             }
             if (b == ';') {
-                matchedEnd = i;
+                matchedEnd = i + 1;
                 return;
             }
+            matchedEnd = i;
             return;
         }
         matchedEnd = src.end;
@@ -43,15 +43,12 @@ public class DexEndExpr implements DexExpr {
 
     @Override
     public int end() {
-        if (matchedEnd == -1) {
-            throw new IllegalStateException();
-        }
         return matchedEnd;
     }
 
     @Override
     public boolean matched() {
-        return matchedEnd != -1;
+        return false;
     }
 
     @Override
@@ -61,6 +58,6 @@ public class DexEndExpr implements DexExpr {
 
     @Override
     public String toString() {
-        return DexElement.describe(this);
+        return "<error/>";
     }
 }

@@ -65,6 +65,14 @@ public class DexShortVarDecl implements DexElement {
         return DexElement.describe(this);
     }
 
+    public DexExpr expr() {
+        return expr;
+    }
+
+    public List<DexIdentifier> decls() {
+        return decls;
+    }
+
     private class Parser {
 
         int i = src.begin;
@@ -80,16 +88,22 @@ public class DexShortVarDecl implements DexElement {
                 i = identifier.end();
                 decls = new ArrayList<>();
                 decls.add(identifier);
-                return this::colonEqual;
+                return this::commaOrColonEqual;
             }
-            throw new UnsupportedOperationException("not implemented");
+            return null;
         }
 
-        State colonEqual() {
-            for (; i<src.end;i++) {
+        @Expect(",")
+        @Expect(":=")
+        State commaOrColonEqual() {
+            for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
                     continue;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::moreIdentifiers;
                 }
                 if (MatchKeyword.__(src, i, ':', '=')) {
                     i += 2;
@@ -97,7 +111,20 @@ public class DexShortVarDecl implements DexElement {
                 }
                 break;
             }
-            throw new UnsupportedOperationException("not implemented");
+            decls = null;
+            return null;
+        }
+
+        @Expect("identifier")
+        State moreIdentifiers() {
+            DexIdentifier identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
+            if (identifier.matched()) {
+                i = identifier.end();
+                decls.add(identifier);
+                return this::commaOrColonEqual;
+            }
+            decls = null;
+            return null;
         }
 
         State expr() {
