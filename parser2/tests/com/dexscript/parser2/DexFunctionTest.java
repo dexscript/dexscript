@@ -13,6 +13,7 @@ public class DexFunctionTest {
         DexFunction function = new DexFunction(src);
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
+        Assert.assertEquals("()", function.signature().toString());
         Assert.assertEquals(src.substring(1), function.toString());
     }
 

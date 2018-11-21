@@ -15,8 +15,8 @@ public class DexSignatureTest {
 
     @Test
     public void empty() {
-        DexSignature sig = new DexSignature("( )");
-        Assert.assertEquals("( )", sig.toString());
+        DexSignature sig = new DexSignature("(){}");
+        Assert.assertEquals("()", sig.toString());
         Assert.assertEquals(0, sig.params().size());
     }
 

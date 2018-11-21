@@ -19,11 +19,11 @@ public class DexSignature implements DexElement {
 
     public DexSignature(Text src) {
         this.src = src;
+        new Parser();
     }
 
     public DexSignature(String src) {
         this(new Text(src));
-        new Parser();
     }
 
     public List<DexParam> params() {
