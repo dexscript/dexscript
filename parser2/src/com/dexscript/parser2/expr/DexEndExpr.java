@@ -1,45 +1,34 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.expr;
 
+import com.dexscript.parser2.DexElement;
+import com.dexscript.parser2.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
 
-public class DexAddExpr implements DexBinaryOperator {
-
-    private static final int LEFT_RANK = 10;
-    private static final int RIGHT_RANK = 10;
+public class DexEndExpr implements DexExpr {
 
     private final Text src;
-    private final DexExpr left;
-    private DexExpr right;
+    private int matchedEnd = -1;
 
-    public DexAddExpr(Text src, DexExpr left) {
-        this.left = left;
+    public DexEndExpr(Text src) {
         this.src = src;
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
             if (Blank.__(b)) {
                 continue;
             }
-            if (b == '+') {
-                right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
+            if (b == ';') {
+                matchedEnd = i;
                 return;
             }
-            // not plus
             return;
         }
-    }
-
-    public DexExpr left() {
-        return left;
-    }
-
-    public DexExpr right() {
-        return right;
+        matchedEnd = src.end;
     }
 
     @Override
     public int leftRank() {
-        return LEFT_RANK;
+        return 0;
     }
 
     @Override
@@ -49,17 +38,20 @@ public class DexAddExpr implements DexBinaryOperator {
 
     @Override
     public int begin() {
-        return left().begin();
+        return src.begin;
     }
 
     @Override
     public int end() {
-        return right().end();
+        if (matchedEnd == -1) {
+            throw new IllegalStateException();
+        }
+        return matchedEnd;
     }
 
     @Override
     public boolean matched() {
-        return right != null && right.matched();
+        return matchedEnd != -1;
     }
 
     @Override

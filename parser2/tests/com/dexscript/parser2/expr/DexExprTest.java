@@ -1,10 +1,14 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.expr;
 
+import com.dexscript.parser2.expr.DexAddExpr;
+import com.dexscript.parser2.expr.DexExpr;
+import com.dexscript.parser2.expr.DexIntegerLiteral;
+import com.dexscript.parser2.expr.DexMulExpr;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.dexscript.parser2.DexBinaryOperator.left;
-import static com.dexscript.parser2.DexBinaryOperator.right;
+import static com.dexscript.parser2.expr.DexBinaryOperator.left;
+import static com.dexscript.parser2.expr.DexBinaryOperator.right;
 
 public class DexExprTest {
 

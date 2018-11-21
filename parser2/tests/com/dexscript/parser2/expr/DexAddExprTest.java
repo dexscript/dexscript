@@ -1,5 +1,7 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.expr;
 
+import com.dexscript.parser2.expr.DexAddExpr;
+import com.dexscript.parser2.expr.DexExpr;
 import org.junit.Assert;
 import org.junit.Test;
 

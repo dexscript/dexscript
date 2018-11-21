@@ -1,4 +1,4 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.expr;
 
 public interface DexBinaryOperator extends DexExpr {
 

@@ -1,9 +1,11 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.expr;
 
+import com.dexscript.parser2.DexElement;
+import com.dexscript.parser2.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
 
-public class DexDivExpr implements DexBinaryOperator {
+public class DexMulExpr implements DexBinaryOperator {
 
     private static final int LEFT_RANK = 20;
     private static final int RIGHT_RANK = 20;
@@ -12,7 +14,7 @@ public class DexDivExpr implements DexBinaryOperator {
     private final DexExpr left;
     private DexExpr right;
 
-    public DexDivExpr(Text src, DexExpr left) {
+    public DexMulExpr(Text src, DexExpr left) {
         this.left = left;
         this.src = src;
         for (int i = src.begin; i < src.end; i++) {
@@ -20,7 +22,7 @@ public class DexDivExpr implements DexBinaryOperator {
             if (Blank.__(b)) {
                 continue;
             }
-            if (b == '/') {
+            if (b == '*') {
                 right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
                 return;
             }

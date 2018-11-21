@@ -1,26 +1,25 @@
-package com.dexscript.parser2;
+package com.dexscript.parser2.expr;
 
+import com.dexscript.parser2.DexElement;
+import com.dexscript.parser2.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
 
-public class DexMulExpr implements DexBinaryOperator {
+public class DexNegativeExpr implements DexExpr {
 
-    private static final int LEFT_RANK = 20;
-    private static final int RIGHT_RANK = 20;
-
+    private static final int LEFT_RANK = 10;
+    private static final int RIGHT_RANK = 100;
     private final Text src;
-    private final DexExpr left;
     private DexExpr right;
 
-    public DexMulExpr(Text src, DexExpr left) {
-        this.left = left;
+    public DexNegativeExpr(Text src) {
         this.src = src;
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
             if (Blank.__(b)) {
                 continue;
             }
-            if (b == '*') {
+            if (b == '-') {
                 right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
                 return;
             }
@@ -29,12 +28,8 @@ public class DexMulExpr implements DexBinaryOperator {
         }
     }
 
-    public DexExpr left() {
-        return left;
-    }
-
-    public DexExpr right() {
-        return right;
+    public DexNegativeExpr(String src) {
+        this(new Text(src));
     }
 
     @Override
@@ -49,12 +44,12 @@ public class DexMulExpr implements DexBinaryOperator {
 
     @Override
     public int begin() {
-        return left().begin();
+        return src.begin;
     }
 
     @Override
     public int end() {
-        return right().end();
+        return right.end();
     }
 
     @Override
