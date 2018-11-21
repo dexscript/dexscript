@@ -11,6 +11,13 @@ public class MatchKeyword {
         return src.bytes[i] == b0;
     }
 
+    public static boolean __(Text src, int i, char b0, char b1) {
+        if (i >= src.end) {
+            return false;
+        }
+        return src.bytes[i] == b0 && src.bytes[i + 1] == b1;
+    }
+
     public static boolean __(Text src, int i, char b0, char b1, char b2, char b3, char b4, char b5, char b6) {
         return src.bytes[i] == b0
                 && src.bytes[i + 1] == b1
