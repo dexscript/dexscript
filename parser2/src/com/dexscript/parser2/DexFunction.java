@@ -13,7 +13,6 @@ public class DexFunction implements DexElement {
     private int functionBegin = -1;
     private int signatureBegin = -1;
     private DexIdentifier identifier;
-    private DexSignature signature;
     private DexFunctionBody body;
 
     public DexFunction(String src) {
@@ -55,17 +54,14 @@ public class DexFunction implements DexElement {
     }
 
     public DexSignature signature() {
-        if (signature == null) {
-            signature = new DexSignature(new Text(src.bytes, signatureBegin, src.end));
-        }
-        return signature;
+        return body().signature();
     }
 
     public DexFunctionBody body() {
         if (body != null) {
             return body;
         }
-        body = new DexFunctionBody(new Text(src.bytes, identifier().end(), src.end));
+        body = new DexFunctionBody(new Text(src.bytes, signatureBegin, src.end));
         return body;
     }
 
