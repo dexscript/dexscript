@@ -6,7 +6,7 @@ public interface TranspileOne {
     static Object __(String src) {
         try {
 
-            Map<String, Class> transpiled = new Town()
+            Map<String, Class<?>> transpiled = new Town()
                     .addFile("hello.ds", "package abc\n" + src)
                     .transpile();
             return transpiled.get("abc.Hello").getConstructor().newInstance();

@@ -18,6 +18,12 @@ public class DexRootDecl implements DexElement {
         }
     }
 
+    public void reparent(DexFile file) {
+        if (elem instanceof DexFunction) {
+            ((DexFunction) elem).reparent(file);
+        }
+    }
+
     @Override
     public Text src() {
         return elem.src();

@@ -1,6 +1,7 @@
 package com.dexscript.transpiler2;
 
 import com.dexscript.parser2.DexFile;
+import com.dexscript.parser2.DexFunction;
 import com.dexscript.parser2.DexRootDecl;
 import com.dexscript.parser2.core.Text;
 import org.mdkt.compiler.InMemoryJavaCompiler;
@@ -9,16 +10,38 @@ import java.util.Map;
 
 public class Town {
 
+    public final static boolean DEBUG = true;
     private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
 
     public Town addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);
         for (DexRootDecl iRootDecl : iFile.rootDecls()) {
+            DexFunction iFunc = iRootDecl.function();
+            if (iFile != null) {
+                OutClass oClass = new OutClass(iFunc);
+                addSource(oClass.qualifiedClassName(), oClass.toString());
+            }
         }
         return this;
     }
 
-    public Map<String, Class> transpile() {
-        return null;
+    private void addSource(String className, String classSrc) {
+        if (DEBUG) {
+            System.out.println(">>> " + className);
+            System.out.println(classSrc);
+        }
+        try {
+            compiler.addSource(className, classSrc);
+        } catch (Exception e) {
+            throw new DexTranspileException(e);
+        }
+    }
+
+    public Map<String, Class<?>> transpile() {
+        try {
+            return compiler.compileAll();
+        } catch (Exception e) {
+            throw new DexTranspileException(e);
+        }
     }
 }

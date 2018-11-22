@@ -14,6 +14,7 @@ public class DexFunction implements DexElement {
     private int signatureBegin = -1;
     private DexIdentifier identifier;
     private DexFunctionBody body;
+    private DexFile file;
 
     public DexFunction(String src) {
         this(new Text(src));
@@ -75,6 +76,14 @@ public class DexFunction implements DexElement {
 
     public String toString() {
         return DexElement.describe(this);
+    }
+
+    public void reparent(DexFile file) {
+        this.file = file;
+    }
+
+    public DexFile file() {
+        return file;
     }
 
     private class Parser {
