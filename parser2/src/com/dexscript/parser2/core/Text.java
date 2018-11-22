@@ -16,6 +16,10 @@ public class Text {
         return new Text(bytes, newBegin, end);
     }
 
+    public Text slice(int newBegin, int newEnd) {
+        return new Text(bytes, newBegin, newEnd);
+    }
+
     public Text(String src) {
         this(src.getBytes(), 0, src.getBytes().length);
     }
@@ -24,4 +28,5 @@ public class Text {
     public String toString() {
         return new String(bytes, begin, end - begin);
     }
+
 }

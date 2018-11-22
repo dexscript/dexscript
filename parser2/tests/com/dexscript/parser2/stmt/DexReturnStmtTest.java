@@ -11,6 +11,11 @@ public class DexReturnStmtTest {
     }
 
     @Test
+    public void garbage_in_prelude() {
+        Assert.assertEquals("<unmatched>ddreturn abc</unmatched>", new DexReturnStmt("ddreturn abc").toString());
+    }
+
+    @Test
     public void missing_expr_recover_by_file_end() {
         Assert.assertEquals("return <error/>", new DexReturnStmt("return ").toString());
     }

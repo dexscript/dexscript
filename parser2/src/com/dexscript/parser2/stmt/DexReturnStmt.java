@@ -79,6 +79,7 @@ public class DexReturnStmt implements DexElement {
                     i += 6;
                     return this::blank;
                 }
+                break;
             }
             return null;
         }
