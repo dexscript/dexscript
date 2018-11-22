@@ -3,7 +3,7 @@ package com.dexscript.parser2.stmt;
 import com.dexscript.parser2.core.*;
 import com.dexscript.parser2.expr.DexExpr;
 import com.dexscript.parser2.token.Blank;
-import com.dexscript.parser2.token.MatchKeyword;
+import com.dexscript.parser2.token.Keyword;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +103,7 @@ public class DexShortVarDecl implements DexElement {
                     i += 1;
                     return this::moreIdentifiers;
                 }
-                if (MatchKeyword.__(src, i, ':', '=')) {
+                if (Keyword.__(src, i, ':', '=')) {
                     i += 2;
                     return this::expr;
                 }

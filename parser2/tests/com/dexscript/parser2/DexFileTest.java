@@ -9,7 +9,6 @@ public class DexFileTest {
     public void package_clause() {
         DexFile file = new DexFile("package abc\n");
         DexPackageClause pkgClause = file.packageClause();
-        Assert.assertEquals("package", pkgClause.packageKeyword().toString());
         Assert.assertEquals("abc", pkgClause.identifier().toString());
     }
 

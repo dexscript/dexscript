@@ -5,7 +5,7 @@ import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
-import com.dexscript.parser2.token.MatchKeyword;
+import com.dexscript.parser2.token.Keyword;
 import com.dexscript.parser2.token.One2Nine;
 import com.dexscript.parser2.token.Zero2Nine;
 
@@ -75,7 +75,7 @@ public class DexFloatLiteral implements DexExpr {
                     continue;
                 }
                 if ('0' == b) {
-                    if (MatchKeyword.__(src, i+1, '.')) {
+                    if (Keyword.__(src, i+1, '.')) {
                         integerBegin = i;
                         i += 2;
                         return this::dotFound;

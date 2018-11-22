@@ -4,7 +4,7 @@ import com.dexscript.parser2.core.*;
 import com.dexscript.parser2.stmt.DexBlock;
 import com.dexscript.parser2.stmt.DexIdentifier;
 import com.dexscript.parser2.token.Blank;
-import com.dexscript.parser2.token.MatchKeyword;
+import com.dexscript.parser2.token.Keyword;
 
 public class DexFunction implements DexElement {
 
@@ -93,7 +93,7 @@ public class DexFunction implements DexElement {
                 if (Blank.__(b)) {
                     continue;
                 }
-                if (b == 'f' && MatchKeyword.__(src, i + 1,
+                if (b == 'f' && Keyword.__(src, i + 1,
                         'u', 'n', 'c', 't', 'i', 'o', 'n')) {
                     functionBegin = i;
                     i = i + 8;

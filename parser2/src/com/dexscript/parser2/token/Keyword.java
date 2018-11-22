@@ -2,23 +2,23 @@ package com.dexscript.parser2.token;
 
 import com.dexscript.parser2.core.Text;
 
-public class MatchKeyword {
+public interface Keyword {
 
-    public static boolean __(Text src, int i, char b0) {
+    static boolean __(Text src, int i, char b0) {
         if (i >= src.end) {
             return false;
         }
         return src.bytes[i] == b0;
     }
 
-    public static boolean __(Text src, int i, char b0, char b1) {
+    static boolean __(Text src, int i, char b0, char b1) {
         if (i >= src.end) {
             return false;
         }
         return src.bytes[i] == b0 && src.bytes[i + 1] == b1;
     }
 
-    public static boolean __(Text src, int i, char b0, char b1, char b2, char b3, char b4, char b5, char b6) {
+    static boolean __(Text src, int i, char b0, char b1, char b2, char b3, char b4, char b5, char b6) {
         return src.bytes[i] == b0
                 && src.bytes[i + 1] == b1
                 && src.bytes[i + 2] == b2

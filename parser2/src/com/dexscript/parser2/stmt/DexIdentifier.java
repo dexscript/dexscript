@@ -3,6 +3,7 @@ package com.dexscript.parser2.stmt;
 import com.dexscript.parser2.core.*;
 import com.dexscript.parser2.token.A2Z;
 import com.dexscript.parser2.token.Blank;
+import com.dexscript.parser2.token.LineEnd;
 import com.dexscript.parser2.token.Zero2Nine;
 
 public class DexIdentifier implements DexElement {
@@ -90,12 +91,14 @@ public class DexIdentifier implements DexElement {
                 if (A2Z.__(b) || Zero2Nine.__(b) || b == '_') {
                     continue;
                 }
-                if (Blank.__(b) || b == '(' || b == ':' || b == ',') {
+                if (Blank.__(b) || LineEnd.__(b) || b == '(' || b == ':' || b == ',') {
                     matched = new Text(src.bytes, identifierBegin, i);
                     return null;
                 }
+                // not matched, found invalid char
                 return null;
             }
+            matched = new Text(src.bytes, identifierBegin, i);
             return null;
         }
     }
