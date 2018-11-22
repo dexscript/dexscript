@@ -2,6 +2,7 @@ package com.dexscript.parser2;
 
 import com.dexscript.parser2.core.Text;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DexFile {
@@ -40,7 +41,19 @@ public class DexFile {
         if (rootDecls != null) {
             return rootDecls;
         }
-        rootDecls = DexRootDecl.parse(src);
-        return rootDecls;
+        Text remaining = src;
+        if (packageClause().matched()) {
+            remaining = src.slice(packageClause().end());
+        }
+        rootDecls = new ArrayList<>();
+        while (true) {
+            DexRootDecl rootDecl = new DexRootDecl(remaining);
+            if (rootDecl.matched()) {
+                rootDecls.add(rootDecl);
+            } else {
+                return rootDecls;
+            }
+            remaining = src.slice(rootDecl.end());
+        }
     }
 }

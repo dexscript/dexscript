@@ -12,6 +12,10 @@ public class Text {
         this.end = end;
     }
 
+    public Text slice(int newBegin) {
+        return new Text(bytes, newBegin, end);
+    }
+
     public Text(String src) {
         this(src.getBytes(), 0, src.getBytes().length);
     }
