@@ -7,6 +7,7 @@ public class DexStringLiteral implements DexExpr {
 
     private final Text src;
     private Text matched;
+    private DexError err;
 
     public DexStringLiteral(Text src) {
         this.src = src;
@@ -44,7 +45,7 @@ public class DexStringLiteral implements DexExpr {
 
     @Override
     public DexError err() {
-        return null;
+        return err;
     }
 
     @Override
@@ -78,15 +79,31 @@ public class DexStringLiteral implements DexExpr {
             return null;
         }
 
+        @Expect("string")
         State body() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
+                if (b == '\\') {
+                    i += 1;
+                    if (i >= src.end) {
+                        break;
+                    }
+                    continue;
+                }
                 if (b == '\'') {
-                    matched = src.slice(strBegin, i+1);
+                    matched = src.slice(strBegin, i + 1);
                     return null;
                 }
             }
-            throw new UnsupportedOperationException("not implemented");
+            matched = src.slice(strBegin, i);
+            return reportError();
+        }
+
+        State reportError() {
+            if (err == null) {
+                err = new DexError(src, i);
+            }
+            return null;
         }
     }
 }
