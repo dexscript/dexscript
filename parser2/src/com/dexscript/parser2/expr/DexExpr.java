@@ -11,6 +11,10 @@ public interface DexExpr extends DexElement {
         return parse(new Text(src), 0);
     }
 
+    static DexExpr parse(Text src) {
+        return parse(src, 0);
+    }
+
     static DexExpr parse(Text src, int rightRank) {
         DexExpr left = parseLeft(src);
         if (!left.matched()) {
