@@ -6,7 +6,7 @@ import com.dexscript.parser2.core.Text;
 import java.util.Arrays;
 import java.util.List;
 
-public class DexRootDeclaration {
+public class DexRootDecl {
 
     private enum State {
         PRE_BLANK,
@@ -19,7 +19,7 @@ public class DexRootDeclaration {
     private DexError err;
     private DexFunction function;
 
-    public DexRootDeclaration(Text src) {
+    public DexRootDecl(Text src) {
         this.src = src;
         new Parser();
     }
@@ -124,8 +124,8 @@ public class DexRootDeclaration {
         }
     }
 
-    public static List<DexRootDeclaration> parse(Text src) {
-        DexRootDeclaration rootDecl = new DexRootDeclaration(src);
+    public static List<DexRootDecl> parse(Text src) {
+        DexRootDecl rootDecl = new DexRootDecl(src);
         return Arrays.asList(rootDecl);
     }
 }

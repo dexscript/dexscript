@@ -6,16 +6,26 @@ import java.util.List;
 
 public class DexFile {
 
+    private final String fileName;
     private final Text src;
     private DexPackageClause packageClause;
-    private List<DexRootDeclaration> rootDeclarations;
+    private List<DexRootDecl> rootDecls;
+
+    public DexFile(Text src, String fileName) {
+        this.src = src;
+        this.fileName = fileName;
+    }
 
     public DexFile(Text src) {
-        this.src = src;
+        this(src, "");
     }
 
     public DexFile(String src) {
         this(new Text(src.getBytes(), 0, src.getBytes().length));
+    }
+
+    public String fileName() {
+        return fileName;
     }
 
     public DexPackageClause packageClause() {
@@ -26,11 +36,11 @@ public class DexFile {
         return packageClause;
     }
 
-    public List<DexRootDeclaration> rootDeclarations() {
-        if (rootDeclarations != null) {
-            return rootDeclarations;
+    public List<DexRootDecl> rootDecls() {
+        if (rootDecls != null) {
+            return rootDecls;
         }
-        rootDeclarations = DexRootDeclaration.parse(src);
-        return rootDeclarations;
+        rootDecls = DexRootDecl.parse(src);
+        return rootDecls;
     }
 }

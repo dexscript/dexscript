@@ -19,8 +19,8 @@ public class DexFileTest {
                 "function hello() {\n" +
                 "}";
         DexFile file = new DexFile(src);
-        Assert.assertEquals(1, file.rootDeclarations().size());
-        DexRootDeclaration rootDecl = file.rootDeclarations().get(0);
+        Assert.assertEquals(1, file.rootDecls().size());
+        DexRootDecl rootDecl = file.rootDecls().get(0);
         Assert.assertEquals("hello", rootDecl.function().identifier().toString());
     }
 }
