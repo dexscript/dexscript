@@ -5,7 +5,19 @@ import com.dexscript.parser2.core.DexElement;
 public final class Gen {
 
     private final StringBuilder gen = new StringBuilder();
-    private String prefix = "";
+    private String prefix;
+
+    public Gen() {
+        this("");
+    }
+
+    public Gen(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String prefix() {
+        return prefix;
+    }
 
     public Gen __(String str) {
         gen.append(str);
@@ -22,7 +34,8 @@ public final class Gen {
         return this;
     }
 
-    public Gen __(NL ignored) {
+    public Gen __(Line line) {
+        gen.append(line.line);
         gen.append(System.lineSeparator());
         gen.append(prefix);
         return this;
@@ -31,10 +44,10 @@ public final class Gen {
     public Gen __(Indent indent) {
         String oldPrefix = prefix;
         prefix += "  ";
-        __(new NL());
+        __(new Line());
         indent.op.apply();
         prefix = oldPrefix;
-        __(new NL());
+        __(new Line());
         return this;
     }
 

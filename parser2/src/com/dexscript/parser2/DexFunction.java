@@ -6,7 +6,7 @@ import com.dexscript.parser2.stmt.DexIdentifier;
 import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.Keyword;
 
-public class DexFunction implements DexElement {
+public class DexFunction implements DexRootDecl {
 
     private final Text src;
     private DexError err;

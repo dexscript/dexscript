@@ -1,83 +1,28 @@
 package com.dexscript.parser2.stmt;
 
 import com.dexscript.parser2.core.DexElement;
-import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.expr.DexExpr;
 
-public class DexStatement implements DexElement {
+public interface DexStatement extends DexElement {
 
-    private final Text src;
-    private DexElement elem;
-
-    public DexStatement(Text src) {
-        this.src = src;
-        elem = new DexBlock(src);
-        if (elem.matched()) {
-            return;
+    static DexStatement parse(Text src) {
+        DexStatement stmt = new DexReturnStmt(src);
+        if (stmt.matched()) {
+            return stmt;
         }
-        elem = new DexShortVarDecl(src);
-        if (elem.matched()) {
-            return;
+        stmt = new DexBlock(src);
+        if (stmt.matched()) {
+            return stmt;
         }
-        elem = DexExpr.parse(src, 0);
-        if (elem.matched()) {
-            return;
+        stmt = new DexShortVarDecl(src);
+        if (stmt.matched()) {
+            return stmt;
         }
+        return DexExpr.parse(src, 0);
     }
 
-    public DexStatement(String src) {
-        this(new Text(src));
-    }
-
-    @Override
-    public Text src() {
-        return src;
-    }
-
-    @Override
-    public int begin() {
-        return elem.begin();
-    }
-
-    @Override
-    public int end() {
-        return elem.end();
-    }
-
-    @Override
-    public boolean matched() {
-        return elem.matched();
-    }
-
-    @Override
-    public DexError err() {
-        return elem.err();
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
-    }
-
-    public DexExpr exprStmt() {
-        if (elem instanceof DexExpr) {
-            return (DexExpr) elem;
-        }
-        return null;
-    }
-
-    public DexShortVarDecl shortVarDecl() {
-        if (elem instanceof DexShortVarDecl) {
-            return (DexShortVarDecl) elem;
-        }
-        return null;
-    }
-
-    public DexBlock block() {
-        if (elem instanceof DexBlock) {
-            return (DexBlock) elem;
-        }
-        return null;
+    static DexStatement parse(String src) {
+        return parse(new Text(src));
     }
 }

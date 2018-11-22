@@ -3,7 +3,7 @@ package com.dexscript.transpiler2;
 import com.dexscript.parser2.DexFunction;
 import com.dexscript.transpiler2.gen.Gen;
 import com.dexscript.transpiler2.gen.Indent;
-import com.dexscript.transpiler2.gen.NL;
+import com.dexscript.transpiler2.gen.Line;
 
 public class OutClass {
 
@@ -14,27 +14,15 @@ public class OutClass {
         this.iFunc = iFunc;
         g.__("package "
         ).__(packageName()
-        ).__(';'
-        ).__(new NL());
+        ).__(new Line(";"));
+        g.__(new Line("import com.dexscript.runtime.*;"));
         g.__("public class "
         ).__(className()
-        ).__(" {"
+        ).__(" extends Actor {"
         ).__(new Indent(() -> {
-            genCtor();
+            g.__(new OutCtor(g.prefix(), iFunc).toString());
         }));
-        g.__('}'
-        ).__(new NL());
-    }
-
-    private void genCtor() {
-        g.__("public "
-        ).__(className()
-        ).__('('
-        ).__(") {"
-        ).__(new Indent(() -> {
-
-                })
-        ).__('}');
+        g.__(new Line("}"));
     }
 
     public String packageName() {

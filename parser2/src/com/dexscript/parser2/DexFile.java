@@ -47,8 +47,10 @@ public class DexFile {
         }
         rootDecls = new ArrayList<>();
         while (true) {
-            DexRootDecl rootDecl = new DexRootDecl(remaining);
-            rootDecl.reparent(this);
+            DexRootDecl rootDecl = DexRootDecl.parse(remaining);
+            if (rootDecl instanceof DexFunction) {
+                ((DexFunction)rootDecl).reparent(this);
+            }
             if (rootDecl.matched()) {
                 rootDecls.add(rootDecl);
             } else {

@@ -7,7 +7,6 @@ import java.util.Map;
 public interface TranspileOne {
     static Result __(String src) {
         try {
-
             Map<String, Class<?>> transpiled = new Town()
                     .addFile("hello.ds", "package abc\n" + src)
                     .transpile();

@@ -6,7 +6,7 @@ import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.Keyword;
 import com.dexscript.parser2.token.LineEnd;
 
-public class DexReturnStmt implements DexElement {
+public class DexReturnStmt implements DexStatement {
 
     private final Text src;
     private int returnBegin = -1;
@@ -21,6 +21,10 @@ public class DexReturnStmt implements DexElement {
 
     public DexReturnStmt(String src) {
         this(new Text(src));
+    }
+
+    public DexExpr expr() {
+        return expr;
     }
 
     @Override

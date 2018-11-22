@@ -8,7 +8,7 @@ import com.dexscript.parser2.token.Keyword;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexShortVarDecl implements DexElement {
+public class DexShortVarDecl implements DexStatement {
 
     private final Text src;
     private List<DexIdentifier> decls;

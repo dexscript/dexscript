@@ -1,16 +1,14 @@
 package com.dexscript.parser2.stmt;
 
 import com.dexscript.parser2.core.*;
-import com.dexscript.parser2.stmt.DexStatement;
 import com.dexscript.parser2.token.Blank;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexBlock implements DexElement {
+public class DexBlock implements DexStatement {
 
     private final Text src;
-    private DexError err;
     private int blockBegin = -1;
     private int blockEnd = -1;
     private List<DexStatement> stmts;
@@ -52,7 +50,7 @@ public class DexBlock implements DexElement {
 
     @Override
     public DexError err() {
-        return err;
+        return null;
     }
 
     @Override
@@ -105,7 +103,7 @@ public class DexBlock implements DexElement {
                 }
                 break;
             }
-            DexStatement stmt = new DexStatement(new Text(src.bytes, i, src.end));
+            DexStatement stmt = DexStatement.parse(new Text(src.bytes, i, src.end));
             stmts.add(stmt);
             if (stmt.matched()) {
                 i = stmt.end();

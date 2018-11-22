@@ -1,9 +1,9 @@
 package com.dexscript.parser2.expr;
 
-import com.dexscript.parser2.core.DexElement;
 import com.dexscript.parser2.core.Text;
+import com.dexscript.parser2.stmt.DexStatement;
 
-public interface DexExpr extends DexElement {
+public interface DexExpr extends DexStatement {
 
     int leftRank();
 
@@ -46,6 +46,10 @@ public interface DexExpr extends DexElement {
             return expr;
         }
         expr = new DexParenExpr(src);
+        if (expr.matched()) {
+            return expr;
+        }
+        expr = new DexStringLiteral(src);
         if (expr.matched()) {
             return expr;
         }

@@ -15,10 +15,12 @@ public class Town {
 
     public Town addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);
+        if (new CheckError(iFile).result()) {
+            throw new DexTranspileException();
+        }
         for (DexRootDecl iRootDecl : iFile.rootDecls()) {
-            DexFunction iFunc = iRootDecl.function();
-            if (iFile != null) {
-                OutClass oClass = new OutClass(iFunc);
+            if (iRootDecl instanceof DexFunction) {
+                OutClass oClass = new OutClass((DexFunction) iRootDecl);
                 addSource(oClass.qualifiedClassName(), oClass.toString());
             }
         }
