@@ -1,5 +1,6 @@
 package com.dexscript.parser2.stmt;
 
+import com.dexscript.parser2.core.DexElement;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -28,5 +29,12 @@ public class DexReturnStmtTest {
     @Test
     public void return_without_space() {
         Assert.assertEquals("<unmatched>returnabc</unmatched>", new DexReturnStmt("returnabc").toString());
+    }
+
+    @Test
+    public void walk_up() {
+        DexElement.Collector collector = new DexElement.Collector();
+        new DexReturnStmt("return abc").expr().walkUp(collector);
+        Assert.assertEquals("return abc", collector.collected.get(0).toString());
     }
 }

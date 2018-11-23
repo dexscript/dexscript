@@ -11,6 +11,9 @@ public class DexParam implements DexElement {
     private DexIdentifier paramName;
     private DexReference paramType;
 
+    // for walk up
+    private DexElement parent;
+
     public DexParam(Text src) {
         this.src = src;
         new Parser();
@@ -53,6 +56,21 @@ public class DexParam implements DexElement {
     @Override
     public DexError err() {
         return null;
+    }
+
+    public void reparent(DexElement parent) {
+        this.parent = parent;
+        if (paramName() != null) {
+            paramName().reparent(this);
+        }
+        if (paramType() != null) {
+            paramType().reparent(this, null);
+        }
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
     }
 
     @Override

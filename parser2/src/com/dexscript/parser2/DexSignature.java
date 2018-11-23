@@ -17,6 +17,9 @@ public class DexSignature implements DexElement {
     private DexError err;
     private DexReference ret;
 
+    // for walk up
+    private DexElement parent;
+
     public DexSignature(Text src) {
         this.src = src;
         new Parser();
@@ -63,6 +66,23 @@ public class DexSignature implements DexElement {
     @Override
     public DexError err() {
         return err;
+    }
+
+    public void reparent(DexElement parent) {
+        this.parent = parent;
+        if (params() != null) {
+            for (DexParam param : params()) {
+                param.reparent(this);
+            }
+        }
+        if (ret() != null) {
+            ret().reparent(this, null);
+        }
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
     }
 
     @Override

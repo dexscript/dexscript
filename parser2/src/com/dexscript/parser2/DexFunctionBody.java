@@ -4,6 +4,7 @@ import com.dexscript.parser2.core.DexElement;
 import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.stmt.DexBlock;
+import com.dexscript.parser2.stmt.DexStatement;
 
 public class DexFunctionBody implements DexElement {
 
@@ -11,6 +12,7 @@ public class DexFunctionBody implements DexElement {
     private DexSignature signature;
     private DexBlock block;
     private DexError err;
+    private DexFunction parent;
 
     public DexFunctionBody(Text src) {
         DexFunction nextFunction = new DexFunction(src);
@@ -45,10 +47,29 @@ public class DexFunctionBody implements DexElement {
         return err;
     }
 
+    public void reparent(DexFunction parent) {
+        this.parent = parent;
+        if (signature() != null) {
+            signature().reparent(this);
+        }
+        if (block() != null) {
+            block().reparent(this, null);
+        }
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
+    }
+
     @Override
     public void walkDown(Visitor visitor) {
-        visitor.visit(signature());
-        visitor.visit(block());
+        if (signature() != null) {
+            visitor.visit(signature());
+        }
+        if (block() != null) {
+            visitor.visit(block());
+        }
     }
 
     @Override

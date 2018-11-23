@@ -19,4 +19,13 @@ public interface DexBinaryOperator extends DexExpr {
         visitor.visit(left());
         visitor.visit(right());
     }
+
+    static void reparentChildren(DexBinaryOperator expr) {
+        if (expr.left() != null) {
+            expr.left().reparent(expr, expr.stmt());
+        }
+        if (expr.right() != null) {
+            expr.right().reparent(expr, expr.stmt());
+        }
+    }
 }

@@ -5,6 +5,7 @@ import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Expect;
 import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
+import com.dexscript.parser2.stmt.DexStatement;
 import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.LineEnd;
 
@@ -22,6 +23,10 @@ public class DexCallExpr implements DexExpr {
     private int callExprEnd = -1;
     private DexError err;
 
+    // for walk up
+    private DexElement parent;
+    private DexStatement stmt;
+
     public DexCallExpr(Text src, DexExpr target) {
         this.target = target;
         this.src = src;
@@ -37,8 +42,27 @@ public class DexCallExpr implements DexExpr {
     }
 
     @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+        if (target() != null) {
+            target().reparent(this, stmt);
+        }
+        if (args() != null) {
+            for (DexExpr arg : args()) {
+                arg.reparent(this, stmt);
+            }
+        }
+    }
+
+    @Override
     public int leftRank() {
         return LEFT_RANK;
+    }
+
+    @Override
+    public DexStatement stmt() {
+        return stmt;
     }
 
     @Override
@@ -67,6 +91,11 @@ public class DexCallExpr implements DexExpr {
     @Override
     public DexError err() {
         return err;
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
     }
 
     @Override

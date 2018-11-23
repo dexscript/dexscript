@@ -14,7 +14,9 @@ public class DexFunction implements DexRootDecl {
     private int signatureBegin = -1;
     private DexIdentifier identifier;
     private DexFunctionBody body;
-    private DexFile file;
+
+    // for walk up
+    private DexFile parent;
 
     public DexFunction(String src) {
         this(new Text(src));
@@ -75,6 +77,11 @@ public class DexFunction implements DexRootDecl {
     }
 
     @Override
+    public DexElement parent() {
+        return parent;
+    }
+
+    @Override
     public void walkDown(Visitor visitor) {
         visitor.visit(body());
     }
@@ -83,12 +90,13 @@ public class DexFunction implements DexRootDecl {
         return DexElement.describe(this);
     }
 
-    public void reparent(DexFile file) {
-        this.file = file;
+    public void reparent(DexFile parent) {
+        this.parent = parent;
+        body().reparent(this);
     }
 
     public DexFile file() {
-        return file;
+        return parent;
     }
 
     private class Parser {

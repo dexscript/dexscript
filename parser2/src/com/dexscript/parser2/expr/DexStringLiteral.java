@@ -1,6 +1,7 @@
 package com.dexscript.parser2.expr;
 
 import com.dexscript.parser2.core.*;
+import com.dexscript.parser2.stmt.DexStatement;
 import com.dexscript.parser2.token.Blank;
 
 public class DexStringLiteral implements DexLeafExpr {
@@ -9,6 +10,10 @@ public class DexStringLiteral implements DexLeafExpr {
     private Text matched;
     private DexError err;
 
+    // for walk up
+    private DexElement parent;
+    private DexStatement stmt;
+
     public DexStringLiteral(Text src) {
         this.src = src;
         new Parser();
@@ -16,6 +21,22 @@ public class DexStringLiteral implements DexLeafExpr {
 
     public DexStringLiteral(String src) {
         this(new Text(src));
+    }
+
+    @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
+    }
+
+    @Override
+    public DexStatement stmt() {
+        return stmt;
     }
 
     @Override

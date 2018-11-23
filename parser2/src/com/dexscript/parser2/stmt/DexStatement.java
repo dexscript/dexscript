@@ -2,9 +2,21 @@ package com.dexscript.parser2.stmt;
 
 import com.dexscript.parser2.core.DexElement;
 import com.dexscript.parser2.core.Text;
-import com.dexscript.parser2.expr.DexExpr;
 
 public interface DexStatement extends DexElement {
+
+    void reparent(DexElement parent, DexStatement prev);
+
+    DexStatement prev();
+
+    @Override
+    default void walkUp(Visitor visitor) {
+        if (prev() != null) {
+            visitor.visit(prev());
+        } else {
+            visitor.visit(parent());
+        }
+    }
 
     static DexStatement parse(Text src) {
         DexStatement stmt = new DexReturnStmt(src);
@@ -19,7 +31,7 @@ public interface DexStatement extends DexElement {
         if (stmt.matched()) {
             return stmt;
         }
-        return DexExpr.parse(src, 0);
+        return new DexExprStmt(src);
     }
 
     static DexStatement parse(String src) {

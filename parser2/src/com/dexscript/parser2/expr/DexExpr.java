@@ -1,11 +1,25 @@
 package com.dexscript.parser2.expr;
 
+import com.dexscript.parser2.core.DexElement;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.stmt.DexStatement;
 
-public interface DexExpr extends DexStatement {
+public interface DexExpr extends DexElement {
+
+    void reparent(DexElement parent, DexStatement stmt);
 
     int leftRank();
+
+    DexStatement stmt();
+
+    @Override
+    default void walkUp(Visitor visitor) {
+        if (stmt() != null) {
+            visitor.visit(stmt());
+        } else {
+            visitor.visit(parent());
+        }
+    }
 
     static DexExpr parse(String src) {
         return parse(new Text(src), 0);

@@ -3,6 +3,7 @@ package com.dexscript.parser2.expr;
 import com.dexscript.parser2.core.DexElement;
 import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
+import com.dexscript.parser2.stmt.DexStatement;
 import com.dexscript.parser2.token.Blank;
 
 public class DexNegativeExpr implements DexExpr {
@@ -11,6 +12,10 @@ public class DexNegativeExpr implements DexExpr {
     private static final int RIGHT_RANK = 100;
     private final Text src;
     private DexExpr right;
+
+    // for walk up
+    private DexElement parent;
+    private DexStatement stmt;
 
     public DexNegativeExpr(Text src) {
         this.src = src;
@@ -30,6 +35,23 @@ public class DexNegativeExpr implements DexExpr {
 
     public DexNegativeExpr(String src) {
         this(new Text(src));
+    }
+
+    @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+        right.reparent(parent, stmt);
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
+    }
+
+    @Override
+    public DexStatement stmt() {
+        return stmt;
     }
 
     @Override

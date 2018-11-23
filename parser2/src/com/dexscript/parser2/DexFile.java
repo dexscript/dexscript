@@ -88,6 +88,11 @@ public class DexFile implements DexElement  {
     }
 
     @Override
+    public DexElement parent() {
+        return null;
+    }
+
+    @Override
     public void walkDown(Visitor visitor) {
         if (packageClause() != null) {
             visitor.visit(packageClause());

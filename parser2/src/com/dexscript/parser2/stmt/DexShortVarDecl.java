@@ -15,6 +15,10 @@ public class DexShortVarDecl implements DexStatement {
     private DexExpr expr;
     private DexError err;
 
+    // for walk up
+    private DexElement parent;
+    private DexStatement prev;
+
     public DexShortVarDecl(Text src) {
         this.src = src;
         new Parser();
@@ -59,11 +63,20 @@ public class DexShortVarDecl implements DexStatement {
     }
 
     @Override
+    public DexElement parent() {
+        return parent;
+    }
+
+    @Override
     public void walkDown(Visitor visitor) {
-        for (DexIdentifier decl : decls) {
-            visitor.visit(decl);
+        if (decls() != null) {
+            for (DexIdentifier decl : decls()) {
+                visitor.visit(decl);
+            }
         }
-        visitor.visit(expr);
+        if (expr() != null) {
+            visitor.visit(expr());
+        }
     }
 
     @Override
@@ -77,6 +90,25 @@ public class DexShortVarDecl implements DexStatement {
 
     public List<DexIdentifier> decls() {
         return decls;
+    }
+
+    @Override
+    public void reparent(DexElement parent, DexStatement prev) {
+        this.parent = parent;
+        this.prev = prev;
+        if (decls() != null) {
+            for (DexIdentifier decl : decls()) {
+                decl.reparent(this);
+            }
+        }
+        if (expr() != null) {
+            expr().reparent(this, this);
+        }
+    }
+
+    @Override
+    public DexStatement prev() {
+        return prev;
     }
 
     private class Parser {
@@ -135,6 +167,7 @@ public class DexShortVarDecl implements DexStatement {
 
         State expr() {
             expr = DexExpr.parse(new Text(src.bytes, i, src.end), 0);
+            // TODO: handle error
             return null;
         }
     }

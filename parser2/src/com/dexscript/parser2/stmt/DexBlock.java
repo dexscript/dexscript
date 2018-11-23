@@ -13,6 +13,10 @@ public class DexBlock implements DexStatement {
     private int blockEnd = -1;
     private List<DexStatement> stmts;
 
+    // for walk up
+    private DexElement parent;
+    private DexStatement prev;
+
     public DexBlock(String src) {
         this(new Text(src));
     }
@@ -20,6 +24,22 @@ public class DexBlock implements DexStatement {
     public DexBlock(Text src) {
         this.src = src;
         new Parser();
+    }
+
+    @Override
+    public void reparent(DexElement parent, DexStatement prev) {
+        this.parent = parent;
+        this.prev = prev;
+    }
+
+    @Override
+    public DexStatement prev() {
+        return prev;
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
     }
 
     @Override
@@ -74,6 +94,7 @@ public class DexBlock implements DexStatement {
     private class Parser {
 
         int i = src.begin;
+        DexStatement thePrevOfChild = null;
 
         Parser() {
             State.Play(this::leftBrace);
@@ -113,6 +134,8 @@ public class DexBlock implements DexStatement {
                 break;
             }
             DexStatement stmt = DexStatement.parse(new Text(src.bytes, i, src.end));
+            stmt.reparent(DexBlock.this, thePrevOfChild);
+            thePrevOfChild = stmt;
             stmts.add(stmt);
             if (stmt.matched()) {
                 i = stmt.end();

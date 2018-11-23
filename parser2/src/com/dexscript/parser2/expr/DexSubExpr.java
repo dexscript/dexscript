@@ -3,6 +3,7 @@ package com.dexscript.parser2.expr;
 import com.dexscript.parser2.core.DexElement;
 import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
+import com.dexscript.parser2.stmt.DexStatement;
 import com.dexscript.parser2.token.Blank;
 
 public class DexSubExpr implements DexBinaryOperator {
@@ -13,6 +14,10 @@ public class DexSubExpr implements DexBinaryOperator {
     private final Text src;
     private final DexExpr left;
     private DexExpr right;
+
+    // for walk up
+    private DexElement parent;
+    private DexStatement stmt;
 
     public DexSubExpr(Text src, DexExpr left) {
         this.left = left;
@@ -29,6 +34,24 @@ public class DexSubExpr implements DexBinaryOperator {
             // not plus
             return;
         }
+    }
+
+
+    @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+        DexBinaryOperator.reparentChildren(this);
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
+    }
+
+    @Override
+    public DexStatement stmt() {
+        return stmt;
     }
 
     public DexExpr left() {

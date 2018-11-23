@@ -15,7 +15,10 @@ public class DexReference implements DexLeafExpr {
     private final Text src;
     private DexError err;
     private Text matched;
-    private DexStatement parentStmt;
+
+    // for walk up
+    private DexElement parent;
+    private DexStatement stmt;
 
     public DexReference(String src) {
         this(new Text(src));
@@ -26,8 +29,25 @@ public class DexReference implements DexLeafExpr {
         new Parser();
     }
 
-    public void reparent(DexStatement parentStmt) {
-        this.parentStmt = parentStmt;
+    @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
+    }
+
+    @Override
+    public DexStatement stmt() {
+        return stmt;
+    }
+
+    @Override
+    public void walkUp(Visitor visitor) {
+        visitor.visit(stmt());
     }
 
     public boolean matched() {
@@ -67,9 +87,6 @@ public class DexReference implements DexLeafExpr {
         return 0;
     }
 
-    public DexStatement parentStmt() {
-        return parentStmt;
-    }
 
     private class Parser {
 

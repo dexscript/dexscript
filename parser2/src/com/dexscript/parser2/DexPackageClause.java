@@ -14,6 +14,9 @@ public class DexPackageClause implements DexElement {
     private DexIdentifier identifier;
     private DexError err;
 
+    // for walk up
+    private DexFile parent;
+
     public DexPackageClause(Text src) {
         this.src = src;
         new Parser();
@@ -58,9 +61,24 @@ public class DexPackageClause implements DexElement {
         return err;
     }
 
+
+    public void reparent(DexFile parent) {
+        this.parent = parent;
+        if (identifier() != null) {
+            identifier().reparent(this);
+        }
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
+    }
+
     @Override
     public void walkDown(Visitor visitor) {
-        visitor.visit(identifier);
+        if (identifier() != null) {
+            visitor.visit(identifier());
+        }
     }
 
     @Override

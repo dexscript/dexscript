@@ -4,6 +4,7 @@ import com.dexscript.parser2.core.DexElement;
 import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.State;
 import com.dexscript.parser2.core.Text;
+import com.dexscript.parser2.stmt.DexStatement;
 import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.One2Nine;
 import com.dexscript.parser2.token.Zero2Nine;
@@ -13,6 +14,10 @@ public class DexIntegerLiteral implements DexLeafExpr {
     private final Text src;
     private Text matched;
 
+    // for walk up
+    private DexElement parent;
+    private DexStatement stmt;
+
     public DexIntegerLiteral(Text src) {
         this.src = src;
         new Parser();
@@ -20,6 +25,22 @@ public class DexIntegerLiteral implements DexLeafExpr {
 
     public DexIntegerLiteral(String src) {
         this(new Text(src));
+    }
+
+    @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
+    }
+
+    @Override
+    public DexStatement stmt() {
+        return stmt;
     }
 
     @Override

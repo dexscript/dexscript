@@ -14,6 +14,10 @@ public class DexReturnStmt implements DexStatement {
     private DexExpr expr;
     private DexError err;
 
+    // for walk up
+    private DexElement parent;
+    private DexStatement prev;
+
     public DexReturnStmt(Text src) {
         this.src = src;
         new Parser();
@@ -56,6 +60,23 @@ public class DexReturnStmt implements DexStatement {
     @Override
     public DexError err() {
         return err;
+    }
+
+    @Override
+    public void reparent(DexElement parent, DexStatement prev) {
+        this.parent = parent;
+        this.prev = prev;
+        expr.reparent(this, this);
+    }
+
+    @Override
+    public DexStatement prev() {
+        return prev;
+    }
+
+    @Override
+    public DexElement parent() {
+        return parent;
     }
 
     @Override

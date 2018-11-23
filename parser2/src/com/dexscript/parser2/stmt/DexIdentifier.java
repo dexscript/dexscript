@@ -6,10 +6,13 @@ import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.LineEnd;
 import com.dexscript.parser2.token.Zero2Nine;
 
-public class DexIdentifier implements DexElement {
+public class DexIdentifier implements DexLeafElement {
 
     private final Text src;
     private Text matched;
+
+    // for walk up
+    private DexElement parent;
 
     public DexIdentifier(String src) {
         this(new Text(src));
@@ -52,8 +55,13 @@ public class DexIdentifier implements DexElement {
         return null;
     }
 
+    public void reparent(DexElement parent) {
+        this.parent = parent;
+    }
+
     @Override
-    public void walkDown(Visitor visitor) {
+    public DexElement parent() {
+        return parent;
     }
 
     private class Parser {

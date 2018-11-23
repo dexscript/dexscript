@@ -1,9 +1,25 @@
 package com.dexscript.parser2.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public interface DexElement {
 
     interface Visitor {
         void visit(DexElement elem);
+    }
+
+    class Collector implements Visitor {
+
+        public final List<DexElement> collected = new ArrayList<>();
+
+        @Override
+        public void visit(DexElement elem) {
+            if (elem == null) {
+                throw new NullPointerException("expect not null element");
+            }
+            collected.add(elem);
+        }
     }
 
     Text src();
@@ -11,7 +27,12 @@ public interface DexElement {
     int end();
     boolean matched();
     DexError err();
+    DexElement parent();
+
     void walkDown(Visitor visitor);
+    default void walkUp(Visitor visitor) {
+        visitor.visit(parent());
+    }
 
     static String describe(DexElement elem) {
         if (!elem.matched()) {
