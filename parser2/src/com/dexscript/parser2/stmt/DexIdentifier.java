@@ -52,6 +52,10 @@ public class DexIdentifier implements DexElement {
         return null;
     }
 
+    @Override
+    public void walkDown(Visitor visitor) {
+    }
+
     private class Parser {
 
         int i;

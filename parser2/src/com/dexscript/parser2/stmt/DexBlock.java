@@ -54,6 +54,15 @@ public class DexBlock implements DexStatement {
     }
 
     @Override
+    public void walkDown(Visitor visitor) {
+        if (stmts() != null) {
+            for (DexStatement stmt : stmts()) {
+                visitor.visit(stmt);
+            }
+        }
+    }
+
+    @Override
     public String toString() {
         return DexElement.describe(this);
     }

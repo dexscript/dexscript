@@ -9,7 +9,7 @@ import com.dexscript.parser2.token.Keyword;
 import com.dexscript.parser2.token.One2Nine;
 import com.dexscript.parser2.token.Zero2Nine;
 
-public class DexFloatLiteral implements DexExpr {
+public class DexFloatLiteral implements DexLeafExpr {
 
     private final Text src;
     private Text matched;

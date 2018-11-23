@@ -2,11 +2,16 @@ package com.dexscript.parser2.core;
 
 public interface DexElement {
 
+    interface Visitor {
+        void visit(DexElement elem);
+    }
+
     Text src();
     int begin();
     int end();
     boolean matched();
     DexError err();
+    void walkDown(Visitor visitor);
 
     static String describe(DexElement elem) {
         if (!elem.matched()) {

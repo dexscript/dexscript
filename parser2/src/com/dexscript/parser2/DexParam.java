@@ -56,6 +56,16 @@ public class DexParam implements DexElement {
     }
 
     @Override
+    public void walkDown(Visitor visitor) {
+        if (paramName() != null) {
+            visitor.visit(paramName());
+        }
+        if (paramType() != null) {
+            visitor.visit(paramType());
+        }
+    }
+
+    @Override
     public String toString() {
         return DexElement.describe(this);
     }

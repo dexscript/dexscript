@@ -53,6 +53,11 @@ public class DexParenExpr implements DexExpr {
         return null;
     }
 
+    @Override
+    public void walkDown(Visitor visitor) {
+        visitor.visit(body);
+    }
+
     public DexExpr body() {
         return body;
     }

@@ -70,6 +70,14 @@ public class DexCallExpr implements DexExpr {
     }
 
     @Override
+    public void walkDown(Visitor visitor) {
+        visitor.visit(target);
+        for (DexExpr arg : args) {
+            visitor.visit(arg);
+        }
+    }
+
+    @Override
     public String toString() {
         return DexElement.describe(this);
     }

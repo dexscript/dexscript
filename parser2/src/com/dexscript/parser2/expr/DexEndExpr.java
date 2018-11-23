@@ -4,7 +4,7 @@ import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
 import com.dexscript.parser2.token.Blank;
 
-public class DexEndExpr implements DexExpr {
+public class DexEndExpr implements DexLeafExpr {
 
     private final Text src;
     private int matchedEnd;

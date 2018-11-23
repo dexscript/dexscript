@@ -59,6 +59,11 @@ public class DexReturnStmt implements DexStatement {
     }
 
     @Override
+    public void walkDown(Visitor visitor) {
+        visitor.visit(expr);
+    }
+
+    @Override
     public String toString() {
         return DexElement.describe(this);
     }

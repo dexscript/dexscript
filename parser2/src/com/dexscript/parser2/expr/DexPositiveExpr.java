@@ -63,6 +63,11 @@ public class DexPositiveExpr implements DexExpr {
     }
 
     @Override
+    public void walkDown(Visitor visitor) {
+        visitor.visit(right);
+    }
+
+    @Override
     public String toString() {
         return DexElement.describe(this);
     }

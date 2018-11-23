@@ -59,6 +59,11 @@ public class DexPackageClause implements DexElement {
     }
 
     @Override
+    public void walkDown(Visitor visitor) {
+        visitor.visit(identifier);
+    }
+
+    @Override
     public String toString() {
         return DexElement.describe(this);
     }

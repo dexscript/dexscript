@@ -8,7 +8,7 @@ import com.dexscript.parser2.token.Blank;
 import com.dexscript.parser2.token.One2Nine;
 import com.dexscript.parser2.token.Zero2Nine;
 
-public class DexIntegerLiteral implements DexExpr {
+public class DexIntegerLiteral implements DexLeafExpr {
 
     private final Text src;
     private Text matched;

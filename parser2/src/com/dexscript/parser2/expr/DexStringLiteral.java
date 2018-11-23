@@ -3,7 +3,7 @@ package com.dexscript.parser2.expr;
 import com.dexscript.parser2.core.*;
 import com.dexscript.parser2.token.Blank;
 
-public class DexStringLiteral implements DexExpr {
+public class DexStringLiteral implements DexLeafExpr {
 
     private final Text src;
     private Text matched;

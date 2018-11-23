@@ -1,5 +1,6 @@
 package com.dexscript.transpiler2;
 
+import com.dexscript.analyzer.CheckError;
 import com.dexscript.parser2.DexFile;
 import com.dexscript.parser2.DexFunction;
 import com.dexscript.parser2.DexRootDecl;
@@ -15,7 +16,7 @@ public class Town {
 
     public Town addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);
-        if (new CheckError(iFile).result()) {
+        if (new CheckError(iFile).hasError()) {
             throw new DexTranspileException();
         }
         for (DexRootDecl iRootDecl : iFile.rootDecls()) {

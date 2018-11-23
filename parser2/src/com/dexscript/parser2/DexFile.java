@@ -1,11 +1,13 @@
 package com.dexscript.parser2;
 
+import com.dexscript.parser2.core.DexElement;
+import com.dexscript.parser2.core.DexError;
 import com.dexscript.parser2.core.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexFile {
+public class DexFile implements DexElement  {
 
     private final String fileName;
     private final Text src;
@@ -57,6 +59,43 @@ public class DexFile {
                 return rootDecls;
             }
             remaining = src.slice(rootDecl.end());
+        }
+    }
+
+    @Override
+    public Text src() {
+        return src;
+    }
+
+    @Override
+    public int begin() {
+        return src.begin;
+    }
+
+    @Override
+    public int end() {
+        return src.end;
+    }
+
+    @Override
+    public boolean matched() {
+        return true;
+    }
+
+    @Override
+    public DexError err() {
+        return null;
+    }
+
+    @Override
+    public void walkDown(Visitor visitor) {
+        if (packageClause() != null) {
+            visitor.visit(packageClause());
+        }
+        if (rootDecls() != null) {
+            for (DexRootDecl rootDecl : rootDecls()) {
+                visitor.visit(rootDecl);
+            }
         }
     }
 }

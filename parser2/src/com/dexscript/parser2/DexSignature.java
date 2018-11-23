@@ -66,6 +66,18 @@ public class DexSignature implements DexElement {
     }
 
     @Override
+    public void walkDown(Visitor visitor) {
+        if (params() != null) {
+            for (DexParam param : params()) {
+                visitor.visit(param);
+            }
+        }
+        if (ret() != null) {
+            visitor.visit(ret());
+        }
+    }
+
+    @Override
     public String toString() {
         return DexElement.describe(this);
     }
@@ -172,6 +184,7 @@ public class DexSignature implements DexElement {
 
         @Expect(":")
         State colon() {
+            int cursorBeforeSearchColon = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
@@ -181,10 +194,10 @@ public class DexSignature implements DexElement {
                     i += 1;
                     return this::ret;
                 }
-                sigEnd = i;
+                sigEnd = cursorBeforeSearchColon;
                 return null;
             }
-            sigEnd = i;
+            sigEnd = cursorBeforeSearchColon;
             return null;
         }
 

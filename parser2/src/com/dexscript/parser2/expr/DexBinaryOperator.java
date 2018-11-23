@@ -13,4 +13,10 @@ public interface DexBinaryOperator extends DexExpr {
     static DexExpr right(DexExpr expr) {
         return ((DexBinaryOperator) expr).right();
     }
+
+    @Override
+    default void walkDown(Visitor visitor) {
+        visitor.visit(left());
+        visitor.visit(right());
+    }
 }

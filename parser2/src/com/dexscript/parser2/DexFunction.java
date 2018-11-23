@@ -74,6 +74,11 @@ public class DexFunction implements DexRootDecl {
         return err;
     }
 
+    @Override
+    public void walkDown(Visitor visitor) {
+        visitor.visit(body());
+    }
+
     public String toString() {
         return DexElement.describe(this);
     }

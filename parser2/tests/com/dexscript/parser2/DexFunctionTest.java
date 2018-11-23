@@ -50,4 +50,15 @@ public class DexFunctionTest {
         Assert.assertEquals(1, function.err().errorPos);
         Assert.assertTrue(function.err().toString().contains("function"));
     }
+
+    @Test
+    public void missing_left_brace() {
+        String src = "" +
+                "function hello () \n" +
+                "}\n";
+        DexFunction function = new DexFunction(src);
+        function.body().block();
+        Assert.assertEquals("()<error/> \n" +
+                "}\n", function.body().toString());
+    }
 }

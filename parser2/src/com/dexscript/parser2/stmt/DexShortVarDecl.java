@@ -59,6 +59,14 @@ public class DexShortVarDecl implements DexStatement {
     }
 
     @Override
+    public void walkDown(Visitor visitor) {
+        for (DexIdentifier decl : decls) {
+            visitor.visit(decl);
+        }
+        visitor.visit(expr);
+    }
+
+    @Override
     public String toString() {
         return DexElement.describe(this);
     }
