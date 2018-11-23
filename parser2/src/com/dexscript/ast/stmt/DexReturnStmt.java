@@ -56,7 +56,6 @@ public class DexReturnStmt extends DexStatement {
     public void reparent(DexElement parent, DexStatement prev) {
         this.parent = parent;
         this.prev = prev;
-        expr.reparent(this, this);
     }
 
     @Override
@@ -109,6 +108,7 @@ public class DexReturnStmt extends DexStatement {
         State expr() {
             expr = DexExpr.parse(src.slice(i));
             if (expr.matched()) {
+                expr.reparent(DexReturnStmt.this, DexReturnStmt.this);
                 returnEnd = expr.end();
             } else {
                 return this::missingExpr;

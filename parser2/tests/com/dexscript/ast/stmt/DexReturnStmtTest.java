@@ -1,6 +1,5 @@
 package com.dexscript.ast.stmt;
 
-import com.dexscript.ast.core.DexElement;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -33,8 +32,6 @@ public class DexReturnStmtTest {
 
     @Test
     public void walk_up() {
-        DexElement.Collector collector = new DexElement.Collector();
-        new DexReturnStmt("return abc").expr().walkUp(collector);
-        Assert.assertEquals("return abc", collector.collected.get(0).toString());
+        Assert.assertEquals("return abc", new DexReturnStmt("return abc").expr().prev().toString());
     }
 }

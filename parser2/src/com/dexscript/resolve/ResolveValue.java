@@ -1,14 +1,11 @@
 package com.dexscript.resolve;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.DexParam;
-import com.dexscript.ast.DexSignature;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexReference;
-import com.dexscript.ast.stmt.DexBlock;
-import com.dexscript.ast.stmt.DexReturnStmt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class ResolveValue {
@@ -27,7 +24,12 @@ public final class ResolveValue {
     }
 
     public Denotation.Value __(DexReference ref) {
-        List<DexElement> prevElems = new CollectPrevElements(ref).collected();
+        List<DexElement> prevElems = new ArrayList<>();
+        DexElement current = ref;
+        do {
+            current = current.prev();
+            prevElems.add(current);
+        } while (current != null);
         DenotationTable parentDT = builtin;
         for (int i = prevElems.size() - 1; i >= 0; i--) {
             DexElement elem = prevElems.get(i);
@@ -39,15 +41,8 @@ public final class ResolveValue {
     private DenotationTable denotationTable(DexElement elem, DenotationTable parentDT) {
         if (elem instanceof DexFunction) {
             return denotationTable((DexFunction) elem, parentDT);
-        } else if (elem instanceof DexFunctionBody
-                || elem instanceof DexBlock
-                || elem instanceof DexReturnStmt
-                || elem instanceof DexParam
-                || elem instanceof DexSignature) {
-            return parentDT;
-        } else {
-            throw new UnsupportedOperationException("not implemented: " + elem.getClass());
         }
+        return parentDT;
     }
 
     private DenotationTable denotationTable(DexFunction function, DenotationTable parentDT) {
@@ -60,7 +55,7 @@ public final class ResolveValue {
             String name = param.paramName().toString();
             Denotation.Type type = resolveType.__(param.paramType());
             if (type != null) {
-                denotationTable.put(name, new Denotation.Value(name, type));
+                denotationTable.put(name, new Denotation.Value(name, type, param));
             }
         }
         return denotationTable;

@@ -1,6 +1,7 @@
 package com.dexscript.transpile;
 
 import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexParam;
 import com.dexscript.ast.stmt.DexReturnStmt;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.resolve.Denotation;
@@ -19,6 +20,9 @@ public class OutCtor {
         this.township = township;
         this.iFunc = iFunc;
         g = new Gen(prefix);
+        for (DexParam param : iFunc.sig().params()) {
+            param.attach()
+        }
         g.__("public "
         ).__(className()
         ).__('('

@@ -24,11 +24,11 @@ public abstract class DexExpr extends DexElement {
     }
 
     @Override
-    public final void walkUp(DexElement.Visitor visitor) {
+    public final DexElement prev() {
         if (stmt() != null) {
-            visitor.visit(stmt());
+            return stmt();
         } else {
-            visitor.visit(parent());
+            return parent();
         }
     }
 

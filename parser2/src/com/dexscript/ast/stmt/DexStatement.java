@@ -13,16 +13,12 @@ public abstract class DexStatement extends DexElement {
 
     public abstract void reparent(DexElement parent, DexStatement prev);
 
-    public final DexStatement prev() {
-        return prev;
-    }
-
     @Override
-    public final void walkUp(Visitor visitor) {
-        if (prev() != null) {
-            visitor.visit(prev());
+    public final DexElement prev() {
+        if (prev != null) {
+            return prev;
         } else {
-            visitor.visit(parent());
+            return parent();
         }
     }
 

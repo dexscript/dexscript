@@ -39,12 +39,8 @@ public class DexBlockTest {
 
     @Test
     public void walk_up() {
-        DexElement.Collector collector = new DexElement.Collector();
         DexBlock blk = new DexBlock("{return abc; return def}");
-        blk.stmts().get(0).walkUp(collector);
-        Assert.assertEquals("{return abc; return def}", collector.collected.get(0).toString());
-        collector = new DexElement.Collector();
-        blk.stmts().get(1).walkUp(collector);
-        Assert.assertEquals("return abc", collector.collected.get(0).toString());
+        Assert.assertEquals("{return abc; return def}", blk.stmts().get(0).prev().toString());
+        Assert.assertEquals("return abc", blk.stmts().get(1).prev().toString());
     }
 }

@@ -64,8 +64,8 @@ public abstract class DexElement {
     }
 
     public abstract void walkDown(Visitor visitor);
-    public void walkUp(Visitor visitor) {
-        visitor.visit(parent());
+    public DexElement prev() {
+        return parent();
     }
 
     @Override

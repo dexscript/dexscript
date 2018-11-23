@@ -1,5 +1,7 @@
 package com.dexscript.resolve;
 
+import com.dexscript.ast.core.DexElement;
+
 public class Denotation {
 
     public final String name;
@@ -12,8 +14,11 @@ public class Denotation {
 
     public static class Value extends Denotation {
 
-        public Value(String name, Type type) {
+        public final DexElement elem;
+
+        public Value(String name, Type type, DexElement elem) {
             super(name, type);
+            this.elem = elem;
             if (type == null) {
                 throw new IllegalArgumentException("must specify type for value denotation");
             }
