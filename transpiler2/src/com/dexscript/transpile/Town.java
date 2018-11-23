@@ -1,10 +1,12 @@
-package com.dexscript.transpiler2;
+package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.core.Text;
+import com.dexscript.resolve.ResolveType;
+import com.dexscript.resolve.ResolveValue;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.Map;
@@ -13,6 +15,13 @@ public class Town {
 
     public final static boolean DEBUG = true;
     private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
+    private final Township township;
+
+    public Town() {
+        township = new Township();
+        township.resolveType = new ResolveType();
+        township.resolveValue = new ResolveValue();
+    }
 
     public Town addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);
@@ -21,7 +30,7 @@ public class Town {
         }
         for (DexRootDecl iRootDecl : iFile.rootDecls()) {
             if (iRootDecl instanceof DexFunction) {
-                OutClass oClass = new OutClass((DexFunction) iRootDecl);
+                OutClass oClass = new OutClass(township, (DexFunction) iRootDecl);
                 addSource(oClass.qualifiedClassName(), oClass.toString());
             }
         }

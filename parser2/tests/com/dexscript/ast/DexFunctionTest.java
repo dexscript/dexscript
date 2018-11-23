@@ -13,7 +13,7 @@ public class DexFunctionTest {
         DexFunction function = new DexFunction(src);
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
-        Assert.assertEquals("()", function.signature().toString());
+        Assert.assertEquals("()", function.sig().toString());
         Assert.assertEquals("{\n}", function.block().toString());
         Assert.assertEquals(src.substring(1), function.toString());
     }
@@ -26,7 +26,7 @@ public class DexFunctionTest {
         DexFunction function = new DexFunction(src);
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
-        Assert.assertEquals("(msg:string)", function.signature().toString());
+        Assert.assertEquals("(msg:string)", function.sig().toString());
         Assert.assertEquals("{\n}", function.block().toString());
         Assert.assertEquals(src.substring(1), function.toString());
     }

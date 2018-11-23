@@ -1,9 +1,10 @@
-package com.dexscript.transpiler2;
+package com.dexscript.transpile;
 
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.expr.DexStringLiteral;
-import com.dexscript.transpiler2.gen.Gen;
+import com.dexscript.resolve.ResolveValue;
+import com.dexscript.transpile.gen.Gen;
 
 public class OutExpr {
 
@@ -22,7 +23,7 @@ public class OutExpr {
     }
 
     private void gen(DexReference iRef) {
-        iRef.resolve();
+        new ResolveValue().__(iRef);
     }
 
     private void gen(DexStringLiteral iStr) {

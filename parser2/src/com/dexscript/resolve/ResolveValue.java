@@ -56,7 +56,7 @@ public final class ResolveValue {
             return denotationTable;
         }
         denotationTable = function.attach(parentDT.copy());
-        for (DexParam param : function.signature().params()) {
+        for (DexParam param : function.sig().params()) {
             String name = param.paramName().toString();
             Denotation.Type type = resolveType.__(param.paramType());
             if (type != null) {

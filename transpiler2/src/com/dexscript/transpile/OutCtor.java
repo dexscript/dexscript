@@ -1,18 +1,22 @@
-package com.dexscript.transpiler2;
+package com.dexscript.transpile;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.stmt.DexReturnStmt;
 import com.dexscript.ast.stmt.DexStatement;
-import com.dexscript.transpiler2.gen.Gen;
-import com.dexscript.transpiler2.gen.Indent;
-import com.dexscript.transpiler2.gen.Line;
+import com.dexscript.resolve.Denotation;
+import com.dexscript.resolve.ResolveType;
+import com.dexscript.transpile.gen.Gen;
+import com.dexscript.transpile.gen.Indent;
+import com.dexscript.transpile.gen.Line;
 
 public class OutCtor {
 
+    private final Township township;
     private final DexFunction iFunc;
     private final Gen g;
 
-    public OutCtor(String prefix, DexFunction iFunc) {
+    public OutCtor(Township township, String prefix, DexFunction iFunc) {
+        this.township = township;
         this.iFunc = iFunc;
         g = new Gen(prefix);
         g.__("public "
@@ -34,8 +38,11 @@ public class OutCtor {
     }
 
     private void genStmt(DexReturnStmt returnStmt) {
+        Denotation.Type retType = township.resolveType(iFunc.sig().ret());
         OutExpr oExpr = new OutExpr(g.prefix(), returnStmt.expr());
-        g.__("finish("
+        g.__("finish(("
+        ).__(retType.javaClassName
+        ).__(')'
         ).__(oExpr.value()
         ).__(new Line(");"));
     }

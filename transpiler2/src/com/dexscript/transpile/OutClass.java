@@ -1,16 +1,16 @@
-package com.dexscript.transpiler2;
+package com.dexscript.transpile;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.transpiler2.gen.Gen;
-import com.dexscript.transpiler2.gen.Indent;
-import com.dexscript.transpiler2.gen.Line;
+import com.dexscript.transpile.gen.Gen;
+import com.dexscript.transpile.gen.Indent;
+import com.dexscript.transpile.gen.Line;
 
 public class OutClass {
 
     private final DexFunction iFunc;
     private final Gen g = new Gen();
 
-    public OutClass(DexFunction iFunc) {
+    public OutClass(Township township, DexFunction iFunc) {
         this.iFunc = iFunc;
         g.__("package "
         ).__(packageName()
@@ -20,7 +20,7 @@ public class OutClass {
         ).__(className()
         ).__(" extends Actor {"
         ).__(new Indent(() -> {
-            g.__(new OutCtor(g.prefix(), iFunc).toString());
+            g.__(new OutCtor(township, g.prefix(), iFunc).toString());
         }));
         g.__(new Line("}"));
     }

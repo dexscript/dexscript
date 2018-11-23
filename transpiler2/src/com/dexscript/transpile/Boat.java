@@ -1,4 +1,4 @@
-package com.dexscript.transpiler2;
+package com.dexscript.transpile;
 
 public class Boat {
 

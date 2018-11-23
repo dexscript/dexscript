@@ -47,7 +47,7 @@ public final class DexFunction extends DexRootDecl {
         return identifier;
     }
 
-    public DexSignature signature() {
+    public DexSignature sig() {
         return body().signature();
     }
 

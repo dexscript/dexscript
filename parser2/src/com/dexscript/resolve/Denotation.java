@@ -22,17 +22,24 @@ public class Denotation {
 
     public static class Type extends Denotation {
 
-        public Type(String name, TypeKind type) {
+        public final String javaClassName;
+
+        public Type(String name, TypeKind type, String javaClassName) {
             super(name, type);
+            this.javaClassName = javaClassName;
             if (type == null) {
                 throw new IllegalArgumentException("must specify kind for type denotation");
             }
         }
     }
 
+    public static Type javaClass(String name, String javaClassName) {
+        return new Type(name, TypeKind.JAVA, javaClassName);
+    }
+
     public static class TypeKind extends Denotation {
 
-        public static final TypeKind BUILTIN = new TypeKind("builtin");
+        public static final TypeKind JAVA = new TypeKind("java");
 
         public TypeKind(String name) {
             super(name, null);

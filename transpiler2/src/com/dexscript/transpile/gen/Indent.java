@@ -1,4 +1,4 @@
-package com.dexscript.transpiler2.gen;
+package com.dexscript.transpile.gen;
 
 public class Indent {
 
