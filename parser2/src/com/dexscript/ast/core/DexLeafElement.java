@@ -1,7 +1,12 @@
 package com.dexscript.ast.core;
 
-public interface DexLeafElement extends DexElement {
+public abstract class DexLeafElement extends DexElement {
+
+    public DexLeafElement(Text src) {
+        super(src);
+    }
+
     @Override
-    default void walkDown(Visitor visitor) {
+    public final void walkDown(Visitor visitor) {
     }
 }

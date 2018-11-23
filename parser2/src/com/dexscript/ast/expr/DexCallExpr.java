@@ -12,24 +12,19 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexCallExpr implements DexExpr {
+public class DexCallExpr extends DexExpr {
 
     private static final int LEFT_RANK = 1;
     private static final int RIGHT_RANK = 0;
 
-    private final Text src;
     private final DexExpr target;
     private List<DexExpr> args;
     private int callExprEnd = -1;
     private DexError err;
 
-    // for walk up
-    private DexElement parent;
-    private DexStatement stmt;
-
     public DexCallExpr(Text src, DexExpr target) {
+        super(src);
         this.target = target;
-        this.src = src;
         new Parser();
     }
 
@@ -61,16 +56,6 @@ public class DexCallExpr implements DexExpr {
     }
 
     @Override
-    public DexStatement stmt() {
-        return stmt;
-    }
-
-    @Override
-    public Text src() {
-        return src;
-    }
-
-    @Override
     public int begin() {
         return target().begin();
     }
@@ -94,21 +79,11 @@ public class DexCallExpr implements DexExpr {
     }
 
     @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
     public void walkDown(Visitor visitor) {
         visitor.visit(target);
         for (DexExpr arg : args) {
             visitor.visit(arg);
         }
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     private class Parser {

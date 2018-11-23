@@ -4,16 +4,27 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexStatement;
 
-public interface DexExpr extends DexElement {
+public abstract class DexExpr extends DexElement {
 
-    void reparent(DexElement parent, DexStatement stmt);
+    protected DexStatement stmt;
 
-    int leftRank();
+    public DexExpr(Text src) {
+        super(src);
+    }
 
-    DexStatement stmt();
+    public abstract int leftRank();
+
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+    }
+
+    public final DexStatement stmt() {
+        return stmt;
+    }
 
     @Override
-    default void walkUp(Visitor visitor) {
+    public final void walkUp(DexElement.Visitor visitor) {
         if (stmt() != null) {
             visitor.visit(stmt());
         } else {
@@ -21,15 +32,15 @@ public interface DexExpr extends DexElement {
         }
     }
 
-    static DexExpr parse(String src) {
+    public static DexExpr parse(String src) {
         return parse(new Text(src), 0);
     }
 
-    static DexExpr parse(Text src) {
+    public static DexExpr parse(Text src) {
         return parse(src, 0);
     }
 
-    static DexExpr parse(Text src, int rightRank) {
+    public static DexExpr parse(Text src, int rightRank) {
         DexExpr left = parseLeft(src);
         if (!left.matched()) {
             return left;

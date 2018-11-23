@@ -6,30 +6,21 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.token.Zero2Nine;
 
-public class DexIdentifier implements DexLeafElement {
+public final class DexIdentifier extends DexLeafElement {
 
-    private final Text src;
     private Text matched;
-
-    // for walk up
-    private DexElement parent;
 
     public DexIdentifier(String src) {
         this(new Text(src));
     }
 
     public DexIdentifier(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
     public boolean matched() {
         return matched != null;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     public int begin() {
@@ -46,22 +37,12 @@ public class DexIdentifier implements DexLeafElement {
         return matched.end;
     }
 
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
-    }
-
     public DexError err() {
         return null;
     }
 
     public void reparent(DexElement parent) {
         this.parent = parent;
-    }
-
-    @Override
-    public DexElement parent() {
-        return parent;
     }
 
     private class Parser {

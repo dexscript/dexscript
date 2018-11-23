@@ -3,13 +3,13 @@ package com.dexscript.ast.core;
 import java.util.ArrayList;
 import java.util.List;
 
-public interface DexElement {
+public abstract class DexElement {
 
-    interface Visitor {
+    public interface Visitor {
         void visit(DexElement elem);
     }
 
-    class Collector implements Visitor {
+    public static class Collector implements Visitor {
 
         public final List<DexElement> collected = new ArrayList<>();
 
@@ -22,31 +22,70 @@ public interface DexElement {
         }
     }
 
-    Text src();
-    int begin();
-    int end();
-    boolean matched();
-    DexError err();
-    DexElement parent();
+    private List<Object> attachments;
+    protected DexElement parent;
+    protected Text src;
+    private String toStringCache;
 
-    void walkDown(Visitor visitor);
-    default void walkUp(Visitor visitor) {
+    public DexElement(Text src) {
+        this.src = src;
+    }
+
+    public <T> T attachmentOfType(Class<T> clazz) {
+        if (attachments == null) {
+            return null;
+        }
+        for (Object attachment : attachments) {
+            if (attachment.getClass() == clazz) {
+                return (T) attachment;
+            }
+        }
+        return null;
+    }
+
+    public <T> T attach(T attachment) {
+        if (attachments == null) {
+            attachments = new ArrayList<>();
+        }
+        attachments.add(attachment);
+        return attachment;
+    }
+
+    public final Text src() {
+        return src;
+    }
+    public abstract int begin();
+    public abstract int end();
+    public abstract boolean matched();
+    public abstract DexError err();
+
+    public final DexElement parent() {
+        return parent;
+    }
+
+    public abstract void walkDown(Visitor visitor);
+    public void walkUp(Visitor visitor) {
         visitor.visit(parent());
     }
 
-    static String describe(DexElement elem) {
-        if (!elem.matched()) {
-            return "<unmatched>" + elem.src() + "</unmatched>";
+    @Override
+    public String toString() {
+        if (toStringCache != null) {
+            return toStringCache;
         }
-        if (elem.err() == null) {
-            return new Text(elem.src().bytes, elem.begin(), elem.end()).toString();
+        if (!matched()) {
+            return "<unmatched>" + src() + "</unmatched>";
         }
-        int errorPos = elem.err().errorPos;
-        if (errorPos < elem.begin()) {
-            return "<error/>" + new Text(elem.src().bytes, elem.begin(), elem.end()).toString();
+        if (err() == null) {
+            toStringCache = new Text(src().bytes, begin(), end()).toString();
+            return toStringCache;
         }
-        String part1 = new Text(elem.src().bytes, elem.begin(), errorPos).toString();
-        String part2 = new Text(elem.src().bytes, errorPos, elem.end()).toString();
+        int errorPos = err().errorPos;
+        if (errorPos < begin()) {
+            return "<error/>" + new Text(src().bytes, begin(), end()).toString();
+        }
+        String part1 = new Text(src().bytes, begin(), errorPos).toString();
+        String part2 = new Text(src().bytes, errorPos, end()).toString();
         return part1 + "<error/>" + part2;
     }
 }

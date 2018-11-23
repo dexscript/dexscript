@@ -6,19 +6,15 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
 
-public class DexPackageClause implements DexElement {
+public final class DexPackageClause extends DexElement {
 
-    private final Text src;
     private int packageBegin = -1;
     private int packageEnd = -1;
     private DexIdentifier identifier;
     private DexError err;
 
-    // for walk up
-    private DexFile parent;
-
     public DexPackageClause(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
@@ -28,11 +24,6 @@ public class DexPackageClause implements DexElement {
 
     public DexIdentifier identifier() {
         return identifier;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     @Override
@@ -70,20 +61,10 @@ public class DexPackageClause implements DexElement {
     }
 
     @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
     public void walkDown(Visitor visitor) {
         if (identifier() != null) {
             visitor.visit(identifier());
         }
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     private class Parser {

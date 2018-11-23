@@ -7,15 +7,14 @@ import com.dexscript.ast.core.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexFile implements DexElement  {
+public final class DexFile extends DexElement  {
 
     private final String fileName;
-    private final Text src;
     private DexPackageClause packageClause;
     private List<DexRootDecl> rootDecls;
 
     public DexFile(Text src, String fileName) {
-        this.src = src;
+        super(src);
         this.fileName = fileName;
     }
 
@@ -63,11 +62,6 @@ public class DexFile implements DexElement  {
     }
 
     @Override
-    public Text src() {
-        return src;
-    }
-
-    @Override
     public int begin() {
         return src.begin;
     }
@@ -84,11 +78,6 @@ public class DexFile implements DexElement  {
 
     @Override
     public DexError err() {
-        return null;
-    }
-
-    @Override
-    public DexElement parent() {
         return null;
     }
 

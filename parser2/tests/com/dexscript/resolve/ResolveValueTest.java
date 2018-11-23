@@ -6,9 +6,7 @@ import com.dexscript.ast.stmt.DexReturnStmt;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.List;
-
-public class ResolveVarTest {
+public class ResolveValueTest {
 
     @Test
     public void resolved() {
@@ -17,7 +15,7 @@ public class ResolveVarTest {
                 "   return msg;\n" +
                 "}";
         DexReturnStmt stmt = (DexReturnStmt) new DexFunction(src).block().stmts().get(0);
-        List<Denotation> resolved = ResolveVar.__((DexReference) stmt.expr());
-        Assert.assertEquals(1, resolved.size());
+        Denotation resolved = new ResolveValue().__((DexReference) stmt.expr());
+        Assert.assertNotNull(resolved);
     }
 }

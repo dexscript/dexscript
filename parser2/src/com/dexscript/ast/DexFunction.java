@@ -6,34 +6,25 @@ import com.dexscript.ast.stmt.DexIdentifier;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
-public class DexFunction implements DexRootDecl {
+public final class DexFunction extends DexRootDecl {
 
-    private final Text src;
     private DexError err;
     private int functionBegin = -1;
     private int signatureBegin = -1;
     private DexIdentifier identifier;
     private DexFunctionBody body;
 
-    // for walk up
-    private DexFile parent;
-
     public DexFunction(String src) {
         this(new Text(src));
     }
 
     public DexFunction(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
     public boolean matched() {
         return identifier != null;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     @Override
@@ -78,17 +69,8 @@ public class DexFunction implements DexRootDecl {
     }
 
     @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
     public void walkDown(Visitor visitor) {
         visitor.visit(body());
-    }
-
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     public void reparent(DexFile parent) {
@@ -96,7 +78,7 @@ public class DexFunction implements DexRootDecl {
     }
 
     public DexFile file() {
-        return parent;
+        return (DexFile) parent();
     }
 
     private class Parser {

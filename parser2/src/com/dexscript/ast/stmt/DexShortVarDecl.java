@@ -8,29 +8,19 @@ import com.dexscript.ast.token.Keyword;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexShortVarDecl implements DexStatement {
+public class DexShortVarDecl extends DexStatement {
 
-    private final Text src;
     private List<DexIdentifier> decls;
     private DexExpr expr;
     private DexError err;
 
-    // for walk up
-    private DexElement parent;
-    private DexStatement prev;
-
     public DexShortVarDecl(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
     public DexShortVarDecl(String src) {
         this(new Text(src));
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     @Override
@@ -63,11 +53,6 @@ public class DexShortVarDecl implements DexStatement {
     }
 
     @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
     public void walkDown(Visitor visitor) {
         if (decls() != null) {
             for (DexIdentifier decl : decls()) {
@@ -77,11 +62,6 @@ public class DexShortVarDecl implements DexStatement {
         if (expr() != null) {
             visitor.visit(expr());
         }
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     public DexExpr expr() {
@@ -104,11 +84,6 @@ public class DexShortVarDecl implements DexStatement {
         if (expr() != null) {
             expr().reparent(this, this);
         }
-    }
-
-    @Override
-    public DexStatement prev() {
-        return prev;
     }
 
     private class Parser {

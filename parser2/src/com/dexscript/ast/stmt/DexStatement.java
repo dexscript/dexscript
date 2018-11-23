@@ -3,14 +3,22 @@ package com.dexscript.ast.stmt;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 
-public interface DexStatement extends DexElement {
+public abstract class DexStatement extends DexElement {
 
-    void reparent(DexElement parent, DexStatement prev);
+    protected DexStatement prev;
 
-    DexStatement prev();
+    public DexStatement(Text src) {
+        super(src);
+    }
+
+    public abstract void reparent(DexElement parent, DexStatement prev);
+
+    public final DexStatement prev() {
+        return prev;
+    }
 
     @Override
-    default void walkUp(Visitor visitor) {
+    public final void walkUp(Visitor visitor) {
         if (prev() != null) {
             visitor.visit(prev());
         } else {
@@ -18,7 +26,7 @@ public interface DexStatement extends DexElement {
         }
     }
 
-    static DexStatement parse(Text src) {
+    public static DexStatement parse(Text src) {
         DexStatement stmt = new DexReturnStmt(src);
         if (stmt.matched()) {
             return stmt;
@@ -34,7 +42,7 @@ public interface DexStatement extends DexElement {
         return new DexExprStmt(src);
     }
 
-    static DexStatement parse(String src) {
+    public static DexStatement parse(String src) {
         return parse(new Text(src));
     }
 }

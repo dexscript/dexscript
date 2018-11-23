@@ -1,21 +1,18 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.*;
-import com.dexscript.ast.stmt.DexStatement;
+import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.Expect;
+import com.dexscript.ast.core.State;
+import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 
-public class DexStringLiteral implements DexLeafExpr {
+public class DexStringLiteral extends DexLeafExpr {
 
-    private final Text src;
     private Text matched;
     private DexError err;
 
-    // for walk up
-    private DexElement parent;
-    private DexStatement stmt;
-
     public DexStringLiteral(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
@@ -24,29 +21,8 @@ public class DexStringLiteral implements DexLeafExpr {
     }
 
     @Override
-    public void reparent(DexElement parent, DexStatement stmt) {
-        this.parent = parent;
-        this.stmt = stmt;
-    }
-
-    @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
-    public DexStatement stmt() {
-        return stmt;
-    }
-
-    @Override
     public int leftRank() {
         return 0;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     @Override
@@ -67,11 +43,6 @@ public class DexStringLiteral implements DexLeafExpr {
     @Override
     public DexError err() {
         return err;
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     private class Parser {

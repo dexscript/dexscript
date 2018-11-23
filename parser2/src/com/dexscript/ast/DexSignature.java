@@ -8,9 +8,8 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexSignature implements DexElement {
+public class DexSignature extends DexElement {
 
-    private final Text src;
     private List<DexParam> params;
     private int sigBegin = -1;
     private int sigEnd = -1;
@@ -21,7 +20,7 @@ public class DexSignature implements DexElement {
     private DexElement parent;
 
     public DexSignature(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
@@ -35,11 +34,6 @@ public class DexSignature implements DexElement {
 
     public DexReference ret() {
         return ret;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     @Override
@@ -81,11 +75,6 @@ public class DexSignature implements DexElement {
     }
 
     @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
     public void walkDown(Visitor visitor) {
         if (params() != null) {
             for (DexParam param : params()) {
@@ -95,11 +84,6 @@ public class DexSignature implements DexElement {
         if (ret() != null) {
             visitor.visit(ret());
         }
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     private class Parser {

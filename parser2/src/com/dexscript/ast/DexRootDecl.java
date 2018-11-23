@@ -3,9 +3,13 @@ package com.dexscript.ast;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 
-public interface DexRootDecl extends DexElement {
+public abstract class DexRootDecl extends DexElement {
 
-    static DexRootDecl parse(Text src) {
+    public DexRootDecl(Text src) {
+        super(src);
+    }
+
+    public static DexRootDecl parse(Text src) {
         return new DexFunction(src);
     }
 }

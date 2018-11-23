@@ -1,62 +1,26 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexError;
-import com.dexscript.ast.core.Expect;
-import com.dexscript.ast.core.State;
-import com.dexscript.ast.core.Text;
-import com.dexscript.ast.stmt.DexStatement;
+import com.dexscript.ast.core.*;
 import com.dexscript.ast.token.A2Z;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Zero2Nine;
 
-public class DexReference implements DexLeafExpr {
+public class DexReference extends DexLeafExpr {
 
-    private final Text src;
     private DexError err;
     private Text matched;
-
-    // for walk up
-    private DexElement parent;
-    private DexStatement stmt;
 
     public DexReference(String src) {
         this(new Text(src));
     }
 
     public DexReference(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
-    }
-
-    @Override
-    public void reparent(DexElement parent, DexStatement stmt) {
-        this.parent = parent;
-        this.stmt = stmt;
-    }
-
-    @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
-    public DexStatement stmt() {
-        return stmt;
-    }
-
-    @Override
-    public void walkUp(Visitor visitor) {
-        visitor.visit(stmt());
     }
 
     public boolean matched() {
         return matched != null;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     public int begin() {
@@ -71,11 +35,6 @@ public class DexReference implements DexLeafExpr {
             throw new IllegalStateException();
         }
         return matched.end;
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     public DexError err() {

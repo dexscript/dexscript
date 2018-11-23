@@ -3,9 +3,6 @@ package com.dexscript.ast.expr;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static com.dexscript.ast.expr.DexBinaryOperator.left;
-import static com.dexscript.ast.expr.DexBinaryOperator.right;
-
 public class DexExprTest {
 
     @Test
@@ -45,6 +42,14 @@ public class DexExprTest {
         Assert.assertEquals("d", expr.right().toString());
         Assert.assertEquals("a/b", left(left(expr)).toString());
         Assert.assertEquals("c", right(left(expr)).toString());
+    }
+
+    private DexExpr left(DexExpr expr) {
+        return ((DexBinaryOperator) expr).left();
+    }
+
+    private DexExpr right(DexExpr expr) {
+        return ((DexBinaryOperator) expr).right();
     }
 
     @Test

@@ -5,15 +5,12 @@ import com.dexscript.ast.core.DexError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexExpr;
 
-public class DexExprStmt implements DexStatement {
+public class DexExprStmt extends DexStatement {
 
     private final DexExpr expr;
 
-    // for walk up
-    private DexElement parent;
-    private DexStatement prev;
-
     public DexExprStmt(Text src) {
+        super(src);
         expr = DexExpr.parse(src);
     }
 
@@ -22,16 +19,6 @@ public class DexExprStmt implements DexStatement {
         this.parent = parent;
         this.prev = prev;
         expr.reparent(this, this);
-    }
-
-    @Override
-    public DexStatement prev() {
-        return prev;
-    }
-
-    @Override
-    public Text src() {
-        return expr.src();
     }
 
     @Override
@@ -52,11 +39,6 @@ public class DexExprStmt implements DexStatement {
     @Override
     public DexError err() {
         return expr.err();
-    }
-
-    @Override
-    public DexElement parent() {
-        return parent;
     }
 
     @Override

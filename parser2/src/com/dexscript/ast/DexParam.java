@@ -5,17 +5,13 @@ import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.stmt.DexIdentifier;
 import com.dexscript.ast.token.Blank;
 
-public class DexParam implements DexElement {
+public final class DexParam extends DexElement {
 
-    private final Text src;
     private DexIdentifier paramName;
     private DexReference paramType;
 
-    // for walk up
-    private DexElement parent;
-
     public DexParam(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
@@ -25,11 +21,6 @@ public class DexParam implements DexElement {
 
     public DexReference paramType() {
         return paramType;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     @Override
@@ -69,11 +60,6 @@ public class DexParam implements DexElement {
     }
 
     @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
     public void walkDown(Visitor visitor) {
         if (paramName() != null) {
             visitor.visit(paramName());
@@ -81,11 +67,6 @@ public class DexParam implements DexElement {
         if (paramType() != null) {
             visitor.visit(paramType());
         }
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     private class Parser {

@@ -9,18 +9,13 @@ import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 
-public class DexParenExpr implements DexExpr {
+public final class DexParenExpr extends DexExpr {
 
-    private final Text src;
     private DexExpr body;
     private Text matched;
 
-    // for walk up
-    private DexElement parent;
-    private DexStatement stmt;
-
     public DexParenExpr(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
@@ -36,23 +31,8 @@ public class DexParenExpr implements DexExpr {
     }
 
     @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
-    public DexStatement stmt() {
-        return stmt;
-    }
-
-    @Override
     public int leftRank() {
         return 0;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     @Override
@@ -82,11 +62,6 @@ public class DexParenExpr implements DexExpr {
 
     public DexExpr body() {
         return body;
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     private class Parser {

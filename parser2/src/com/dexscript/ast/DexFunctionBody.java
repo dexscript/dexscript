@@ -5,26 +5,21 @@ import com.dexscript.ast.core.DexError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexBlock;
 
-public class DexFunctionBody implements DexElement {
+public class DexFunctionBody extends DexElement {
 
     private final Text matched;
     private DexSignature signature;
     private DexBlock block;
     private DexError err;
-    private DexFunction parent;
 
     public DexFunctionBody(Text src) {
+        super(src);
         DexFunction nextFunction = new DexFunction(src);
         if (nextFunction.matched()) {
             matched = new Text(src.bytes, src.begin, nextFunction.begin());
         } else {
             matched = src;
         }
-    }
-
-    @Override
-    public Text src() {
-        return matched;
     }
 
     @Override
@@ -48,17 +43,6 @@ public class DexFunctionBody implements DexElement {
 
     public void reparent(DexFunction parent) {
         this.parent = parent;
-        if (signature() != null) {
-            signature().reparent(this);
-        }
-        if (block() != null) {
-            block().reparent(this, null);
-        }
-    }
-
-    @Override
-    public DexElement parent() {
-        return parent;
     }
 
     @Override
@@ -71,16 +55,13 @@ public class DexFunctionBody implements DexElement {
         }
     }
 
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
-    }
-
     public DexSignature signature() {
         if (signature == null) {
             signature = new DexSignature(matched);
             if (!signature.matched()) {
                 err = new DexError(matched, matched.begin);
+            } else {
+                signature.reparent(this);
             }
         }
         return signature;
@@ -91,6 +72,8 @@ public class DexFunctionBody implements DexElement {
             block = new DexBlock(new Text(matched.bytes, signature().end(), matched.end));
             if (!block.matched()) {
                 err = new DexError(matched, signature().end());
+            } else {
+                block.reparent(this, null);
             }
         }
         return block;

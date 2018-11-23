@@ -6,20 +6,15 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
 
-public class DexReturnStmt implements DexStatement {
+public class DexReturnStmt extends DexStatement {
 
-    private final Text src;
     private int returnBegin = -1;
     private int returnEnd = -1;
     private DexExpr expr;
     private DexError err;
 
-    // for walk up
-    private DexElement parent;
-    private DexStatement prev;
-
     public DexReturnStmt(Text src) {
-        this.src = src;
+        super(src);
         new Parser();
     }
 
@@ -29,11 +24,6 @@ public class DexReturnStmt implements DexStatement {
 
     public DexExpr expr() {
         return expr;
-    }
-
-    @Override
-    public Text src() {
-        return src;
     }
 
     @Override
@@ -70,23 +60,8 @@ public class DexReturnStmt implements DexStatement {
     }
 
     @Override
-    public DexStatement prev() {
-        return prev;
-    }
-
-    @Override
-    public DexElement parent() {
-        return parent;
-    }
-
-    @Override
     public void walkDown(Visitor visitor) {
         visitor.visit(expr);
-    }
-
-    @Override
-    public String toString() {
-        return DexElement.describe(this);
     }
 
     private class Parser {

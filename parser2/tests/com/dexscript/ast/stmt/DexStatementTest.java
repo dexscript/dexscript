@@ -8,7 +8,7 @@ public class DexStatementTest {
 
     @Test
     public void expression() {
-        Assert.assertEquals("hello()", ((DexExpr)DexStatement.parse("hello()")).toString());
+        Assert.assertEquals("hello()", ((DexExprStmt)DexStatement.parse("hello()")).toString());
     }
 
     @Test
