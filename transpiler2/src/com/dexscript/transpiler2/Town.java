@@ -1,10 +1,10 @@
 package com.dexscript.transpiler2;
 
 import com.dexscript.analyze.CheckError;
-import com.dexscript.parser2.DexFile;
-import com.dexscript.parser2.DexFunction;
-import com.dexscript.parser2.DexRootDecl;
-import com.dexscript.parser2.core.Text;
+import com.dexscript.ast.DexFile;
+import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexRootDecl;
+import com.dexscript.ast.core.Text;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.Map;

@@ -1,6 +1,6 @@
 package com.dexscript.analyze;
 
-import com.dexscript.parser2.core.DexElement;
+import com.dexscript.ast.core.DexElement;
 
 public class CheckError implements DexElement.Visitor {
 

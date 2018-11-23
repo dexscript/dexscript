@@ -1,8 +1,8 @@
 package com.dexscript.transpiler2;
 
-import com.dexscript.parser2.expr.DexExpr;
-import com.dexscript.parser2.expr.DexReference;
-import com.dexscript.parser2.expr.DexStringLiteral;
+import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.DexStringLiteral;
 import com.dexscript.transpiler2.gen.Gen;
 
 public class OutExpr {

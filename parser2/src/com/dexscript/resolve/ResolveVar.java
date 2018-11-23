@@ -1,6 +1,6 @@
 package com.dexscript.resolve;
 
-import com.dexscript.parser2.expr.DexReference;
+import com.dexscript.ast.expr.DexReference;
 
 import java.util.List;
 

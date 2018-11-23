@@ -1,8 +1,8 @@
 package com.dexscript.resolve;
 
-import com.dexscript.parser2.DexFunction;
-import com.dexscript.parser2.expr.DexReference;
-import com.dexscript.parser2.stmt.DexReturnStmt;
+import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.stmt.DexReturnStmt;
 import org.junit.Assert;
 import org.junit.Test;
 

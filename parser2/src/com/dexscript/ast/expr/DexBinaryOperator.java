@@ -1,0 +1,31 @@
+package com.dexscript.ast.expr;
+
+public interface DexBinaryOperator extends DexExpr {
+
+    DexExpr left();
+
+    DexExpr right();
+
+    static DexExpr left(DexExpr expr) {
+        return ((DexBinaryOperator) expr).left();
+    }
+
+    static DexExpr right(DexExpr expr) {
+        return ((DexBinaryOperator) expr).right();
+    }
+
+    @Override
+    default void walkDown(Visitor visitor) {
+        visitor.visit(left());
+        visitor.visit(right());
+    }
+
+    static void reparentChildren(DexBinaryOperator expr) {
+        if (expr.left() != null) {
+            expr.left().reparent(expr, expr.stmt());
+        }
+        if (expr.right() != null) {
+            expr.right().reparent(expr, expr.stmt());
+        }
+    }
+}

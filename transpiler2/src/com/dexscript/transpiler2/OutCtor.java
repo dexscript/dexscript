@@ -1,8 +1,8 @@
 package com.dexscript.transpiler2;
 
-import com.dexscript.parser2.DexFunction;
-import com.dexscript.parser2.stmt.DexReturnStmt;
-import com.dexscript.parser2.stmt.DexStatement;
+import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.stmt.DexReturnStmt;
+import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.transpiler2.gen.Gen;
 import com.dexscript.transpiler2.gen.Indent;
 import com.dexscript.transpiler2.gen.Line;

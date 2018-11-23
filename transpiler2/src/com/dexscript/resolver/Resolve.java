@@ -1,6 +1,6 @@
 package com.dexscript.resolver;
 
-import com.dexscript.parser2.expr.DexReference;
+import com.dexscript.ast.expr.DexReference;
 
 public interface Resolve {
     static ResolvedSymbol __(DexReference ref) {

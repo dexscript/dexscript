@@ -1,6 +1,6 @@
 package com.dexscript.analyze;
 
-import com.dexscript.parser2.DexFunction;
+import com.dexscript.ast.DexFunction;
 import org.junit.Assert;
 import org.junit.Test;
 

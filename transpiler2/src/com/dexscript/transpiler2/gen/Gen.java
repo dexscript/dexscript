@@ -1,6 +1,6 @@
 package com.dexscript.transpiler2.gen;
 
-import com.dexscript.parser2.core.DexElement;
+import com.dexscript.ast.core.DexElement;
 
 public final class Gen {
 
