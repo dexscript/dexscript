@@ -1,6 +1,6 @@
 package com.dexscript.transpiler2;
 
-import com.dexscript.analyzer.CheckError;
+import com.dexscript.analyze.CheckError;
 import com.dexscript.parser2.DexFile;
 import com.dexscript.parser2.DexFunction;
 import com.dexscript.parser2.DexRootDecl;

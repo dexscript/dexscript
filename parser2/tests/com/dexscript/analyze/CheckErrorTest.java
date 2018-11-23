@@ -1,4 +1,4 @@
-package com.dexscript.analyzer;
+package com.dexscript.analyze;
 
 import com.dexscript.parser2.DexFunction;
 import org.junit.Assert;
