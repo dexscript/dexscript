@@ -23,4 +23,9 @@ public class DenotationTable extends HashMap<String, Denotation> {
     public DenotationTable copy() {
         return new DenotationTable(this);
     }
+
+    public DenotationTable add(Denotation denotation) {
+        put(denotation.name, denotation);
+        return this;
+    }
 }

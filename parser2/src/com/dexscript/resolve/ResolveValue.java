@@ -13,30 +13,27 @@ import java.util.List;
 
 public final class ResolveValue {
 
-    public static final DenotationTable BUILTIN_TYPES = new DenotationTable();
-
-    static {
-        BUILTIN_TYPES.put("string", Denotation.TYPE_TYPE);
-    }
-
+    public static final DenotationTable BUILTIN_VALUES = new DenotationTable();
     private final DenotationTable builtin;
+    private final ResolveType resolveType;
 
-    public ResolveValue(DenotationTable builtin) {
+    public ResolveValue(DenotationTable builtin, ResolveType resolveType) {
         this.builtin = builtin;
+        this.resolveType = resolveType;
     }
 
     public ResolveValue() {
-        this(BUILTIN_TYPES);
+        this(BUILTIN_VALUES, new ResolveType());
     }
 
-    public Denotation __(DexReference ref) {
+    public Denotation.Value __(DexReference ref) {
         List<DexElement> prevElems = new CollectPrevElements(ref).collected();
         DenotationTable parentDT = builtin;
         for (int i = prevElems.size() - 1; i >= 0; i--) {
             DexElement elem = prevElems.get(i);
             parentDT = denotationTable(elem, parentDT);
         }
-        return parentDT.get(ref.toString());
+        return (Denotation.Value) parentDT.get(ref.toString());
     }
 
     private DenotationTable denotationTable(DexElement elem, DenotationTable parentDT) {
@@ -61,9 +58,9 @@ public final class ResolveValue {
         denotationTable = function.attach(parentDT.copy());
         for (DexParam param : function.signature().params()) {
             String name = param.paramName().toString();
-            Denotation type = __(param.paramType());
+            Denotation.Type type = resolveType.__(param.paramType());
             if (type != null) {
-                denotationTable.put(name, new Denotation(name, type));
+                denotationTable.put(name, new Denotation.Value(name, type));
             }
         }
         return denotationTable;
