@@ -12,7 +12,13 @@ public class Township {
     public ResolveValue resolveValue;
 
     public Denotation.Type resolveType(DexReference ref) {
-        return resolveType.__(ref);
+        Denotation.Type type = ref.attachmentOfType(Denotation.Type.class);
+        if (type != null) {
+            return type;
+        }
+        type = resolveType.__(ref);
+        ref.attach(type);
+        return type;
     }
 
     public Denotation.Value resolveValue(DexReference ref) {

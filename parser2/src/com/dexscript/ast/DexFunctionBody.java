@@ -8,7 +8,7 @@ import com.dexscript.ast.stmt.DexBlock;
 public class DexFunctionBody extends DexElement {
 
     private final Text matched;
-    private DexSignature signature;
+    private DexSig signature;
     private DexBlock block;
     private DexError err;
 
@@ -55,9 +55,9 @@ public class DexFunctionBody extends DexElement {
         }
     }
 
-    public DexSignature signature() {
+    public DexSig signature() {
         if (signature == null) {
-            signature = new DexSignature(matched);
+            signature = new DexSig(matched);
             if (!signature.matched()) {
                 err = new DexError(matched, matched.begin);
             } else {

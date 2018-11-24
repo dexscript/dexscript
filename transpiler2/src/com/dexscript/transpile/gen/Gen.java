@@ -5,18 +5,18 @@ import com.dexscript.ast.core.DexElement;
 public final class Gen {
 
     private final StringBuilder gen = new StringBuilder();
-    private String prefix;
+    private String indention;
 
     public Gen() {
         this("");
     }
 
-    public Gen(String prefix) {
-        this.prefix = prefix;
+    public Gen(String indention) {
+        this.indention = indention;
     }
 
-    public String prefix() {
-        return prefix;
+    public String indention() {
+        return indention;
     }
 
     public Gen __(String str) {
@@ -37,16 +37,16 @@ public final class Gen {
     public Gen __(Line line) {
         gen.append(line.line);
         gen.append(System.lineSeparator());
-        gen.append(prefix);
+        gen.append(indention);
         return this;
     }
 
     public Gen __(Indent indent) {
-        String oldPrefix = prefix;
-        prefix += "  ";
+        String oldPrefix = indention;
+        indention += "  ";
         __(new Line());
         indent.op.apply();
-        prefix = oldPrefix;
+        indention = oldPrefix;
         __(new Line());
         return this;
     }

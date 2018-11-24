@@ -8,7 +8,7 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexSignature extends DexElement {
+public class DexSig extends DexElement {
 
     private List<DexParam> params;
     private int sigBegin = -1;
@@ -19,12 +19,12 @@ public class DexSignature extends DexElement {
     // for walk up
     private DexElement parent;
 
-    public DexSignature(Text src) {
+    public DexSig(Text src) {
         super(src);
         new Parser();
     }
 
-    public DexSignature(String src) {
+    public DexSig(String src) {
         this(new Text(src));
     }
 
