@@ -12,4 +12,8 @@ public abstract class DexRootDecl extends DexElement {
     public static DexRootDecl parse(Text src) {
         return new DexFunction(src);
     }
+
+    public DexFunction asFunction() {
+        return (DexFunction) this;
+    }
 }

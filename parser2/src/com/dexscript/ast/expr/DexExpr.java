@@ -113,4 +113,12 @@ public abstract class DexExpr extends DexElement {
         }
         return new DexEndExpr(src);
     }
+
+    public DexCallExpr asCall() {
+        return (DexCallExpr) this;
+    }
+
+    public DexReference asRef() {
+        return (DexReference) this;
+    }
 }

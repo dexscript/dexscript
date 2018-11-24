@@ -41,4 +41,8 @@ public abstract class DexStatement extends DexElement {
     public static DexStatement parse(String src) {
         return parse(new Text(src));
     }
+
+    public DexReturnStmt asReturn() {
+        return (DexReturnStmt) this;
+    }
 }

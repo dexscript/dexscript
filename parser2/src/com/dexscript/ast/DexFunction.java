@@ -3,8 +3,11 @@ package com.dexscript.ast;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.stmt.DexBlock;
 import com.dexscript.ast.stmt.DexIdentifier;
+import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
+
+import java.util.List;
 
 public final class DexFunction extends DexRootDecl {
 
@@ -79,6 +82,10 @@ public final class DexFunction extends DexRootDecl {
 
     public DexFile file() {
         return (DexFile) parent();
+    }
+
+    public List<DexStatement> stmts() {
+        return block().stmts();
     }
 
     private class Parser {
