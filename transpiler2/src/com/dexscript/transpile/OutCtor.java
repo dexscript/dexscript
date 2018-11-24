@@ -3,11 +3,13 @@ package com.dexscript.transpile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.stmt.DexReturnStmt;
+import com.dexscript.ast.stmt.DexShortVarDecl;
 import com.dexscript.ast.stmt.DexStatement;
-import com.dexscript.resolve.Denotation;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.stmt.OutReturnStmt;
+import com.dexscript.transpile.stmt.OutShortValDecl;
 
 public class OutCtor {
 
@@ -41,21 +43,15 @@ public class OutCtor {
         }
         for (DexStatement stmt : iFunc.block().stmts()) {
             if (stmt instanceof DexReturnStmt) {
-                genStmt((DexReturnStmt) stmt);
-                return;
+                new OutReturnStmt(this, g, (DexReturnStmt) stmt);
+                continue;
+            }
+            if (stmt instanceof DexShortVarDecl) {
+                new OutShortValDecl(this, g, (DexShortVarDecl) stmt);
+                continue;
             }
             throw new UnsupportedOperationException("not implemented");
         }
-    }
-
-    private void genStmt(DexReturnStmt returnStmt) {
-        Denotation.Type retType = town.resolveType(iFunc.sig().ret());
-        OutExpr oExpr = new OutExpr(this, g, returnStmt.expr());
-        g.__("finish(("
-        ).__(retType.javaClassName
-        ).__(')'
-        ).__(oExpr.toString()
-        ).__(new Line(");"));
     }
 
     public String className() {
@@ -71,11 +67,15 @@ public class OutCtor {
         return g.indention();
     }
 
-    public Town township() {
+    public Town town() {
         return town;
     }
 
     public OutClass oClass() {
         return oClass;
+    }
+
+    public DexFunction iFunc() {
+        return iFunc;
     }
 }

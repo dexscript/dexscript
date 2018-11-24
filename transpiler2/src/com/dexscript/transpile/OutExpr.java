@@ -2,21 +2,22 @@ package com.dexscript.transpile;
 
 import com.dexscript.ast.expr.*;
 import com.dexscript.resolve.Denotation;
+import com.dexscript.resolve.ResolveType;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 
 public class OutExpr {
 
-    private Denotation.Type RESULT_TYPE = Denotation.javaClass("Result", "Result");
     private final OutCtor oCtor;
     private final Town town;
-    private Gen val = new Gen();
     private final Gen g;
+    private final Gen val = new Gen();
+    private Denotation.Type type;
 
     public OutExpr(OutCtor oCtor, Gen g, DexExpr iExpr) {
         this.oCtor = oCtor;
         this.g = g;
-        town = oCtor.township();
+        town = oCtor.town();
         if (iExpr instanceof DexStringLiteral) {
             gen((DexStringLiteral) iExpr);
         } else if (iExpr instanceof DexReference) {
@@ -30,11 +31,14 @@ public class OutExpr {
         } else {
             throw new UnsupportedOperationException("not implemented: " + iExpr.getClass());
         }
+        if (type == null) {
+            throw new DexTranspileException("type not set after transpiled expr: " + iExpr);
+        }
     }
 
     private void gen(DexCallExpr iCallExpr) {
         Denotation.Type functionType = town.resolveFunction(iCallExpr.target().asRef());
-        OutField oField = oCtor.oClass().allocateField(iCallExpr.target(), RESULT_TYPE);
+        OutField oField = oCtor.oClass().allocateField(iCallExpr.target(), ResolveType.RESULT_TYPE);
         Boat boat = functionType.elem.attachmentOfType(Boat.class);
         g.__(oField.fieldName
         ).__(" = "
@@ -60,7 +64,7 @@ public class OutExpr {
     }
 
     private void gen(DexReference iRef) {
-        Denotation.Value dntVal = oCtor.township().resolveValue(iRef);
+        Denotation.Value dntVal = oCtor.town().resolveValue(iRef);
         OutField oField = dntVal.elem.attachmentOfType(OutField.class);
         val.__(oField.fieldName);
     }
@@ -69,10 +73,15 @@ public class OutExpr {
         val.__('"'
         ).__(iStr.src().slice(iStr.begin() + 1, iStr.end() - 1)
         ).__('"');
+        type = ResolveType.STRING_TYPE;
     }
 
     @Override
     public String toString() {
         return val.toString();
+    }
+
+    public Denotation.Type type() {
+        return type;
     }
 }

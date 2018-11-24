@@ -4,6 +4,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.stmt.DexShortVarDecl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +27,13 @@ public final class ResolveValue {
     public Denotation.Value __(DexReference ref) {
         List<DexElement> prevElems = new ArrayList<>();
         DexElement current = ref;
-        do {
+        while (true) {
             current = current.prev();
+            if (current == null) {
+                break;
+            }
             prevElems.add(current);
-        } while (current != null);
+        }
         DenotationTable parentDT = builtin;
         for (int i = prevElems.size() - 1; i >= 0; i--) {
             DexElement elem = prevElems.get(i);
@@ -39,24 +43,36 @@ public final class ResolveValue {
     }
 
     private DenotationTable denotationTable(DexElement elem, DenotationTable parentDT) {
+        DenotationTable denotationTable = elem.attachmentOfType(DenotationTable.class);
+        if (denotationTable != null) {
+            return denotationTable;
+        }
+        denotationTable = elem.attach(parentDT.copy());
         if (elem instanceof DexFunction) {
-            return denotationTable((DexFunction) elem, parentDT);
+            return fillTable((DexFunction) elem, denotationTable);
+        }
+        if (elem instanceof DexShortVarDecl) {
+            return fillTable((DexShortVarDecl)elem, denotationTable);
         }
         return parentDT;
     }
 
-    private DenotationTable denotationTable(DexFunction function, DenotationTable parentDT) {
-        DenotationTable denotationTable = function.attachmentOfType(DenotationTable.class);
-        if (denotationTable != null) {
-            return denotationTable;
-        }
-        denotationTable = function.attach(parentDT.copy());
+    private DenotationTable fillTable(DexFunction function, DenotationTable denotationTable) {
         for (DexParam param : function.sig().params()) {
             String name = param.paramName().toString();
             Denotation.Type type = resolveType.__(param.paramType());
             if (type != null) {
                 denotationTable.put(name, new Denotation.Value(name, type, param));
             }
+        }
+        return denotationTable;
+    }
+
+    private DenotationTable fillTable(DexShortVarDecl shortVarDecl, DenotationTable denotationTable) {
+        String name = shortVarDecl.decls().get(0).toString();
+        Denotation.Type type = resolveType.__(shortVarDecl.expr());
+        if (type != null) {
+            denotationTable.put(name, new Denotation.Value(name, type, shortVarDecl));
         }
         return denotationTable;
     }
