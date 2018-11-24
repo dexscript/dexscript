@@ -14,16 +14,16 @@ public class OutCtor {
     private final OutClass oClass;
     private final DexFunction iFunc;
     private final Gen g;
-    private Township township;
+    private Town town;
 
     public OutCtor(OutClass oClass, DexFunction iFunc) {
-        township = oClass.township();
+        town = oClass.township();
         this.oClass = oClass;
         this.iFunc = iFunc;
         g = new Gen(oClass.indention());
         g.__("public "
         ).__(className()
-        ).__(new OutSig(township, iFunc.sig()).toString()
+        ).__(new OutSig(town, iFunc.sig()).toString()
         ).__(" {"
         ).__(new Indent(this::genBody)
         ).__(new Line("}"));
@@ -31,7 +31,7 @@ public class OutCtor {
 
     private void genBody() {
         for (DexParam param : iFunc.sig().params()) {
-            OutField oField = oClass.allocateField(param.paramName(), township.resolveType(param.paramType()));
+            OutField oField = oClass.allocateField(param.paramName(), town.resolveType(param.paramType()));
             param.attach(oField);
             g.__("this."
             ).__(oField.fieldName
@@ -49,8 +49,8 @@ public class OutCtor {
     }
 
     private void genStmt(DexReturnStmt returnStmt) {
-        Denotation.Type retType = township.resolveType(iFunc.sig().ret());
-        OutExpr oExpr = new OutExpr(this, returnStmt.expr());
+        Denotation.Type retType = town.resolveType(iFunc.sig().ret());
+        OutExpr oExpr = new OutExpr(this, g, returnStmt.expr());
         g.__("finish(("
         ).__(retType.javaClassName
         ).__(')'
@@ -71,7 +71,11 @@ public class OutCtor {
         return g.indention();
     }
 
-    public Township township() {
-        return township;
+    public Town township() {
+        return town;
+    }
+
+    public OutClass oClass() {
+        return oClass;
     }
 }

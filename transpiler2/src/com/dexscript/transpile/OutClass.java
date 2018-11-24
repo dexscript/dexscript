@@ -9,18 +9,19 @@ import com.dexscript.transpile.gen.Line;
 
 public class OutClass {
 
-    private final Township township;
+    private final Town town;
     private final DexFunction iFunc;
     private final Gen g = new Gen();
     private final OutFields oFields = new OutFields();
 
-    public OutClass(Township township, DexFunction iFunc) {
-        this.township = township;
+    public OutClass(Town town, DexFunction iFunc) {
+        this.town = town;
         this.iFunc = iFunc;
         g.__("package "
         ).__(packageName()
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
+        g.__(new Line("import com.dexscript.runtime.gen__.*;"));
         g.__("public class "
         ).__(className()
         ).__(" extends Actor {"
@@ -29,6 +30,11 @@ public class OutClass {
             genFields();
         }));
         g.__(new Line("}"));
+    }
+
+    public static String qualifiedClassNameOf(DexFunction iFunction) {
+        String packageName = iFunction.file().packageClause().identifier().toString();
+        return packageName + "." + iFunction.identifier().toString();
     }
 
     private void genFields() {
@@ -66,7 +72,7 @@ public class OutClass {
         return g.indention();
     }
 
-    public Township township() {
-        return township;
+    public Town township() {
+        return town;
     }
 }

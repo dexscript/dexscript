@@ -8,7 +8,7 @@ public interface TranspileOne {
 
     static Result __(String src) {
         try {
-            Map<String, Class<?>> transpiled = new Town()
+            Map<String, Class<?>> transpiled = new Transpiler()
                     .addFile("hello.ds", "package abc\n" + src)
                     .transpile();
             return (Result) transpiled.get("abc.Hello").getConstructor().newInstance();
@@ -21,7 +21,7 @@ public interface TranspileOne {
 
     static Result __(String src, String arg1) {
         try {
-            Map<String, Class<?>> transpiled = new Town()
+            Map<String, Class<?>> transpiled = new Transpiler()
                     .addFile("hello.ds", "package abc\n" + src)
                     .transpile();
             return (Result) transpiled.get("abc.Hello").getConstructor(String.class).newInstance(arg1);

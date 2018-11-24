@@ -19,6 +19,15 @@ public final class Gen {
         return indention;
     }
 
+    public void indention(String indention) {
+        this.indention = indention;
+    }
+
+    public Gen __(Object obj) {
+        gen.append(obj.toString());
+        return this;
+    }
+
     public Gen __(String str) {
         gen.append(str);
         return this;

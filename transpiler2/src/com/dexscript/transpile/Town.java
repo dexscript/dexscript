@@ -1,59 +1,134 @@
 package com.dexscript.transpile;
 
-import com.dexscript.analyze.CheckError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexRootDecl;
-import com.dexscript.ast.core.Text;
+import com.dexscript.ast.expr.DexReference;
+import com.dexscript.resolve.Denotation;
+import com.dexscript.resolve.ResolveFunction;
 import com.dexscript.resolve.ResolveType;
 import com.dexscript.resolve.ResolveValue;
-import org.mdkt.compiler.InMemoryJavaCompiler;
+import com.dexscript.transpile.gen.Gen;
+import com.dexscript.transpile.gen.Indent;
+import com.dexscript.transpile.gen.Line;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+// bookkeeping of the symbols in the town
 public class Town {
 
-    public final static boolean DEBUG = true;
-    private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
-    private final Township township;
+    public static final String TOWN_CLASSNAME = "Town__";
+    public static final String TOWN_QUALIFIED_CLASSNAME = "com.dexscript.runtime.gen__." + TOWN_CLASSNAME;
+
+    private final Map<String, Boat> boats = new HashMap<>();
+    private boolean finished;
+    private final Gen g = new Gen();
+    private ResolveFunction resolveFunction;
+    private ResolveType resolveType;
+    private ResolveValue resolveValue;
 
     public Town() {
-        township = new Township();
-        township.resolveType = new ResolveType();
-        township.resolveValue = new ResolveValue();
+        resolveType = new ResolveType();
+        resolveValue = new ResolveValue();
+        resolveFunction = new ResolveFunction(resolveType);
+        g.__("package com.dexscript.runtime.gen__"
+        ).__(new Line(";"));
+        g.__(new Line("import com.dexscript.runtime.*;"));
+        g.__("public final class Town__ {");
+        g.indention("  ");
+        g.__(new Line());
     }
 
-    public Town addFile(String fileName, String src) {
-        DexFile iFile = new DexFile(new Text(src), fileName);
-        if (new CheckError(iFile).hasError()) {
-            throw new DexTranspileException();
+    public String finish() {
+        if (finished) {
+            throw new IllegalStateException();
         }
-        for (DexRootDecl iRootDecl : iFile.rootDecls()) {
-            if (iRootDecl instanceof DexFunction) {
-                OutClass oClass = new OutClass(township, (DexFunction) iRootDecl);
-                addSource(oClass.qualifiedClassName(), oClass.toString());
+        finished = true;
+        g.indention("");
+        g.__(new Line());
+        g.__(new Line("}"));
+        return g.toString();
+    }
+
+    public void define(DexFile iFile) {
+        for (DexRootDecl rootDecl : iFile.rootDecls()) {
+            if (rootDecl instanceof DexFunction) {
+                define((DexFunction) rootDecl);
             }
         }
-        return this;
     }
 
-    private void addSource(String className, String classSrc) {
-        if (DEBUG) {
-            System.out.println(">>> " + className);
-            System.out.println(classSrc);
-        }
-        try {
-            compiler.addSource(className, classSrc);
-        } catch (Exception e) {
-            throw new DexTranspileException(e);
+    private void define(DexFunction iFunction) {
+        resolveFunction.define(iFunction);
+        List<DexParam> params = iFunction.sig().params();
+        Pier pier = new Pier(iFunction.identifier().toString(), params.size());
+        Denotation.Type retType = resolveType(iFunction.sig().ret());
+        Boat boat = allocate(pier);
+        iFunction.attach(boat);
+        g.__("public static Result"
+        ).__(' '
+        ).__(boat.applyF().replace("Town__.", "")
+        ).__(new OutSig(this, iFunction.sig())
+        ).__(" {"
+        ).__(new Indent(() -> {
+            g.__("return new "
+            ).__(OutClass.qualifiedClassNameOf(iFunction)
+            ).__('(');
+            for (int i = 0; i < params.size(); i++) {
+                if (i > 0) {
+                    g.__(", ");
+                }
+                DexParam param = params.get(i);
+                g.__(param.paramName());
+            }
+            g.__(new Line(");"));
+        })).__(new Line("}"));
+    }
+
+
+    private Boat allocate(Pier pier) {
+        int i = 1;
+        while(true) {
+            String boatName = pier.name() + i;
+            Boat boat = tryAllocate(pier, boatName);
+            if (boat != null) {
+                return boat;
+            }
+            i += 1;
         }
     }
 
-    public Map<String, Class<?>> transpile() {
-        try {
-            return compiler.compileAll();
-        } catch (Exception e) {
-            throw new DexTranspileException(e);
+    private Boat tryAllocate(Pier pier, String boatName) {
+        if (boats.containsKey(boatName)) {
+            return null;
         }
+        return new Boat(pier, TOWN_CLASSNAME, boatName);
+    }
+
+    public Denotation.Type resolveFunction(DexReference ref) {
+        Denotation.Type type = resolveFunction.__(ref);
+        if (type == null) {
+            throw new DexTranspileException("failed to resolve function: " + ref);
+        }
+        return type;
+    }
+
+    public Denotation.Type resolveType(DexReference ref) {
+        Denotation.Type type = resolveType.__(ref);
+        if (type == null) {
+            throw new DexTranspileException("failed to resolve type: " + ref);
+        }
+        return type;
+    }
+
+    public Denotation.Value resolveValue(DexReference ref) {
+        Denotation.Value value = resolveValue.__(ref);
+        if (value == null) {
+            throw new DexTranspileException("failed to resolve value: " + ref);
+        }
+        return value;
     }
 }

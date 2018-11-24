@@ -8,7 +8,7 @@ public class FunctionCallTest {
     @Test
     public void defined_after_me() {
         String src = "" +
-                "function hello(): string {\n" +
+                "function Hello(): string {\n" +
                 "   return A()\n" +
                 "}\n" +
                 "function A(): string{\n" +

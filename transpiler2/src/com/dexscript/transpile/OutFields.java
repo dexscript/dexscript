@@ -29,12 +29,12 @@ public final class OutFields implements Iterable<OutField> {
     }
 
     private OutField tryAllocate(String name, DexElement iElem, Denotation.Type type) {
-        if (!fields.containsKey(name)) {
-            OutField field = new OutField(iElem, name, type);
-            fields.put(name, field);
-            return field;
+        if (fields.containsKey(name)) {
+            return null;
         }
-        return null;
+        OutField field = new OutField(iElem, name, type);
+        fields.put(name, field);
+        return field;
     }
 
     @Override

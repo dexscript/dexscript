@@ -45,6 +45,10 @@ public class ResolveFunction {
     }
 
     public Denotation.Type __(DexReference ref) {
-        return defined.get(ref.toString()).get(0);
+        List<Denotation.Type> types = defined.get(ref.toString());
+        if (types == null) {
+            return null;
+        }
+        return types.get(0);
     }
 }

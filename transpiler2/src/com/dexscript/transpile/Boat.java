@@ -12,7 +12,7 @@ public class Boat {
         this.checkF = qualifiedClassName + ".can__" + funcName;
     }
 
-    public Pier wharf() {
+    public Pier pier() {
         return pier;
     }
 
