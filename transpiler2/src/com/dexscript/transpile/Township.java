@@ -12,12 +12,10 @@ public class Township {
     public ResolveValue resolveValue;
 
     public Denotation.Type resolveType(DexReference ref) {
-        Denotation.Type type = ref.attachmentOfType(Denotation.Type.class);
-        if (type != null) {
-            return type;
+        Denotation.Type type = resolveType.__(ref);
+        if (type == null) {
+            throw new DexTranspileException("failed to resolve type: " + ref);
         }
-        type = resolveType.__(ref);
-        ref.attach(type);
         return type;
     }
 

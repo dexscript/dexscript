@@ -54,7 +54,7 @@ public class OutCtor {
         g.__("finish(("
         ).__(retType.javaClassName
         ).__(')'
-        ).__(oExpr.value()
+        ).__(oExpr.toString()
         ).__(new Line(");"));
     }
 
