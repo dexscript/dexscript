@@ -11,17 +11,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ResolveFunction {
+final class ResolveFunction {
 
     private final Map<String, List<Denotation.Type>> defined = new HashMap<>();
-    private final ResolveType resolveType;
+    private ResolveType resolveType;
 
-    public ResolveFunction(ResolveType resolveType) {
+    void setResolveType(ResolveType resolveType) {
         this.resolveType = resolveType;
-    }
-
-    public ResolveFunction() {
-        this.resolveType = new ResolveType();
     }
 
     public void define(DexFile file) {

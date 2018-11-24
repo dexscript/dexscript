@@ -9,19 +9,22 @@ import com.dexscript.ast.stmt.DexShortVarDecl;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ResolveValue {
+final class ResolveValue {
 
     public static final DenotationTable BUILTIN_VALUES = new DenotationTable();
     private final DenotationTable builtin;
-    private final ResolveType resolveType;
+    private ResolveType resolveType;
 
-    public ResolveValue(DenotationTable builtin, ResolveType resolveType) {
+    ResolveValue(DenotationTable builtin) {
         this.builtin = builtin;
-        this.resolveType = resolveType;
     }
 
-    public ResolveValue() {
-        this(BUILTIN_VALUES, new ResolveType());
+    ResolveValue() {
+        this(BUILTIN_VALUES);
+    }
+
+    void setResolveType(ResolveType resolveType) {
+        this.resolveType = resolveType;
     }
 
     public Denotation.Value __(DexReference ref) {

@@ -11,8 +11,9 @@ import com.dexscript.transpile.gen.Line;
 public class OutShortValDecl {
 
     public OutShortValDecl(OutCtor oCtor, Gen g, DexShortVarDecl iShortVarDecl) {
-        Denotation.Type exprType = new OutExpr(oCtor, g, iShortVarDecl.expr()).type();
+        Denotation.Type exprType = oCtor.town().resolveType(iShortVarDecl.expr());
         OutField oField = oCtor.oClass().allocateField(iShortVarDecl.decls().get(0), exprType);
+        iShortVarDecl.attach(oField);
         OutExpr oExpr = new OutExpr(oCtor, g, iShortVarDecl.expr());
         g.__(oField.fieldName
         ).__(" = "

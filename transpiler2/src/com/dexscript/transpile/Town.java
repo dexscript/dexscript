@@ -4,11 +4,9 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexRootDecl;
+import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
-import com.dexscript.resolve.Denotation;
-import com.dexscript.resolve.ResolveFunction;
-import com.dexscript.resolve.ResolveType;
-import com.dexscript.resolve.ResolveValue;
+import com.dexscript.resolve.*;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -26,14 +24,10 @@ public class Town {
     private final Map<String, Boat> boats = new HashMap<>();
     private boolean finished;
     private final Gen g = new Gen();
-    private ResolveFunction resolveFunction;
-    private ResolveType resolveType;
-    private ResolveValue resolveValue;
+    private Resolve resolve;
 
     public Town() {
-        resolveType = new ResolveType();
-        resolveValue = new ResolveValue();
-        resolveFunction = new ResolveFunction(resolveType);
+        resolve = new Resolve();
         g.__("package com.dexscript.runtime.gen__"
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
@@ -62,7 +56,7 @@ public class Town {
     }
 
     private void define(DexFunction iFunction) {
-        resolveFunction.define(iFunction);
+        resolve.define(iFunction);
         List<DexParam> params = iFunction.sig().params();
         Pier pier = new Pier(iFunction.identifier().toString(), params.size());
         Denotation.Type retType = resolveType(iFunction.sig().ret());
@@ -109,7 +103,7 @@ public class Town {
     }
 
     public Denotation.Type resolveFunction(DexReference ref) {
-        Denotation.Type type = resolveFunction.__(ref);
+        Denotation.Type type = resolve.resolveFunction(ref);
         if (type == null) {
             throw new DexTranspileException("failed to resolve function: " + ref);
         }
@@ -117,7 +111,7 @@ public class Town {
     }
 
     public Denotation.Type resolveType(DexReference ref) {
-        Denotation.Type type = resolveType.__(ref);
+        Denotation.Type type = resolve.resolveType(ref);
         if (type == null) {
             throw new DexTranspileException("failed to resolve type: " + ref);
         }
@@ -125,10 +119,18 @@ public class Town {
     }
 
     public Denotation.Value resolveValue(DexReference ref) {
-        Denotation.Value value = resolveValue.__(ref);
+        Denotation.Value value = resolve.resolveValue(ref);
         if (value == null) {
             throw new DexTranspileException("failed to resolve value: " + ref);
         }
         return value;
+    }
+
+    public Denotation.Type resolveType(DexExpr expr) {
+        Denotation.Type type = resolve.resolveType(expr);
+        if (type == null) {
+            throw new DexTranspileException("failed to resolve type: " + expr);
+        }
+        return type;
     }
 }
