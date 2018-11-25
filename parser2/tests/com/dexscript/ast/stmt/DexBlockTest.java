@@ -1,6 +1,5 @@
 package com.dexscript.ast.stmt;
 
-import com.dexscript.ast.core.DexElement;
 import org.junit.Assert;
 import org.junit.Test;
 

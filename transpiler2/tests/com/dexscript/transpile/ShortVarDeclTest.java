@@ -7,7 +7,7 @@ import org.junit.Test;
 public class ShortVarDeclTest {
 
     @Test
-    public void example() {
+    public void infer_type_from_string_literal() {
         String src = "" +
                 "function Hello(): string {\n" +
                 "   a := 'hello'\n" +
