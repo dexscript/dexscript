@@ -67,4 +67,14 @@ public class Denotation {
             super(name, null);
         }
     }
+
+    public static class Error extends Denotation {
+
+        public final String message;
+
+        public Error(String name, String message) {
+            super(name, null);
+            this.message = message;
+        }
+    }
 }

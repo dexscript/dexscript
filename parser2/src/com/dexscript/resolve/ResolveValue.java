@@ -27,7 +27,17 @@ final class ResolveValue {
         this.resolveType = resolveType;
     }
 
-    public Denotation.Value __(DexReference ref) {
+    public Denotation __(DexReference ref) {
+        Denotation denotation = ref.attachmentOfType(Denotation.class);
+        if (denotation != null) {
+            return denotation;
+        }
+        denotation = resolveValue(ref);
+        ref.attach(denotation);
+        return denotation;
+    }
+
+    private Denotation resolveValue(DexReference ref) {
         List<DexElement> prevElems = new ArrayList<>();
         DexElement current = ref;
         while (true) {
@@ -42,7 +52,12 @@ final class ResolveValue {
             DexElement elem = prevElems.get(i);
             parentDT = denotationTable(elem, parentDT);
         }
-        return (Denotation.Value) parentDT.get(ref.toString());
+        String refName = ref.toString();
+        Denotation denotation = parentDT.get(refName);
+        if (denotation == null) {
+            return new Denotation.Error(refName, "can not resolve " + refName + " to a definition");
+        }
+        return denotation;
     }
 
     private DenotationTable denotationTable(DexElement elem, DenotationTable parentDT) {
@@ -55,7 +70,7 @@ final class ResolveValue {
             return fillTable((DexFunction) elem, denotationTable);
         }
         if (elem instanceof DexShortVarDecl) {
-            return fillTable((DexShortVarDecl)elem, denotationTable);
+            return fillTable((DexShortVarDecl) elem, denotationTable);
         }
         return parentDT;
     }

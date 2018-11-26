@@ -3,6 +3,7 @@ package com.dexscript.resolve;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
+import org.jetbrains.annotations.NotNull;
 
 public class Resolve {
 
@@ -27,7 +28,8 @@ public class Resolve {
         return resolveType.__(ref);
     }
 
-    public Denotation.Value resolveValue(DexReference ref) {
+    @NotNull
+    public Denotation resolveValue(DexReference ref) {
         return resolveValue.__(ref);
     }
 

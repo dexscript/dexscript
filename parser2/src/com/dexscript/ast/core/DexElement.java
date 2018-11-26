@@ -36,7 +36,7 @@ public abstract class DexElement {
             return null;
         }
         for (Object attachment : attachments) {
-            if (attachment.getClass() == clazz) {
+            if (clazz.isAssignableFrom(attachment.getClass())) {
                 return (T) attachment;
             }
         }

@@ -1,6 +1,7 @@
 package com.dexscript.analyze;
 
 import com.dexscript.ast.DexFile;
+import com.dexscript.resolve.Resolve;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,7 +13,7 @@ public class CheckSemanticErrorTest {
                 "function Hello() {\n" +
                 "   return msg\n" +
                 "}";
-        CheckSemanticError result = new CheckSemanticError(new DexFile(src));
+        CheckSemanticError result = new CheckSemanticError(new Resolve(), new DexFile(src));
         Assert.assertTrue(result.hasError());
     }
 }
