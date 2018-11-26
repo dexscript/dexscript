@@ -27,17 +27,17 @@ final class ResolveValue {
         this.resolveType = resolveType;
     }
 
-    public Denotation __(DexReference ref) {
+    public Denotation resolveValue(DexReference ref) {
         Denotation denotation = ref.attachmentOfType(Denotation.class);
         if (denotation != null) {
             return denotation;
         }
-        denotation = resolveValue(ref);
+        denotation = _resolveValue(ref);
         ref.attach(denotation);
         return denotation;
     }
 
-    private Denotation resolveValue(DexReference ref) {
+    private Denotation _resolveValue(DexReference ref) {
         List<DexElement> prevElems = new ArrayList<>();
         DexElement current = ref;
         while (true) {
@@ -78,7 +78,7 @@ final class ResolveValue {
     private DenotationTable fillTable(DexFunction function, DenotationTable denotationTable) {
         for (DexParam param : function.sig().params()) {
             String name = param.paramName().toString();
-            Denotation.Type type = (Denotation.Type) resolveType.__(param.paramType());
+            Denotation.Type type = (Denotation.Type) resolveType.resolveType(param.paramType());
             if (type != null) {
                 denotationTable.put(name, new Denotation.Value(name, type, param));
             }
@@ -88,7 +88,7 @@ final class ResolveValue {
 
     private DenotationTable fillTable(DexShortVarDecl shortVarDecl, DenotationTable denotationTable) {
         String name = shortVarDecl.decls().get(0).toString();
-        Denotation.Type type = (Denotation.Type) resolveType.__(shortVarDecl.expr());
+        Denotation.Type type = (Denotation.Type) resolveType.resolveType(shortVarDecl.expr());
         if (type != null) {
             denotationTable.put(name, new Denotation.Value(name, type, shortVarDecl));
         }

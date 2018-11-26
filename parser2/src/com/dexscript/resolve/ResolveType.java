@@ -19,7 +19,7 @@ final class ResolveType {
         this.resolveFunction = resolveFunction;
     }
 
-    public Denotation __(DexReference ref) {
+    public Denotation resolveType(DexReference ref) {
         Denotation type = ref.attachmentOfType(Denotation.Type.class);
         if (type != null) {
             return type;
@@ -33,17 +33,17 @@ final class ResolveType {
         return type;
     }
 
-    public Denotation __(DexExpr expr) {
+    public Denotation resolveType(DexExpr expr) {
         Denotation denotation = expr.attachmentOfType(Denotation.class);
         if (denotation != null) {
             return denotation;
         }
-        denotation = resolveType(expr);
+        denotation = _resolveType(expr);
         expr.attach(denotation);
         return denotation;
     }
 
-    private Denotation resolveType(DexExpr expr) {
+    private Denotation _resolveType(DexExpr expr) {
         if (expr instanceof DexIntegerLiteral) {
             return BuiltinTypes.INT64_TYPE;
         }
@@ -54,14 +54,14 @@ final class ResolveType {
             return BuiltinTypes.STRING_TYPE;
         }
         if (expr instanceof DexCallExpr) {
-            Denotation typeObj = resolveFunction.__(((DexCallExpr) expr));
+            Denotation typeObj = resolveFunction.resolveFunction(((DexCallExpr) expr));
             if (typeObj instanceof Denotation.Type) {
                 return ((Denotation.Type)typeObj).ret();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
         if (expr instanceof DexAddExpr) {
-            Denotation typeObj = resolveFunction.__((DexAddExpr) expr);
+            Denotation typeObj = resolveFunction.resolveFunction((DexAddExpr) expr);
             if (typeObj instanceof Denotation.Type) {
                 return ((Denotation.Type)typeObj).ret();
             }

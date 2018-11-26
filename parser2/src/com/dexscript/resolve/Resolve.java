@@ -29,21 +29,21 @@ public class Resolve {
 
     @NotNull
     public Denotation resolveFunction(DexCallExpr callExpr) {
-        return resolveFunction.__(callExpr);
+        return resolveFunction.resolveFunction(callExpr);
     }
 
     @NotNull
     public Denotation resolveType(DexReference ref) {
-        return resolveType.__(ref);
+        return resolveType.resolveType(ref);
     }
 
     @NotNull
     public Denotation resolveValue(DexReference ref) {
-        return resolveValue.__(ref);
+        return resolveValue.resolveValue(ref);
     }
 
     @NotNull
     public Denotation resolveType(DexExpr expr) {
-        return resolveType.__(expr);
+        return resolveType.resolveType(expr);
     }
 }
