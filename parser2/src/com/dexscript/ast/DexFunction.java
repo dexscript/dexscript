@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class DexFunction extends DexRootDecl {
 
-    private DexError err;
+    private DexSyntaxError syntaxError;
     private int functionBegin = -1;
     private int signatureBegin = -1;
     private DexIdentifier identifier;
@@ -67,8 +67,8 @@ public final class DexFunction extends DexRootDecl {
         return body;
     }
 
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     @Override
@@ -156,10 +156,10 @@ public final class DexFunction extends DexRootDecl {
         }
 
         State reportError() {
-            if (err != null) {
+            if (syntaxError != null) {
                 return this::skipError;
             }
-            err = new DexError(src, i);
+            syntaxError = new DexSyntaxError(src, i);
             return this::skipError;
         }
     }

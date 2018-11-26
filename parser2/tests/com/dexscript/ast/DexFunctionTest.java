@@ -38,7 +38,7 @@ public class DexFunctionTest {
                 "}\n";
         DexFunction function = new DexFunction(src);
         Assert.assertFalse(function.matched());
-        Assert.assertEquals(15, function.err().errorPos);
+        Assert.assertEquals(15, function.syntaxError().errorPos);
     }
 
     @Test
@@ -47,8 +47,8 @@ public class DexFunctionTest {
                 " abc function hello () {\n" +
                 "}\n";
         DexFunction function = new DexFunction(src);
-        Assert.assertEquals(1, function.err().errorPos);
-        Assert.assertTrue(function.err().toString().contains("function"));
+        Assert.assertEquals(1, function.syntaxError().errorPos);
+        Assert.assertTrue(function.syntaxError().toString().contains("function"));
     }
 
     @Test

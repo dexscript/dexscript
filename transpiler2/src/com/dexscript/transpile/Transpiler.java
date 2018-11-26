@@ -1,6 +1,6 @@
 package com.dexscript.transpile;
 
-import com.dexscript.analyze.CheckError;
+import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexRootDecl;
@@ -21,7 +21,7 @@ public class Transpiler {
 
     public Transpiler addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);
-        if (new CheckError(iFile).hasError()) {
+        if (new CheckSyntaxError(iFile).hasError()) {
             throw new DexTranspileException();
         }
         town.define(iFile);

@@ -13,7 +13,7 @@ public class DexSig extends DexElement {
     private List<DexParam> params;
     private int sigBegin = -1;
     private int sigEnd = -1;
-    private DexError err;
+    private DexSyntaxError syntaxError;
     private DexReference ret;
 
     // for walk up
@@ -58,8 +58,8 @@ public class DexSig extends DexElement {
     }
 
     @Override
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public void reparent(DexElement parent) {
@@ -218,8 +218,8 @@ public class DexSig extends DexElement {
         }
 
         void reportError() {
-            if (err == null) {
-                err = new DexError(src, i);
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
             }
         }
     }

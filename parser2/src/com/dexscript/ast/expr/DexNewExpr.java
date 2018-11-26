@@ -16,7 +16,7 @@ public class DexNewExpr extends DexExpr {
     private final DexExpr target;
     private List<DexExpr> args;
     private int newExprEnd = -1;
-    private DexError err;
+    private DexSyntaxError syntaxError;
 
     public DexNewExpr(Text src, DexExpr target) {
         super(src);
@@ -70,8 +70,8 @@ public class DexNewExpr extends DexExpr {
     }
 
     @Override
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     @Override
@@ -184,8 +184,8 @@ public class DexNewExpr extends DexExpr {
         }
 
         void reportError() {
-            if (err == null) {
-                err = new DexError(src, i);
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
             }
         }
     }

@@ -1,6 +1,6 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
@@ -9,7 +9,7 @@ import com.dexscript.ast.token.Blank;
 public class DexStringLiteral extends DexLeafExpr {
 
     private Text matched;
-    private DexError err;
+    private DexSyntaxError syntaxError;
 
     public DexStringLiteral(Text src) {
         super(src);
@@ -41,8 +41,8 @@ public class DexStringLiteral extends DexLeafExpr {
     }
 
     @Override
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     private class Parser {
@@ -92,8 +92,8 @@ public class DexStringLiteral extends DexLeafExpr {
         }
 
         State reportError() {
-            if (err == null) {
-                err = new DexError(src, i);
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
             }
             return null;
         }

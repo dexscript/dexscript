@@ -11,7 +11,7 @@ public final class DexPackageClause extends DexElement {
     private int packageBegin = -1;
     private int packageEnd = -1;
     private DexIdentifier identifier;
-    private DexError err;
+    private DexSyntaxError syntaxError;
 
     public DexPackageClause(Text src) {
         super(src);
@@ -48,8 +48,8 @@ public final class DexPackageClause extends DexElement {
     }
 
     @Override
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
 
@@ -133,8 +133,8 @@ public final class DexPackageClause extends DexElement {
         }
 
         State reportError() {
-            if (err == null) {
-                err = new DexError(src, i);
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
             }
             return this::packageKeyword;
         }

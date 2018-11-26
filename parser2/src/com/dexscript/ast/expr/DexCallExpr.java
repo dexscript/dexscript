@@ -1,7 +1,7 @@
 package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
@@ -20,7 +20,7 @@ public class DexCallExpr extends DexExpr {
     private final DexExpr target;
     private List<DexExpr> args;
     private int callExprEnd = -1;
-    private DexError err;
+    private DexSyntaxError syntaxError;
 
     public DexCallExpr(Text src, DexExpr target) {
         super(src);
@@ -74,8 +74,8 @@ public class DexCallExpr extends DexExpr {
     }
 
     @Override
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     @Override
@@ -188,8 +188,8 @@ public class DexCallExpr extends DexExpr {
         }
 
         void reportError() {
-            if (err == null) {
-                err = new DexError(src, i);
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
             }
         }
     }

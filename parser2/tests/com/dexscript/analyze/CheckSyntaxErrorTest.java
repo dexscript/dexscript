@@ -4,17 +4,17 @@ import com.dexscript.ast.DexFunction;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class CheckErrorTest {
+public class CheckSyntaxErrorTest {
 
     @Test
     public void no_error() {
-        CheckError result = new CheckError(new DexFunction("function hello() {}"));
+        CheckSyntaxError result = new CheckSyntaxError(new DexFunction("function hello() {}"));
         Assert.assertFalse(result.hasError());
     }
 
     @Test
     public void has_error() {
-        CheckError result = new CheckError(new DexFunction("function hello() }"));
+        CheckSyntaxError result = new CheckSyntaxError(new DexFunction("function hello() }"));
         Assert.assertFalse(result.hasError());
     }
 }

@@ -1,7 +1,7 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexBlock;
 
@@ -10,7 +10,7 @@ public class DexFunctionBody extends DexElement {
     private final Text matched;
     private DexSig signature;
     private DexBlock block;
-    private DexError err;
+    private DexSyntaxError syntaxError;
 
     public DexFunctionBody(Text src) {
         super(src);
@@ -37,8 +37,8 @@ public class DexFunctionBody extends DexElement {
     }
 
     @Override
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public void reparent(DexFunction parent) {
@@ -59,7 +59,7 @@ public class DexFunctionBody extends DexElement {
         if (signature == null) {
             signature = new DexSig(matched);
             if (!signature.matched()) {
-                err = new DexError(matched, matched.begin);
+                syntaxError = new DexSyntaxError(matched, matched.begin);
             } else {
                 signature.reparent(this);
             }
@@ -71,7 +71,7 @@ public class DexFunctionBody extends DexElement {
         if (block == null) {
             block = new DexBlock(new Text(matched.bytes, signature().end(), matched.end));
             if (!block.matched()) {
-                err = new DexError(matched, signature().end());
+                syntaxError = new DexSyntaxError(matched, signature().end());
             } else {
                 block.reparent(this, null);
             }

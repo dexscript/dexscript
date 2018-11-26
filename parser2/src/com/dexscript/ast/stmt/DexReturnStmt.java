@@ -11,7 +11,7 @@ public class DexReturnStmt extends DexStatement {
     private int returnBegin = -1;
     private int returnEnd = -1;
     private DexExpr expr;
-    private DexError err;
+    private DexSyntaxError syntaxError;
 
     public DexReturnStmt(Text src) {
         super(src);
@@ -48,8 +48,8 @@ public class DexReturnStmt extends DexStatement {
     }
 
     @Override
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     @Override
@@ -129,8 +129,8 @@ public class DexReturnStmt extends DexStatement {
         }
 
         void reportError() {
-            if (err == null) {
-                err = new DexError(src, i);
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
             }
         }
     }

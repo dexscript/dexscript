@@ -1,7 +1,7 @@
 package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
@@ -48,11 +48,6 @@ public final class DexParenExpr extends DexExpr {
     @Override
     public boolean matched() {
         return matched != null;
-    }
-
-    @Override
-    public DexError err() {
-        return null;
     }
 
     @Override

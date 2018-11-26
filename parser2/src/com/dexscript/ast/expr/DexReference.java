@@ -7,7 +7,7 @@ import com.dexscript.ast.token.Zero2Nine;
 
 public class DexReference extends DexLeafExpr {
 
-    private DexError err;
+    private DexSyntaxError syntaxError;
     private Text matched;
 
     public DexReference(String src) {
@@ -37,8 +37,9 @@ public class DexReference extends DexLeafExpr {
         return matched.end;
     }
 
-    public DexError err() {
-        return err;
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     @Override
@@ -93,10 +94,10 @@ public class DexReference extends DexLeafExpr {
         }
 
         State reportError() {
-            if (err != null) {
+            if (syntaxError != null) {
                 return null;
             }
-            err = new DexError(src, i);
+            syntaxError = new DexSyntaxError(src, i);
             return null;
         }
     }

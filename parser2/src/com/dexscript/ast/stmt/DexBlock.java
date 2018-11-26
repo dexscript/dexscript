@@ -49,11 +49,6 @@ public class DexBlock extends DexStatement {
     }
 
     @Override
-    public DexError err() {
-        return null;
-    }
-
-    @Override
     public void walkDown(Visitor visitor) {
         if (stmts() != null) {
             for (DexStatement stmt : stmts()) {

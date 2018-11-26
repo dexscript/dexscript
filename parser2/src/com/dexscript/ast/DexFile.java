@@ -1,7 +1,7 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 
 import java.util.ArrayList;
@@ -74,11 +74,6 @@ public final class DexFile extends DexElement  {
     @Override
     public boolean matched() {
         return true;
-    }
-
-    @Override
-    public DexError err() {
-        return null;
     }
 
     @Override

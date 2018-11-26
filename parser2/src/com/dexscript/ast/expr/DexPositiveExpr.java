@@ -1,7 +1,7 @@
 package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
@@ -57,11 +57,6 @@ public class DexPositiveExpr extends DexExpr {
     @Override
     public boolean matched() {
         return right != null && right.matched();
-    }
-
-    @Override
-    public DexError err() {
-        return null;
     }
 
     @Override

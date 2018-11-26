@@ -2,13 +2,13 @@ package com.dexscript.ast.core;
 
 import java.lang.reflect.Method;
 
-public class DexError {
+public class DexSyntaxError {
 
     public final Text src;
     public final int errorPos;
     public final StackTraceElement[] frames;
 
-    public DexError(Text src, int errorPos) {
+    public DexSyntaxError(Text src, int errorPos) {
         this.src = src;
         this.errorPos = errorPos;
         frames = Thread.currentThread().getStackTrace();

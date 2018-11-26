@@ -2,17 +2,17 @@ package com.dexscript.analyze;
 
 import com.dexscript.ast.core.DexElement;
 
-public class CheckError implements DexElement.Visitor {
+public class CheckSyntaxError implements DexElement.Visitor {
 
     private boolean hasError;
 
-    public CheckError(DexElement elem) {
+    public CheckSyntaxError(DexElement elem) {
         visit(elem);
     }
 
     @Override
     public void visit(DexElement elem) {
-        if (elem.err() != null) {
+        if (elem.syntaxError() != null) {
             hasError = true;
         }
         elem.walkDown(this);

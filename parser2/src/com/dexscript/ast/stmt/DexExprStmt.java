@@ -1,7 +1,7 @@
 package com.dexscript.ast.stmt;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexExpr;
 
@@ -37,8 +37,8 @@ public class DexExprStmt extends DexStatement {
     }
 
     @Override
-    public DexError err() {
-        return expr.err();
+    public DexSyntaxError syntaxError() {
+        return expr.syntaxError();
     }
 
     @Override

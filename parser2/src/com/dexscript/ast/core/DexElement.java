@@ -57,7 +57,10 @@ public abstract class DexElement {
     public abstract int begin();
     public abstract int end();
     public abstract boolean matched();
-    public abstract DexError err();
+
+    public DexSyntaxError syntaxError() {
+        return null;
+    }
 
     public final DexElement parent() {
         return parent;
@@ -76,11 +79,11 @@ public abstract class DexElement {
         if (!matched()) {
             return "<unmatched>" + src() + "</unmatched>";
         }
-        if (err() == null) {
+        if (syntaxError() == null) {
             toStringCache = new Text(src().bytes, begin(), end()).toString();
             return toStringCache;
         }
-        int errorPos = err().errorPos;
+        int errorPos = syntaxError().errorPos;
         if (errorPos < begin()) {
             return "<error/>" + new Text(src().bytes, begin(), end()).toString();
         }

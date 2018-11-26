@@ -12,7 +12,7 @@ public class DexShortVarDecl extends DexStatement {
 
     private List<DexIdentifier> decls;
     private DexExpr expr;
-    private DexError err;
+    private DexSyntaxError syntaxError;
 
     public DexShortVarDecl(Text src) {
         super(src);
@@ -48,8 +48,8 @@ public class DexShortVarDecl extends DexStatement {
     }
 
     @Override
-    public DexError err() {
-        return err;
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     @Override

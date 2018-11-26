@@ -37,10 +37,6 @@ public final class DexIdentifier extends DexLeafElement {
         return matched.end;
     }
 
-    public DexError err() {
-        return null;
-    }
-
     public void reparent(DexElement parent) {
         this.parent = parent;
     }

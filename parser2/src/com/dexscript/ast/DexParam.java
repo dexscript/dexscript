@@ -44,11 +44,6 @@ public final class DexParam extends DexElement {
         return paramType != null && paramType.matched();
     }
 
-    @Override
-    public DexError err() {
-        return null;
-    }
-
     public void reparent(DexElement parent) {
         this.parent = parent;
         if (paramName() != null) {

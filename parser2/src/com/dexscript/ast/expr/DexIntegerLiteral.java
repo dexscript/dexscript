@@ -1,6 +1,6 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexError;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
@@ -38,11 +38,6 @@ public class DexIntegerLiteral extends DexLeafExpr {
     @Override
     public boolean matched() {
         return matched != null;
-    }
-
-    @Override
-    public DexError err() {
-        return null;
     }
 
     private class Parser {
