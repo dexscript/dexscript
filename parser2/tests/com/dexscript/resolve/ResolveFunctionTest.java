@@ -23,7 +23,7 @@ public class ResolveFunctionTest {
         DexReference ref = file.rootDecls().get(0).asFunction().stmts().get(0)
                 .asReturn().expr()
                 .asCall().target().asRef();
-        Denotation.Type type = resolveFunction.__(ref);
+        Denotation.Type type = (Denotation.Type) resolveFunction.__(ref);
         Assert.assertEquals("String", type.ret().javaClassName());
     }
 }

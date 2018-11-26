@@ -88,7 +88,7 @@ final class ResolveValue {
 
     private DenotationTable fillTable(DexShortVarDecl shortVarDecl, DenotationTable denotationTable) {
         String name = shortVarDecl.decls().get(0).toString();
-        Denotation.Type type = resolveType.__(shortVarDecl.expr());
+        Denotation.Type type = (Denotation.Type) resolveType.__(shortVarDecl.expr());
         if (type != null) {
             denotationTable.put(name, new Denotation.Value(name, type, shortVarDecl));
         }

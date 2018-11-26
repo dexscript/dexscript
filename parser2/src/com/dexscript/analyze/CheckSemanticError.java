@@ -3,6 +3,7 @@ package com.dexscript.analyze;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexSig;
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexCallExpr;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.stmt.DexReturnStmt;
@@ -37,8 +38,20 @@ public class CheckSemanticError implements DexElement.Visitor {
         }
         if (elem instanceof DexReturnStmt) {
             check((DexReturnStmt) elem);
+            return;
+        }
+        if (elem instanceof DexCallExpr) {
+            check((DexCallExpr)elem);
+            return;
         }
         elem.walkDown(this);
+    }
+
+    private void check(DexCallExpr elem) {
+        for (DexExpr arg : elem.args()) {
+            visit(arg);
+        }
+        notError(resolve.resolveFunction(elem.target().asRef()));
     }
 
     private void check(DexReturnStmt returnStmt) {
@@ -50,6 +63,7 @@ public class CheckSemanticError implements DexElement.Visitor {
             returnStmt.attach(err);
             hasError = true;
         }
+        visit(returnStmt.expr());
     }
 
     private Denotation.Type getExprType(DexExpr expr) {

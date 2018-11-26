@@ -1,12 +1,11 @@
 package com.dexscript.resolve;
 
-import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexIntegerLiteral;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.*;
 
 final class ResolveType {
 
     private final DenotationTable builtin;
+    private ResolveFunction resolveFunction;
 
     ResolveType(DenotationTable builtin) {
         this.builtin = builtin;
@@ -14,6 +13,10 @@ final class ResolveType {
 
     ResolveType() {
         this(BuiltinTypes.BUILTIN_TYPES);
+    }
+
+    public void setResolveFunction(ResolveFunction resolveFunction) {
+        this.resolveFunction = resolveFunction;
     }
 
     public Denotation __(DexReference ref) {
@@ -30,10 +33,33 @@ final class ResolveType {
         return type;
     }
 
-    public Denotation.Type __(DexExpr expr) {
+    public Denotation __(DexExpr expr) {
+        Denotation denotation = expr.attachmentOfType(Denotation.class);
+        if (denotation != null) {
+            return denotation;
+        }
+        denotation = resolveType(expr);
+        expr.attach(denotation);
+        return denotation;
+    }
+
+    private Denotation resolveType(DexExpr expr) {
         if (expr instanceof DexIntegerLiteral) {
             return BuiltinTypes.INT64_TYPE;
         }
-        return BuiltinTypes.STRING_TYPE;
+        if (expr instanceof DexFloatLiteral) {
+            return BuiltinTypes.FLOAT64_TYPE;
+        }
+        if (expr instanceof DexStringLiteral) {
+            return BuiltinTypes.STRING_TYPE;
+        }
+        if (expr instanceof DexCallExpr) {
+            Denotation typeObj = resolveFunction.__(((DexCallExpr) expr).target().asRef());
+            if (typeObj instanceof Denotation.Type) {
+                return ((Denotation.Type)typeObj).ret();
+            }
+            return BuiltinTypes.UNDEFINED_TYPE;
+        }
+        return new Denotation.Error(expr.toString(), expr, "can not evaluate expression type");
     }
 }

@@ -5,6 +5,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.expr.DexReference;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,10 +41,12 @@ final class ResolveFunction {
         types.add(Denotation.function(functionName, function, args, ret));
     }
 
-    public Denotation.Type __(DexReference ref) {
-        List<Denotation.Type> types = defined.get(ref.toString());
+    @NotNull
+    public Denotation __(DexReference ref) {
+        String refName = ref.toString();
+        List<Denotation.Type> types = defined.get(refName);
         if (types == null) {
-            return null;
+            return new Denotation.Error(refName, ref, "can not resolve " + refName + " to a function");
         }
         return types.get(0);
     }

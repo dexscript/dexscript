@@ -1,6 +1,8 @@
 package com.dexscript.resolve;
 
+import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import org.jetbrains.annotations.NotNull;
@@ -14,13 +16,23 @@ public class Resolve {
     public Resolve() {
         resolveValue.setResolveType(resolveType);
         resolveFunction.setResolveType(resolveType);
+        resolveType.setResolveFunction(resolveFunction);
+    }
+
+    public void define(DexFile file) {
+        for (DexRootDecl rootDecl : file.rootDecls()) {
+            if (rootDecl instanceof DexFunction) {
+                define((DexFunction) rootDecl);
+            }
+        }
     }
 
     public void define(DexFunction function) {
         resolveFunction.define(function);
     }
 
-    public Denotation.Type resolveFunction(DexReference ref) {
+    @NotNull
+    public Denotation resolveFunction(DexReference ref) {
         return resolveFunction.__(ref);
     }
 
