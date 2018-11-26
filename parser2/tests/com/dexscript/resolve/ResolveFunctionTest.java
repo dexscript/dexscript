@@ -1,6 +1,7 @@
 package com.dexscript.resolve;
 
 import com.dexscript.ast.DexFile;
+import com.dexscript.ast.expr.DexCallExpr;
 import com.dexscript.ast.expr.DexReference;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,12 +19,35 @@ public class ResolveFunctionTest {
                 "   return 'a'\n" +
                 "}";
         DexFile file = new DexFile(src);
-        ResolveFunction resolveFunction = new ResolveFunction();
-        resolveFunction.define(file);
-        DexReference ref = file.rootDecls().get(0).asFunction().stmts().get(0)
+        Resolve resolve = new Resolve();
+        resolve.define(file);
+        DexCallExpr callExpr = file.rootDecls().get(0).asFunction().stmts().get(0)
                 .asReturn().expr()
-                .asCall().target().asRef();
-        Denotation.Type type = (Denotation.Type) resolveFunction.__(ref);
+                .asCall();
+        Denotation.Type type = (Denotation.Type) resolve.resolveFunction(callExpr);
         Assert.assertEquals("String", type.ret().javaClassName());
+    }
+
+    @Test
+    public void simple_multi_dispatching() {
+        String src = "" +
+                "package abc\n" +
+                "function A(): int64 {\n" +
+                "   return Add(1, 1)\n" +
+                "}\n" +
+                "function Add(x: float64, y: float64): float64 {\n" +
+                "   return 0.0\n" +
+                "}\n" +
+                "function Add(x: int64, y: int64): int64 {\n" +
+                "   return 0\n" +
+                "}";
+        DexFile file = new DexFile(src);
+        Resolve resolve = new Resolve();
+        resolve.define(file);
+        DexCallExpr callExpr = file.rootDecls().get(0).asFunction().stmts().get(0)
+                .asReturn().expr()
+                .asCall();
+        Denotation.Type type = (Denotation.Type) resolve.resolveFunction(callExpr);
+        Assert.assertEquals("Long", type.ret().javaClassName());
     }
 }

@@ -5,6 +5,7 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexRootDecl;
+import com.dexscript.ast.expr.DexCallExpr;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import com.dexscript.resolve.*;
@@ -103,8 +104,8 @@ public class Town {
         return new Boat(pier, TOWN_CLASSNAME, boatName);
     }
 
-    public Denotation.Type resolveFunction(DexReference ref) {
-        return (Denotation.Type) resolve.resolveFunction(ref);
+    public Denotation.Type resolveFunction(DexCallExpr callExpr) {
+        return (Denotation.Type) resolve.resolveFunction(callExpr);
     }
 
     public Denotation.Type resolveType(DexReference ref) {

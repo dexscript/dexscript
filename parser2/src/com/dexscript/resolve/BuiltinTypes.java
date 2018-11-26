@@ -7,6 +7,7 @@ public class BuiltinTypes {
     public static final Denotation.Type FLOAT64_TYPE = Denotation.javaClass("float64", "Double");
     public static final DenotationTable BUILTIN_TYPES = new DenotationTable()
             .add(STRING_TYPE)
+            .add(FLOAT64_TYPE)
             .add(INT64_TYPE);
     public static final Denotation.Type RESULT_TYPE = Denotation.javaClass("Result", "Result");
 }

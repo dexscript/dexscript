@@ -82,7 +82,7 @@ public class Denotation {
             return name();
         }
 
-        public boolean assignableFrom(Denotation.Type that) {
+        public boolean isAssignableFrom(Denotation.Type that) {
             return this.equals(that);
         }
     }

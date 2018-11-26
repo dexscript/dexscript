@@ -5,6 +5,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.expr.DexAddExpr;
+import com.dexscript.ast.expr.DexCallExpr;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +27,7 @@ final class ResolveFunction {
     public void define(DexFile file) {
         for (DexRootDecl rootDecl : file.rootDecls()) {
             if (rootDecl instanceof DexFunction) {
-                define((DexFunction)rootDecl);
+                define((DexFunction) rootDecl);
             }
         }
     }
@@ -36,7 +37,11 @@ final class ResolveFunction {
         List<Denotation.Type> types = defined.computeIfAbsent(functionName, k -> new ArrayList<>());
         List<Denotation.Type> args = new ArrayList<>();
         for (DexParam param : function.sig().params()) {
-            Denotation.Type arg = (Denotation.Type) resolveType.__(param.paramType());
+            Denotation typeObj = resolveType.__(param.paramType());
+            if (!(typeObj instanceof Denotation.Type)) {
+                return;
+            }
+            Denotation.Type arg = (Denotation.Type) typeObj;
             args.add(arg);
         }
         Denotation.Type ret = (Denotation.Type) resolveType.__(function.sig().ret());
@@ -44,13 +49,36 @@ final class ResolveFunction {
     }
 
     @NotNull
-    public Denotation __(DexReference ref) {
+    public Denotation __(DexCallExpr callExpr) {
+        DexReference ref = callExpr.target().asRef();
         String refName = ref.toString();
-        List<Denotation.Type> types = defined.get(refName);
-        if (types == null) {
+        List<Denotation.Type> candidates = defined.get(refName);
+        if (candidates == null) {
             return new Denotation.Error(refName, ref, "can not resolve " + refName + " to a function");
         }
-        return types.get(0);
+        List<Denotation.Type> argTypes = new ArrayList<>();
+        for (DexExpr arg : callExpr.args()) {
+            argTypes.add((Denotation.Type) resolveType.__(arg));
+        }
+        for (Denotation.Type candidate : candidates) {
+            if (signatureMatch(argTypes, candidate)) {
+                return candidate;
+            }
+        }
+        return new Denotation.Error(refName, callExpr, "can not resolve " + refName + " to a function");
+    }
+
+    private boolean signatureMatch(List<Denotation.Type> argTypes, Denotation.Type candidate) {
+        if (candidate.args().size() != argTypes.size()) {
+            return false;
+        }
+        for (int i = 0; i < candidate.args().size(); i++) {
+            Denotation.Type arg = candidate.args().get(i);
+            if (!arg.isAssignableFrom(argTypes.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @NotNull

@@ -51,13 +51,13 @@ public class CheckSemanticError implements DexElement.Visitor {
         for (DexExpr arg : elem.args()) {
             visit(arg);
         }
-        notError(resolve.resolveFunction(elem.target().asRef()));
+        notError(resolve.resolveFunction(elem));
     }
 
     private void check(DexReturnStmt returnStmt) {
         Denotation.Type exprType = getExprType(returnStmt.expr());
         Denotation.Type returnType = getReturnType(returnStmt.sig());
-        if (!returnType.assignableFrom(exprType)) {
+        if (!returnType.isAssignableFrom(exprType)) {
             TypeIncompatibleError err = new TypeIncompatibleError(returnStmt, returnType, exprType);
             System.out.println(err);
             returnStmt.attach(err);

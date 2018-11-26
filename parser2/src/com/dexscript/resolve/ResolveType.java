@@ -54,7 +54,7 @@ final class ResolveType {
             return BuiltinTypes.STRING_TYPE;
         }
         if (expr instanceof DexCallExpr) {
-            Denotation typeObj = resolveFunction.__(((DexCallExpr) expr).target().asRef());
+            Denotation typeObj = resolveFunction.__(((DexCallExpr) expr));
             if (typeObj instanceof Denotation.Type) {
                 return ((Denotation.Type)typeObj).ret();
             }
