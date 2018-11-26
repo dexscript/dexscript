@@ -4,6 +4,8 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexRootDecl;
+import com.dexscript.ast.expr.DexAddExpr;
+import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +49,15 @@ final class ResolveFunction {
         List<Denotation.Type> types = defined.get(refName);
         if (types == null) {
             return new Denotation.Error(refName, ref, "can not resolve " + refName + " to a function");
+        }
+        return types.get(0);
+    }
+
+    @NotNull
+    public Denotation __(DexAddExpr addExpr) {
+        List<Denotation.Type> types = defined.get("Add__");
+        if (types == null) {
+            return new Denotation.Error("+", addExpr, "can not resolve + to a function");
         }
         return types.get(0);
     }

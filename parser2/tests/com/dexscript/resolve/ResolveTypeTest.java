@@ -34,4 +34,11 @@ public class ResolveTypeTest {
         Resolve resolve = new Resolve();
         Assert.assertEquals(BuiltinTypes.UNDEFINED_TYPE, resolve.resolveType(DexExpr.parse("ToString(100)")));
     }
+
+    @Test
+    public void evaluate_add() {
+        Resolve resolve = new Resolve();
+        resolve.define(new DexFunction("function Add__(i: int64, i: int64): int64 { return 0; }"));
+        Assert.assertEquals(BuiltinTypes.INT64_TYPE, resolve.resolveType(DexExpr.parse("1+1")));
+    }
 }

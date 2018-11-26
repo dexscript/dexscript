@@ -60,6 +60,13 @@ final class ResolveType {
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
+        if (expr instanceof DexAddExpr) {
+            Denotation typeObj = resolveFunction.__((DexAddExpr) expr);
+            if (typeObj instanceof Denotation.Type) {
+                return ((Denotation.Type)typeObj).ret();
+            }
+            return BuiltinTypes.UNDEFINED_TYPE;
+        }
         return new Denotation.Error(expr.toString(), expr, "can not evaluate expression type");
     }
 }
