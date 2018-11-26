@@ -55,7 +55,7 @@ final class ResolveValue {
         String refName = ref.toString();
         Denotation denotation = parentDT.get(refName);
         if (denotation == null) {
-            return new Denotation.Error(refName, "can not resolve " + refName + " to a definition");
+            return new Denotation.Error(refName, "can not resolve " + refName + " to a value");
         }
         return denotation;
     }
@@ -78,7 +78,7 @@ final class ResolveValue {
     private DenotationTable fillTable(DexFunction function, DenotationTable denotationTable) {
         for (DexParam param : function.sig().params()) {
             String name = param.paramName().toString();
-            Denotation.Type type = resolveType.__(param.paramType());
+            Denotation.Type type = (Denotation.Type) resolveType.__(param.paramType());
             if (type != null) {
                 denotationTable.put(name, new Denotation.Value(name, type, param));
             }

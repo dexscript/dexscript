@@ -24,7 +24,8 @@ public class Resolve {
         return resolveFunction.__(ref);
     }
 
-    public Denotation.Type resolveType(DexReference ref) {
+    @NotNull
+    public Denotation resolveType(DexReference ref) {
         return resolveType.__(ref);
     }
 

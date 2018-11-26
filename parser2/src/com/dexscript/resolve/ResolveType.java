@@ -15,15 +15,17 @@ final class ResolveType {
         this(BuiltinTypes.BUILTIN_TYPES);
     }
 
-    public Denotation.Type __(DexReference ref) {
-        Denotation.Type type = ref.attachmentOfType(Denotation.Type.class);
+    public Denotation __(DexReference ref) {
+        Denotation type = ref.attachmentOfType(Denotation.Type.class);
         if (type != null) {
             return type;
         }
-        type = (Denotation.Type) builtin.get(ref.toString());
-        if (type != null) {
-            ref.attach(type);
+        String refName = ref.toString();
+        type = builtin.get(refName);
+        if (type == null) {
+            type = new Denotation.Error(refName, "can not resolve " + refName + " to a type");
         }
+        ref.attach(type);
         return type;
     }
 

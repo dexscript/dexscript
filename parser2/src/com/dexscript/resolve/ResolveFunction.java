@@ -33,10 +33,10 @@ final class ResolveFunction {
         List<Denotation.Type> types = defined.computeIfAbsent(functionName, k -> new ArrayList<>());
         List<Denotation.Type> args = new ArrayList<>();
         for (DexParam param : function.sig().params()) {
-            Denotation.Type arg = resolveType.__(param.paramType());
+            Denotation.Type arg = (Denotation.Type) resolveType.__(param.paramType());
             args.add(arg);
         }
-        Denotation.Type ret = resolveType.__(function.sig().ret());
+        Denotation.Type ret = (Denotation.Type) resolveType.__(function.sig().ret());
         types.add(Denotation.function(functionName, function, args, ret));
     }
 
