@@ -1,5 +1,6 @@
 package com.dexscript.ast.stmt;
 
+import com.dexscript.ast.DexSig;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.token.Blank;
@@ -61,6 +62,17 @@ public class DexReturnStmt extends DexStatement {
     @Override
     public void walkDown(Visitor visitor) {
         visitor.visit(expr);
+    }
+
+    public DexSig sig() {
+        DexElement current = parent;
+        while (current != null) {
+            if (current instanceof DexSig) {
+                return (DexSig) current;
+            }
+            current = current.parent();
+        }
+        return null;
     }
 
     private class Parser {

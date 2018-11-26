@@ -4,6 +4,7 @@ import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexSig;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.stmt.DexReturnStmt;
 import com.dexscript.resolve.Denotation;
 import com.dexscript.resolve.Resolve;
 
@@ -29,26 +30,41 @@ public class CheckSemanticError implements DexElement.Visitor {
             return;
         }
         if (elem instanceof DexReference) {
-            check(resolve.resolveValue((DexReference) elem));
+            notError(resolve.resolveValue((DexReference) elem));
             return;
+        }
+        if (elem instanceof DexReturnStmt) {
+            check((DexReturnStmt)elem);
         }
         elem.walkDown(this);
     }
 
-    private void check(Denotation denotation) {
+    private void check(DexReturnStmt returnStmt) {
+        Denotation exprType = resolve.resolveType(returnStmt.expr());
+        if (!notError(exprType)) {
+            return;
+        }
+        DexSig sig = returnStmt.sig();
+        if (sig == null) {
+        }
+    }
+
+    private boolean notError(Denotation denotation) {
         if (denotation instanceof Denotation.Error) {
             Denotation.Error err = (Denotation.Error) denotation;
-            System.out.println(err.message);
+            System.out.println(err.toString());
             hasError = true;
+            return false;
         }
+        return true;
     }
 
     private void check(DexSig sig) {
         for (DexParam param : sig.params()) {
-            check(resolve.resolveType(param.paramType()));
+            notError(resolve.resolveType(param.paramType()));
         }
         if (sig.ret() != null) {
-            check(resolve.resolveType(sig.ret()));
+            notError(resolve.resolveType(sig.ret()));
         }
     }
 }

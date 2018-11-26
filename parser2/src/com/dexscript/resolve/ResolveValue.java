@@ -55,7 +55,7 @@ final class ResolveValue {
         String refName = ref.toString();
         Denotation denotation = parentDT.get(refName);
         if (denotation == null) {
-            return new Denotation.Error(refName, "can not resolve " + refName + " to a value");
+            return new Denotation.Error(refName, ref, "can not resolve " + refName + " to a value");
         }
         return denotation;
     }

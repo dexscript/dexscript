@@ -24,6 +24,6 @@ public class ResolveFunctionTest {
                 .asReturn().expr()
                 .asCall().target().asRef();
         Denotation.Type type = resolveFunction.__(ref);
-        Assert.assertEquals("String", type.ret.javaClassName);
+        Assert.assertEquals("String", type.ret().javaClassName());
     }
 }

@@ -34,7 +34,8 @@ public class Resolve {
         return resolveValue.__(ref);
     }
 
-    public Denotation.Type resolveType(DexExpr expr) {
+    @NotNull
+    public Denotation resolveType(DexExpr expr) {
         return resolveType.__(expr);
     }
 }

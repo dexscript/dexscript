@@ -25,7 +25,7 @@ public class DenotationTable extends HashMap<String, Denotation> {
     }
 
     public DenotationTable add(Denotation denotation) {
-        put(denotation.name, denotation);
+        put(denotation.name(), denotation);
         return this;
     }
 }

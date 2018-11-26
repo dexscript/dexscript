@@ -23,7 +23,7 @@ final class ResolveType {
         String refName = ref.toString();
         type = builtin.get(refName);
         if (type == null) {
-            type = new Denotation.Error(refName, "can not resolve " + refName + " to a type");
+            type = new Denotation.Error(refName, ref, "can not resolve " + refName + " to a type");
         }
         ref.attach(type);
         return type;

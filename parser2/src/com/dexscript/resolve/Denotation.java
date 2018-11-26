@@ -6,47 +6,75 @@ import java.util.List;
 
 public class Denotation {
 
-    public final String name;
-    public final Denotation type;
+    private final String name;
+    private final Denotation type;
 
     public Denotation(String name, Denotation type) {
         this.name = name;
         this.type = type;
     }
 
+    public final String name() {
+        return name;
+    }
+
+    public final Denotation type() {
+        return type;
+    }
+
     public static class Value extends Denotation {
 
-        public final DexElement elem;
+        private final DexElement referenced;
 
-        public Value(String name, Type type, DexElement elem) {
+        public Value(String name, Type type, DexElement referenced) {
             super(name, type);
-            this.elem = elem;
+            this.referenced = referenced;
             if (type == null) {
                 throw new IllegalArgumentException("must specify type for value denotation");
             }
+        }
+
+        public final DexElement referenced() {
+            return referenced;
         }
     }
 
     public static class Type extends Denotation {
 
-        public final DexElement elem;
-        public final String javaClassName;
-        public final List<Type> args;
-        public final Type ret;
+        private final DexElement referenced;
+        private final String javaClassName;
+        private final List<Type> args;
+        private final Type ret;
 
         public Type(String name, TypeKind type, String javaClassName) {
             this(name, type, javaClassName, null, null, null);
         }
 
-        public Type(String name, TypeKind type, String javaClassName, DexElement elem, List<Type> args, Type ret) {
+        public Type(String name, TypeKind type, String javaClassName, DexElement referenced, List<Type> args, Type ret) {
             super(name, type);
             this.args = args;
-            this.elem = elem;
+            this.referenced = referenced;
             this.ret = ret;
             this.javaClassName = javaClassName;
             if (type == null) {
                 throw new IllegalArgumentException("must specify kind for type denotation");
             }
+        }
+
+        public DexElement referenced() {
+            return referenced;
+        }
+
+        public String javaClassName() {
+            return javaClassName;
+        }
+
+        public List<Type> args() {
+            return args;
+        }
+
+        public Type ret() {
+            return ret;
         }
     }
 
@@ -68,13 +96,25 @@ public class Denotation {
         }
     }
 
-    public static class Error extends Denotation {
+    public static class Error extends Denotation implements DexSemanticError {
 
-        public final String message;
+        private final DexElement occurredAt;
+        private final String message;
 
-        public Error(String name, String message) {
+        public Error(String name, DexElement occurredAt, String message) {
             super(name, null);
+            this.occurredAt = occurredAt;
             this.message = message;
+        }
+
+        @Override
+        public String toString() {
+            return message;
+        }
+
+        @Override
+        public DexElement occurredAt() {
+            return occurredAt;
         }
     }
 }
