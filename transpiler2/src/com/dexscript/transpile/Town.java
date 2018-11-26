@@ -1,5 +1,6 @@
 package com.dexscript.transpile;
 
+import com.dexscript.analyze.CheckSemanticError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
@@ -116,5 +117,11 @@ public class Town {
 
     public Denotation.Type resolveType(DexExpr expr) {
         return (Denotation.Type) resolve.resolveType(expr);
+    }
+
+    public void checkSemanticError(DexFile iFile) {
+        if (new CheckSemanticError(resolve, iFile).hasError()) {
+            throw new DexTranspileException();
+        }
     }
 }
