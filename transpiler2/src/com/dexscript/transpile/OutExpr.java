@@ -35,7 +35,7 @@ public class OutExpr {
     private void gen(DexCallExpr iCallExpr) {
         Denotation.Type functionType = town.resolveFunction(iCallExpr.target().asRef());
         OutField oField = oCtor.oClass().allocateField(iCallExpr.target(), BuiltinTypes.RESULT_TYPE);
-        Boat boat = functionType.elem.attachmentOfType(Boat.class);
+        Boat boat = functionType.referenced().attachmentOfType(Boat.class);
         g.__(oField.fieldName
         ).__(" = "
         ).__(boat.applyF()
@@ -61,7 +61,7 @@ public class OutExpr {
 
     private void gen(DexReference iRef) {
         Denotation.Value dntVal = oCtor.town().resolveValue(iRef);
-        OutField oField = dntVal.elem.attachmentOfType(OutField.class);
+        OutField oField = dntVal.referenced().attachmentOfType(OutField.class);
         val.__(oField.fieldName);
     }
 

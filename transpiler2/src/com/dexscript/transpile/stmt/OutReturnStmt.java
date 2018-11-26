@@ -13,7 +13,7 @@ public class OutReturnStmt {
         Denotation.Type retType = oCtor.town().resolveType(oCtor.iFunc().sig().ret());
         OutExpr oExpr = new OutExpr(oCtor, g, returnStmt.expr());
         g.__("finish(("
-        ).__(retType.javaClassName
+        ).__(retType.javaClassName()
         ).__(')'
         ).__(oExpr
         ).__(new Line(");"));

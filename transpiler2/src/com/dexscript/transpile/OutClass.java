@@ -40,7 +40,7 @@ public class OutClass {
     private void genFields() {
         for (OutField oField : oFields) {
             g.__("private "
-            ).__(oField.fieldType.javaClassName
+            ).__(oField.fieldType.javaClassName()
             ).__(' '
             ).__(oField.fieldName
             ).__(new Line(";"));

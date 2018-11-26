@@ -17,7 +17,7 @@ public class OutSig {
             }
             DexParam param = iSig.params().get(i);
             Denotation.Type type = town.resolveType(param.paramType());
-            g.__(type.javaClassName
+            g.__(type.javaClassName()
             ).__(' '
             ).__(param.paramName().toString());
         }

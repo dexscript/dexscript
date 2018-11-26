@@ -103,34 +103,18 @@ public class Town {
     }
 
     public Denotation.Type resolveFunction(DexReference ref) {
-        Denotation.Type type = resolve.resolveFunction(ref);
-        if (type == null) {
-            throw new DexTranspileException("failed to resolve function: " + ref);
-        }
-        return type;
+        return (Denotation.Type) resolve.resolveFunction(ref);
     }
 
     public Denotation.Type resolveType(DexReference ref) {
-        Denotation.Type type = resolve.resolveType(ref);
-        if (type == null) {
-            throw new DexTranspileException("failed to resolve type: " + ref);
-        }
-        return type;
+        return (Denotation.Type) resolve.resolveType(ref);
     }
 
     public Denotation.Value resolveValue(DexReference ref) {
-        Denotation.Value value = resolve.resolveValue(ref);
-        if (value == null) {
-            throw new DexTranspileException("failed to resolve value: " + ref);
-        }
-        return value;
+        return (Denotation.Value) resolve.resolveValue(ref);
     }
 
     public Denotation.Type resolveType(DexExpr expr) {
-        Denotation.Type type = resolve.resolveType(expr);
-        if (type == null) {
-            throw new DexTranspileException("failed to resolve type: " + expr);
-        }
-        return type;
+        return (Denotation.Type) resolve.resolveType(expr);
     }
 }
