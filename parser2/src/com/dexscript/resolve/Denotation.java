@@ -76,6 +76,15 @@ public class Denotation {
         public Type ret() {
             return ret;
         }
+
+        @Override
+        public String toString() {
+            return name();
+        }
+
+        public boolean assignableFrom(Denotation.Type that) {
+            return this.equals(that);
+        }
     }
 
     public static Type javaClass(String name, String javaClassName) {

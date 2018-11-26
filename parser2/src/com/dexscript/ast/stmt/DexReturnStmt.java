@@ -1,5 +1,6 @@
 package com.dexscript.ast.stmt;
 
+import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexSig;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.expr.DexExpr;
@@ -67,8 +68,8 @@ public class DexReturnStmt extends DexStatement {
     public DexSig sig() {
         DexElement current = parent;
         while (current != null) {
-            if (current instanceof DexSig) {
-                return (DexSig) current;
+            if (current instanceof DexFunction) {
+                return ((DexFunction) current).sig();
             }
             current = current.parent();
         }

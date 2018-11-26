@@ -1,6 +1,7 @@
 package com.dexscript.resolve;
 
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexIntegerLiteral;
 import com.dexscript.ast.expr.DexReference;
 
 final class ResolveType {
@@ -30,6 +31,9 @@ final class ResolveType {
     }
 
     public Denotation.Type __(DexExpr expr) {
+        if (expr instanceof DexIntegerLiteral) {
+            return BuiltinTypes.INT64_TYPE;
+        }
         return BuiltinTypes.STRING_TYPE;
     }
 }
