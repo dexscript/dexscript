@@ -19,6 +19,11 @@ public class DexFunctionTest {
     }
 
     @Test
+    public void no_space_between_function_keyword_and_identifier() {
+        Assert.assertEquals("<unmatched>functionhello() {}</unmatched>", new DexFunction("functionhello() {}").toString());
+    }
+
+    @Test
     public void one_argument() {
         String src = "" +
                 " function hello(msg:string) {\n" +
@@ -36,9 +41,10 @@ public class DexFunctionTest {
         String src = "" +
                 "function hello ) {\n" +
                 "}\n";
-        DexFunction function = new DexFunction(src);
-        Assert.assertFalse(function.matched());
-        Assert.assertEquals(15, function.syntaxError().errorPos);
+        Assert.assertEquals("" +
+                "<unmatched>function hello ) {\n" +
+                "}\n" +
+                "</unmatched>", new DexFunction(src).toString());
     }
 
     @Test
@@ -46,9 +52,10 @@ public class DexFunctionTest {
         String src = "" +
                 " abc function hello () {\n" +
                 "}\n";
-        DexFunction function = new DexFunction(src);
-        Assert.assertEquals(1, function.syntaxError().errorPos);
-        Assert.assertTrue(function.syntaxError().toString().contains("function"));
+        Assert.assertEquals("" +
+                "<unmatched> abc function hello () {\n" +
+                "}\n" +
+                "</unmatched>", new DexFunction(src).toString());
     }
 
     @Test

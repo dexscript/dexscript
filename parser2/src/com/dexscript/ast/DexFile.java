@@ -48,9 +48,9 @@ public final class DexFile extends DexElement  {
         }
         rootDecls = new ArrayList<>();
         while (true) {
-            DexRootDecl rootDecl = DexRootDecl.parse(remaining);
-            if (rootDecl instanceof DexFunction) {
-                ((DexFunction)rootDecl).reparent(this);
+            DexRootDecl rootDecl = new DexRootDecl(remaining);
+            if (rootDecl.function() != null) {
+                rootDecl.function().reparent(this);
             }
             if (rootDecl.matched()) {
                 rootDecls.add(rootDecl);

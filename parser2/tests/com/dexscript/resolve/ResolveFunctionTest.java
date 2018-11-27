@@ -2,7 +2,6 @@ package com.dexscript.resolve;
 
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.expr.DexCallExpr;
-import com.dexscript.ast.expr.DexReference;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,7 +20,7 @@ public class ResolveFunctionTest {
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
         resolve.define(file);
-        DexCallExpr callExpr = file.rootDecls().get(0).asFunction().stmts().get(0)
+        DexCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asCall();
         Denotation.Type type = (Denotation.Type) resolve.resolveFunction(callExpr);
@@ -44,7 +43,7 @@ public class ResolveFunctionTest {
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
         resolve.define(file);
-        DexCallExpr callExpr = file.rootDecls().get(0).asFunction().stmts().get(0)
+        DexCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asCall();
         Denotation.Type type = (Denotation.Type) resolve.resolveFunction(callExpr);

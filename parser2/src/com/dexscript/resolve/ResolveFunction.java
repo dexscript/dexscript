@@ -27,8 +27,8 @@ final class ResolveFunction {
 
     public void define(DexFile file) {
         for (DexRootDecl rootDecl : file.rootDecls()) {
-            if (rootDecl instanceof DexFunction) {
-                define((DexFunction) rootDecl);
+            if (rootDecl.function() != null) {
+                define(rootDecl.function());
             }
         }
     }

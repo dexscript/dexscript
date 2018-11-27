@@ -9,9 +9,8 @@ import com.dexscript.ast.token.Keyword;
 
 import java.util.List;
 
-public final class DexFunction extends DexRootDecl {
+public final class DexFunction extends DexElement {
 
-    private DexSyntaxError syntaxError;
     private int functionBegin = -1;
     private int signatureBegin = -1;
     private DexIdentifier identifier;
@@ -27,7 +26,7 @@ public final class DexFunction extends DexRootDecl {
     }
 
     public boolean matched() {
-        return identifier != null;
+        return signatureBegin != -1;
     }
 
     @Override
@@ -68,7 +67,7 @@ public final class DexFunction extends DexRootDecl {
     }
 
     public DexSyntaxError syntaxError() {
-        return syntaxError;
+        return null;
     }
 
     @Override
@@ -94,38 +93,50 @@ public final class DexFunction extends DexRootDecl {
 
         Parser() {
             i = src.begin;
-            State.Play(this::function);
+            State.Play(this::functionKeyword);
         }
 
         @Expect("function")
-        State function() {
+        State functionKeyword() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
                     continue;
                 }
-                if (b == 'f' && Keyword.__(src, i + 1,
-                        'u', 'n', 'c', 't', 'i', 'o', 'n')) {
+                if (Keyword.__(src, i,
+                        'f', 'u', 'n', 'c', 't', 'i', 'o', 'n')) {
                     functionBegin = i;
                     i = i + 8;
-                    return this::identifier;
+                    return this::blank;
                 }
-                return reportError();
+                return null;
             }
             return null;
         }
 
-        @Expect("a~z")
-        @Expect("A~Z")
-        @Expect("0~9")
-        @Expect("_")
+        @Expect("blank")
+        State blank() {
+            int j = 0;
+            for (; i < src.end; i++, j++) {
+                if (Blank.__(src.bytes[i])) {
+                    continue;
+                }
+                break;
+            }
+            if (j > 0) {
+                return this::identifier;
+            }
+            return null;
+        }
+
+        @Expect("identifier")
         State identifier() {
             identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
             if (identifier.matched()) {
                 i = identifier.end();
                 return this::leftParen;
             }
-            return reportError();
+            return null;
         }
 
         @Expect("(")
@@ -136,31 +147,11 @@ public final class DexFunction extends DexRootDecl {
                 }
             }
             if (src.bytes[i] != '(') {
-                return reportError();
+                return null;
             }
+            // matched
             signatureBegin = i;
             return null;
-        }
-
-        @Expect("blank")
-        State skipError() {
-            functionBegin = -1;
-            identifier = null;
-            for (; i < src.end; i++) {
-                byte b = src.bytes[i];
-                if (Blank.__(b)) {
-                    return this::function;
-                }
-            }
-            return null;
-        }
-
-        State reportError() {
-            if (syntaxError != null) {
-                return this::skipError;
-            }
-            syntaxError = new DexSyntaxError(src, i);
-            return this::skipError;
         }
     }
 }
