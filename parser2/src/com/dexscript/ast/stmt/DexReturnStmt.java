@@ -1,7 +1,7 @@
 package com.dexscript.ast.stmt;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.DexSig;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.token.Blank;
@@ -52,12 +52,6 @@ public class DexReturnStmt extends DexStatement {
     @Override
     public DexSyntaxError syntaxError() {
         return syntaxError;
-    }
-
-    @Override
-    public void reparent(DexElement parent, DexStatement prev) {
-        this.parent = parent;
-        this.prev = prev;
     }
 
     @Override

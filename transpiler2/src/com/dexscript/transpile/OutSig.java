@@ -1,7 +1,7 @@
 package com.dexscript.transpile;
 
 import com.dexscript.ast.DexParam;
-import com.dexscript.ast.DexSig;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.resolve.Denotation;
 import com.dexscript.transpile.gen.Gen;
 

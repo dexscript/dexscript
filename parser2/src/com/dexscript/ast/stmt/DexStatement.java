@@ -11,7 +11,10 @@ public abstract class DexStatement extends DexElement {
         super(src);
     }
 
-    public abstract void reparent(DexElement parent, DexStatement prev);
+    public final void reparent(DexElement parent, DexStatement prev) {
+        this.parent = parent;
+        this.prev = prev;
+    }
 
     @Override
     public final DexElement prev() {

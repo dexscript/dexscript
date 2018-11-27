@@ -1,5 +1,6 @@
-package com.dexscript.ast;
+package com.dexscript.ast.elem;
 
+import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.token.Blank;
@@ -15,9 +16,6 @@ public class DexSig extends DexElement {
     private int sigEnd = -1;
     private DexSyntaxError syntaxError;
     private DexReference ret;
-
-    // for walk up
-    private DexElement parent;
 
     public DexSig(Text src) {
         super(src);

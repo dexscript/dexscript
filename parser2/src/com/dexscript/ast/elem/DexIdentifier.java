@@ -1,4 +1,4 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.elem;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.token.A2Z;

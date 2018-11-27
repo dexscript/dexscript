@@ -1,7 +1,7 @@
 package com.dexscript.analyze;
 
 import com.dexscript.ast.DexParam;
-import com.dexscript.ast.DexSig;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexCallExpr;
 import com.dexscript.ast.expr.DexExpr;

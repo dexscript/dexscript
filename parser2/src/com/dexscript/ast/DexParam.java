@@ -2,7 +2,7 @@ package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.expr.DexReference;
-import com.dexscript.ast.stmt.DexIdentifier;
+import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.token.Blank;
 
 public final class DexParam extends DexElement {

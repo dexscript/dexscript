@@ -1,7 +1,7 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
-import com.dexscript.ast.stmt.DexIdentifier;
+import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;

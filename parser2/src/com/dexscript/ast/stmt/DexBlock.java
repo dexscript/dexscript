@@ -22,12 +22,6 @@ public class DexBlock extends DexStatement {
     }
 
     @Override
-    public void reparent(DexElement parent, DexStatement prev) {
-        this.parent = parent;
-        this.prev = prev;
-    }
-
-    @Override
     public int begin() {
         if (blockBegin == -1) {
             throw new IllegalStateException();

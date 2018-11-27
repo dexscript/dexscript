@@ -1,5 +1,6 @@
-package com.dexscript.ast;
+package com.dexscript.ast.elem;
 
+import com.dexscript.ast.elem.DexSig;
 import org.junit.Assert;
 import org.junit.Test;
 

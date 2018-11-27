@@ -4,9 +4,12 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.stmt.DexIdentifier;
+import com.dexscript.ast.elem.DexIdentifier;
+import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
+
+import java.util.List;
 
 public class DexInterface extends DexElement {
 
@@ -56,6 +59,10 @@ public class DexInterface extends DexElement {
             body = new DexInterfaceBody(src.slice(bodyBegin));
         }
         return body;
+    }
+
+    public List<DexStatement> stmts() {
+        return body().stmts();
     }
 
     private class Parser {

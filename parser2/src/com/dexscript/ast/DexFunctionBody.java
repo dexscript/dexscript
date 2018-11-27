@@ -3,6 +3,7 @@ package com.dexscript.ast;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.stmt.DexBlock;
 
 public class DexFunctionBody extends DexElement {

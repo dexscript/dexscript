@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class DexInterfaceTest {
+
     @Test
     public void empty() {
         DexInterface inf = new DexInterface("interface Duck {}");
@@ -21,5 +22,16 @@ public class DexInterfaceTest {
     public void no_space_between_identifier_and_left_brace() {
         DexInterface inf = new DexInterface("interface Duck{}");
         Assert.assertEquals("interface Duck{}", inf.toString());
+    }
+
+    @Test
+    public void inf_method() {
+        String src = "" +
+                "interface Duck {\n" +
+                "   Quack(): string\n" +
+                "}";
+        DexInterface inf = new DexInterface(src);
+        Assert.assertEquals(1, inf.stmts().size());
+        Assert.assertEquals("Quack(): string", inf.stmts().get(0).toString());
     }
 }

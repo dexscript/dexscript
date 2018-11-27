@@ -4,13 +4,15 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.ast.stmt.DexStatement;
+
+import java.util.List;
 
 public class DexInterfaceBody extends DexElement {
 
     private final Text matched;
-    private DexSig signature;
-    private DexBlock block;
     private DexSyntaxError syntaxError;
+    private List<DexStatement> stmts;
 
     public DexInterfaceBody(Text src) {
         super(src);
@@ -48,5 +50,9 @@ public class DexInterfaceBody extends DexElement {
     @Override
     public void walkDown(Visitor visitor) {
 
+    }
+
+    public List<DexStatement> stmts() {
+        return stmts;
     }
 }

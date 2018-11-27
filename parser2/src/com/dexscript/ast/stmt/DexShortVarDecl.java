@@ -1,6 +1,7 @@
 package com.dexscript.ast.stmt;
 
 import com.dexscript.ast.core.*;
+import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
@@ -72,20 +73,6 @@ public class DexShortVarDecl extends DexStatement {
         return decls;
     }
 
-    @Override
-    public void reparent(DexElement parent, DexStatement prev) {
-        this.parent = parent;
-        this.prev = prev;
-        if (decls() != null) {
-            for (DexIdentifier decl : decls()) {
-                decl.reparent(this);
-            }
-        }
-        if (expr() != null) {
-            expr().reparent(this, this);
-        }
-    }
-
     private class Parser {
 
         int i = src.begin;
@@ -98,6 +85,7 @@ public class DexShortVarDecl extends DexStatement {
         State firstIdentifier() {
             DexIdentifier identifier = new DexIdentifier(src);
             if (identifier.matched()) {
+                identifier.reparent(DexShortVarDecl.this);
                 i = identifier.end();
                 decls = new ArrayList<>();
                 decls.add(identifier);
@@ -142,6 +130,7 @@ public class DexShortVarDecl extends DexStatement {
 
         State expr() {
             expr = DexExpr.parse(new Text(src.bytes, i, src.end), 0);
+            expr.reparent(DexShortVarDecl.this, DexShortVarDecl.this);
             // TODO: handle error
             return null;
         }
