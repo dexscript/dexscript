@@ -1,4 +1,4 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.func;
 
 import org.junit.Assert;
 import org.junit.Test;

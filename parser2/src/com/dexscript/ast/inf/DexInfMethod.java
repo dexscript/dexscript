@@ -3,9 +3,8 @@ package com.dexscript.ast.inf;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.ast.stmt.DexStatement;
 
-public class DexInfMethod extends DexStatement {
+public class DexInfMethod extends DexInterfaceStatement {
 
     private DexIdentifier identifier;
     private DexSig sig;

@@ -1,17 +1,17 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.func;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 
-public abstract class DexStatement extends DexElement {
+public abstract class DexFunctionStatement extends DexElement {
 
-    protected DexStatement prev;
+    protected DexFunctionStatement prev;
 
-    public DexStatement(Text src) {
+    public DexFunctionStatement(Text src) {
         super(src);
     }
 
-    public final void reparent(DexElement parent, DexStatement prev) {
+    public final void reparent(DexElement parent, DexFunctionStatement prev) {
         this.parent = parent;
         this.prev = prev;
     }
@@ -25,8 +25,8 @@ public abstract class DexStatement extends DexElement {
         }
     }
 
-    public static DexStatement parse(Text src) {
-        DexStatement stmt = new DexReturnStmt(src);
+    public static DexFunctionStatement parse(Text src) {
+        DexFunctionStatement stmt = new DexReturnStmt(src);
         if (stmt.matched()) {
             return stmt;
         }
@@ -41,7 +41,7 @@ public abstract class DexStatement extends DexElement {
         return new DexExprStmt(src);
     }
 
-    public static DexStatement parse(String src) {
+    public static DexFunctionStatement parse(String src) {
         return parse(new Text(src));
     }
 

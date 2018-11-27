@@ -1,4 +1,4 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.func;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.elem.DexSig;
@@ -8,7 +8,7 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
 
-public class DexReturnStmt extends DexStatement {
+public class DexReturnStmt extends DexFunctionStatement {
 
     private int returnBegin = -1;
     private int returnEnd = -1;

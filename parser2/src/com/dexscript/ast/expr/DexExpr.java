@@ -2,11 +2,11 @@ package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.stmt.DexStatement;
+import com.dexscript.ast.func.DexFunctionStatement;
 
 public abstract class DexExpr extends DexElement {
 
-    protected DexStatement stmt;
+    protected DexFunctionStatement stmt;
 
     public DexExpr(Text src) {
         super(src);
@@ -14,12 +14,12 @@ public abstract class DexExpr extends DexElement {
 
     public abstract int leftRank();
 
-    public void reparent(DexElement parent, DexStatement stmt) {
+    public void reparent(DexElement parent, DexFunctionStatement stmt) {
         this.parent = parent;
         this.stmt = stmt;
     }
 
-    public final DexStatement stmt() {
+    public final DexFunctionStatement stmt() {
         return stmt;
     }
 

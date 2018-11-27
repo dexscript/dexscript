@@ -1,4 +1,4 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.func;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.token.Blank;
@@ -6,11 +6,11 @@ import com.dexscript.ast.token.Blank;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexBlock extends DexStatement {
+public class DexBlock extends DexFunctionStatement {
 
     private int blockBegin = -1;
     private int blockEnd = -1;
-    private List<DexStatement> stmts;
+    private List<DexFunctionStatement> stmts;
 
     public DexBlock(String src) {
         this(new Text(src));
@@ -45,20 +45,20 @@ public class DexBlock extends DexStatement {
     @Override
     public void walkDown(Visitor visitor) {
         if (stmts() != null) {
-            for (DexStatement stmt : stmts()) {
+            for (DexFunctionStatement stmt : stmts()) {
                 visitor.visit(stmt);
             }
         }
     }
 
-    public List<DexStatement> stmts() {
+    public List<DexFunctionStatement> stmts() {
         return stmts;
     }
 
     private class Parser {
 
         int i = src.begin;
-        DexStatement thePrevOfChild = null;
+        DexFunctionStatement thePrevOfChild = null;
 
         Parser() {
             State.Play(this::leftBrace);
@@ -75,14 +75,14 @@ public class DexBlock extends DexStatement {
                     stmts = new ArrayList<>();
                     blockBegin = i;
                     i += 1;
-                    return this::statement;
+                    return this::stmtOrRightBrace;
                 }
             }
             return null;
         }
 
-        @Expect("statement")
-        State statement() {
+        @Expect("stmtOrRightBrace")
+        State stmtOrRightBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
@@ -97,13 +97,13 @@ public class DexBlock extends DexStatement {
                 }
                 break;
             }
-            DexStatement stmt = DexStatement.parse(new Text(src.bytes, i, src.end));
+            DexFunctionStatement stmt = DexFunctionStatement.parse(src.slice(i));
             stmt.reparent(DexBlock.this, thePrevOfChild);
             thePrevOfChild = stmt;
             stmts.add(stmt);
             if (stmt.matched()) {
                 i = stmt.end();
-                return this::statement;
+                return this::stmtOrRightBrace;
             }
             throw new UnsupportedOperationException("not implemented");
         }

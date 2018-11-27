@@ -4,7 +4,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.ast.func.DexBlock;
 
 public class DexFunctionBody extends DexElement {
 

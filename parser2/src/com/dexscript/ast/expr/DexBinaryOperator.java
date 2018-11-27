@@ -2,7 +2,7 @@ package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.stmt.DexStatement;
+import com.dexscript.ast.func.DexFunctionStatement;
 
 public abstract class DexBinaryOperator extends DexExpr {
 
@@ -27,7 +27,7 @@ public abstract class DexBinaryOperator extends DexExpr {
         visitor.visit(right());
     }
 
-    public final void reparent(DexElement parent, DexStatement stmt) {
+    public final void reparent(DexElement parent, DexFunctionStatement stmt) {
         super.reparent(parent, stmt);
         if (left() != null) {
             left().reparent(this, stmt);

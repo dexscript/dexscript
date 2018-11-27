@@ -4,7 +4,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexReference;
-import com.dexscript.ast.stmt.DexShortVarDecl;
+import com.dexscript.ast.func.DexShortVarDecl;
 
 import java.util.ArrayList;
 import java.util.List;

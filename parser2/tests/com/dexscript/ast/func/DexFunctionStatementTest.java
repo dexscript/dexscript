@@ -1,24 +1,23 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.func;
 
-import com.dexscript.ast.expr.DexExpr;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DexStatementTest {
+public class DexFunctionStatementTest {
 
     @Test
     public void expression() {
-        Assert.assertEquals("hello()", ((DexExprStmt)DexStatement.parse("hello()")).toString());
+        Assert.assertEquals("hello()", ((DexExprStmt) DexFunctionStatement.parse("hello()")).toString());
     }
 
     @Test
     public void short_var_decl() {
-        Assert.assertEquals("a:=b", ((DexShortVarDecl)DexStatement.parse("a:=b")).toString());
+        Assert.assertEquals("a:=b", ((DexShortVarDecl) DexFunctionStatement.parse("a:=b")).toString());
     }
 
     @Test
     public void block() {
-        Assert.assertEquals("{}", ((DexBlock)DexStatement.parse("{}")).toString());
+        Assert.assertEquals("{}", ((DexBlock) DexFunctionStatement.parse("{}")).toString());
     }
 
     @Test
@@ -28,7 +27,7 @@ public class DexStatementTest {
                 "   hello()\n" +
                 "   world()\n" +
                 "}";
-        DexBlock blk = (DexBlock) DexStatement.parse(src);
+        DexBlock blk = (DexBlock) DexFunctionStatement.parse(src);
         Assert.assertEquals(src, blk.toString());
         Assert.assertEquals(2, blk.stmts().size());
         Assert.assertEquals("hello()", blk.stmts().get(0).toString());

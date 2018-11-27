@@ -6,7 +6,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexCallExpr;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
-import com.dexscript.ast.stmt.DexReturnStmt;
+import com.dexscript.ast.func.DexReturnStmt;
 import com.dexscript.resolve.BuiltinTypes;
 import com.dexscript.resolve.Denotation;
 import com.dexscript.resolve.Resolve;

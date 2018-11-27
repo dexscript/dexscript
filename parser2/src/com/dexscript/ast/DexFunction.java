@@ -2,9 +2,9 @@ package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.elem.DexIdentifier;
-import com.dexscript.ast.stmt.DexStatement;
+import com.dexscript.ast.func.DexFunctionStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
@@ -84,7 +84,7 @@ public final class DexFunction extends DexElement {
         return (DexFile) parent();
     }
 
-    public List<DexStatement> stmts() {
+    public List<DexFunctionStatement> stmts() {
         return block().stmts();
     }
 

@@ -1,4 +1,4 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.func;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexIdentifier;
@@ -9,7 +9,7 @@ import com.dexscript.ast.token.Keyword;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexShortVarDecl extends DexStatement {
+public class DexShortVarDecl extends DexFunctionStatement {
 
     private List<DexIdentifier> decls;
     private DexExpr expr;

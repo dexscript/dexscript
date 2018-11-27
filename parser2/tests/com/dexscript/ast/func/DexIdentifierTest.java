@@ -1,4 +1,4 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.func;
 
 import com.dexscript.ast.elem.DexIdentifier;
 import org.junit.Assert;

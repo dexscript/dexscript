@@ -5,7 +5,7 @@ import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.stmt.DexStatement;
+import com.dexscript.ast.func.DexFunctionStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 
@@ -37,7 +37,7 @@ public class DexCallExpr extends DexExpr {
     }
 
     @Override
-    public void reparent(DexElement parent, DexStatement stmt) {
+    public void reparent(DexElement parent, DexFunctionStatement stmt) {
         this.parent = parent;
         this.stmt = stmt;
         if (target() != null) {

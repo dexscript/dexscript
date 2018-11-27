@@ -1,10 +1,10 @@
-package com.dexscript.ast.stmt;
+package com.dexscript.ast.func;
 
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexExpr;
 
-public class DexExprStmt extends DexStatement {
+public class DexExprStmt extends DexFunctionStatement {
 
     private final DexExpr expr;
 

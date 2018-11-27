@@ -1,6 +1,6 @@
 package com.dexscript.transpile.stmt;
 
-import com.dexscript.ast.stmt.DexShortVarDecl;
+import com.dexscript.ast.func.DexShortVarDecl;
 import com.dexscript.resolve.Denotation;
 import com.dexscript.transpile.OutCtor;
 import com.dexscript.transpile.OutExpr;
