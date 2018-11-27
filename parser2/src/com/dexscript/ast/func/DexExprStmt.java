@@ -4,7 +4,7 @@ import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexExpr;
 
-public class DexExprStmt extends DexFunctionStatement {
+public class DexExprStmt extends DexStatement {
 
     private final DexExpr expr;
 

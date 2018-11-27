@@ -6,11 +6,11 @@ import com.dexscript.ast.token.Blank;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexBlock extends DexFunctionStatement {
+public class DexBlock extends DexStatement {
 
     private int blockBegin = -1;
     private int blockEnd = -1;
-    private List<DexFunctionStatement> stmts;
+    private List<DexStatement> stmts;
 
     public DexBlock(String src) {
         this(new Text(src));
@@ -45,20 +45,20 @@ public class DexBlock extends DexFunctionStatement {
     @Override
     public void walkDown(Visitor visitor) {
         if (stmts() != null) {
-            for (DexFunctionStatement stmt : stmts()) {
+            for (DexStatement stmt : stmts()) {
                 visitor.visit(stmt);
             }
         }
     }
 
-    public List<DexFunctionStatement> stmts() {
+    public List<DexStatement> stmts() {
         return stmts;
     }
 
     private class Parser {
 
         int i = src.begin;
-        DexFunctionStatement thePrevOfChild = null;
+        DexStatement thePrevOfChild = null;
 
         Parser() {
             State.Play(this::leftBrace);
@@ -97,7 +97,7 @@ public class DexBlock extends DexFunctionStatement {
                 }
                 break;
             }
-            DexFunctionStatement stmt = DexFunctionStatement.parse(src.slice(i));
+            DexStatement stmt = DexStatement.parse(src.slice(i));
             stmt.reparent(DexBlock.this, thePrevOfChild);
             thePrevOfChild = stmt;
             stmts.add(stmt);

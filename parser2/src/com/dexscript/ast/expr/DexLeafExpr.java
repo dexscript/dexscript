@@ -2,7 +2,7 @@ package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.func.DexFunctionStatement;
+import com.dexscript.ast.func.DexStatement;
 
 public abstract class DexLeafExpr extends DexExpr {
 
@@ -15,7 +15,7 @@ public abstract class DexLeafExpr extends DexExpr {
     }
 
     @Override
-    public final void reparent(DexElement parent, DexFunctionStatement stmt) {
+    public final void reparent(DexElement parent, DexStatement stmt) {
         super.reparent(parent, stmt);
     }
 }

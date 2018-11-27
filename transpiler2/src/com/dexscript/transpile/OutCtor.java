@@ -4,7 +4,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.func.DexReturnStmt;
 import com.dexscript.ast.func.DexShortVarDecl;
-import com.dexscript.ast.func.DexFunctionStatement;
+import com.dexscript.ast.func.DexStatement;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -41,7 +41,7 @@ public class OutCtor {
             ).__(param.paramName().toString()
             ).__(new Line(";"));
         }
-        for (DexFunctionStatement stmt : iFunc.block().stmts()) {
+        for (DexStatement stmt : iFunc.block().stmts()) {
             if (stmt instanceof DexReturnStmt) {
                 new OutReturnStmt(this, g, (DexReturnStmt) stmt);
                 continue;

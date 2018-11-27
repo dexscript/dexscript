@@ -3,15 +3,15 @@ package com.dexscript.ast.func;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 
-public abstract class DexFunctionStatement extends DexElement {
+public abstract class DexStatement extends DexElement {
 
-    protected DexFunctionStatement prev;
+    protected DexStatement prev;
 
-    public DexFunctionStatement(Text src) {
+    public DexStatement(Text src) {
         super(src);
     }
 
-    public final void reparent(DexElement parent, DexFunctionStatement prev) {
+    public final void reparent(DexElement parent, DexStatement prev) {
         this.parent = parent;
         this.prev = prev;
     }
@@ -25,8 +25,8 @@ public abstract class DexFunctionStatement extends DexElement {
         }
     }
 
-    public static DexFunctionStatement parse(Text src) {
-        DexFunctionStatement stmt = new DexReturnStmt(src);
+    public static DexStatement parse(Text src) {
+        DexStatement stmt = new DexReturnStmt(src);
         if (stmt.matched()) {
             return stmt;
         }
@@ -41,7 +41,7 @@ public abstract class DexFunctionStatement extends DexElement {
         return new DexExprStmt(src);
     }
 
-    public static DexFunctionStatement parse(String src) {
+    public static DexStatement parse(String src) {
         return parse(new Text(src));
     }
 

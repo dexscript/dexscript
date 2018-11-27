@@ -8,7 +8,7 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
 
-public class DexReturnStmt extends DexFunctionStatement {
+public class DexReturnStmt extends DexStatement {
 
     private int returnBegin = -1;
     private int returnEnd = -1;

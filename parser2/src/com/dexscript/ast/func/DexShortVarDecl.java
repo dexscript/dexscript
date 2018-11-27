@@ -9,7 +9,7 @@ import com.dexscript.ast.token.Keyword;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexShortVarDecl extends DexFunctionStatement {
+public class DexShortVarDecl extends DexStatement {
 
     private List<DexIdentifier> decls;
     private DexExpr expr;

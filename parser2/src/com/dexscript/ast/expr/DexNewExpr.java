@@ -1,7 +1,7 @@
 package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.*;
-import com.dexscript.ast.func.DexFunctionStatement;
+import com.dexscript.ast.func.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 
@@ -33,7 +33,7 @@ public class DexNewExpr extends DexExpr {
     }
 
     @Override
-    public void reparent(DexElement parent, DexFunctionStatement stmt) {
+    public void reparent(DexElement parent, DexStatement stmt) {
         this.parent = parent;
         this.stmt = stmt;
         if (target() != null) {

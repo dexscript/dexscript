@@ -4,7 +4,7 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.elem.DexSig;
 
-public class DexInfMethod extends DexInterfaceStatement {
+public class DexInfMethod extends DexInfMember {
 
     private DexIdentifier identifier;
     private DexSig sig;

@@ -5,8 +5,7 @@ import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
-import com.dexscript.ast.func.DexFunctionStatement;
-import com.dexscript.ast.inf.DexInterfaceStatement;
+import com.dexscript.ast.inf.DexInfMember;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
@@ -62,8 +61,8 @@ public class DexInterface extends DexElement {
         return body;
     }
 
-    public List<DexInterfaceStatement> stmts() {
-        return body().stmts();
+    public List<DexInfMember> members() {
+        return body().members();
     }
 
     private class Parser {

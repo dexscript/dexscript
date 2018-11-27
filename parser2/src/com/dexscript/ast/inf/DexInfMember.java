@@ -3,19 +3,19 @@ package com.dexscript.ast.inf;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 
-public abstract class DexInterfaceStatement extends DexElement {
+public abstract class DexInfMember extends DexElement {
 
-    protected DexInterfaceStatement prev;
+    protected DexInfMember prev;
 
-    public DexInterfaceStatement(Text src) {
+    public DexInfMember(Text src) {
         super(src);
     }
 
-    public static DexInterfaceStatement parse(Text src) {
+    public static DexInfMember parse(Text src) {
         return new DexInfMethod(src);
     }
 
-    public final void reparent(DexElement parent, DexInterfaceStatement prev) {
+    public final void reparent(DexElement parent, DexInfMember prev) {
         this.parent = parent;
         this.prev = prev;
     }

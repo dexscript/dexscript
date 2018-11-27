@@ -31,7 +31,7 @@ public class DexInterfaceTest {
                 "   Quack(): string\n" +
                 "}";
         DexInterface inf = new DexInterface(src);
-        Assert.assertEquals(1, inf.stmts().size());
-        Assert.assertEquals("Quack(): string", inf.stmts().get(0).toString());
+        Assert.assertEquals(1, inf.members().size());
+        Assert.assertEquals("Quack(): string", inf.members().get(0).toString());
     }
 }

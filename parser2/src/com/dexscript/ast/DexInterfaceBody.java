@@ -3,7 +3,7 @@ package com.dexscript.ast;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.inf.DexInterfaceStatement;
+import com.dexscript.ast.inf.DexInfMember;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 
@@ -13,7 +13,7 @@ import java.util.List;
 public class DexInterfaceBody extends DexElement {
 
     private final Text matched;
-    private List<DexInterfaceStatement> stmts;
+    private List<DexInfMember> members;
 
     public DexInterfaceBody(Text src) {
         super(src);
@@ -45,25 +45,25 @@ public class DexInterfaceBody extends DexElement {
 
     @Override
     public void walkDown(Visitor visitor) {
-        if (stmts() != null) {
-            for (DexInterfaceStatement stmt : stmts()) {
+        if (members() != null) {
+            for (DexInfMember stmt : members()) {
                 visitor.visit(stmt);
             }
         }
     }
 
-    public List<DexInterfaceStatement> stmts() {
-        if (stmts == null) {
-            stmts = new ArrayList<>();
+    public List<DexInfMember> members() {
+        if (members == null) {
+            members = new ArrayList<>();
             new Parser();
         }
-        return stmts;
+        return members;
     }
 
     private class Parser {
 
         int i = src.begin;
-        DexInterfaceStatement thePrevOfChild = null;
+        DexInfMember thePrevOfChild = null;
 
         Parser() {
             State.Play(this::leftBrace);
@@ -98,10 +98,10 @@ public class DexInterfaceBody extends DexElement {
                 }
                 break;
             }
-            DexInterfaceStatement stmt = DexInterfaceStatement.parse(src.slice(i));
+            DexInfMember stmt = DexInfMember.parse(src.slice(i));
             stmt.reparent(DexInterfaceBody.this, thePrevOfChild);
             thePrevOfChild = stmt;
-            stmts.add(stmt);
+            members.add(stmt);
             if (stmt.matched()) {
                 i = stmt.end();
                 return this::stmtOrRightBrace;
