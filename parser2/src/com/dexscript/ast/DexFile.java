@@ -7,7 +7,7 @@ import com.dexscript.ast.core.Text;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class DexFile extends DexElement  {
+public final class DexFile extends DexElement {
 
     private final String fileName;
     private DexPackageClause packageClause;
@@ -35,6 +35,7 @@ public final class DexFile extends DexElement  {
             return packageClause;
         }
         packageClause = new DexPackageClause(src);
+        packageClause.reparent(this);
         return packageClause;
     }
 
@@ -49,9 +50,7 @@ public final class DexFile extends DexElement  {
         rootDecls = new ArrayList<>();
         while (true) {
             DexRootDecl rootDecl = new DexRootDecl(remaining);
-            if (rootDecl.function() != null) {
-                rootDecl.function().reparent(this);
-            }
+            rootDecl.reparent(this);
             if (rootDecl.matched()) {
                 rootDecls.add(rootDecl);
             } else {

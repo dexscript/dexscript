@@ -1,5 +1,6 @@
 package com.dexscript.resolve;
 
+import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,5 +52,37 @@ public class InterfaceTypeTest {
         Denotation.InterfaceType donald = (Denotation.InterfaceType) resolve.resolveType("Donald");
         Assert.assertTrue(duck.isAssignableFrom(donald));
         Assert.assertFalse(donald.isAssignableFrom(duck));
+    }
+
+    @Test
+    public void implement_interface_by_function() {
+        Resolve resolve = new Resolve();
+        resolve.declare(new DexInterface("interface Duck{ ::Quack(duck: Duck): string }"));
+        resolve.declare(new DexFunction("function Quack(i: int64): string { return 'duck'; }"));
+        Denotation.Type int64 = (Denotation.Type) resolve.resolveType("int64");
+        Denotation.Type duck = (Denotation.Type) resolve.resolveType("Duck");
+        Assert.assertTrue(duck.isAssignableFrom(int64));
+        Assert.assertFalse(int64.isAssignableFrom(duck));
+    }
+
+    @Test
+    public void implement_interface_by_another_interface() {
+        Resolve resolve = new Resolve();
+        resolve.declare(new DexInterface("interface Quackable{ ::Quack(duck: Quackable): string }"));
+        resolve.declare(new DexInterface("interface Swimable{ ::Swim(duck: Swimable): string }"));
+        resolve.declare(new DexInterface("" +
+                "interface Duck{\n" +
+                "   ::TakeTwo(duck0: Duck, duck1: Quackable, duck2: Swimable): string\n" +
+                "}"));
+        resolve.declare(new DexFunction("function Quack(i: int64): string { return 'quack' }"));
+        resolve.declare(new DexFunction("function Swim(i: int64): string { return 'swim' }"));
+        resolve.declare(new DexFunction("" +
+                "function TakeTwo(duck0: int64, duck1: Swimable, duck2: Quackable): string {\n" +
+                "   return 'duck'\n" +
+                "}"));
+        Denotation.Type int64 = (Denotation.Type) resolve.resolveType("int64");
+        Denotation.Type duck = (Denotation.Type) resolve.resolveType("Duck");
+        Assert.assertTrue(duck.isAssignableFrom(int64));
+        Assert.assertFalse(int64.isAssignableFrom(duck));
     }
 }

@@ -62,14 +62,6 @@ public class DexSig extends DexElement {
 
     public void reparent(DexElement parent) {
         this.parent = parent;
-        if (params() != null) {
-            for (DexParam param : params()) {
-                param.reparent(this);
-            }
-        }
-        if (ret() != null) {
-            ret().reparent(this, null);
-        }
     }
 
     @Override
@@ -125,6 +117,7 @@ public class DexSig extends DexElement {
             DexParam param = new DexParam(new Text(src.bytes, i, src.end));
             params.add(param);
             if (param.matched()) {
+                param.reparent(DexSig.this);
                 i = param.end();
                 return this::commaOrRightParen;
             }
@@ -207,6 +200,7 @@ public class DexSig extends DexElement {
         State ret() {
             ret = new DexReference(new Text(src.bytes, i, src.end));
             if (ret.matched()) {
+                ret.reparent(DexSig.this, null);
                 sigEnd = ret.end();
             } else {
                 reportError();

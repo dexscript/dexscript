@@ -1,6 +1,5 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 

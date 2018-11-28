@@ -43,7 +43,7 @@ public class DexInterfaceBody extends DexElement {
         return syntaxError;
     }
 
-    public void reparent(DexFunction parent) {
+    public void reparent(DexInterface parent) {
         this.parent = parent;
     }
 

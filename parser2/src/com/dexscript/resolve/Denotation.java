@@ -237,7 +237,7 @@ public class Denotation {
 
         @Override
         public String toString() {
-            return message;
+            return message + " @ " + occurredAt.parent();
         }
 
         @Override

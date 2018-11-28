@@ -58,6 +58,15 @@ public class DexRootDecl extends DexElement {
         return null;
     }
 
+    public void reparent(DexFile parent) {
+        this.parent = parent;
+        if (function() != null) {
+            function().reparent(parent);
+        } else if (inf() != null) {
+            inf().reparent(parent);
+        }
+    }
+
     private class Parser {
 
         int i = src.begin;

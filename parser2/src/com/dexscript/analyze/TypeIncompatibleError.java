@@ -31,6 +31,6 @@ public class TypeIncompatibleError implements DexSemanticError {
 
     @Override
     public String toString() {
-        return "can not assign " + actualType + " to " + expectedType;
+        return "can not assign " + actualType + " to " + expectedType + " @ " + occurredAt.parent();
     }
 }

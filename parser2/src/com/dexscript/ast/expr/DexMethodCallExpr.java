@@ -1,8 +1,10 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.func.DexStatement;
 import com.dexscript.ast.token.Blank;
 
 import java.util.List;
@@ -62,6 +64,25 @@ public class DexMethodCallExpr extends DexExpr {
             visitor.visit(arg);
         }
     }
+
+
+    @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+        if (obj() != null) {
+            obj().reparent(this, stmt);
+        }
+        if (method() != null) {
+            method().reparent(this, stmt);
+        }
+        if (args() != null) {
+            for (DexExpr arg : args()) {
+                arg.reparent(this, stmt);
+            }
+        }
+    }
+
 
     private class Parser {
 

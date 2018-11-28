@@ -57,12 +57,17 @@ public class DexInterface extends DexElement {
         }
         if (body == null) {
             body = new DexInterfaceBody(src.slice(bodyBegin));
+            body.reparent(this);
         }
         return body;
     }
 
     public List<DexInfMember> members() {
         return body().members();
+    }
+
+    public void reparent(DexFile parent) {
+        this.parent = parent;
     }
 
     private class Parser {
