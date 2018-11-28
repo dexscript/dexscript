@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class FunctionCallTest {
+
     @Test
     public void defined_after_me() {
         String src = "" +
