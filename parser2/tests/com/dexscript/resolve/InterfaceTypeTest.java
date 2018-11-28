@@ -45,7 +45,7 @@ public class InterfaceTypeTest {
         resolve.define(new DexInterface("" +
                 "interface Donald {\n" +
                 "  ::Quack(duck: Donald): string\n" +
-                "  ::IAmDonald(duck: Donald): string\n" +
+                "  ::IAmDonald(duck: Duck): string\n" +
                 "}"));
         Denotation.InterfaceType duck = (Denotation.InterfaceType) resolve.resolveType("Duck");
         Denotation.InterfaceType donald = (Denotation.InterfaceType) resolve.resolveType("Donald");

@@ -1,12 +1,12 @@
 package com.dexscript.resolve;
 
-import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.*;
 
 final class ResolveType {
 
     private final DenotationTable defined;
     private ResolveFunction resolveFunction;
+    private ResolveValue resolveValue;
 
     ResolveType(DenotationTable builtin) {
         this.defined = builtin;
@@ -20,6 +20,7 @@ final class ResolveType {
         this.resolveFunction = resolveFunction;
     }
 
+    public void setResolveValue(ResolveValue resolveValue) { this.resolveValue = resolveValue; }
 
     public void define(Denotation.InterfaceType inf) {
         defined.put(inf.name(), inf);
@@ -70,6 +71,14 @@ final class ResolveType {
             Denotation typeObj = resolveFunction.resolveFunction((DexAddExpr) expr);
             if (typeObj instanceof Denotation.FunctionType) {
                 return ((Denotation.FunctionType)typeObj).ret();
+            }
+            return BuiltinTypes.UNDEFINED_TYPE;
+        }
+        if (expr instanceof DexReference) {
+            Denotation refObj = resolveValue.resolveValue(((DexReference) expr));
+            if (refObj instanceof Denotation.Value) {
+                Denotation.Value ref = (Denotation.Value) refObj;
+                return ref.type();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }

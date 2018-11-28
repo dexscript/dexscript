@@ -52,8 +52,8 @@ public class Transpiler {
         for (DexFile iFile : iFiles) {
             town.checkSemanticError(iFile);
             for (DexRootDecl iRootDecl : iFile.rootDecls()) {
-                if (iRootDecl instanceof DexFunction) {
-                    OutClass oClass = new OutClass(town, (DexFunction) iRootDecl);
+                if (iRootDecl.function() != null) {
+                    OutClass oClass = new OutClass(town, iRootDecl.function());
                     addSource(oClass.qualifiedClassName(), oClass.toString());
                 }
             }

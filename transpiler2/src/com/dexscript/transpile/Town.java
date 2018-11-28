@@ -51,8 +51,8 @@ public class Town {
 
     public void define(DexFile iFile) {
         for (DexRootDecl rootDecl : iFile.rootDecls()) {
-            if (rootDecl instanceof DexFunction) {
-                define((DexFunction) rootDecl);
+            if (rootDecl.function() != null) {
+                define(rootDecl.function());
             }
         }
     }

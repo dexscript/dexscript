@@ -18,6 +18,7 @@ public class Resolve {
         resolveValue.setResolveType(resolveType);
         resolveFunction.setResolveType(resolveType);
         resolveType.setResolveFunction(resolveFunction);
+        resolveType.setResolveValue(resolveValue);
     }
 
     public void define(DexFile file) {

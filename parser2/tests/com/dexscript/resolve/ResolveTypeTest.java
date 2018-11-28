@@ -67,4 +67,14 @@ public class ResolveTypeTest {
         resolve.define(new DexFunction("function Add__(i: int64, i: int64): int64 { return 0; }"));
         Assert.assertEquals(BuiltinTypes.INT64_TYPE, resolve.resolveType(DexExpr.parse("1+1")));
     }
+
+    @Test
+    public void evaluate_argument_reference() {
+        DexFunction function = new DexFunction("" +
+                "function Hello(msg: string): string {\n" +
+                "   return msg\n" +
+                "}");
+        Denotation type = new Resolve().resolveType(function.stmts().get(0).asReturn().expr());
+        Assert.assertEquals(BuiltinTypes.STRING_TYPE, type);
+    }
 }
