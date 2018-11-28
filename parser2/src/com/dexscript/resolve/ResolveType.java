@@ -4,12 +4,12 @@ import com.dexscript.ast.expr.*;
 
 final class ResolveType {
 
-    private final DenotationTable defined;
+    private final DenotationTable declared;
     private ResolveFunction resolveFunction;
     private ResolveValue resolveValue;
 
     ResolveType(DenotationTable builtin) {
-        this.defined = builtin;
+        this.declared = builtin;
     }
 
     ResolveType() {
@@ -22,8 +22,8 @@ final class ResolveType {
 
     public void setResolveValue(ResolveValue resolveValue) { this.resolveValue = resolveValue; }
 
-    public void define(Denotation.InterfaceType inf) {
-        defined.put(inf.name(), inf);
+    public void declare(Denotation.InterfaceType inf) {
+        declared.put(inf.name(), inf);
     }
 
     public Denotation resolveType(DexReference ref) {
@@ -32,7 +32,7 @@ final class ResolveType {
             return type;
         }
         String refName = ref.toString();
-        type = defined.get(refName);
+        type = declared.get(refName);
         if (type == null) {
             type = new Denotation.Error(refName, ref, "can not resolve " + refName + " to a type");
         }

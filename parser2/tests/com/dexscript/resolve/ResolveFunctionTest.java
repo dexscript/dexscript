@@ -19,7 +19,7 @@ public class ResolveFunctionTest {
                 "}";
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
-        resolve.define(file);
+        resolve.declare(file);
         DexCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asCall();
@@ -42,7 +42,7 @@ public class ResolveFunctionTest {
                 "}";
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
-        resolve.define(file);
+        resolve.declare(file);
         DexCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asCall();

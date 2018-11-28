@@ -9,7 +9,7 @@ public class InterfaceTypeTest {
     @Test
     public void define_interface_type() {
         Resolve resolve = new Resolve();
-        resolve.define(new DexInterface("" +
+        resolve.declare(new DexInterface("" +
                 "interface Duck {\n" +
                 "  ::Quack(duck: Duck): string\n" +
                 "}"));
@@ -21,11 +21,11 @@ public class InterfaceTypeTest {
     @Test
     public void test_compatibility() {
         Resolve resolve = new Resolve();
-        resolve.define(new DexInterface("" +
+        resolve.declare(new DexInterface("" +
                 "interface Duck1 {\n" +
                 "  ::Quack(duck: Duck1): string\n" +
                 "}"));
-        resolve.define(new DexInterface("" +
+        resolve.declare(new DexInterface("" +
                 "interface Duck2 {\n" +
                 "  ::Quack(duck: Duck2): string\n" +
                 "}"));
@@ -38,11 +38,11 @@ public class InterfaceTypeTest {
     @Test
     public void test_subtype() {
         Resolve resolve = new Resolve();
-        resolve.define(new DexInterface("" +
+        resolve.declare(new DexInterface("" +
                 "interface Duck {\n" +
                 "  ::Quack(duck: Duck): string\n" +
                 "}"));
-        resolve.define(new DexInterface("" +
+        resolve.declare(new DexInterface("" +
                 "interface Donald {\n" +
                 "  ::Quack(duck: Donald): string\n" +
                 "  ::IAmDonald(duck: Duck): string\n" +

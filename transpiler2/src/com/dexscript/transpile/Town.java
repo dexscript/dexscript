@@ -8,7 +8,8 @@ import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.expr.DexCallExpr;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
-import com.dexscript.resolve.*;
+import com.dexscript.resolve.Denotation;
+import com.dexscript.resolve.Resolve;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -49,6 +50,16 @@ public class Town {
         return g.toString();
     }
 
+    public void declare(DexFile iFile) {
+        for (DexRootDecl rootDecl : iFile.rootDecls()) {
+            if (rootDecl.function() != null) {
+                resolve.declare(rootDecl.function());
+            } else if (rootDecl.inf() != null) {
+                resolve.declare(rootDecl.inf());
+            }
+        }
+    }
+
     public void define(DexFile iFile) {
         for (DexRootDecl rootDecl : iFile.rootDecls()) {
             if (rootDecl.function() != null) {
@@ -57,8 +68,7 @@ public class Town {
         }
     }
 
-    private void define(DexFunction iFunction) {
-        resolve.define(iFunction);
+    public void define(DexFunction iFunction) {
         List<DexParam> params = iFunction.sig().params();
         Pier pier = new Pier(iFunction.identifier().toString(), params.size());
         Denotation.Type retType = resolveType(iFunction.sig().ret());
@@ -87,7 +97,7 @@ public class Town {
 
     private Boat allocate(Pier pier) {
         int i = 1;
-        while(true) {
+        while (true) {
             String boatName = pier.name() + i;
             Boat boat = tryAllocate(pier, boatName);
             if (boat != null) {
@@ -109,7 +119,11 @@ public class Town {
     }
 
     public Denotation.Type resolveType(DexReference ref) {
-        return (Denotation.Type) resolve.resolveType(ref);
+        Denotation denotation = resolve.resolveType(ref);
+        if (denotation instanceof Denotation.Type) {
+            return (Denotation.Type) denotation;
+        }
+        throw new DexTranspileException(denotation.toString());
     }
 
     public Denotation.Value resolveValue(DexReference ref) {

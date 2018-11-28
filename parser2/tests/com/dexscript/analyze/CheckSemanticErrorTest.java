@@ -47,7 +47,7 @@ public class CheckSemanticErrorTest {
                 "}";
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
-        resolve.define(file);
+        resolve.declare(file);
         CheckSemanticError result = new CheckSemanticError(resolve, file);
         Assert.assertFalse(result.hasError());
     }

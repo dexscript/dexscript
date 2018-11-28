@@ -21,17 +21,17 @@ public class Resolve {
         resolveType.setResolveValue(resolveValue);
     }
 
-    public void define(DexFile file) {
-        resolveFunction.define(file);
+    public void declare(DexFile file) {
+        resolveFunction.declare(file);
     }
 
-    public void define(DexFunction function) {
-        resolveFunction.define(function);
+    public void declare(DexFunction function) {
+        resolveFunction.declare(function);
     }
 
 
-    public void define(DexInterface inf) {
-        resolveType.define(new Denotation.InterfaceType(this, inf));
+    public void declare(DexInterface inf) {
+        resolveType.declare(new Denotation.InterfaceType(this, inf));
     }
 
     @NotNull

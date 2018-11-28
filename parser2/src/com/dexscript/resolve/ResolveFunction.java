@@ -25,15 +25,15 @@ final class ResolveFunction {
         this.resolveType = resolveType;
     }
 
-    public void define(DexFile file) {
+    public void declare(DexFile file) {
         for (DexRootDecl rootDecl : file.rootDecls()) {
             if (rootDecl.function() != null) {
-                define(rootDecl.function());
+                declare(rootDecl.function());
             }
         }
     }
 
-    public void define(DexFunction function) {
+    public void declare(DexFunction function) {
         String functionName = function.identifier().toString();
         List<Denotation.FunctionType> types = defined.computeIfAbsent(functionName, k -> new ArrayList<>());
         List<Denotation.Type> args = new ArrayList<>();

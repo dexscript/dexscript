@@ -2,7 +2,6 @@ package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.core.Text;
 import org.mdkt.compiler.InMemoryJavaCompiler;
@@ -27,7 +26,7 @@ public class Transpiler {
         if (new CheckSyntaxError(iFile).hasError()) {
             throw new DexTranspileException();
         }
-        town.define(iFile);
+        town.declare(iFile);
         iFiles.add(iFile);
         return this;
     }
@@ -51,6 +50,7 @@ public class Transpiler {
     public Map<String, Class<?>> transpile() {
         for (DexFile iFile : iFiles) {
             town.checkSemanticError(iFile);
+            town.define(iFile);
             for (DexRootDecl iRootDecl : iFile.rootDecls()) {
                 if (iRootDecl.function() != null) {
                     OutClass oClass = new OutClass(town, iRootDecl.function());
