@@ -133,8 +133,10 @@ public class Denotation {
                 }
             }
             Type expandedRet = level >= 20 ? BuiltinTypes.UNDEFINED_TYPE : ret().expand(level + 1);
-            ExpandedFunctionType expanded = new ExpandedFunctionType(name(), expandedParams, expandedRet);
-            return expanded;
+            if (level >= 20) {
+                return new LeafExpandedFunctionType(name(), expandedParams, expandedRet);
+            }
+            return new ExpandedFunctionType(name(), expandedParams, expandedRet);
         }
 
         @Override
@@ -313,11 +315,23 @@ public class Denotation {
             for (int i = 0; i < params.size(); i++) {
                 Type thisParam = params.get(i);
                 Type thatParam = that.params.get(i);
-                if (!thisParam.isAssignableFrom(thatParam)) {
+                if (!thatParam.isAssignableFrom(thisParam)) {
                     return false;
                 }
             }
-            return true;
+            return that.ret.isAssignableFrom(ret);
+        }
+    }
+
+    private static class LeafExpandedFunctionType extends ExpandedFunctionType {
+
+        public LeafExpandedFunctionType(String name, List<Type> params, Type ret) {
+            super(name, params, ret);
+        }
+
+        @Override
+        public boolean isAssignableFrom(Type thatObj) {
+            return super.isAssignableFrom(thatObj);
         }
     }
 

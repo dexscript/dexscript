@@ -1,7 +1,6 @@
 package com.dexscript.resolve;
 
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.expr.DexReference;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -34,5 +33,23 @@ public class InterfaceTypeTest {
         Denotation.InterfaceType duck2 = (Denotation.InterfaceType) resolve.resolveType("Duck2");
         Assert.assertTrue(duck1.isAssignableFrom(duck2));
         Assert.assertTrue(duck2.isAssignableFrom(duck1));
+    }
+
+    @Test
+    public void test_subtype() {
+        Resolve resolve = new Resolve();
+        resolve.define(new DexInterface("" +
+                "interface Duck {\n" +
+                "  ::Quack(duck: Duck): string\n" +
+                "}"));
+        resolve.define(new DexInterface("" +
+                "interface Donald {\n" +
+                "  ::Quack(duck: Donald): string\n" +
+                "  ::IAmDonald(duck: Donald): string\n" +
+                "}"));
+        Denotation.InterfaceType duck = (Denotation.InterfaceType) resolve.resolveType("Duck");
+        Denotation.InterfaceType donald = (Denotation.InterfaceType) resolve.resolveType("Donald");
+        Assert.assertTrue(duck.isAssignableFrom(donald));
+        Assert.assertFalse(donald.isAssignableFrom(duck));
     }
 }
