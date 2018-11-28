@@ -12,6 +12,10 @@ public abstract class DexInfMember extends DexElement {
     }
 
     public static DexInfMember parse(Text src) {
+        DexInfMember member = new DexInfFunction(src);
+        if (member.matched()) {
+            return member;
+        }
         return new DexInfMethod(src);
     }
 

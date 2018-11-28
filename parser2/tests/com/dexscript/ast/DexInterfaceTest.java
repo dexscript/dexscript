@@ -40,6 +40,21 @@ public class DexInterfaceTest {
     }
 
     @Test
+    public void inf_function() {
+        String src = "" +
+                "interface Duck {\n" +
+                "   ::Quack(duck: Duck): string\n" +
+                "}";
+        DexInterface inf = new DexInterface(src);
+        inf.members();
+        Assert.assertEquals("{\n" +
+                "   ::Quack(duck: Duck): string\n" +
+                "}", inf.body().toString());
+        Assert.assertEquals(1, inf.members().size());
+        Assert.assertEquals("Quack(duck: Duck): string", inf.members().get(0).toString());
+    }
+
+    @Test
     public void recover_invalid_inf_member_by_line_end() {
         String src = "" +
                 "interface Duck {\n" +
