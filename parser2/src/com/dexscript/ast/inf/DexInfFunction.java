@@ -66,4 +66,8 @@ public class DexInfFunction extends DexInfMember {
     public DexSig sig() {
         return sig;
     }
+
+    public DexIdentifier identifier() {
+        return identifier;
+    }
 }

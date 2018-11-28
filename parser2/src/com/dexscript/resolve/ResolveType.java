@@ -21,9 +21,8 @@ final class ResolveType {
     }
 
 
-    public void define(DexInterface inf) {
-        String infName = inf.identifier().toString();
-        defined.put(infName, new Denotation.Type(infName, Denotation.TypeKind.INTERFACE, "Object"));
+    public void define(Denotation.InterfaceType inf) {
+        defined.put(inf.name(), inf);
     }
 
     public Denotation resolveType(DexReference ref) {
@@ -62,15 +61,15 @@ final class ResolveType {
         }
         if (expr instanceof DexCallExpr) {
             Denotation typeObj = resolveFunction.resolveFunction(((DexCallExpr) expr));
-            if (typeObj instanceof Denotation.Type) {
-                return ((Denotation.Type)typeObj).ret();
+            if (typeObj instanceof Denotation.FunctionType) {
+                return ((Denotation.FunctionType)typeObj).ret();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
         if (expr instanceof DexAddExpr) {
             Denotation typeObj = resolveFunction.resolveFunction((DexAddExpr) expr);
-            if (typeObj instanceof Denotation.Type) {
-                return ((Denotation.Type)typeObj).ret();
+            if (typeObj instanceof Denotation.FunctionType) {
+                return ((Denotation.FunctionType)typeObj).ret();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }

@@ -18,7 +18,7 @@ import java.util.Map;
 
 final class ResolveFunction {
 
-    private final Map<String, List<Denotation.Type>> defined = new HashMap<>();
+    private final Map<String, List<Denotation.FunctionType>> defined = new HashMap<>();
     private ResolveType resolveType;
 
     void setResolveType(ResolveType resolveType) {
@@ -35,7 +35,7 @@ final class ResolveFunction {
 
     public void define(DexFunction function) {
         String functionName = function.identifier().toString();
-        List<Denotation.Type> types = defined.computeIfAbsent(functionName, k -> new ArrayList<>());
+        List<Denotation.FunctionType> types = defined.computeIfAbsent(functionName, k -> new ArrayList<>());
         List<Denotation.Type> args = new ArrayList<>();
         for (DexParam param : function.sig().params()) {
             Denotation typeObj = resolveType.resolveType(param.paramType());
@@ -46,7 +46,7 @@ final class ResolveFunction {
             args.add(arg);
         }
         Denotation.Type ret = (Denotation.Type) resolveType.resolveType(function.sig().ret());
-        types.add(Denotation.function(functionName, function, args, ret));
+        types.add(new Denotation.FunctionType(functionName, function, args, ret));
     }
 
     @NotNull
@@ -69,11 +69,11 @@ final class ResolveFunction {
     }
 
     private Denotation resolveFunction(DexElement elem, String functionName, List<Denotation.Type> argTypes) {
-        List<Denotation.Type> candidates = defined.get(functionName);
+        List<Denotation.FunctionType> candidates = defined.get(functionName);
         if (candidates == null) {
             return new Denotation.Error(functionName, elem, "can not resolve " + functionName + " to a function");
         }
-        for (Denotation.Type candidate : candidates) {
+        for (Denotation.FunctionType candidate : candidates) {
             if (signatureMatch(argTypes, candidate)) {
                 return candidate;
             }
@@ -81,12 +81,12 @@ final class ResolveFunction {
         return new Denotation.Error(functionName, elem, "can not resolve " + functionName + " to a function");
     }
 
-    private boolean signatureMatch(List<Denotation.Type> argTypes, Denotation.Type candidate) {
-        if (candidate.args().size() != argTypes.size()) {
+    private boolean signatureMatch(List<Denotation.Type> argTypes, Denotation.FunctionType candidate) {
+        if (candidate.params().size() != argTypes.size()) {
             return false;
         }
-        for (int i = 0; i < candidate.args().size(); i++) {
-            Denotation.Type arg = candidate.args().get(i);
+        for (int i = 0; i < candidate.params().size(); i++) {
+            Denotation.Type arg = candidate.params().get(i);
             if (!arg.isAssignableFrom(argTypes.get(i))) {
                 return false;
             }

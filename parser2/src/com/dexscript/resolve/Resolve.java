@@ -30,7 +30,7 @@ public class Resolve {
 
 
     public void define(DexInterface inf) {
-        resolveType.define(inf);
+        resolveType.define(new Denotation.InterfaceType(this, inf));
     }
 
     @NotNull

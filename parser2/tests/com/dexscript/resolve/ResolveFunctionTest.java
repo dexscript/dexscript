@@ -23,7 +23,7 @@ public class ResolveFunctionTest {
         DexCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asCall();
-        Denotation.Type type = (Denotation.Type) resolve.resolveFunction(callExpr);
+        Denotation.FunctionType type = (Denotation.FunctionType) resolve.resolveFunction(callExpr);
         Assert.assertEquals("String", type.ret().javaClassName());
     }
 
@@ -46,7 +46,7 @@ public class ResolveFunctionTest {
         DexCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asCall();
-        Denotation.Type type = (Denotation.Type) resolve.resolveFunction(callExpr);
+        Denotation.FunctionType type = (Denotation.FunctionType) resolve.resolveFunction(callExpr);
         Assert.assertEquals("Long", type.ret().javaClassName());
     }
 }
