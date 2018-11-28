@@ -1,6 +1,7 @@
 package com.dexscript.resolve;
 
 import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +21,23 @@ public class ResolveTypeTest {
     @Test
     public void string_literal_is_string() {
         Assert.assertEquals(BuiltinTypes.STRING_TYPE, new Resolve().resolveType(DexExpr.parse("'hello'")));
+    }
+
+    @Test
+    public void reference_builtin_type() {
+        DexFunction function = new DexFunction("function hello(): string {}");
+        Denotation retType = new Resolve().resolveType(function.sig().ret());
+        Assert.assertEquals(BuiltinTypes.STRING_TYPE, retType);
+    }
+
+    @Test
+    public void reference_interface() {
+        DexInterface duckInf = new DexInterface("interface Duck{}");
+        Resolve resolve = new Resolve();
+        resolve.define(duckInf);
+        DexFunction function = new DexFunction("function hello(): Duck {}");
+        Denotation retType = new Resolve().resolveType(function.sig().ret());
+        Assert.assertEquals("Duck", retType.name());
     }
 
     @Test

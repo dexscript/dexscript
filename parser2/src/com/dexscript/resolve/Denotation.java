@@ -99,6 +99,7 @@ public class Denotation {
 
         public static final TypeKind JAVA = new TypeKind("java");
         public static final TypeKind FUNCTION = new TypeKind("function");
+        public static final TypeKind INTERFACE = new TypeKind("interface");
 
         public TypeKind(String name) {
             super(name, null);

@@ -2,6 +2,7 @@ package com.dexscript.resolve;
 
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexCallExpr;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
@@ -25,6 +26,11 @@ public class Resolve {
 
     public void define(DexFunction function) {
         resolveFunction.define(function);
+    }
+
+
+    public void define(DexInterface inf) {
+        resolveType.define(inf);
     }
 
     @NotNull

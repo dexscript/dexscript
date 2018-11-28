@@ -1,14 +1,15 @@
 package com.dexscript.resolve;
 
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.*;
 
 final class ResolveType {
 
-    private final DenotationTable builtin;
+    private final DenotationTable defined;
     private ResolveFunction resolveFunction;
 
     ResolveType(DenotationTable builtin) {
-        this.builtin = builtin;
+        this.defined = builtin;
     }
 
     ResolveType() {
@@ -19,13 +20,19 @@ final class ResolveType {
         this.resolveFunction = resolveFunction;
     }
 
+
+    public void define(DexInterface inf) {
+        String infName = inf.identifier().toString();
+        defined.put(infName, new Denotation.Type(infName, Denotation.TypeKind.INTERFACE, "Object"));
+    }
+
     public Denotation resolveType(DexReference ref) {
         Denotation type = ref.attachmentOfType(Denotation.Type.class);
         if (type != null) {
             return type;
         }
         String refName = ref.toString();
-        type = builtin.get(refName);
+        type = defined.get(refName);
         if (type == null) {
             type = new Denotation.Error(refName, ref, "can not resolve " + refName + " to a type");
         }
