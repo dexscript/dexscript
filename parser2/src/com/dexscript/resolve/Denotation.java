@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Denotation {
 
+    private static final int TYPE_SYSTEM_MAX_RECURSION = 20;
     private final String name;
     private final Denotation type;
 
@@ -124,18 +125,14 @@ public class Denotation {
 
         @Override
         protected Type expand(int level) {
+            if (level >= TYPE_SYSTEM_MAX_RECURSION) {
+                return new LeafExpandedFunctionType(name());
+            }
             List<Type> expandedParams = new ArrayList<>();
             for (Type param : params()) {
-                if (level >= 20) {
-                    expandedParams.add(BuiltinTypes.UNDEFINED_TYPE);
-                } else {
-                    expandedParams.add(param.expand(level + 1));
-                }
+                expandedParams.add(param.expand(level + 1));
             }
-            Type expandedRet = level >= 20 ? BuiltinTypes.UNDEFINED_TYPE : ret().expand(level + 1);
-            if (level >= 20) {
-                return new LeafExpandedFunctionType(name(), expandedParams, expandedRet);
-            }
+            Type expandedRet = ret().expand(level + 1);
             return new ExpandedFunctionType(name(), expandedParams, expandedRet);
         }
 
@@ -323,15 +320,15 @@ public class Denotation {
         }
     }
 
-    private static class LeafExpandedFunctionType extends ExpandedFunctionType {
+    private static final class LeafExpandedFunctionType extends ExpandedFunctionType {
 
-        public LeafExpandedFunctionType(String name, List<Type> params, Type ret) {
-            super(name, params, ret);
+        public LeafExpandedFunctionType(String name) {
+            super(name, null, null);
         }
 
         @Override
         public boolean isAssignableFrom(Type thatObj) {
-            return super.isAssignableFrom(thatObj);
+            return thatObj instanceof LeafExpandedFunctionType;
         }
     }
 
