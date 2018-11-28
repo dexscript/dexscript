@@ -1,7 +1,9 @@
 package com.dexscript.resolve.expr;
 
 import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.resolve.BuiltinTypes;
 import com.dexscript.resolve.Resolve;
@@ -28,6 +30,16 @@ public class CallExprTest {
         Resolve resolve = new Resolve();
         resolve.declare(new DexFunction("function ToString(i: int64): string { return ''; }"));
         DexMethodCallExpr expr = (DexMethodCallExpr) DexExpr.parse("100.ToString()");
+        Assert.assertEquals(BuiltinTypes.STRING_TYPE, resolve.resolveType(expr));
+    }
+
+    @Test
+    public void function_with_interface_argument() {
+        Resolve resolve = new Resolve();
+        resolve.declare(new DexInterface("interface Duck{ ::Quack(duck: Duck): string }"));
+        resolve.declare(new DexFunction("function Quack(i: int64): string { return 'duck'; }"));
+        resolve.declare(new DexFunction("function PrintDuck(duck: Duck): string { return duck.Quack(); }"));
+        DexFunctionCallExpr expr = (DexFunctionCallExpr) DexExpr.parse("PrintDuck(100)");
         Assert.assertEquals(BuiltinTypes.STRING_TYPE, resolve.resolveType(expr));
     }
 }

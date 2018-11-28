@@ -7,7 +7,9 @@ import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMember;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Denotation {
 
@@ -70,25 +72,24 @@ public class Denotation {
             return this.equals(that);
         }
 
-        protected abstract Type expand(int level);
+        public Type expand(Map<Type, Type> lookup) {
+            for (Map.Entry<Type, Type> entry : lookup.entrySet()) {
+                if (this.equals(entry.getKey())) {
+                    return entry.getValue();
+                }
+            }
+            return this;
+        }
 
-        protected abstract Type expanded();
+        protected boolean canProvide(String functionName, List<Type> args, Type ret) {
+            return false;
+        }
     }
 
     public static class BuiltinType extends Type {
 
         public BuiltinType(String name, String javaClassName) {
             super(name, TypeKind.JAVA, javaClassName);
-        }
-
-        @Override
-        protected BuiltinType expand(int level) {
-            return this;
-        }
-
-        @Override
-        protected Type expanded() {
-            return this;
         }
     }
 
@@ -97,7 +98,6 @@ public class Denotation {
         private final DexElement definedBy;
         private final List<Type> params;
         private final Type ret;
-        private Type expanded;
 
         public FunctionType(String name, DexElement definedBy, List<Type> params, Type ret) {
             super(name, TypeKind.FUNCTION, "Object");
@@ -119,29 +119,21 @@ public class Denotation {
         }
 
         @Override
-        public boolean isAssignableFrom(Type that) {
-            return expanded().isAssignableFrom(that.expanded());
-        }
-
-        @Override
-        protected Type expand(int level) {
-            if (level >= TYPE_SYSTEM_MAX_RECURSION) {
-                return new LeafExpandedFunctionType(name());
+        protected boolean canProvide(String thatName, List<Type> thatParams, Type thatRet) {
+            if (!name().equals(thatName)) {
+                return false;
             }
-            List<Type> expandedParams = new ArrayList<>();
-            for (Type param : params()) {
-                expandedParams.add(param.expand(level + 1));
+            if (params().size() != thatParams.size()) {
+                return false;
             }
-            Type expandedRet = ret().expand(level + 1);
-            return new ExpandedFunctionType(name(), expandedParams, expandedRet);
-        }
-
-        @Override
-        protected Type expanded() {
-            if (expanded == null) {
-                expanded = expand(0);
+            for (int i = 0; i < params().size(); i++) {
+                Type thisParam = params().get(i);
+                Type thatParam = thatParams.get(i);
+                if (!thatParam.isAssignableFrom(thisParam)) {
+                    return false;
+                }
             }
-            return expanded;
+            return thatRet.isAssignableFrom(ret());
         }
     }
 
@@ -150,7 +142,6 @@ public class Denotation {
         private final Resolve resolve;
         private final DexInterface definedBy;
         private List<FunctionType> members;
-        private Type expanded;
 
         public InterfaceType(Resolve resolve, DexInterface definedBy) {
             super(definedBy.identifier().toString(), TypeKind.INTERFACE, "Object");
@@ -187,124 +178,32 @@ public class Denotation {
 
         @Override
         public boolean isAssignableFrom(Type that) {
-            return expanded().isAssignableFrom(that.expanded());
-        }
-
-        @Override
-        protected Type expand(int level) {
-            List<ExpandedFunctionType> expandedMembers = new ArrayList<>();
+            if (this.equals(that)) {
+                return true;
+            }
+            HashMap<Type, Type> lookup = new HashMap<>();
+            lookup.put(this, that);
             for (FunctionType member : members()) {
-                expandedMembers.add((ExpandedFunctionType) member.expand(level + 1));
-            }
-            return new ExpandedInterfaceType(name(), expandedMembers);
-        }
-
-        @Override
-        protected Type expanded() {
-            if (expanded == null) {
-                expanded = expand(0);
-            }
-            return expanded;
-        }
-    }
-
-    private static class ExpandedInterfaceType extends Type {
-
-        private final List<ExpandedFunctionType> members;
-
-        public ExpandedInterfaceType(String name, List<ExpandedFunctionType> members) {
-            super(name, TypeKind.INTERFACE, "Object");
-            this.members = members;
-        }
-
-        @Override
-        protected Type expand(int level) {
-            return this;
-        }
-
-        @Override
-        protected Type expanded() {
-            return this;
-        }
-
-        @Override
-        public boolean isAssignableFrom(Type thatObj) {
-            if (!(thatObj instanceof ExpandedInterfaceType)) {
-                return false;
-            }
-            // name does not matter
-            ExpandedInterfaceType that = (ExpandedInterfaceType) thatObj.expanded();
-            for (ExpandedFunctionType member : members) {
-                if (!that.contains(member)) {
+                List<Type> expandedParams = new ArrayList<>();
+                for (Type param : member.params()) {
+                    expandedParams.add(param.expand(lookup));
+                }
+                Type expandedRet = member.ret().expand(lookup);
+                if (!that.canProvide(member.name(), expandedParams, expandedRet)) {
                     return false;
                 }
             }
             return true;
         }
 
-        private boolean contains(ExpandedFunctionType that) {
-            for (ExpandedFunctionType member : members) {
-                if (member.isAssignableFrom(that)) {
+        @Override
+        protected boolean canProvide(String functionName, List<Type> params, Type ret) {
+            for (FunctionType member : members()) {
+                if (member.canProvide(functionName, params, ret)) {
                     return true;
                 }
             }
             return false;
-        }
-    }
-
-    private static class ExpandedFunctionType extends Type {
-
-        private final List<Type> params;
-        private final Type ret;
-
-        public ExpandedFunctionType(String name, List<Type> params, Type ret) {
-            super(name, TypeKind.FUNCTION, "Object");
-            this.params = params;
-            this.ret = ret;
-        }
-
-        @Override
-        protected Type expand(int level) {
-            return this;
-        }
-
-        @Override
-        protected Type expanded() {
-            return this;
-        }
-
-        @Override
-        public boolean isAssignableFrom(Type thatObj) {
-            if (!(thatObj instanceof ExpandedFunctionType)) {
-                return false;
-            }
-            ExpandedFunctionType that = (ExpandedFunctionType) thatObj;
-            if (!name().equals(that.name())) {
-                return false;
-            }
-            if (params.size() != that.params.size()) {
-                return false;
-            }
-            for (int i = 0; i < params.size(); i++) {
-                Type thisParam = params.get(i);
-                Type thatParam = that.params.get(i);
-                if (!thatParam.isAssignableFrom(thisParam)) {
-                    return false;
-                }
-            }
-            return that.ret.isAssignableFrom(ret);
-        }
-    }
-
-    private static final class LeafExpandedFunctionType extends ExpandedFunctionType {
-
-        public LeafExpandedFunctionType(String name) {
-            super(name, null, null);
-        }
-
-        @Override
-        public boolean isAssignableFrom(Type thatObj) {
-            return thatObj instanceof LeafExpandedFunctionType;
         }
     }
 
