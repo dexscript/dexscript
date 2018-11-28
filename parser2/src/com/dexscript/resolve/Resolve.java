@@ -52,4 +52,8 @@ public class Resolve {
     public Denotation resolveType(DexExpr expr) {
         return resolveType.resolveType(expr);
     }
+
+    public Denotation resolveType(String name) {
+        return resolveType(new DexReference(name));
+    }
 }

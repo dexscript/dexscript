@@ -68,12 +68,26 @@ public class Denotation {
         public boolean isAssignableFrom(Denotation.Type that) {
             return this.equals(that);
         }
+
+        protected abstract Type expand(int level);
+
+        protected abstract Type expanded();
     }
 
     public static class BuiltinType extends Type {
 
         public BuiltinType(String name, String javaClassName) {
             super(name, TypeKind.JAVA, javaClassName);
+        }
+
+        @Override
+        protected BuiltinType expand(int level) {
+            return this;
+        }
+
+        @Override
+        protected Type expanded() {
+            return this;
         }
     }
 
@@ -82,6 +96,7 @@ public class Denotation {
         private final DexElement definedBy;
         private final List<Type> params;
         private final Type ret;
+        private Type expanded;
 
         public FunctionType(String name, DexElement definedBy, List<Type> params, Type ret) {
             super(name, TypeKind.FUNCTION, "Object");
@@ -101,6 +116,34 @@ public class Denotation {
         public Type ret() {
             return ret;
         }
+
+        @Override
+        public boolean isAssignableFrom(Type that) {
+            return expanded().isAssignableFrom(that.expanded());
+        }
+
+        @Override
+        protected Type expand(int level) {
+            List<Type> expandedParams = new ArrayList<>();
+            for (Type param : params()) {
+                if (level >= 20) {
+                    expandedParams.add(BuiltinTypes.UNDEFINED_TYPE);
+                } else {
+                    expandedParams.add(param.expand(level + 1));
+                }
+            }
+            Type expandedRet = level >= 20 ? BuiltinTypes.UNDEFINED_TYPE : ret().expand(level + 1);
+            ExpandedFunctionType expanded = new ExpandedFunctionType(name(), expandedParams, expandedRet);
+            return expanded;
+        }
+
+        @Override
+        protected Type expanded() {
+            if (expanded == null) {
+                expanded = expand(0);
+            }
+            return expanded;
+        }
     }
 
     public static class CallType extends Type {
@@ -115,6 +158,16 @@ public class Denotation {
         public List<Type> args() {
             return args;
         }
+
+        @Override
+        protected Type expand(int level) {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        protected Type expanded() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public static class InterfaceType extends Type {
@@ -122,6 +175,7 @@ public class Denotation {
         private final Resolve resolve;
         private final DexInterface definedBy;
         private List<FunctionType> members;
+        private Type expanded;
 
         public InterfaceType(Resolve resolve, DexInterface definedBy) {
             super(definedBy.identifier().toString(), TypeKind.INTERFACE, "Object");
@@ -154,6 +208,116 @@ public class Denotation {
 
         public DexInterface definedBy() {
             return definedBy;
+        }
+
+        @Override
+        public boolean isAssignableFrom(Type that) {
+            return expanded().isAssignableFrom(that.expanded());
+        }
+
+        @Override
+        protected Type expand(int level) {
+            List<ExpandedFunctionType> expandedMembers = new ArrayList<>();
+            for (FunctionType member : members()) {
+                expandedMembers.add((ExpandedFunctionType) member.expand(level + 1));
+            }
+            return new ExpandedInterfaceType(name(), expandedMembers);
+        }
+
+        @Override
+        protected Type expanded() {
+            if (expanded == null) {
+                expanded = expand(0);
+            }
+            return expanded;
+        }
+    }
+
+    private static class ExpandedInterfaceType extends Type {
+
+        private final List<ExpandedFunctionType> members;
+
+        public ExpandedInterfaceType(String name, List<ExpandedFunctionType> members) {
+            super(name, TypeKind.INTERFACE, "Object");
+            this.members = members;
+        }
+
+        @Override
+        protected Type expand(int level) {
+            return this;
+        }
+
+        @Override
+        protected Type expanded() {
+            return this;
+        }
+
+        @Override
+        public boolean isAssignableFrom(Type thatObj) {
+            if (!(thatObj instanceof ExpandedInterfaceType)) {
+                return false;
+            }
+            // name does not matter
+            ExpandedInterfaceType that = (ExpandedInterfaceType) thatObj.expanded();
+            for (ExpandedFunctionType member : members) {
+                if (!that.contains(member)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private boolean contains(ExpandedFunctionType that) {
+            for (ExpandedFunctionType member : members) {
+                if (member.isAssignableFrom(that)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    private static class ExpandedFunctionType extends Type {
+
+        private final List<Type> params;
+        private final Type ret;
+
+        public ExpandedFunctionType(String name, List<Type> params, Type ret) {
+            super(name, TypeKind.FUNCTION, "Object");
+            this.params = params;
+            this.ret = ret;
+        }
+
+        @Override
+        protected Type expand(int level) {
+            return this;
+        }
+
+        @Override
+        protected Type expanded() {
+            return this;
+        }
+
+        @Override
+        public boolean isAssignableFrom(Type thatObj) {
+            if (!(thatObj instanceof ExpandedFunctionType)) {
+                return false;
+            }
+            ExpandedFunctionType that = (ExpandedFunctionType) thatObj;
+            if (!name().equals(that.name())) {
+                return false;
+            }
+            if (params.size() != that.params.size()) {
+                return false;
+            }
+            for (int i = 0; i < params.size(); i++) {
+                Type thisParam = params.get(i);
+                Type thatParam = that.params.get(i);
+                if (!thisParam.isAssignableFrom(thatParam)) {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 
