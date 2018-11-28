@@ -41,19 +41,6 @@ public class ResolveTypeTest {
     }
 
     @Test
-    public void evaluate_function() {
-        Resolve resolve = new Resolve();
-        resolve.declare(new DexFunction("function ToString(i: int64): string { return ''; }"));
-        Assert.assertEquals(BuiltinTypes.STRING_TYPE, resolve.resolveType(DexExpr.parse("ToString(100)")));
-    }
-
-    @Test
-    public void evaluate_not_existing_function() {
-        Resolve resolve = new Resolve();
-        Assert.assertEquals(BuiltinTypes.UNDEFINED_TYPE, resolve.resolveType(DexExpr.parse("ToString(100)")));
-    }
-
-    @Test
     public void evaluate_add() {
         Resolve resolve = new Resolve();
         resolve.declare(new DexFunction("function Add__(i: int64, i: int64): int64 { return 0; }"));

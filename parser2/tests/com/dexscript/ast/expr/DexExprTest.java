@@ -65,4 +65,12 @@ public class DexExprTest {
         DexIntegerLiteral parsed = (DexIntegerLiteral) DexExpr.parse("100");
         Assert.assertEquals("100", parsed.toString());
     }
+
+    @Test
+    public void mix_function_call_and_method_call() {
+        DexMethodCallExpr methodCallExpr = (DexMethodCallExpr) DexExpr.parse("a().b()");
+        Assert.assertEquals("a().b()", methodCallExpr.toString());
+        Assert.assertEquals("a()", methodCallExpr.obj().toString());
+        Assert.assertEquals("a", methodCallExpr.obj().asFunctionCall().target().toString());
+    }
 }

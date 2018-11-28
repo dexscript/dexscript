@@ -20,7 +20,9 @@ final class ResolveType {
         this.resolveFunction = resolveFunction;
     }
 
-    public void setResolveValue(ResolveValue resolveValue) { this.resolveValue = resolveValue; }
+    public void setResolveValue(ResolveValue resolveValue) {
+        this.resolveValue = resolveValue;
+    }
 
     public void declare(Denotation.InterfaceType inf) {
         declared.put(inf.name(), inf);
@@ -60,17 +62,17 @@ final class ResolveType {
         if (expr instanceof DexStringLiteral) {
             return BuiltinTypes.STRING_TYPE;
         }
-        if (expr instanceof DexCallExpr) {
-            Denotation typeObj = resolveFunction.resolveFunction(((DexCallExpr) expr));
+        if (expr instanceof DexFunctionCallExpr) {
+            Denotation typeObj = resolveFunction.resolveFunction(((DexFunctionCallExpr) expr));
             if (typeObj instanceof Denotation.FunctionType) {
-                return ((Denotation.FunctionType)typeObj).ret();
+                return ((Denotation.FunctionType) typeObj).ret();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
         if (expr instanceof DexAddExpr) {
             Denotation typeObj = resolveFunction.resolveFunction((DexAddExpr) expr);
             if (typeObj instanceof Denotation.FunctionType) {
-                return ((Denotation.FunctionType)typeObj).ret();
+                return ((Denotation.FunctionType) typeObj).ret();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
@@ -82,6 +84,6 @@ final class ResolveType {
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
-        return new Denotation.Error(expr.toString(), expr, "can not evaluate expression type");
+        return new Denotation.Error(expr.toString(), expr, "can not evaluate expression type: " + expr.getClass());
     }
 }

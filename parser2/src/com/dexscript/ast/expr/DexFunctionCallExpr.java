@@ -12,7 +12,7 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexCallExpr extends DexExpr {
+public class DexFunctionCallExpr extends DexExpr {
 
     private static final int LEFT_RANK = 1;
     private static final int RIGHT_RANK = 0;
@@ -22,7 +22,7 @@ public class DexCallExpr extends DexExpr {
     private int callExprEnd = -1;
     private DexSyntaxError syntaxError;
 
-    public DexCallExpr(Text src, DexExpr target) {
+    public DexFunctionCallExpr(Text src, DexExpr target) {
         super(src);
         this.target = target;
         new Parser();

@@ -6,7 +6,7 @@ import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexAddExpr;
-import com.dexscript.ast.expr.DexCallExpr;
+import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +50,7 @@ final class ResolveFunction {
     }
 
     @NotNull
-    public Denotation resolveFunction(DexCallExpr callExpr) {
+    public Denotation resolveFunction(DexFunctionCallExpr callExpr) {
         DexReference ref = callExpr.target().asRef();
         String functionName = ref.toString();
         List<Denotation.Type> argTypes = new ArrayList<>();

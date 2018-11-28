@@ -3,7 +3,7 @@ package com.dexscript.resolve;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.expr.DexCallExpr;
+import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class Resolve {
     }
 
     @NotNull
-    public Denotation resolveFunction(DexCallExpr callExpr) {
+    public Denotation resolveFunction(DexFunctionCallExpr callExpr) {
         return resolveFunction.resolveFunction(callExpr);
     }
 

@@ -25,14 +25,14 @@ public class OutExpr {
             gen((DexAddExpr) iExpr);
         } else if (iExpr instanceof DexIntegerLiteral) {
             gen((DexIntegerLiteral) iExpr);
-        } else if (iExpr instanceof DexCallExpr) {
-            gen((DexCallExpr) iExpr);
+        } else if (iExpr instanceof DexFunctionCallExpr) {
+            gen((DexFunctionCallExpr) iExpr);
         } else {
             throw new UnsupportedOperationException("not implemented: " + iExpr.getClass());
         }
     }
 
-    private void gen(DexCallExpr iCallExpr) {
+    private void gen(DexFunctionCallExpr iCallExpr) {
         Denotation.FunctionType functionType = (Denotation.FunctionType) town.resolveFunction(iCallExpr);
         OutField oField = oCtor.oClass().allocateField(iCallExpr.target(), BuiltinTypes.RESULT_TYPE);
         Boat boat = functionType.definedBy().attachmentOfType(Boat.class);

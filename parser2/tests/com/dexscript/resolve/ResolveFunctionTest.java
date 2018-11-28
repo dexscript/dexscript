@@ -1,7 +1,7 @@
 package com.dexscript.resolve;
 
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.expr.DexCallExpr;
+import com.dexscript.ast.expr.DexFunctionCallExpr;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,9 +20,9 @@ public class ResolveFunctionTest {
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
         resolve.declare(file);
-        DexCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
+        DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
-                .asCall();
+                .asFunctionCall();
         Denotation.FunctionType type = (Denotation.FunctionType) resolve.resolveFunction(callExpr);
         Assert.assertEquals("String", type.ret().javaClassName());
     }
@@ -43,9 +43,9 @@ public class ResolveFunctionTest {
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
         resolve.declare(file);
-        DexCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
+        DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
-                .asCall();
+                .asFunctionCall();
         Denotation.FunctionType type = (Denotation.FunctionType) resolve.resolveFunction(callExpr);
         Assert.assertEquals("Long", type.ret().javaClassName());
     }
