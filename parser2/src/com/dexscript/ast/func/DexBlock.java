@@ -2,6 +2,7 @@ package com.dexscript.ast.func;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ public class DexBlock extends DexStatement {
 
     private int blockBegin = -1;
     private int blockEnd = -1;
+    private DexSyntaxError syntaxError;
     private List<DexStatement> stmts;
 
     public DexBlock(String src) {
@@ -49,6 +51,11 @@ public class DexBlock extends DexStatement {
                 visitor.visit(stmt);
             }
         }
+    }
+
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public List<DexStatement> stmts() {
@@ -105,7 +112,29 @@ public class DexBlock extends DexStatement {
                 i = stmt.end();
                 return this::stmtOrRightBrace;
             }
-            throw new UnsupportedOperationException("not implemented");
+            return this::unmatchedStmt;
+        }
+
+        State unmatchedStmt() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.__(b)) {
+                    return this::stmtOrRightBrace;
+                }
+                if ('}' == b) {
+                    blockEnd = i + 1;
+                    return null;
+                }
+            }
+            blockEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }

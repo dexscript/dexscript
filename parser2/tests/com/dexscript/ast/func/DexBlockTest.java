@@ -42,4 +42,33 @@ public class DexBlockTest {
         Assert.assertEquals("{return abc; return def}", blk.stmts().get(0).prev().toString());
         Assert.assertEquals("return abc", blk.stmts().get(1).prev().toString());
     }
+
+    @Test
+    public void recover_from_invalid_statement_by_line_end() {
+        String src = "" +
+                "{\n" +
+                "??\n" +
+                "return abc\n" +
+                "}";
+        DexBlock blk = new DexBlock(src);
+        Assert.assertEquals("{\n" +
+                "<error/>??\n" +
+                "return abc\n" +
+                "}", blk.toString());
+        Assert.assertEquals("<error/>", blk.stmts().get(0).toString());
+        Assert.assertEquals("return abc", blk.stmts().get(1).toString());
+    }
+
+    @Test
+    public void recover_from_last_invalid_statement() {
+        String src = "" +
+                "{\n" +
+                "return abc;??" +
+                "}xyz";
+        DexBlock blk = new DexBlock(src);
+        Assert.assertEquals("{\n" +
+                "return abc;<error/>??}", blk.toString());
+        Assert.assertEquals("return abc", blk.stmts().get(0).toString());
+        Assert.assertEquals("<error/>", blk.stmts().get(1).toString());
+    }
 }
