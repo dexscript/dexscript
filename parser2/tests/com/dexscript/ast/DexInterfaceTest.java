@@ -31,7 +31,29 @@ public class DexInterfaceTest {
                 "   Quack(): string\n" +
                 "}";
         DexInterface inf = new DexInterface(src);
+        inf.members();
+        Assert.assertEquals("{\n" +
+                "   Quack(): string\n" +
+                "}", inf.body().toString());
         Assert.assertEquals(1, inf.members().size());
         Assert.assertEquals("Quack(): string", inf.members().get(0).toString());
+    }
+
+    @Test
+    public void recover_invalid_inf_member_by_line_end() {
+        String src = "" +
+                "interface Duck {\n" +
+                "   ??;" +
+                "   Quack(): string\n" +
+                "}";
+        DexInterface inf = new DexInterface(src);
+        inf.members();
+        Assert.assertEquals("{\n" +
+                "   <error/>??;   Quack(): string\n" +
+                "}", inf.body().toString());
+        Assert.assertEquals(2, inf.members().size());
+        Assert.assertEquals("<unmatched>??;   Quack(): string\n" +
+                "}</unmatched>", inf.members().get(0).toString());
+        Assert.assertEquals("Quack(): string", inf.members().get(1).toString());
     }
 }

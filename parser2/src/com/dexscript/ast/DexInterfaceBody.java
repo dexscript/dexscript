@@ -1,8 +1,6 @@
 package com.dexscript.ast;
 
-import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.State;
-import com.dexscript.ast.core.Text;
+import com.dexscript.ast.core.*;
 import com.dexscript.ast.inf.DexInfMember;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
@@ -14,6 +12,7 @@ public class DexInterfaceBody extends DexElement {
 
     private final Text matched;
     private List<DexInfMember> members;
+    private DexSyntaxError syntaxError;
 
     public DexInterfaceBody(Text src) {
         super(src);
@@ -37,6 +36,11 @@ public class DexInterfaceBody extends DexElement {
     @Override
     public boolean matched() {
         return true;
+    }
+
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public void reparent(DexFunction parent) {
@@ -69,7 +73,8 @@ public class DexInterfaceBody extends DexElement {
             State.Play(this::leftBrace);
         }
 
-        private State leftBrace() {
+        @Expect("{")
+        State leftBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
@@ -77,14 +82,16 @@ public class DexInterfaceBody extends DexElement {
                 }
                 if (b == '{') {
                     i += 1;
-                    return this::stmtOrRightBrace;
+                    return this::memberOrRightBrace;
                 }
                 return null;
             }
             return null;
         }
 
-        private State stmtOrRightBrace() {
+        @Expect("interface member")
+        @Expect("}")
+        State memberOrRightBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
@@ -104,9 +111,29 @@ public class DexInterfaceBody extends DexElement {
             members.add(stmt);
             if (stmt.matched()) {
                 i = stmt.end();
-                return this::stmtOrRightBrace;
+                return this::memberOrRightBrace;
             }
-            throw new UnsupportedOperationException("not implemented");
+            return this::unmatchedMember;
+        }
+
+        State unmatchedMember() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.__(b)) {
+                    return this::memberOrRightBrace;
+                }
+                if ('}' == b) {
+                    return null;
+                }
+            }
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }
