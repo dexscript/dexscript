@@ -102,4 +102,17 @@ final class ResolveFunction {
         }
         return true;
     }
+
+    public boolean canProvide(String functionName, List<Denotation.Type> params, Denotation.Type ret) {
+        List<Denotation.FunctionType> candidates = defined.get(functionName);
+        if (candidates == null) {
+            return false;
+        }
+        for (Denotation.FunctionType candidate : candidates) {
+            if (candidate.canProvide(functionName, params, ret)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -81,15 +81,18 @@ public class Denotation {
             return this;
         }
 
-        protected boolean canProvide(String functionName, List<Type> args, Type ret) {
-            return false;
-        }
+        protected abstract boolean canProvide(String functionName, List<Type> args, Type ret);
     }
 
     public static class BuiltinType extends Type {
 
         public BuiltinType(String name, String javaClassName) {
             super(name, TypeKind.JAVA, javaClassName);
+        }
+
+        @Override
+        protected boolean canProvide(String functionName, List<Type> args, Type ret) {
+            return false;
         }
     }
 
@@ -189,6 +192,9 @@ public class Denotation {
                     expandedParams.add(param.expand(lookup));
                 }
                 Type expandedRet = member.ret().expand(lookup);
+                if (resolve.canProvide(member.name(), expandedParams, expandedRet)) {
+                    continue;
+                }
                 if (!that.canProvide(member.name(), expandedParams, expandedRet)) {
                     return false;
                 }

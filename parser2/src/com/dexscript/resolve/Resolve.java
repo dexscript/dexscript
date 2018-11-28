@@ -8,6 +8,8 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class Resolve {
 
     private final ResolveType resolveType = new ResolveType();
@@ -56,5 +58,9 @@ public class Resolve {
 
     public Denotation resolveType(String name) {
         return resolveType(new DexReference(name));
+    }
+
+    public boolean canProvide(String functionName, List<Denotation.Type> params, Denotation.Type ret) {
+        return resolveFunction.canProvide(functionName, params, ret);
     }
 }
