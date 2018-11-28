@@ -79,6 +79,7 @@ public final class DexParenExpr extends DexExpr {
                     i += 1;
                     return this::body;
                 }
+                return null;
             }
             return null;
         }

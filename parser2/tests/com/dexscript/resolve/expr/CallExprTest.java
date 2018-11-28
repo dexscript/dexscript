@@ -2,6 +2,7 @@ package com.dexscript.resolve.expr;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.resolve.BuiltinTypes;
 import com.dexscript.resolve.Resolve;
 import org.junit.Assert;
@@ -26,6 +27,7 @@ public class CallExprTest {
     public void method_call() {
         Resolve resolve = new Resolve();
         resolve.declare(new DexFunction("function ToString(i: int64): string { return ''; }"));
-        Assert.assertEquals(BuiltinTypes.STRING_TYPE, resolve.resolveType(DexExpr.parse("100.ToString()")));
+        DexMethodCallExpr expr = (DexMethodCallExpr) DexExpr.parse("100.ToString()");
+        Assert.assertEquals(BuiltinTypes.STRING_TYPE, resolve.resolveType(expr));
     }
 }

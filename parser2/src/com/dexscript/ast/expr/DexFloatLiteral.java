@@ -110,7 +110,8 @@ public class DexFloatLiteral extends DexLeafExpr {
                     i += 1;
                     return this::eFound;
                 }
-                break;
+                matched = new Text(src.bytes, integerBegin, i - 1);
+                return null;
             }
             matched = new Text(src.bytes, integerBegin, i);
             return null;

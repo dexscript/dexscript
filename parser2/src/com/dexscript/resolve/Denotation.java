@@ -145,30 +145,6 @@ public class Denotation {
         }
     }
 
-    public static class CallType extends Type {
-
-        private final List<Type> args;
-
-        public CallType(String name, List<Type> args) {
-            super(name, TypeKind.CALL, null);
-            this.args = args;
-        }
-
-        public List<Type> args() {
-            return args;
-        }
-
-        @Override
-        protected Type expand(int level) {
-            throw new UnsupportedOperationException();
-        }
-
-        @Override
-        protected Type expanded() {
-            throw new UnsupportedOperationException();
-        }
-    }
-
     public static class InterfaceType extends Type {
 
         private final Resolve resolve;
@@ -336,7 +312,6 @@ public class Denotation {
 
         public static final TypeKind JAVA = new TypeKind("java");
         public static final TypeKind FUNCTION = new TypeKind("function");
-        public static final TypeKind CALL = new TypeKind("call");
         public static final TypeKind INTERFACE = new TypeKind("interface");
 
         public TypeKind(String name) {

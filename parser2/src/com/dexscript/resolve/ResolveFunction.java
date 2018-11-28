@@ -5,10 +5,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.expr.DexAddExpr;
-import com.dexscript.ast.expr.DexFunctionCallExpr;
-import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -54,6 +51,18 @@ final class ResolveFunction {
         DexReference ref = callExpr.target().asRef();
         String functionName = ref.toString();
         List<Denotation.Type> argTypes = new ArrayList<>();
+        for (DexExpr arg : callExpr.args()) {
+            argTypes.add((Denotation.Type) resolveType.resolveType(arg));
+        }
+        return resolveFunction(callExpr, functionName, argTypes);
+    }
+
+    @NotNull
+    public Denotation resolveFunction(DexMethodCallExpr callExpr) {
+        DexReference ref = callExpr.method();
+        String functionName = ref.toString();
+        List<Denotation.Type> argTypes = new ArrayList<>();
+        argTypes.add((Denotation.Type) resolveType.resolveType(callExpr.obj()));
         for (DexExpr arg : callExpr.args()) {
             argTypes.add((Denotation.Type) resolveType.resolveType(arg));
         }

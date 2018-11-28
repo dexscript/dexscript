@@ -63,7 +63,14 @@ final class ResolveType {
             return BuiltinTypes.STRING_TYPE;
         }
         if (expr instanceof DexFunctionCallExpr) {
-            Denotation typeObj = resolveFunction.resolveFunction(((DexFunctionCallExpr) expr));
+            Denotation typeObj = resolveFunction.resolveFunction((DexFunctionCallExpr) expr);
+            if (typeObj instanceof Denotation.FunctionType) {
+                return ((Denotation.FunctionType) typeObj).ret();
+            }
+            return BuiltinTypes.UNDEFINED_TYPE;
+        }
+        if (expr instanceof DexMethodCallExpr) {
+            Denotation typeObj = resolveFunction.resolveFunction((DexMethodCallExpr) expr);
             if (typeObj instanceof Denotation.FunctionType) {
                 return ((Denotation.FunctionType) typeObj).ret();
             }
