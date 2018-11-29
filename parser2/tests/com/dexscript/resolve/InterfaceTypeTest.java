@@ -8,11 +8,23 @@ import org.junit.Test;
 public class InterfaceTypeTest {
 
     @Test
-    public void define_interface_type() {
+    public void define_interface_type_by_member_function() {
         Resolve resolve = new Resolve();
         resolve.declare(new DexInterface("" +
                 "interface Duck {\n" +
                 "  ::Quack(duck: Duck): string\n" +
+                "}"));
+        Denotation.InterfaceType inf = (Denotation.InterfaceType) resolve.resolveType("Duck");
+        Assert.assertEquals(1, inf.members().size());
+        Assert.assertEquals("String", inf.members().get(0).ret().javaClassName());
+    }
+
+    @Test
+    public void define_interface_type_by_member_method() {
+        Resolve resolve = new Resolve();
+        resolve.declare(new DexInterface("" +
+                "interface Duck {\n" +
+                "  Quack(): string\n" +
                 "}"));
         Denotation.InterfaceType inf = (Denotation.InterfaceType) resolve.resolveType("Duck");
         Assert.assertEquals(1, inf.members().size());

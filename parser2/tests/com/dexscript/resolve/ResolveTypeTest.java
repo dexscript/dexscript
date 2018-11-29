@@ -41,6 +41,23 @@ public class ResolveTypeTest {
     }
 
     @Test
+    public void reference_function_as_interface() {
+        Resolve resolve = new Resolve();
+        resolve.declare(new DexFunction("" +
+                "function Hello(): string {\n" +
+                "   return 'hello'\n" +
+                "}"));
+        resolve.declare(new DexInterface("" +
+                "interface StringPromise {\n" +
+                "   GetResult__(): string" +
+                "}"));
+        Denotation.Type inf = (Denotation.Type) resolve.resolveType("Hello");
+        Assert.assertEquals("Hello", inf.toString());
+        Denotation.Type stringPromise = (Denotation.Type) resolve.resolveType("StringPromise");
+        Assert.assertTrue(stringPromise.isAssignableFrom(inf));
+    }
+
+    @Test
     public void evaluate_argument_reference() {
         DexFunction function = new DexFunction("" +
                 "function Hello(msg: string): string {\n" +

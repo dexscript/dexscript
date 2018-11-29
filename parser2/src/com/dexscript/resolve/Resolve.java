@@ -4,10 +4,7 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexRootDecl;
-import com.dexscript.ast.expr.DexFunctionCallExpr;
-import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexMethodCallExpr;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.*;
 import com.dexscript.ast.inf.DexInfFunction;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,10 +17,9 @@ public class Resolve {
     private final ResolveFunction resolveFunction = new ResolveFunction();
 
     public Resolve() {
-        resolveValue.setResolveType(resolveType);
-        resolveFunction.setResolveType(resolveType);
-        resolveType.setResolveFunction(resolveFunction);
-        resolveType.setResolveValue(resolveValue);
+        resolveValue.setResolve(this);
+        resolveFunction.setResolve(this);
+        resolveType.setResolve(this);
     }
 
     public void declare(DexFile file) {
@@ -38,11 +34,16 @@ public class Resolve {
 
     public void declare(DexFunction function) {
         resolveFunction.declare(function);
+        resolveType.declare(function);
     }
 
 
     public void declare(DexInterface inf) {
-        resolveType.declare(new Denotation.InterfaceType(this, inf));
+        Denotation.InterfaceType infType = new Denotation.InterfaceType(this, inf);
+        resolveType.declare(infType);
+        for (Denotation.FunctionType functionType : infType.members()) {
+            resolveFunction.declare(functionType);
+        }
     }
 
     @NotNull
@@ -83,5 +84,9 @@ public class Resolve {
 
     public List<Denotation.FunctionType> resolveFunctions(DexInfFunction infFunction) {
         return resolveFunction.resolveFunctions(infFunction);
+    }
+
+    public Denotation resolveFunction(DexAddExpr addExpr) {
+        return resolveFunction.resolveFunction(addExpr);
     }
 }

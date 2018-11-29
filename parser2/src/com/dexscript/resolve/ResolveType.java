@@ -1,12 +1,18 @@
 package com.dexscript.resolve;
 
+import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.expr.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 final class ResolveType {
 
+    private final Map<String, List<DexFunction>> declaredFunctions = new HashMap<>();
     private final DenotationTable declared;
-    private ResolveFunction resolveFunction;
-    private ResolveValue resolveValue;
+    private Resolve resolve;
 
     ResolveType(DenotationTable builtin) {
         this.declared = builtin;
@@ -16,19 +22,10 @@ final class ResolveType {
         this(BuiltinTypes.BUILTIN_TYPES);
     }
 
-    public void setResolveFunction(ResolveFunction resolveFunction) {
-        this.resolveFunction = resolveFunction;
-    }
-
-    public void setResolveValue(ResolveValue resolveValue) {
-        this.resolveValue = resolveValue;
-    }
+    public void setResolve(Resolve resolve) { this.resolve = resolve; }
 
     public void declare(Denotation.InterfaceType inf) {
         declared.put(inf.name(), inf);
-        for (Denotation.FunctionType functionType : inf.members()) {
-            resolveFunction.declare(functionType);
-        }
     }
 
     public Denotation resolveType(DexReference ref) {
@@ -38,10 +35,15 @@ final class ResolveType {
         }
         String refName = ref.toString();
         type = declared.get(refName);
-        if (type == null) {
-            type = new Denotation.Error(refName, ref, "can not resolve " + refName + " to a type");
+        if (type != null) {
+            ref.attach(type);
+            return type;
         }
-        ref.attach(type);
+        List<DexFunction> functions = declaredFunctions.get(refName);
+        for (DexFunction function : functions) {
+            return new Denotation.FunctionInterfaceType(resolve, function);
+        }
+        type = new Denotation.Error(refName, ref, "can not resolve " + refName + " to a type");
         return type;
     }
 
@@ -66,28 +68,28 @@ final class ResolveType {
             return BuiltinTypes.STRING_TYPE;
         }
         if (expr instanceof DexFunctionCallExpr) {
-            Denotation typeObj = resolveFunction.resolveFunction((DexFunctionCallExpr) expr);
+            Denotation typeObj = resolve.resolveFunction((DexFunctionCallExpr) expr);
             if (typeObj instanceof Denotation.FunctionType) {
                 return ((Denotation.FunctionType) typeObj).ret();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
         if (expr instanceof DexMethodCallExpr) {
-            Denotation typeObj = resolveFunction.resolveFunction((DexMethodCallExpr) expr);
+            Denotation typeObj = resolve.resolveFunction((DexMethodCallExpr) expr);
             if (typeObj instanceof Denotation.FunctionType) {
                 return ((Denotation.FunctionType) typeObj).ret();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
         if (expr instanceof DexAddExpr) {
-            Denotation typeObj = resolveFunction.resolveFunction((DexAddExpr) expr);
+            Denotation typeObj = resolve.resolveFunction((DexAddExpr) expr);
             if (typeObj instanceof Denotation.FunctionType) {
                 return ((Denotation.FunctionType) typeObj).ret();
             }
             return BuiltinTypes.UNDEFINED_TYPE;
         }
         if (expr instanceof DexReference) {
-            Denotation refObj = resolveValue.resolveValue(((DexReference) expr));
+            Denotation refObj = resolve.resolveValue(((DexReference) expr));
             if (refObj instanceof Denotation.Value) {
                 Denotation.Value ref = (Denotation.Value) refObj;
                 return ref.type();
@@ -95,5 +97,11 @@ final class ResolveType {
             return BuiltinTypes.UNDEFINED_TYPE;
         }
         return new Denotation.Error(expr.toString(), expr, "can not evaluate expression type: " + expr.getClass());
+    }
+
+    public void declare(DexFunction function) {
+        String functionName = function.identifier().toString();
+        List<DexFunction> functions = declaredFunctions.computeIfAbsent(functionName, k -> new ArrayList<>());
+        functions.add(function);
     }
 }

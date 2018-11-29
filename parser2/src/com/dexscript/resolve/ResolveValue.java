@@ -13,7 +13,7 @@ final class ResolveValue {
 
     public static final DenotationTable BUILTIN_VALUES = new DenotationTable();
     private final DenotationTable builtin;
-    private ResolveType resolveType;
+    private Resolve resolve;
 
     ResolveValue(DenotationTable builtin) {
         this.builtin = builtin;
@@ -23,8 +23,8 @@ final class ResolveValue {
         this(BUILTIN_VALUES);
     }
 
-    void setResolveType(ResolveType resolveType) {
-        this.resolveType = resolveType;
+    void setResolve(Resolve resolveType) {
+        this.resolve = resolveType;
     }
 
     public Denotation resolveValue(DexReference ref) {
@@ -78,7 +78,7 @@ final class ResolveValue {
     private DenotationTable fillTable(DexFunction function, DenotationTable denotationTable) {
         for (DexParam param : function.sig().params()) {
             String name = param.paramName().toString();
-            Denotation.Type type = (Denotation.Type) resolveType.resolveType(param.paramType());
+            Denotation.Type type = (Denotation.Type) resolve.resolveType(param.paramType());
             if (type != null) {
                 denotationTable.put(name, new Denotation.Value(name, type, param));
             }
@@ -88,7 +88,7 @@ final class ResolveValue {
 
     private DenotationTable fillTable(DexShortVarDecl shortVarDecl, DenotationTable denotationTable) {
         String name = shortVarDecl.decls().get(0).toString();
-        Denotation.Type type = (Denotation.Type) resolveType.resolveType(shortVarDecl.expr());
+        Denotation.Type type = (Denotation.Type) resolve.resolveType(shortVarDecl.expr());
         if (type != null) {
             denotationTable.put(name, new Denotation.Value(name, type, shortVarDecl));
         }

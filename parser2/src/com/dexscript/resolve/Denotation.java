@@ -158,6 +158,23 @@ public class Denotation {
         }
     }
 
+    public static class FunctionInterfaceType extends Type {
+
+        private final Resolve resolve;
+        private final DexFunction definedBy;
+
+        public FunctionInterfaceType(Resolve resolve, DexFunction definedBy) {
+            super(definedBy.identifier().toString(), TypeKind.INTERFACE, "Object");
+            this.resolve = resolve;
+            this.definedBy  = definedBy;
+        }
+
+        @Override
+        protected boolean canProvide(String functionName, List<Type> args, Type ret) {
+            return false;
+        }
+    }
+
     public static class InterfaceType extends Type {
 
         private final Resolve resolve;

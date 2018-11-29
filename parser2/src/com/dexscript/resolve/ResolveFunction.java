@@ -14,10 +14,10 @@ import java.util.Map;
 final class ResolveFunction {
 
     private final Map<String, List<Denotation.FunctionType>> defined = new HashMap<>();
-    private ResolveType resolveType;
+    private Resolve resolve;
 
-    void setResolveType(ResolveType resolveType) {
-        this.resolveType = resolveType;
+    void setResolve(Resolve resolve) {
+        this.resolve = resolve;
     }
 
     public void declare(DexFunction function) {
@@ -25,14 +25,14 @@ final class ResolveFunction {
         List<Denotation.FunctionType> types = defined.computeIfAbsent(functionName, k -> new ArrayList<>());
         List<Denotation.Type> args = new ArrayList<>();
         for (DexParam param : function.sig().params()) {
-            Denotation typeObj = resolveType.resolveType(param.paramType());
+            Denotation typeObj = resolve.resolveType(param.paramType());
             if (!(typeObj instanceof Denotation.Type)) {
                 return;
             }
             Denotation.Type arg = (Denotation.Type) typeObj;
             args.add(arg);
         }
-        Denotation.Type ret = (Denotation.Type) resolveType.resolveType(function.sig().ret());
+        Denotation.Type ret = (Denotation.Type) resolve.resolveType(function.sig().ret());
         types.add(new Denotation.FunctionType(functionName, function, args, ret));
     }
 
@@ -42,7 +42,7 @@ final class ResolveFunction {
         String functionName = ref.toString();
         List<Denotation.Type> argTypes = new ArrayList<>();
         for (DexExpr arg : callExpr.args()) {
-            argTypes.add((Denotation.Type) resolveType.resolveType(arg));
+            argTypes.add((Denotation.Type) resolve.resolveType(arg));
         }
         return resolveFunction(callExpr, functionName, argTypes);
     }
@@ -52,9 +52,9 @@ final class ResolveFunction {
         DexReference ref = callExpr.method();
         String functionName = ref.toString();
         List<Denotation.Type> argTypes = new ArrayList<>();
-        argTypes.add((Denotation.Type) resolveType.resolveType(callExpr.obj()));
+        argTypes.add((Denotation.Type) resolve.resolveType(callExpr.obj()));
         for (DexExpr arg : callExpr.args()) {
-            argTypes.add((Denotation.Type) resolveType.resolveType(arg));
+            argTypes.add((Denotation.Type) resolve.resolveType(arg));
         }
         return resolveFunction(callExpr, functionName, argTypes);
     }
@@ -62,8 +62,8 @@ final class ResolveFunction {
     @NotNull
     public Denotation resolveFunction(DexAddExpr addExpr) {
         List<Denotation.Type> argTypes = new ArrayList<>();
-        argTypes.add((Denotation.Type) resolveType.resolveType(addExpr.left()));
-        argTypes.add((Denotation.Type) resolveType.resolveType(addExpr.right()));
+        argTypes.add((Denotation.Type) resolve.resolveType(addExpr.left()));
+        argTypes.add((Denotation.Type) resolve.resolveType(addExpr.right()));
         return resolveFunction(addExpr, "Add__", argTypes);
     }
 
@@ -116,7 +116,7 @@ final class ResolveFunction {
         List<Denotation.FunctionType> candidates = defined.get(infFunction.identifier().toString());
         List<Denotation.Type> paramTypes = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
-            Denotation.Type paramType = (Denotation.Type) resolveType.resolveType(param.paramType());
+            Denotation.Type paramType = (Denotation.Type) resolve.resolveType(param.paramType());
             paramTypes.add(paramType);
         }
         List<Denotation.FunctionType> impls = new ArrayList<>();
