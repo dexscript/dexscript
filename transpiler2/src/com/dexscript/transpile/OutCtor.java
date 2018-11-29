@@ -25,7 +25,7 @@ public class OutCtor {
         g = new Gen(oClass.indention());
         g.__("public "
         ).__(className()
-        ).__(new OutSig(town, iFunc.sig()).toString()
+        ).__(new OutSig(town, iFunc.sig(),true).toString()
         ).__(" {"
         ).__(new Indent(this::genBody)
         ).__(new Line("}"));

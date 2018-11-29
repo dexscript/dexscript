@@ -18,7 +18,7 @@ public class InterfaceArgTest {
                 "function Quack(duck: string): string {\n" +
                 "   return duck + ' quack'\n" +
                 "}";
-        Result result = TranspileOne.__(src, "donald");
+        Result result = TranspileOne.__(src, (Object)"donald");
         Assert.assertEquals("donald quack", result.value());
     }
 }

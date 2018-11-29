@@ -7,6 +7,9 @@ import com.dexscript.resolve.Denotation;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OutExpr {
 
     private final OutCtor oCtor;
@@ -36,13 +39,26 @@ public class OutExpr {
     }
 
     private void gen(DexMethodCallExpr iCallExpr) {
+        List<OutExpr> args = new ArrayList<>();
+        args.add(new OutExpr(oCtor, g, iCallExpr.obj()));
+        for (DexExpr arg : iCallExpr.args()) {
+            args.add(new OutExpr(oCtor, g, arg));
+        }
         Denotation.FunctionType functionType = town.resolveFunction(iCallExpr);
         OutField oField = oCtor.oClass().allocateField(iCallExpr.method(), BuiltinTypes.RESULT_TYPE);
         Boat boat = functionType.boat();
         g.__(oField.fieldName
         ).__(" = "
         ).__(boat.applyF()
-        ).__(new Line("();"));
+        ).__('(');
+        for (int i = 0; i < args.size(); i++) {
+            if (i > 0) {
+                g.__(", ");
+            }
+            OutExpr arg = args.get(i);
+            g.__(arg);
+        }
+        g.__(new Line(");"));
         val.__('('
         ).__(oField.fieldName
         ).__(".value())");

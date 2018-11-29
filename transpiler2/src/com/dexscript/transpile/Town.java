@@ -2,8 +2,8 @@ package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckSemanticError;
 import com.dexscript.ast.*;
-import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.inf.DexInfFunction;
@@ -61,11 +61,35 @@ public class Town {
     public void declare(DexFile iFile) {
         for (DexRootDecl rootDecl : iFile.rootDecls()) {
             if (rootDecl.function() != null) {
-                resolve.declare(rootDecl.function());
+                DexFunction iFunction = rootDecl.function();
+                resolve.declare(iFunction);
+                List<DexParam> params = iFunction.sig().params();
+                Pier pier = new Pier(iFunction.identifier().toString(), params.size());
+                Boat boat = allocate(pier);
+                iFunction.attach(boat);
             } else if (rootDecl.inf() != null) {
-                resolve.declare(rootDecl.inf());
+                DexInterface inf = rootDecl.inf();
+                resolve.declare(inf);
+                for (DexInfMember member : inf.members()) {
+                    if (member instanceof DexInfMethod) {
+                        declare(inf, (DexInfMethod) member);
+                    } else if (member instanceof DexInfFunction) {
+                        declare(inf, (DexInfFunction) member);
+                    }
+                }
             }
         }
+    }
+
+    private void declare(DexInterface inf, DexInfMethod infMethod) {
+
+    }
+
+    private void declare(DexInterface inf, DexInfFunction infFunction) {
+        List<DexParam> params = infFunction.sig().params();
+        Pier pier = new Pier(infFunction.identifier().toString(), params.size());
+        Boat boat = allocate(pier);
+        infFunction.attach(boat);
     }
 
     public void define(DexFile iFile) {
@@ -81,9 +105,9 @@ public class Town {
     private void define(DexInterface inf) {
         for (DexInfMember member : inf.members()) {
             if (member instanceof DexInfMethod) {
-                define(inf, (DexInfMethod)member);
+                define(inf, (DexInfMethod) member);
             } else if (member instanceof DexInfFunction) {
-                define(inf, (DexInfFunction)member);
+                define(inf, (DexInfFunction) member);
             }
         }
     }
@@ -93,37 +117,60 @@ public class Town {
     }
 
     private void define(DexInterface inf, DexInfFunction infFunction) {
-        List<DexParam> params = infFunction.sig().params();
-        Pier pier = new Pier(infFunction.identifier().toString(), params.size());
-        Boat boat = allocate(pier);
-        infFunction.attach(boat);
+        Boat boat = infFunction.attachmentOfType(Boat.class);
         List<Denotation.FunctionType> impls = resolve.resolveFunctions(infFunction);
-        System.out.println(impls);
-    }
-
-    public void define(DexFunction iFunction) {
-        List<DexParam> params = iFunction.sig().params();
-        Pier pier = new Pier(iFunction.identifier().toString(), params.size());
-        Denotation.Type retType = resolveType(iFunction.sig().ret());
-        Boat boat = allocate(pier);
-        iFunction.attach(boat);
         g.__("public static Result"
         ).__(' '
         ).__(boat.applyF().replace("Town__.", "")
-        ).__(new OutSig(this, iFunction.sig())
+        ).__(new OutSig(this, infFunction.sig(), false)
+        ).__(" {"
+        ).__(new Indent(() -> {
+            for (Denotation.FunctionType impl : impls) {
+                Boat implBoat = impl.boat();
+                g.__("if ("
+                ).__(implBoat.checkF()
+                ).__(infFunction.sig()
+                ).__(") {"
+                ).__(new Indent(() -> {
+                    g.__("return "
+                    ).__(implBoat.applyF()
+                    ).__(infFunction.sig()
+                    ).__(new Line(";"));
+                })).__(new Line("}"));
+            }
+            g.__(new Line("throw new RuntimeException();"));
+        })).__(new Line("}"));
+    }
+
+    public void define(DexFunction iFunction) {
+        Boat boat = iFunction.attachmentOfType(Boat.class);
+        g.__("public static Result "
+        ).__(boat.applyF().replace("Town__.", "")
+        ).__(new OutSig(this, iFunction.sig(), false)
         ).__(" {"
         ).__(new Indent(() -> {
             g.__("return new "
             ).__(OutClass.qualifiedClassNameOf(iFunction)
             ).__('(');
+            List<DexParam> params = iFunction.sig().params();
             for (int i = 0; i < params.size(); i++) {
                 if (i > 0) {
                     g.__(", ");
                 }
                 DexParam param = params.get(i);
-                g.__(param.paramName());
+                g.__('('
+                ).__(resolveType(param.paramType()).javaClassName()
+                ).__(')'
+                ).__(param.paramName());
             }
             g.__(new Line(");"));
+        })).__(new Line("}"));
+        g.__("public static boolean can__"
+        ).__(boat.applyF().replace("Town__.", "")
+        ).__(new OutSig(this, iFunction.sig(), false)
+        ).__(" {"
+        ).__(new Indent(() -> {
+            g.__("return true;");
         })).__(new Line("}"));
     }
 
@@ -144,7 +191,9 @@ public class Town {
         if (boats.containsKey(boatName)) {
             return null;
         }
-        return new Boat(pier, TOWN_CLASSNAME, boatName);
+        Boat boat = new Boat(pier, TOWN_CLASSNAME, boatName);
+        boats.put(boatName, boat);
+        return boat;
     }
 
     public Denotation.FunctionType resolveFunction(DexFunctionCallExpr callExpr) {

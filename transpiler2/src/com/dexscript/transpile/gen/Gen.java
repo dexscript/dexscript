@@ -1,6 +1,10 @@
 package com.dexscript.transpile.gen;
 
+import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.elem.DexSig;
+
+import java.util.List;
 
 public final class Gen {
 
@@ -35,6 +39,20 @@ public final class Gen {
 
     public Gen __(char c) {
         gen.append(c);
+        return this;
+    }
+
+    public Gen __(DexSig sig) {
+        __('(');
+        List<DexParam> params = sig.params();
+        for (int i = 0; i < params.size(); i++) {
+            if (i > 0) {
+                __(", ");
+            }
+            DexParam param = params.get(i);
+            __(param.paramName());
+        }
+        __(')');
         return this;
     }
 
