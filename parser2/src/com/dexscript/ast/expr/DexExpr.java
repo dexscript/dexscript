@@ -108,7 +108,7 @@ public abstract class DexExpr extends DexElement {
             return expr;
         }
         expr = new DexMethodCallExpr(src, left);
-        if (expr.matched()){
+        if (expr.matched()) {
             return expr;
         }
         expr = new DexFunctionCallExpr(src, left);
@@ -128,5 +128,9 @@ public abstract class DexExpr extends DexElement {
 
     public DexReference asRef() {
         return (DexReference) this;
+    }
+
+    public DexMethodCallExpr asMethodCall() {
+        return (DexMethodCallExpr) this;
     }
 }

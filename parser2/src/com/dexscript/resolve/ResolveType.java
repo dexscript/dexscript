@@ -26,6 +26,9 @@ final class ResolveType {
 
     public void declare(Denotation.InterfaceType inf) {
         declared.put(inf.name(), inf);
+        for (Denotation.FunctionType functionType : inf.members()) {
+            resolveFunction.declare(functionType);
+        }
     }
 
     public Denotation resolveType(DexReference ref) {

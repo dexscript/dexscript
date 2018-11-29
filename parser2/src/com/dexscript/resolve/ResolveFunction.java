@@ -1,11 +1,9 @@
 package com.dexscript.resolve;
 
-import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.DexParam;
-import com.dexscript.ast.DexRootDecl;
+import com.dexscript.ast.*;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
+import com.dexscript.ast.inf.DexInfMember;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -114,5 +112,11 @@ final class ResolveFunction {
             }
         }
         return false;
+    }
+
+    public void declare(Denotation.FunctionType functionType) {
+        List<Denotation.FunctionType> functionTypes = defined.computeIfAbsent(
+                functionType.name(), k -> new ArrayList<>());
+        functionTypes.add(functionType);
     }
 }

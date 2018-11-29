@@ -6,6 +6,7 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.resolve.BuiltinTypes;
+import com.dexscript.resolve.Denotation;
 import com.dexscript.resolve.Resolve;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,5 +42,20 @@ public class CallExprTest {
         resolve.declare(new DexFunction("function PrintDuck(duck: Duck): string { return duck.Quack(); }"));
         DexFunctionCallExpr expr = (DexFunctionCallExpr) DexExpr.parse("PrintDuck(100)");
         Assert.assertEquals(BuiltinTypes.STRING_TYPE, resolve.resolveType(expr));
+    }
+
+    @Test
+    public void call_method_of_interface() {
+        Resolve resolve = new Resolve();
+        resolve.declare(new DexInterface("" +
+                "interface Duck {\n" +
+                "   ::Quack(duck: Duck): string\n" +
+                "}"));
+        DexFunction function = new DexFunction("" +
+                "function Hello(duck: Duck): string {" +
+                "   return duck.Quack()\n" +
+                "}");
+        Denotation type = resolve.resolveType(function.stmts().get(0).asReturn().expr().asMethodCall());
+        Assert.assertEquals(BuiltinTypes.STRING_TYPE, type);
     }
 }
