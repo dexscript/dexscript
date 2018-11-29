@@ -46,7 +46,7 @@ final class ResolveType {
     }
 
     public Denotation resolveType(DexExpr expr) {
-        Denotation denotation = expr.attachmentOfType(Denotation.class);
+        Denotation denotation = expr.attachmentOfType(Denotation.Type.class);
         if (denotation != null) {
             return denotation;
         }

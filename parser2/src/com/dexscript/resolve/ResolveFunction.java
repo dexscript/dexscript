@@ -3,7 +3,7 @@ package com.dexscript.resolve;
 import com.dexscript.ast.*;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
-import com.dexscript.ast.inf.DexInfMember;
+import com.dexscript.ast.inf.DexInfFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -18,14 +18,6 @@ final class ResolveFunction {
 
     void setResolveType(ResolveType resolveType) {
         this.resolveType = resolveType;
-    }
-
-    public void declare(DexFile file) {
-        for (DexRootDecl rootDecl : file.rootDecls()) {
-            if (rootDecl.function() != null) {
-                declare(rootDecl.function());
-            }
-        }
     }
 
     public void declare(DexFunction function) {
@@ -75,25 +67,25 @@ final class ResolveFunction {
         return resolveFunction(addExpr, "Add__", argTypes);
     }
 
-    private Denotation resolveFunction(DexElement elem, String functionName, List<Denotation.Type> argTypes) {
+    private Denotation resolveFunction(DexElement elem, String functionName, List<Denotation.Type> paramTypes) {
         List<Denotation.FunctionType> candidates = defined.get(functionName);
         if (candidates == null) {
             return new Denotation.Error(functionName, elem, "can not resolve " + functionName + " to a function");
         }
         for (Denotation.FunctionType candidate : candidates) {
-            if (signatureMatch(argTypes, candidate)) {
+            if (signatureMatch(paramTypes, candidate.params())) {
                 return candidate;
             }
         }
         return new Denotation.Error(functionName, elem, "can not resolve " + functionName + " to a function");
     }
 
-    private boolean signatureMatch(List<Denotation.Type> argTypes, Denotation.FunctionType candidate) {
-        if (candidate.params().size() != argTypes.size()) {
+    private boolean signatureMatch(List<Denotation.Type> argTypes, List<Denotation.Type> paramTypes) {
+        if (paramTypes.size() != argTypes.size()) {
             return false;
         }
-        for (int i = 0; i < candidate.params().size(); i++) {
-            Denotation.Type arg = candidate.params().get(i);
+        for (int i = 0; i < paramTypes.size(); i++) {
+            Denotation.Type arg = paramTypes.get(i);
             if (!arg.isAssignableFrom(argTypes.get(i))) {
                 return false;
             }
@@ -118,5 +110,24 @@ final class ResolveFunction {
         List<Denotation.FunctionType> functionTypes = defined.computeIfAbsent(
                 functionType.name(), k -> new ArrayList<>());
         functionTypes.add(functionType);
+    }
+
+    public List<Denotation.FunctionType> resolveFunctions(DexInfFunction infFunction) {
+        List<Denotation.FunctionType> candidates = defined.get(infFunction.identifier().toString());
+        List<Denotation.Type> paramTypes = new ArrayList<>();
+        for (DexParam param : infFunction.sig().params()) {
+            Denotation.Type paramType = (Denotation.Type) resolveType.resolveType(param.paramType());
+            paramTypes.add(paramType);
+        }
+        List<Denotation.FunctionType> impls = new ArrayList<>();
+        for (Denotation.FunctionType candidate : candidates) {
+            if (!candidate.isImpl()){
+                continue;
+            }
+            if (signatureMatch(candidate.params(), paramTypes)) {
+                impls.add(candidate);
+            }
+        }
+        return impls;
     }
 }

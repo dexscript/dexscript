@@ -1,6 +1,7 @@
 package com.dexscript.transpile;
 
 import com.dexscript.ast.expr.*;
+import com.dexscript.resolve.Boat;
 import com.dexscript.resolve.BuiltinTypes;
 import com.dexscript.resolve.Denotation;
 import com.dexscript.transpile.gen.Gen;
@@ -27,13 +28,28 @@ public class OutExpr {
             gen((DexIntegerLiteral) iExpr);
         } else if (iExpr instanceof DexFunctionCallExpr) {
             gen((DexFunctionCallExpr) iExpr);
+        } else if (iExpr instanceof DexMethodCallExpr) {
+            gen((DexMethodCallExpr) iExpr);
         } else {
             throw new UnsupportedOperationException("not implemented: " + iExpr.getClass());
         }
     }
 
+    private void gen(DexMethodCallExpr iCallExpr) {
+        Denotation.FunctionType functionType = town.resolveFunction(iCallExpr);
+        OutField oField = oCtor.oClass().allocateField(iCallExpr.method(), BuiltinTypes.RESULT_TYPE);
+        Boat boat = functionType.boat();
+        g.__(oField.fieldName
+        ).__(" = "
+        ).__(boat.applyF()
+        ).__(new Line("();"));
+        val.__('('
+        ).__(oField.fieldName
+        ).__(".value())");
+    }
+
     private void gen(DexFunctionCallExpr iCallExpr) {
-        Denotation.FunctionType functionType = (Denotation.FunctionType) town.resolveFunction(iCallExpr);
+        Denotation.FunctionType functionType = town.resolveFunction(iCallExpr);
         OutField oField = oCtor.oClass().allocateField(iCallExpr.target(), BuiltinTypes.RESULT_TYPE);
         Boat boat = functionType.definedBy().attachmentOfType(Boat.class);
         g.__(oField.fieldName

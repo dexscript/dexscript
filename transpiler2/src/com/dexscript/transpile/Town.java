@@ -1,19 +1,20 @@
 package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckSemanticError;
-import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.DexParam;
-import com.dexscript.ast.DexRootDecl;
+import com.dexscript.ast.*;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.ast.expr.DexReference;
-import com.dexscript.resolve.Denotation;
-import com.dexscript.resolve.Resolve;
+import com.dexscript.ast.inf.DexInfFunction;
+import com.dexscript.ast.inf.DexInfMember;
+import com.dexscript.ast.inf.DexInfMethod;
+import com.dexscript.resolve.*;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,13 @@ public class Town {
 
     public Town() {
         resolve = new Resolve();
+        ArrayList<Denotation.Type> params = new ArrayList<>();
+        params.add(BuiltinTypes.STRING_TYPE);
+        params.add(BuiltinTypes.STRING_TYPE);
+        Denotation.FunctionType addStringString = new Denotation.FunctionType(
+                "Add__", null, params, BuiltinTypes.STRING_TYPE);
+        addStringString.setBoat(new Boat(new Pier("Add__", 2), "Add__", "String_String"));
+        resolve.declare(addStringString);
         g.__("package com.dexscript.runtime.gen__"
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
@@ -64,8 +72,33 @@ public class Town {
         for (DexRootDecl rootDecl : iFile.rootDecls()) {
             if (rootDecl.function() != null) {
                 define(rootDecl.function());
+            } else if (rootDecl.inf() != null) {
+                define(rootDecl.inf());
             }
         }
+    }
+
+    private void define(DexInterface inf) {
+        for (DexInfMember member : inf.members()) {
+            if (member instanceof DexInfMethod) {
+                define(inf, (DexInfMethod)member);
+            } else if (member instanceof DexInfFunction) {
+                define(inf, (DexInfFunction)member);
+            }
+        }
+    }
+
+    private void define(DexInterface inf, DexInfMethod iMethod) {
+
+    }
+
+    private void define(DexInterface inf, DexInfFunction infFunction) {
+        List<DexParam> params = infFunction.sig().params();
+        Pier pier = new Pier(infFunction.identifier().toString(), params.size());
+        Boat boat = allocate(pier);
+        infFunction.attach(boat);
+        List<Denotation.FunctionType> impls = resolve.resolveFunctions(infFunction);
+        System.out.println(impls);
     }
 
     public void define(DexFunction iFunction) {
@@ -114,8 +147,8 @@ public class Town {
         return new Boat(pier, TOWN_CLASSNAME, boatName);
     }
 
-    public Denotation.Type resolveFunction(DexFunctionCallExpr callExpr) {
-        return (Denotation.Type) resolve.resolveFunction(callExpr);
+    public Denotation.FunctionType resolveFunction(DexFunctionCallExpr callExpr) {
+        return (Denotation.FunctionType) resolve.resolveFunction(callExpr);
     }
 
     public Denotation.Type resolveType(DexReference ref) {
@@ -138,5 +171,9 @@ public class Town {
         if (new CheckSemanticError(resolve, iFile).hasError()) {
             throw new DexTranspileException();
         }
+    }
+
+    public Denotation.FunctionType resolveFunction(DexMethodCallExpr callExpr) {
+        return (Denotation.FunctionType) resolve.resolveFunction(callExpr);
     }
 }

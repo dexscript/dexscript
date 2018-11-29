@@ -5,6 +5,7 @@ import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.func.DexReturnStmt;
 import com.dexscript.resolve.BuiltinTypes;
@@ -44,14 +45,26 @@ public class CheckSemanticError implements DexElement.Visitor {
             check((DexFunctionCallExpr)elem);
             return;
         }
+        if (elem instanceof DexMethodCallExpr) {
+            check((DexMethodCallExpr)elem);
+            return;
+        }
         elem.walkDown(this);
+    }
+
+    private void check(DexMethodCallExpr elem) {
+        visit(elem.obj());
+        for (DexExpr arg : elem.args()) {
+            visit(arg);
+        }
+        notError(resolve.resolveType(elem));
     }
 
     private void check(DexFunctionCallExpr elem) {
         for (DexExpr arg : elem.args()) {
             visit(arg);
         }
-        notError(resolve.resolveFunction(elem));
+        notError(resolve.resolveType(elem));
     }
 
     private void check(DexReturnStmt returnStmt) {

@@ -1,5 +1,6 @@
 package com.dexscript.resolve;
 
+import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.DexElement;
@@ -82,6 +83,7 @@ public class Denotation {
         }
 
         protected abstract boolean canProvide(String functionName, List<Type> args, Type ret);
+
     }
 
     public static class BuiltinType extends Type {
@@ -101,6 +103,7 @@ public class Denotation {
         private final DexElement definedBy;
         private final List<Type> params;
         private final Type ret;
+        private Boat boat;
 
         public FunctionType(String name, DexElement definedBy, List<Type> params, Type ret) {
             super(name, TypeKind.FUNCTION, "Object");
@@ -137,6 +140,21 @@ public class Denotation {
                 }
             }
             return thatRet.isAssignableFrom(ret());
+        }
+
+        public Boat boat() {
+            if (boat != null) {
+                return boat;
+            }
+            return definedBy.attachmentOfType(Boat.class);
+        }
+
+        public void setBoat(Boat boat) {
+            this.boat = boat;
+        }
+
+        public boolean isImpl() {
+            return definedBy instanceof DexFunction;
         }
     }
 

@@ -3,9 +3,12 @@ package com.dexscript.resolve;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.DexRootDecl;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.inf.DexInfFunction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -24,7 +27,13 @@ public class Resolve {
     }
 
     public void declare(DexFile file) {
-        resolveFunction.declare(file);
+        for (DexRootDecl rootDecl : file.rootDecls()) {
+            if (rootDecl.function() != null) {
+                declare(rootDecl.function());
+            } else if (rootDecl.inf() != null) {
+                declare(rootDecl.inf());
+            }
+        }
     }
 
     public void declare(DexFunction function) {
@@ -62,5 +71,17 @@ public class Resolve {
 
     public boolean canProvide(String functionName, List<Denotation.Type> params, Denotation.Type ret) {
         return resolveFunction.canProvide(functionName, params, ret);
+    }
+
+    public void declare(Denotation.FunctionType functionType) {
+        resolveFunction.declare(functionType);
+    }
+
+    public Denotation resolveFunction(DexMethodCallExpr callExpr) {
+        return resolveFunction.resolveFunction(callExpr);
+    }
+
+    public List<Denotation.FunctionType> resolveFunctions(DexInfFunction infFunction) {
+        return resolveFunction.resolveFunctions(infFunction);
     }
 }

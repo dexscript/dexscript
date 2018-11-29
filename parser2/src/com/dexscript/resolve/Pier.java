@@ -1,4 +1,4 @@
-package com.dexscript.transpile;
+package com.dexscript.resolve;
 
 import java.util.Objects;
 
