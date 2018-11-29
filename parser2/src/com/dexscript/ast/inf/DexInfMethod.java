@@ -47,4 +47,8 @@ public class DexInfMethod extends DexInfMember {
     public DexSig sig() {
         return sig;
     }
+
+    public DexIdentifier identifier() {
+        return identifier;
+    }
 }

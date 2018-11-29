@@ -6,6 +6,7 @@ import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMember;
+import com.dexscript.ast.inf.DexInfMethod;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -193,10 +194,24 @@ public class Denotation {
                 for (DexInfMember member : definedBy.members()) {
                     if (member instanceof DexInfFunction) {
                         members.add(toFunctionType((DexInfFunction) member));
+                    } else if (member instanceof DexInfMethod) {
+                        members.add(toFunctionType((DexInfMethod)member));
                     }
                 }
             }
             return members;
+        }
+
+        private FunctionType toFunctionType(DexInfMethod member) {
+            String functionName = member.identifier().toString();
+            List<Type> paramTypes = new ArrayList<>();
+            paramTypes.add(this); // first parameter is interface itself
+            for (DexParam param : member.sig().params()) {
+                Denotation.Type paramType = (Type) resolve.resolveType(param.paramType());
+                paramTypes.add(paramType);
+            }
+            Denotation.Type retType = (Type) resolve.resolveType(member.sig().ret());
+            return new FunctionType(functionName, member, paramTypes, retType);
         }
 
         private FunctionType toFunctionType(DexInfFunction member) {
