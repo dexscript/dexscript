@@ -83,7 +83,7 @@ public class Denotation {
             return this;
         }
 
-        protected abstract boolean canProvide(String functionName, List<Type> args, Type ret);
+        protected abstract boolean canProvide(String functionName, List<Type> params, Type ret);
 
     }
 
@@ -163,6 +163,7 @@ public class Denotation {
 
         private final Resolve resolve;
         private final DexFunction definedBy;
+        private List<FunctionType> members;
 
         public FunctionInterfaceType(Resolve resolve, DexFunction definedBy) {
             super(definedBy.identifier().toString(), TypeKind.INTERFACE, "Object");
@@ -170,8 +171,47 @@ public class Denotation {
             this.definedBy  = definedBy;
         }
 
+        public final List<FunctionType> members() {
+            if (members == null) {
+                members = new ArrayList<>();
+                Denotation.Type retType = (Type) resolve.resolveType(definedBy.sig().ret());
+                ArrayList<Type> params = new ArrayList<>();
+                params.add(this);
+                members.add(new FunctionType("GetResult__", definedBy, params, retType));
+            }
+            return members;
+        }
+
         @Override
-        protected boolean canProvide(String functionName, List<Type> args, Type ret) {
+        public boolean isAssignableFrom(Type that) {
+            if (this.equals(that)) {
+                return true;
+            }
+            HashMap<Type, Type> lookup = new HashMap<>();
+            lookup.put(this, that);
+            for (FunctionType member : members()) {
+                List<Type> expandedParams = new ArrayList<>();
+                for (Type param : member.params()) {
+                    expandedParams.add(param.expand(lookup));
+                }
+                Type expandedRet = member.ret().expand(lookup);
+                if (resolve.canProvide(member.name(), expandedParams, expandedRet)) {
+                    continue;
+                }
+                if (!that.canProvide(member.name(), expandedParams, expandedRet)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        @Override
+        protected boolean canProvide(String functionName, List<Type> params, Type ret) {
+            for (FunctionType member : members()) {
+                if (member.canProvide(functionName, params, ret)) {
+                    return true;
+                }
+            }
             return false;
         }
     }

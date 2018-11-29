@@ -40,8 +40,10 @@ final class ResolveType {
             return type;
         }
         List<DexFunction> functions = declaredFunctions.get(refName);
-        for (DexFunction function : functions) {
-            return new Denotation.FunctionInterfaceType(resolve, function);
+        if (functions != null) {
+            for (DexFunction function : functions) {
+                return new Denotation.FunctionInterfaceType(resolve, function);
+            }
         }
         type = new Denotation.Error(refName, ref, "can not resolve " + refName + " to a type");
         return type;
