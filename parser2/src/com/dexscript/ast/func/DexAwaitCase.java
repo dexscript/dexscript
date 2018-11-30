@@ -9,6 +9,11 @@ public abstract class DexAwaitCase extends DexStatement {
     }
 
     public static DexAwaitCase parse(Text src) {
-        return new DexAwaitConsumerStmt(src);
+        DexAwaitCase stmt = new DexAwaitConsumerStmt(src);
+        if (stmt.matched()) {
+            return stmt;
+        }
+        stmt = new DexAwaitProducerStmt(src);
+        return stmt;
     }
 }

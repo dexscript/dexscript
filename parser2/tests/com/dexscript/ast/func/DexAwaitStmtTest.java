@@ -24,4 +24,17 @@ public class DexAwaitStmtTest {
                 "       return 'hello'\n" +
                 "   }", stmt.cases().get(0).toString());
     }
+
+    @Test
+    public void await_producer() {
+        String src = "" +
+                "await {\n" +
+                "   case res := <-a {\n" +
+                "   }\n" +
+                "}";
+        DexAwaitStmt stmt = new DexAwaitStmt(src);
+        Assert.assertEquals(src, stmt.toString());
+        Assert.assertEquals("case res := <-a {\n" +
+                "   }", stmt.cases().get(0).toString());
+    }
 }
