@@ -76,7 +76,7 @@ final class ResolveFunction {
     }
 
     @NotNull
-    public Denotation resolveFunction(DexGetResultExpr getResultExpr) {
+    public Denotation resolveFunction(DexConsumeExpr getResultExpr) {
         List<Denotation.Type> argTypes = new ArrayList<>();
         argTypes.add(resolve.resolveType(getResultExpr.right()));
         return resolveFunction(getResultExpr, "GetResult__", argTypes);
@@ -197,8 +197,8 @@ final class ResolveFunction {
         if (expr instanceof DexNewExpr) {
             return eval((DexNewExpr)expr);
         }
-        if (expr instanceof DexGetResultExpr) {
-            return returnTypeOf(resolveFunction((DexGetResultExpr)expr));
+        if (expr instanceof DexConsumeExpr) {
+            return returnTypeOf(resolveFunction((DexConsumeExpr)expr));
         }
         return BuiltinTypes.UNDEFINED_TYPE;
     }

@@ -62,7 +62,7 @@ public abstract class DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
-        expr = new DexGetResultExpr(src);
+        expr = new DexConsumeExpr(src);
         if (expr.matched()) {
             return expr;
         }

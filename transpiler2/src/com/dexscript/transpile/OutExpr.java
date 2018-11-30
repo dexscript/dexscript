@@ -35,14 +35,14 @@ public class OutExpr {
             gen((DexMethodCallExpr) iExpr);
         } else if (iExpr instanceof DexNewExpr) {
             gen((DexNewExpr) iExpr);
-        }  else if (iExpr instanceof DexGetResultExpr) {
-            gen((DexGetResultExpr) iExpr);
+        }  else if (iExpr instanceof DexConsumeExpr) {
+            gen((DexConsumeExpr) iExpr);
         } else {
             throw new UnsupportedOperationException("not implemented: " + iExpr.getClass());
         }
     }
 
-    private void gen(DexGetResultExpr iGetResultExpr) {
+    private void gen(DexConsumeExpr iGetResultExpr) {
         OutExpr oExpr = new OutExpr(oCtor, g, iGetResultExpr.right());
         val.__("(((Result)"
         ).__(oExpr.toString()

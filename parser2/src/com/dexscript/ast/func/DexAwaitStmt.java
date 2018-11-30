@@ -5,7 +5,6 @@ import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
-import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,12 +4,12 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
-public class DexGetResultExpr extends DexUnaryOperator {
+public class DexConsumeExpr extends DexUnaryOperator {
 
     private static final int LEFT_RANK = 10;
     private static final int RIGHT_RANK = 100;
 
-    public DexGetResultExpr(Text src) {
+    public DexConsumeExpr(Text src) {
         super(src);
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];

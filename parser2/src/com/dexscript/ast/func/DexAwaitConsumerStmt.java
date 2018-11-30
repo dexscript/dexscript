@@ -13,10 +13,10 @@ import com.dexscript.ast.token.LineEnd;
 public class DexAwaitConsumerStmt extends DexAwaitCase {
 
     private DexIdentifier identifier;
-    private DexSig sig;
+    private DexSig produceSig;
     private DexBlock blk;
     private DexSyntaxError syntaxError;
-    private int produceStmtEnd = -1;
+    private int stmtEnd = -1;
 
     public DexAwaitConsumerStmt(Text src) {
         super(src);
@@ -30,18 +30,21 @@ public class DexAwaitConsumerStmt extends DexAwaitCase {
 
     @Override
     public int end() {
-        return produceStmtEnd;
+        return stmtEnd;
     }
 
     @Override
     public boolean matched() {
-        return produceStmtEnd != -1;
+        return stmtEnd != -1;
     }
 
     @Override
     public void walkDown(Visitor visitor) {
-        if (sig() != null) {
-
+        if (produceSig() != null) {
+            visitor.visit(produceSig());
+        }
+        if (blk() != null) {
+            visitor.visit(blk());
         }
     }
 
@@ -50,8 +53,8 @@ public class DexAwaitConsumerStmt extends DexAwaitCase {
         return syntaxError;
     }
 
-    public DexSig sig() {
-        return sig;
+    public DexSig produceSig() {
+        return produceSig;
     }
 
     public DexBlock blk() {
@@ -132,19 +135,19 @@ public class DexAwaitConsumerStmt extends DexAwaitCase {
 
         @Expect("signature")
         State signature() {
-            sig = new DexSig(src.slice(i));
-            if (sig.matched()) {
-                i = sig.end();
+            produceSig = new DexSig(src.slice(i));
+            if (produceSig.matched()) {
+                i = produceSig.end();
                 return this::block;
             }
             return this::reportError;
         }
 
-        @Expect("blk")
+        @Expect("block")
         State block() {
             blk = new DexBlock(src.slice(i));
             if (blk.matched()) {
-                produceStmtEnd = blk.end();
+                stmtEnd = blk.end();
                 return null;
             }
             return this::reportError;
@@ -157,11 +160,11 @@ public class DexAwaitConsumerStmt extends DexAwaitCase {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (LineEnd.__(b)) {
-                    produceStmtEnd = i;
+                    stmtEnd = i;
                     return null;
                 }
             }
-            produceStmtEnd = i;
+            stmtEnd = i;
             return null;
         }
     }
