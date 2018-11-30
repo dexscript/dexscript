@@ -6,9 +6,12 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
+import java.util.List;
+
 public class DexAwaitStmt extends DexStatement {
 
     private int awaitEnd = -1;
+    private List<DexAwaitCase> cases;
 
     public DexAwaitStmt(Text src) {
         super(src);

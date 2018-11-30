@@ -9,4 +9,16 @@ public class DexAwaitStmtTest {
     public void empty() {
         Assert.assertEquals("await {}", new DexAwaitStmt("await {}").toString());
     }
+
+    @Test
+    public void case_serve() {
+        String src = "" +
+                "await {\n" +
+                "   case AA(): string {\n" +
+                "       return 'hello'\n" +
+                "   }\n" +
+                "}";
+        DexAwaitStmt stmt = new DexAwaitStmt(src);
+        Assert.assertEquals(src, stmt.toString());
+    }
 }

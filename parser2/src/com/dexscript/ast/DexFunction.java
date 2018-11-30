@@ -51,11 +51,11 @@ public final class DexFunction extends DexElement {
     }
 
     public DexSig sig() {
-        return body().signature();
+        return body().sig();
     }
 
     public DexBlock block() {
-        return body().block();
+        return body().blk();
     }
 
     public DexFunctionBody body() {

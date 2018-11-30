@@ -9,8 +9,8 @@ import com.dexscript.ast.func.DexBlock;
 public class DexFunctionBody extends DexElement {
 
     private final Text matched;
-    private DexSig signature;
-    private DexBlock block;
+    private DexSig sig;
+    private DexBlock blk;
     private DexSyntaxError syntaxError;
 
     public DexFunctionBody(Text src) {
@@ -48,35 +48,35 @@ public class DexFunctionBody extends DexElement {
 
     @Override
     public void walkDown(Visitor visitor) {
-        if (signature() != null) {
-            visitor.visit(signature());
+        if (sig() != null) {
+            visitor.visit(sig());
         }
-        if (block() != null) {
-            visitor.visit(block());
+        if (blk() != null) {
+            visitor.visit(blk());
         }
     }
 
-    public DexSig signature() {
-        if (signature == null) {
-            signature = new DexSig(matched);
-            if (!signature.matched()) {
+    public DexSig sig() {
+        if (sig == null) {
+            sig = new DexSig(matched);
+            if (!sig.matched()) {
                 syntaxError = new DexSyntaxError(matched, matched.begin);
             } else {
-                signature.reparent(this);
+                sig.reparent(this);
             }
         }
-        return signature;
+        return sig;
     }
 
-    public DexBlock block() {
-        if (block == null) {
-            block = new DexBlock(new Text(matched.bytes, signature().end(), matched.end));
-            if (!block.matched()) {
-                syntaxError = new DexSyntaxError(matched, signature().end());
+    public DexBlock blk() {
+        if (blk == null) {
+            blk = new DexBlock(new Text(matched.bytes, sig().end(), matched.end));
+            if (!blk.matched()) {
+                syntaxError = new DexSyntaxError(matched, sig().end());
             } else {
-                block.reparent(this, null);
+                blk.reparent(this, null);
             }
         }
-        return block;
+        return blk;
     }
 }

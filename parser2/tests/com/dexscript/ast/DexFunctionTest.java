@@ -64,7 +64,7 @@ public class DexFunctionTest {
                 "function hello () \n" +
                 "}\n";
         DexFunction function = new DexFunction(src);
-        function.body().block();
+        function.body().blk();
         Assert.assertEquals("()<error/> \n" +
                 "}\n", function.body().toString());
     }
