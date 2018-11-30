@@ -136,6 +136,7 @@ public class DexAwaitConsumer extends DexAwaitCase {
         @Expect("signature")
         State signature() {
             produceSig = new DexSig(src.slice(i));
+            produceSig.reparent(DexAwaitConsumer.this);
             if (produceSig.matched()) {
                 i = produceSig.end();
                 return this::block;
@@ -146,6 +147,7 @@ public class DexAwaitConsumer extends DexAwaitCase {
         @Expect("block")
         State block() {
             blk = new DexBlock(src.slice(i));
+            blk.reparent(DexAwaitConsumer.this, null);
             if (blk.matched()) {
                 stmtEnd = blk.end();
                 return null;

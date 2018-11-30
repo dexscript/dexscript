@@ -36,6 +36,7 @@ public class DexAwaitStmtTest {
         Assert.assertEquals(src, stmt.toString());
         Assert.assertEquals("case res := <-a {\n" +
                 "   }", stmt.cases().get(0).toString());
+        Assert.assertEquals(stmt, stmt.cases().get(0).parent());
     }
 
     @Test

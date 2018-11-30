@@ -112,6 +112,7 @@ public class DexAwaitProducer extends DexAwaitCase {
                 return null;
             }
             consumeStmt = DexStatement.parse(src.slice(consumeStmtBegin, consumeStmtEnd));
+            consumeStmt.reparent(DexAwaitProducer.this, null);
             if (!consumeStmt.matched()) {
                 return null;
             }
@@ -122,6 +123,7 @@ public class DexAwaitProducer extends DexAwaitCase {
         @Expect("block")
         private State block() {
             blk = new DexBlock(src.slice(i));
+            blk.reparent(DexAwaitProducer.this, null);
             return null;
         }
     }

@@ -7,7 +7,10 @@ public class DexAwaitConsumerTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("case AA() {}", new DexAwaitConsumer("case AA() {}").toString());
+        DexAwaitConsumer stmt = new DexAwaitConsumer("case AA() {}");
+        Assert.assertEquals("case AA() {}", stmt.toString());
+        Assert.assertEquals(stmt, stmt.produceSig().parent());
+        Assert.assertEquals(stmt, stmt.blk().parent());
     }
 
     @Test

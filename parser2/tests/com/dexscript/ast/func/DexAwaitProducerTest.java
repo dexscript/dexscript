@@ -9,6 +9,8 @@ public class DexAwaitProducerTest {
     public void matched() {
         DexAwaitProducer stmt = new DexAwaitProducer("case <-abc {}");
         Assert.assertEquals("case <-abc {}", stmt.toString());
+        Assert.assertEquals(stmt, stmt.blk().parent());
+        Assert.assertEquals(stmt, stmt.consumeStmt().parent());
     }
 
     @Test
