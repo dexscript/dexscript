@@ -2,10 +2,7 @@ package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckSemanticError;
 import com.dexscript.ast.*;
-import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexFunctionCallExpr;
-import com.dexscript.ast.expr.DexMethodCallExpr;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.*;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMember;
 import com.dexscript.ast.inf.DexInfMethod;
@@ -224,5 +221,13 @@ public class Town {
 
     public Denotation.FunctionType resolveFunction(DexMethodCallExpr callExpr) {
         return (Denotation.FunctionType) resolve.resolveFunction(callExpr);
+    }
+
+    public Denotation.FunctionType resolveFunction(DexNewExpr newExpr) {
+        return (Denotation.FunctionType) resolve.resolveFunction(newExpr);
+    }
+
+    public Resolve resolve() {
+        return resolve;
     }
 }

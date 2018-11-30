@@ -33,19 +33,30 @@ public class OutExpr {
             gen((DexFunctionCallExpr) iExpr);
         } else if (iExpr instanceof DexMethodCallExpr) {
             gen((DexMethodCallExpr) iExpr);
+        } else if (iExpr instanceof DexNewExpr) {
+            gen((DexNewExpr) iExpr);
+        }  else if (iExpr instanceof DexGetResultExpr) {
+            gen((DexGetResultExpr) iExpr);
         } else {
             throw new UnsupportedOperationException("not implemented: " + iExpr.getClass());
         }
     }
 
-    private void gen(DexMethodCallExpr iCallExpr) {
+    private void gen(DexGetResultExpr iGetResultExpr) {
+        OutExpr oExpr = new OutExpr(oCtor, g, iGetResultExpr.right());
+        val.__("(((Result)"
+        ).__(oExpr.toString()
+        ).__(").value())");
+    }
+
+    private void gen(DexNewExpr iNewExpr) {
+        Denotation.FunctionType functionType = town.resolveFunction(iNewExpr);
+        List<DexExpr> iArgs = iNewExpr.args();
         List<OutExpr> args = new ArrayList<>();
-        args.add(new OutExpr(oCtor, g, iCallExpr.obj()));
-        for (DexExpr arg : iCallExpr.args()) {
+        for (DexExpr arg : iArgs) {
             args.add(new OutExpr(oCtor, g, arg));
         }
-        Denotation.FunctionType functionType = town.resolveFunction(iCallExpr);
-        OutField oField = oCtor.oClass().allocateField(iCallExpr.method(), BuiltinTypes.RESULT_TYPE);
+        OutField oField = oCtor.oClass().allocateField(iNewExpr.target().asRef(), BuiltinTypes.RESULT_TYPE);
         Boat boat = functionType.boat();
         g.__(oField.fieldName
         ).__(" = "
@@ -59,19 +70,40 @@ public class OutExpr {
             g.__(arg);
         }
         g.__(new Line(");"));
-        val.__('('
-        ).__(oField.fieldName
-        ).__(".value())");
+        val.__(oField.fieldName);
+    }
+
+    private void gen(DexMethodCallExpr iCallExpr) {
+        List<DexExpr> iArgs = new ArrayList<>();
+        iArgs.add(iCallExpr.obj());
+        iArgs.addAll(iCallExpr.args());
+        apply(town.resolveFunction(iCallExpr), iCallExpr.method(), iArgs);
     }
 
     private void gen(DexFunctionCallExpr iCallExpr) {
         Denotation.FunctionType functionType = town.resolveFunction(iCallExpr);
-        OutField oField = oCtor.oClass().allocateField(iCallExpr.target(), BuiltinTypes.RESULT_TYPE);
-        Boat boat = functionType.definedBy().attachmentOfType(Boat.class);
+        apply(functionType, iCallExpr.target().asRef(), iCallExpr.args());
+    }
+
+    private void apply(Denotation.FunctionType functionType, DexReference functionRef, List<DexExpr> iArgs) {
+        List<OutExpr> args = new ArrayList<>();
+        for (DexExpr arg : iArgs) {
+            args.add(new OutExpr(oCtor, g, arg));
+        }
+        OutField oField = oCtor.oClass().allocateField(functionRef, BuiltinTypes.RESULT_TYPE);
+        Boat boat = functionType.boat();
         g.__(oField.fieldName
         ).__(" = "
         ).__(boat.applyF()
-        ).__(new Line("();"));
+        ).__('(');
+        for (int i = 0; i < args.size(); i++) {
+            if (i > 0) {
+                g.__(", ");
+            }
+            OutExpr arg = args.get(i);
+            g.__(arg);
+        }
+        g.__(new Line(");"));
         val.__('('
         ).__(oField.fieldName
         ).__(".value())");

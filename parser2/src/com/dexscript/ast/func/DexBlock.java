@@ -84,6 +84,7 @@ public class DexBlock extends DexStatement {
                     i += 1;
                     return this::stmtOrRightBrace;
                 }
+                return null;
             }
             return null;
         }

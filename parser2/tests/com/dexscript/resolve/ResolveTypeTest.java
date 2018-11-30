@@ -35,9 +35,9 @@ public class ResolveTypeTest {
                 "interface StringPromise {\n" +
                 "   GetResult__(): string" +
                 "}"));
-        Denotation.Type inf = (Denotation.Type) resolve.resolveType("Hello");
+        Denotation.Type inf = resolve.resolveType("Hello");
         Assert.assertEquals("Hello", inf.toString());
-        Denotation.Type stringPromise = (Denotation.Type) resolve.resolveType("StringPromise");
+        Denotation.Type stringPromise = resolve.resolveType("StringPromise");
         Assert.assertTrue(stringPromise.isAssignableFrom(inf));
     }
 

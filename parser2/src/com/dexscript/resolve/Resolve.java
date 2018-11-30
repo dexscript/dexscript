@@ -55,6 +55,12 @@ public class Resolve {
         return resolveFunction.resolveFunction(callExpr);
     }
 
+    @NotNull
+    public Denotation resolveFunction(DexNewExpr newExpr) {
+        return resolveFunction.resolveFunction(newExpr);
+    }
+
+    @NotNull
     public Denotation resolveFunction(DexMethodCallExpr callExpr) {
         return resolveFunction.resolveFunction(callExpr);
     }

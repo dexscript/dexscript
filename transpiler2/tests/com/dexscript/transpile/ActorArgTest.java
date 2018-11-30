@@ -19,7 +19,7 @@ public class ActorArgTest {
                 "function B(a: A): string {" +
                 "   return <-a\n" +
                 "}";
-        Result result = TranspileOne.__(src, (Object)"donald");
-        Assert.assertEquals("donald quack", result.value());
+        Result result = TranspileOne.__(src);
+        Assert.assertEquals("hello", result.value());
     }
 }
