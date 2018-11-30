@@ -1,10 +1,12 @@
 package com.dexscript.ast.func;
 
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
+import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ public class DexAwaitStmt extends DexStatement {
 
     private int awaitEnd = -1;
     private List<DexAwaitCase> cases;
+    private DexSyntaxError syntaxError;
 
     public DexAwaitStmt(Text src) {
         super(src);
@@ -40,7 +43,11 @@ public class DexAwaitStmt extends DexStatement {
 
     @Override
     public void walkDown(Visitor visitor) {
+    }
 
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public List<DexAwaitCase> cases() {
@@ -112,7 +119,29 @@ public class DexAwaitStmt extends DexStatement {
                 i = stmt.end();
                 return this::caseOrRightBrace;
             }
-            throw new UnsupportedOperationException("not implemented");
+            return this::unmatchedCase;
+        }
+
+        State unmatchedCase() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.__(b)) {
+                    return this::caseOrRightBrace;
+                }
+                if ('}' == b) {
+                    awaitEnd = i + 1;
+                    return null;
+                }
+            }
+            awaitEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }

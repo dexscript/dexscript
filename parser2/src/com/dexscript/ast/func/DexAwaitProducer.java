@@ -1,23 +1,22 @@
 package com.dexscript.ast.func;
 
-import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
-public class DexAwaitProducerStmt extends DexAwaitCase {
+public class DexAwaitProducer extends DexAwaitCase {
 
     private DexStatement consumeStmt;
     private DexBlock blk;
 
-    public DexAwaitProducerStmt(Text src) {
+    public DexAwaitProducer(Text src) {
         super(src);
         new Parser();
     }
 
-    public DexAwaitProducerStmt(String src) {
+    public DexAwaitProducer(String src) {
         this(new Text(src));
     }
 
