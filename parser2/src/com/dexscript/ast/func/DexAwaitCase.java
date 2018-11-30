@@ -7,4 +7,8 @@ public abstract class DexAwaitCase extends DexStatement {
     public DexAwaitCase(Text src) {
         super(src);
     }
+
+    public static DexAwaitCase parse(Text src) {
+        return new DexAwaitConsumerStmt(src);
+    }
 }

@@ -5,7 +5,9 @@ import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
+import com.dexscript.ast.token.LineEnd;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DexAwaitStmt extends DexStatement {
@@ -42,6 +44,10 @@ public class DexAwaitStmt extends DexStatement {
 
     }
 
+    public List<DexAwaitCase> cases() {
+        return cases;
+    }
+
     private class Parser {
 
         int i = src.begin;
@@ -75,7 +81,8 @@ public class DexAwaitStmt extends DexStatement {
                 }
                 if (b == '{') {
                     i += 1;
-                    return this::casesOrRightBrace;
+                    cases = new ArrayList<>();
+                    return this::caseOrRightBrace;
                 }
                 return null;
             }
@@ -83,19 +90,30 @@ public class DexAwaitStmt extends DexStatement {
         }
 
         @Expect("case")
-        private State casesOrRightBrace() {
+        @Expect("}")
+        private State caseOrRightBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
+                    continue;
+                }
+                if (b == ';'){
                     continue;
                 }
                 if (b == '}') {
                     awaitEnd = i + 1;
                     return null;
                 }
-                return null;
+                break;
             }
-            return null;
+            DexAwaitCase stmt = DexAwaitCase.parse(src.slice(i));
+            stmt.reparent(DexAwaitStmt.this, null);
+            cases.add(stmt);
+            if (stmt.matched()) {
+                i = stmt.end();
+                return this::caseOrRightBrace;
+            }
+            throw new UnsupportedOperationException("not implemented");
         }
     }
 }

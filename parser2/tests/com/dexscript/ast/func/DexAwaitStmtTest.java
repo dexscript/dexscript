@@ -11,7 +11,7 @@ public class DexAwaitStmtTest {
     }
 
     @Test
-    public void case_serve() {
+    public void await_consumer() {
         String src = "" +
                 "await {\n" +
                 "   case AA(): string {\n" +
@@ -20,5 +20,8 @@ public class DexAwaitStmtTest {
                 "}";
         DexAwaitStmt stmt = new DexAwaitStmt(src);
         Assert.assertEquals(src, stmt.toString());
+        Assert.assertEquals("case AA(): string {\n" +
+                "       return 'hello'\n" +
+                "   }", stmt.cases().get(0).toString());
     }
 }

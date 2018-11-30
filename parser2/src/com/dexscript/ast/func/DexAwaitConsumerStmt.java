@@ -10,7 +10,7 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
 
-public class DexAwaitProduceStmt extends DexAwaitCase {
+public class DexAwaitConsumerStmt extends DexAwaitCase {
 
     private DexIdentifier identifier;
     private DexSig sig;
@@ -18,7 +18,7 @@ public class DexAwaitProduceStmt extends DexAwaitCase {
     private DexSyntaxError syntaxError;
     private int produceStmtEnd = -1;
 
-    public DexAwaitProduceStmt(Text src) {
+    public DexAwaitConsumerStmt(Text src) {
         super(src);
         new Parser();
     }
@@ -62,7 +62,7 @@ public class DexAwaitProduceStmt extends DexAwaitCase {
         return identifier;
     }
 
-    public DexAwaitProduceStmt(String src) {
+    public DexAwaitConsumerStmt(String src) {
         this(new Text(src));
     }
 
