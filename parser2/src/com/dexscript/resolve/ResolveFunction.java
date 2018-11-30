@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.dexscript.resolve.Denotation.FunctionType.returnTypeOf;
+
 final class ResolveFunction {
 
     private final Map<String, List<Denotation.FunctionType>> defined = new HashMap<>();
@@ -129,7 +131,7 @@ final class ResolveFunction {
         List<Denotation.FunctionType> candidates = defined.get(infFunction.identifier().toString());
         List<Denotation.Type> paramTypes = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
-            Denotation.Type paramType = (Denotation.Type) resolve.resolveType(param.paramType());
+            Denotation.Type paramType = resolve.resolveType(param.paramType());
             paramTypes.add(paramType);
         }
         List<Denotation.FunctionType> impls = new ArrayList<>();
@@ -142,6 +144,19 @@ final class ResolveFunction {
             }
         }
         return impls;
+    }
+
+    public Denotation.Type resolveType(DexFunction function) {
+        Denotation.FunctionInterfaceType type = function.attachmentOfType(Denotation.FunctionInterfaceType.class);
+        if (type != null) {
+            return type;
+        }
+        type = new Denotation.FunctionInterfaceType(resolve, function);
+        function.attach(type);
+        for (Denotation.FunctionType member : type.members()) {
+            declare(member);
+        }
+        return type;
     }
 
     public Denotation.Type resolveType(DexExpr expr) {
@@ -171,19 +186,19 @@ final class ResolveFunction {
             return resolveType(((DexParenExpr)expr).body());
         }
         if (expr instanceof DexFunctionCallExpr) {
-            return eval((DexFunctionCallExpr)expr);
+            return returnTypeOf(resolveFunction((DexFunctionCallExpr)expr));
         }
         if (expr instanceof DexMethodCallExpr) {
-            return eval((DexMethodCallExpr)expr);
+            return returnTypeOf(resolveFunction((DexMethodCallExpr)expr));
         }
         if (expr instanceof DexAddExpr) {
-            return eval((DexAddExpr)expr);
+            return returnTypeOf(resolveFunction((DexAddExpr)expr));
         }
         if (expr instanceof DexNewExpr) {
             return eval((DexNewExpr)expr);
         }
         if (expr instanceof DexGetResultExpr) {
-            return eval((DexGetResultExpr)expr);
+            return returnTypeOf(resolveFunction((DexGetResultExpr)expr));
         }
         return BuiltinTypes.UNDEFINED_TYPE;
     }
@@ -197,44 +212,12 @@ final class ResolveFunction {
         return BuiltinTypes.UNDEFINED_TYPE;
     }
 
-    private Denotation.Type eval(DexGetResultExpr expr) {
-        Denotation typeObj = resolveFunction(expr);
-        if (typeObj instanceof Denotation.FunctionType) {
-            return ((Denotation.FunctionType)typeObj).ret();
-        }
-        return BuiltinTypes.UNDEFINED_TYPE;
-    }
-
-    private Denotation.Type eval(DexFunctionCallExpr functionCallExpr) {
-        Denotation typeObj = resolveFunction(functionCallExpr);
-        if (typeObj instanceof Denotation.FunctionType) {
-            return ((Denotation.FunctionType) typeObj).ret();
-        }
-        return BuiltinTypes.UNDEFINED_TYPE;
-    }
-
-    private Denotation.Type eval(DexMethodCallExpr methodCallExpr) {
-        Denotation typeObj = resolveFunction(methodCallExpr);
-        if (typeObj instanceof Denotation.FunctionType) {
-            return ((Denotation.FunctionType) typeObj).ret();
-        }
-        return BuiltinTypes.UNDEFINED_TYPE;
-    }
-
-    private Denotation.Type eval(DexAddExpr addExpr) {
-        Denotation typeObj = resolveFunction(addExpr);
-        if (typeObj instanceof Denotation.FunctionType) {
-            return ((Denotation.FunctionType) typeObj).ret();
-        }
-        return BuiltinTypes.UNDEFINED_TYPE;
-    }
-
     private Denotation.Type eval(DexNewExpr newExpr) {
         Denotation typeObj = resolveFunction(newExpr);
-        if (typeObj instanceof Denotation.FunctionType) {
-            DexFunction definedBy = (DexFunction) ((Denotation.FunctionType) typeObj).definedBy();
-            return new Denotation.FunctionInterfaceType(resolve, definedBy);
+        if (!(typeObj instanceof Denotation.FunctionType)) {
+            return BuiltinTypes.UNDEFINED_TYPE;
         }
-        return BuiltinTypes.UNDEFINED_TYPE;
+        DexFunction definedBy = (DexFunction) ((Denotation.FunctionType) typeObj).definedBy();
+        return resolveType(definedBy);
     }
 }

@@ -78,7 +78,7 @@ final class ResolveValue {
     private DenotationTable fillTable(DexFunction function, DenotationTable denotationTable) {
         for (DexParam param : function.sig().params()) {
             String name = param.paramName().toString();
-            Denotation.Type type = (Denotation.Type) resolve.resolveType(param.paramType());
+            Denotation.Type type = resolve.resolveType(param.paramType());
             if (type != null) {
                 denotationTable.put(name, new Denotation.Value(name, type, param));
             }

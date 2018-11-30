@@ -43,7 +43,7 @@ final class ResolveType {
         List<DexFunction> functions = declaredFunctions.get(refName);
         if (functions != null) {
             for (DexFunction function : functions) {
-                return new Denotation.FunctionInterfaceType(resolve, function);
+                return resolve.resolveType(function);
             }
         }
         type = BuiltinTypes.UNDEFINED_TYPE;

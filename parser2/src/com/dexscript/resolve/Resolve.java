@@ -83,6 +83,11 @@ public class Resolve {
         return resolveType.resolveType(ref);
     }
 
+    @NotNull
+    public Denotation.Type resolveType(DexFunction function) {
+        return resolveFunction.resolveType(function);
+    }
+
     public boolean canProvide(String functionName, List<Denotation.Type> params, Denotation.Type ret) {
         return resolveFunction.canProvide(functionName, params, ret);
     }

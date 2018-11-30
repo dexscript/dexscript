@@ -157,6 +157,13 @@ public class Denotation {
         public boolean isImpl() {
             return definedBy instanceof DexFunction;
         }
+
+        public static Denotation.Type returnTypeOf(Denotation denotation) {
+            if (denotation instanceof Denotation.FunctionType) {
+                return ((FunctionType)denotation).ret();
+            }
+            return BuiltinTypes.UNDEFINED_TYPE;
+        }
     }
 
     public static class FunctionInterfaceType extends Type {
