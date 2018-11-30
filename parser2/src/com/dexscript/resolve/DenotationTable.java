@@ -3,7 +3,7 @@ package com.dexscript.resolve;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DenotationTable extends HashMap<String, Denotation> {
+public class DenotationTable<T extends Denotation> extends HashMap<String, T> {
 
     public DenotationTable() {
     }
@@ -13,18 +13,18 @@ public class DenotationTable extends HashMap<String, Denotation> {
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends Denotation> m) {
+    public void putAll(Map<? extends String, ? extends T> m) {
         if (m == null) {
             return;
         }
         super.putAll(m);
     }
 
-    public DenotationTable copy() {
-        return new DenotationTable(this);
+    public DenotationTable<T> copy() {
+        return new DenotationTable<T>(this);
     }
 
-    public DenotationTable add(Denotation denotation) {
+    public DenotationTable<T> add(T denotation) {
         put(denotation.name(), denotation);
         return this;
     }

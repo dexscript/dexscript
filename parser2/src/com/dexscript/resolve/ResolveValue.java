@@ -11,11 +11,11 @@ import java.util.List;
 
 final class ResolveValue {
 
-    public static final DenotationTable BUILTIN_VALUES = new DenotationTable();
-    private final DenotationTable builtin;
+    public static final DenotationTable<Denotation.Value> BUILTIN_VALUES = new DenotationTable<>();
+    private final DenotationTable<Denotation.Value> builtin;
     private Resolve resolve;
 
-    ResolveValue(DenotationTable builtin) {
+    ResolveValue(DenotationTable<Denotation.Value> builtin) {
         this.builtin = builtin;
     }
 
@@ -47,7 +47,7 @@ final class ResolveValue {
             }
             prevElems.add(current);
         }
-        DenotationTable parentDT = builtin;
+        DenotationTable<Denotation.Value> parentDT = builtin;
         for (int i = prevElems.size() - 1; i >= 0; i--) {
             DexElement elem = prevElems.get(i);
             parentDT = denotationTable(elem, parentDT);
@@ -88,7 +88,7 @@ final class ResolveValue {
 
     private DenotationTable fillTable(DexShortVarDecl shortVarDecl, DenotationTable denotationTable) {
         String name = shortVarDecl.decls().get(0).toString();
-        Denotation.Type type = (Denotation.Type) resolve.resolveType(shortVarDecl.expr());
+        Denotation.Type type = resolve.resolveType(shortVarDecl.expr());
         if (type != null) {
             denotationTable.put(name, new Denotation.Value(name, type, shortVarDecl));
         }

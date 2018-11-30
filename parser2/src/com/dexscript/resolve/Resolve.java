@@ -46,36 +46,13 @@ public class Resolve {
         }
     }
 
+    public void declare(Denotation.FunctionType functionType) {
+        resolveFunction.declare(functionType);
+    }
+
     @NotNull
     public Denotation resolveFunction(DexFunctionCallExpr callExpr) {
         return resolveFunction.resolveFunction(callExpr);
-    }
-
-    @NotNull
-    public Denotation resolveType(DexReference ref) {
-        return resolveType.resolveType(ref);
-    }
-
-    @NotNull
-    public Denotation resolveValue(DexReference ref) {
-        return resolveValue.resolveValue(ref);
-    }
-
-    @NotNull
-    public Denotation resolveType(DexExpr expr) {
-        return resolveType.resolveType(expr);
-    }
-
-    public Denotation resolveType(String name) {
-        return resolveType(new DexReference(name));
-    }
-
-    public boolean canProvide(String functionName, List<Denotation.Type> params, Denotation.Type ret) {
-        return resolveFunction.canProvide(functionName, params, ret);
-    }
-
-    public void declare(Denotation.FunctionType functionType) {
-        resolveFunction.declare(functionType);
     }
 
     public Denotation resolveFunction(DexMethodCallExpr callExpr) {
@@ -86,11 +63,27 @@ public class Resolve {
         return resolveFunction.resolveFunctions(infFunction);
     }
 
-    public Denotation resolveFunction(DexAddExpr addExpr) {
-        return resolveFunction.resolveFunction(addExpr);
+    @NotNull
+    public Denotation resolveValue(DexReference ref) {
+        return resolveValue.resolveValue(ref);
     }
 
-    public Denotation resolveFunction(DexNewExpr newExpr) {
-        return resolveFunction.resolveFunction(newExpr);
+    @NotNull
+    public Denotation.Type resolveType(DexExpr expr) {
+        return resolveFunction.resolveType(expr);
+    }
+
+    @NotNull
+    public Denotation.Type resolveType(String name) {
+        return resolveType(new DexReference(name));
+    }
+
+    @NotNull
+    public Denotation.Type resolveType(DexReference ref) {
+        return resolveType.resolveType(ref);
+    }
+
+    public boolean canProvide(String functionName, List<Denotation.Type> params, Denotation.Type ret) {
+        return resolveFunction.canProvide(functionName, params, ret);
     }
 }
