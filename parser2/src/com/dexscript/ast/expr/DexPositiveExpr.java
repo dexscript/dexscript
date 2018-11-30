@@ -1,15 +1,12 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.func.DexStatement;
 import com.dexscript.ast.token.Blank;
 
-public class DexPositiveExpr extends DexExpr {
+public class DexPositiveExpr extends DexUnaryOperator {
 
     private static final int LEFT_RANK = 10;
     private static final int RIGHT_RANK = 100;
-    private DexExpr right;
 
     public DexPositiveExpr(Text src) {
         super(src);
@@ -32,34 +29,7 @@ public class DexPositiveExpr extends DexExpr {
     }
 
     @Override
-    public void reparent(DexElement parent, DexStatement stmt) {
-        this.parent = parent;
-        this.stmt = stmt;
-        right.reparent(parent, stmt);
-    }
-
-    @Override
     public int leftRank() {
         return LEFT_RANK;
-    }
-
-    @Override
-    public int begin() {
-        return src.begin;
-    }
-
-    @Override
-    public int end() {
-        return right.end();
-    }
-
-    @Override
-    public boolean matched() {
-        return right != null && right.matched();
-    }
-
-    @Override
-    public void walkDown(Visitor visitor) {
-        visitor.visit(right);
     }
 }

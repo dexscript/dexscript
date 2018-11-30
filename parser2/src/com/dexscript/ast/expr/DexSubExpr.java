@@ -1,6 +1,5 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 
@@ -10,8 +9,7 @@ public class DexSubExpr extends DexBinaryOperator {
     private static final int RIGHT_RANK = 10;
 
     public DexSubExpr(Text src, DexExpr left) {
-        super(src);
-        this.left = left;
+        super(src, left);
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
             if (Blank.__(b)) {
@@ -29,20 +27,5 @@ public class DexSubExpr extends DexBinaryOperator {
     @Override
     public int leftRank() {
         return LEFT_RANK;
-    }
-
-    @Override
-    public int begin() {
-        return left().begin();
-    }
-
-    @Override
-    public int end() {
-        return right().end();
-    }
-
-    @Override
-    public boolean matched() {
-        return right != null && right.matched();
     }
 }

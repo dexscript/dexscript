@@ -9,8 +9,7 @@ public class DexMulExpr extends DexBinaryOperator {
     private static final int RIGHT_RANK = 20;
 
     public DexMulExpr(Text src, DexExpr left) {
-        super(src);
-        this.left = left;
+        super(src, left);
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
             if (Blank.__(b)) {
@@ -28,20 +27,5 @@ public class DexMulExpr extends DexBinaryOperator {
     @Override
     public int leftRank() {
         return LEFT_RANK;
-    }
-
-    @Override
-    public int begin() {
-        return left().begin();
-    }
-
-    @Override
-    public int end() {
-        return right().end();
-    }
-
-    @Override
-    public boolean matched() {
-        return right != null && right.matched();
     }
 }
