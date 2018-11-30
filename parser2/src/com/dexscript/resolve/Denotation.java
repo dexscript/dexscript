@@ -214,6 +214,10 @@ public class Denotation {
             }
             return false;
         }
+
+        public DexFunction definedBy() {
+            return definedBy;
+        }
     }
 
     public static class InterfaceType extends Type {

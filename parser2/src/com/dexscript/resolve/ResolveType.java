@@ -70,35 +70,63 @@ final class ResolveType {
             return BuiltinTypes.STRING_TYPE;
         }
         if (expr instanceof DexFunctionCallExpr) {
-            Denotation typeObj = resolve.resolveFunction((DexFunctionCallExpr) expr);
-            if (typeObj instanceof Denotation.FunctionType) {
-                return ((Denotation.FunctionType) typeObj).ret();
-            }
-            return BuiltinTypes.UNDEFINED_TYPE;
+            return eval((DexFunctionCallExpr)expr);
         }
         if (expr instanceof DexMethodCallExpr) {
-            Denotation typeObj = resolve.resolveFunction((DexMethodCallExpr) expr);
-            if (typeObj instanceof Denotation.FunctionType) {
-                return ((Denotation.FunctionType) typeObj).ret();
-            }
-            return BuiltinTypes.UNDEFINED_TYPE;
+            return eval((DexMethodCallExpr)expr);
         }
         if (expr instanceof DexAddExpr) {
-            Denotation typeObj = resolve.resolveFunction((DexAddExpr) expr);
-            if (typeObj instanceof Denotation.FunctionType) {
-                return ((Denotation.FunctionType) typeObj).ret();
-            }
-            return BuiltinTypes.UNDEFINED_TYPE;
+            return eval((DexAddExpr)expr);
+        }
+        if (expr instanceof DexNewExpr) {
+            return eval((DexNewExpr)expr);
         }
         if (expr instanceof DexReference) {
-            Denotation refObj = resolve.resolveValue(((DexReference) expr));
-            if (refObj instanceof Denotation.Value) {
-                Denotation.Value ref = (Denotation.Value) refObj;
-                return ref.type();
-            }
-            return BuiltinTypes.UNDEFINED_TYPE;
+            return eval((DexReference)expr);
         }
         return new Denotation.Error(expr.toString(), expr, "can not evaluate expression type: " + expr.getClass());
+    }
+
+    private Denotation eval(DexReference expr) {
+        Denotation refObj = resolve.resolveValue(expr);
+        if (refObj instanceof Denotation.Value) {
+            Denotation.Value ref = (Denotation.Value) refObj;
+            return ref.type();
+        }
+        return BuiltinTypes.UNDEFINED_TYPE;
+    }
+
+    private Denotation eval(DexFunctionCallExpr functionCallExpr) {
+        Denotation typeObj = resolve.resolveFunction(functionCallExpr);
+        if (typeObj instanceof Denotation.FunctionType) {
+            return ((Denotation.FunctionType) typeObj).ret();
+        }
+        return BuiltinTypes.UNDEFINED_TYPE;
+    }
+
+    private Denotation eval(DexMethodCallExpr methodCallExpr) {
+        Denotation typeObj = resolve.resolveFunction(methodCallExpr);
+        if (typeObj instanceof Denotation.FunctionType) {
+            return ((Denotation.FunctionType) typeObj).ret();
+        }
+        return BuiltinTypes.UNDEFINED_TYPE;
+    }
+
+    private Denotation eval(DexAddExpr addExpr) {
+        Denotation typeObj = resolve.resolveFunction(addExpr);
+        if (typeObj instanceof Denotation.FunctionType) {
+            return ((Denotation.FunctionType) typeObj).ret();
+        }
+        return BuiltinTypes.UNDEFINED_TYPE;
+    }
+
+    private Denotation eval(DexNewExpr newExpr) {
+        Denotation typeObj = resolve.resolveFunction(newExpr);
+        if (typeObj instanceof Denotation.FunctionType) {
+            DexFunction definedBy = (DexFunction) ((Denotation.FunctionType) typeObj).definedBy();
+            return new Denotation.FunctionInterfaceType(resolve, definedBy);
+        }
+        return BuiltinTypes.UNDEFINED_TYPE;
     }
 
     public void declare(DexFunction function) {

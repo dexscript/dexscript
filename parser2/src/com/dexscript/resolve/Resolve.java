@@ -89,4 +89,8 @@ public class Resolve {
     public Denotation resolveFunction(DexAddExpr addExpr) {
         return resolveFunction.resolveFunction(addExpr);
     }
+
+    public Denotation resolveFunction(DexNewExpr newExpr) {
+        return resolveFunction.resolveFunction(newExpr);
+    }
 }

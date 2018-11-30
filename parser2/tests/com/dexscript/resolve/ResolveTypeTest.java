@@ -2,26 +2,10 @@ package com.dexscript.resolve;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.expr.DexExpr;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class ResolveTypeTest {
-
-    @Test
-    public void integer_literal_is_int64() {
-        Assert.assertEquals(BuiltinTypes.INT64_TYPE, new Resolve().resolveType(DexExpr.parse("1")));
-    }
-
-    @Test
-    public void float_literal_is_float64() {
-        Assert.assertEquals(BuiltinTypes.FLOAT64_TYPE, new Resolve().resolveType(DexExpr.parse("1.1")));
-    }
-
-    @Test
-    public void string_literal_is_string() {
-        Assert.assertEquals(BuiltinTypes.STRING_TYPE, new Resolve().resolveType(DexExpr.parse("'hello'")));
-    }
 
     @Test
     public void reference_builtin_type() {

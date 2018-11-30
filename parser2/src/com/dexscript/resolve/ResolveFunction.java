@@ -37,6 +37,17 @@ final class ResolveFunction {
     }
 
     @NotNull
+    public Denotation resolveFunction(DexNewExpr newExpr) {
+        DexReference ref = newExpr.target().asRef();
+        String functionName = ref.toString();
+        List<Denotation.Type> argTypes = new ArrayList<>();
+        for (DexExpr arg : newExpr.args()) {
+            argTypes.add((Denotation.Type) resolve.resolveType(arg));
+        }
+        return resolveFunction(newExpr, functionName, argTypes);
+    }
+
+    @NotNull
     public Denotation resolveFunction(DexFunctionCallExpr callExpr) {
         DexReference ref = callExpr.target().asRef();
         String functionName = ref.toString();
