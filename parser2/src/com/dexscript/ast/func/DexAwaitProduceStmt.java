@@ -1,5 +1,6 @@
 package com.dexscript.ast.func;
 
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
@@ -14,6 +15,7 @@ public class DexAwaitProduceStmt extends DexAwaitCase {
     private DexIdentifier identifier;
     private DexSig sig;
     private DexBlock blk;
+    private DexSyntaxError syntaxError;
     private int produceStmtEnd = -1;
 
     public DexAwaitProduceStmt(Text src) {
@@ -41,6 +43,11 @@ public class DexAwaitProduceStmt extends DexAwaitCase {
         if (sig() != null) {
 
         }
+    }
+
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public DexSig sig() {
@@ -103,23 +110,28 @@ public class DexAwaitProduceStmt extends DexAwaitCase {
             identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
             if (identifier.matched()) {
                 i = identifier.end();
-                return this::sig;
+                return this::leftParen;
             }
             return null;
         }
 
-        @Expect("sig")
-        State sig() {
+        @Expect("(")
+        State leftParen() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.__(b)) {
                     continue;
                 }
                 if (b == '(') {
-                    break;
+                    return this::signature;
                 }
                 return null;
             }
+            return null;
+        }
+
+        @Expect("signature")
+        State signature() {
             sig = new DexSig(src.slice(i));
             if (sig.matched()) {
                 i = sig.end();
@@ -139,6 +151,9 @@ public class DexAwaitProduceStmt extends DexAwaitCase {
         }
 
         State reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (LineEnd.__(b)) {
