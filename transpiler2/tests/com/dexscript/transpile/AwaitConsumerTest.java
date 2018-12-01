@@ -4,10 +4,10 @@ import com.dexscript.runtime.Result;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ServeTest {
+public class AwaitConsumerTest {
 
     @Test
-    public void serve() {
+    public void await() {
         String src = "" +
                 "function Hello(): string {\n" +
                 "   a := A{}\n" +

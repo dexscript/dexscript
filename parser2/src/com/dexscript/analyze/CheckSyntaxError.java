@@ -18,6 +18,7 @@ public class CheckSyntaxError implements DexElement.Visitor {
             hasError = true;
         }
         if (elem.syntaxError() != null) {
+            System.out.println(elem.syntaxError());
             hasError = true;
         }
         elem.walkDown(this);

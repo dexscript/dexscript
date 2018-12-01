@@ -4,7 +4,7 @@ import com.dexscript.runtime.Result;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ActorArgTest {
+public class AwaitProducerTest {
 
     @Test
     public void pass_actor_as_argument() {
