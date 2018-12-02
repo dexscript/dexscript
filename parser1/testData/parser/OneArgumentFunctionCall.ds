@@ -1,9 +1,0 @@
-package abc
-
-function Hello(): string {
-    return World('world!')
-}
-
-function World(msg: string): string {
-    return msg
-}

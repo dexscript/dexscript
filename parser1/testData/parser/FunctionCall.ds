@@ -1,6 +1,0 @@
-package abc
-
-function Hello(): string {
-    Sleep(100)
-}
-

@@ -1,5 +1,0 @@
-package abc
-
-function hello() {
-    val := 'hello'
-}
