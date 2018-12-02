@@ -71,8 +71,8 @@ public class InterfaceTypeTest {
         Resolve resolve = new Resolve();
         resolve.define(new DexInterface("interface Duck{ ::Quack(duck: Duck): string }"));
         resolve.define(new DexFunction("function Quack(i: int64): string { return 'duck'; }"));
-        Denotation.Type int64 = (Denotation.Type) resolve.resolveType("int64");
-        Denotation.Type duck = (Denotation.Type) resolve.resolveType("Duck");
+        Denotation.Type int64 = resolve.resolveType("int64");
+        Denotation.Type duck = resolve.resolveType("Duck");
         Assert.assertTrue(duck.isAssignableFrom(int64));
         Assert.assertFalse(int64.isAssignableFrom(duck));
     }
@@ -92,8 +92,8 @@ public class InterfaceTypeTest {
                 "function TakeTwo(duck0: int64, duck1: Swimable, duck2: Quackable): string {\n" +
                 "   return 'duck'\n" +
                 "}"));
-        Denotation.Type int64 = (Denotation.Type) resolve.resolveType("int64");
-        Denotation.Type duck = (Denotation.Type) resolve.resolveType("Duck");
+        Denotation.Type int64 = resolve.resolveType("int64");
+        Denotation.Type duck = resolve.resolveType("Duck");
         Assert.assertTrue(duck.isAssignableFrom(int64));
         Assert.assertFalse(int64.isAssignableFrom(duck));
     }

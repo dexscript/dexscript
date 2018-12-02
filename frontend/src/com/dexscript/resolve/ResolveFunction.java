@@ -155,20 +155,13 @@ final class ResolveFunction {
     }
 
     public boolean canProvide(String functionName, List<Denotation.Type> params, Denotation.Type ret) {
-        if (concreteDefs.containsKey(functionName)) {
-            List<Denotation.Function> candidates = concreteDefs.get(functionName);
-            for (Denotation.Function candidate : candidates) {
-                if (candidate.functionType().canProvide(functionName, params, ret)) {
-                    return true;
-                }
-            }
+        List<Denotation.Function> candidates = concreteDefs.get(functionName);
+        if (candidates == null) {
+            return false;
         }
-        if (virtualDefs.containsKey(functionName)) {
-            List<Denotation.FunctionType> candidates = virtualDefs.get(functionName);
-            for (Denotation.FunctionType candidate : candidates) {
-                if (candidate.canProvide(functionName, params, ret)) {
-                    return true;
-                }
+        for (Denotation.Function candidate : candidates) {
+            if (candidate.functionType().canProvide(functionName, params, ret)) {
+                return true;
             }
         }
         return false;
@@ -208,25 +201,25 @@ final class ResolveFunction {
             return BuiltinTypes.STRING_TYPE;
         }
         if (expr instanceof DexReference) {
-            return eval((DexReference)expr);
+            return eval((DexReference) expr);
         }
         if (expr instanceof DexParenExpr) {
-            return resolveType(((DexParenExpr)expr).body());
+            return resolveType(((DexParenExpr) expr).body());
         }
         if (expr instanceof DexFunctionCallExpr) {
-            return returnTypeOf(resolveFunctions((DexFunctionCallExpr)expr));
+            return returnTypeOf(resolveFunctions((DexFunctionCallExpr) expr));
         }
         if (expr instanceof DexMethodCallExpr) {
-            return returnTypeOf(resolveFunctions((DexMethodCallExpr)expr));
+            return returnTypeOf(resolveFunctions((DexMethodCallExpr) expr));
         }
         if (expr instanceof DexAddExpr) {
-            return returnTypeOf(resolveFunctions((DexAddExpr)expr));
+            return returnTypeOf(resolveFunctions((DexAddExpr) expr));
         }
         if (expr instanceof DexNewExpr) {
-            return eval((DexNewExpr)expr);
+            return eval((DexNewExpr) expr);
         }
         if (expr instanceof DexConsumeExpr) {
-            return returnTypeOf(resolveFunctions((DexConsumeExpr)expr));
+            return returnTypeOf(resolveFunctions((DexConsumeExpr) expr));
         }
         return BuiltinTypes.UNDEFINED_TYPE;
     }

@@ -10,8 +10,8 @@ import java.util.Map;
 
 final class ResolveType {
 
-    private final Map<String, List<DexFunction>> declaredFunctions = new HashMap<>();
-    private final DenotationTable<Denotation.Type> declared = BuiltinTypes.BUILTIN_TYPES;
+    private final Map<String, List<DexFunction>> definedFunctions = new HashMap<>();
+    private final DenotationTable<Denotation.Type> defined = BuiltinTypes.BUILTIN_TYPES;
     private final Resolve resolve;
 
     ResolveType(Resolve resolve) {
@@ -19,7 +19,7 @@ final class ResolveType {
     }
 
     public void define(Denotation.InterfaceType inf) {
-        declared.put(inf.name(), inf);
+        defined.put(inf.name(), inf);
     }
 
     public Denotation.Type resolveType(DexReference ref) {
@@ -28,11 +28,11 @@ final class ResolveType {
             return type;
         }
         String refName = ref.toString();
-        type = declared.get(refName);
+        type = defined.get(refName);
         if (type != null) {
             return type;
         }
-        List<DexFunction> functions = declaredFunctions.get(refName);
+        List<DexFunction> functions = definedFunctions.get(refName);
         if (functions != null) {
             for (DexFunction function : functions) {
                 return resolve.resolveType(function);
@@ -45,7 +45,7 @@ final class ResolveType {
 
     public void define(DexFunction function) {
         String functionName = function.identifier().toString();
-        List<DexFunction> functions = declaredFunctions.computeIfAbsent(functionName, k -> new ArrayList<>());
+        List<DexFunction> functions = definedFunctions.computeIfAbsent(functionName, k -> new ArrayList<>());
         functions.add(function);
     }
 }
