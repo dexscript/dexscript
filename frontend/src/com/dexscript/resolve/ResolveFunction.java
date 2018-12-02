@@ -1,7 +1,6 @@
 package com.dexscript.resolve;
 
 import com.dexscript.ast.*;
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
 import com.dexscript.ast.inf.DexInfFunction;
 import org.jetbrains.annotations.NotNull;
@@ -15,33 +14,72 @@ import static com.dexscript.resolve.Denotation.FunctionType.returnTypeOf;
 
 final class ResolveFunction {
 
-    private final Map<String, List<Denotation.FunctionType>> defined = new HashMap<>();
-    private Resolve resolve;
+    private final Map<String, List<Denotation.Function>> concreteDefs = new HashMap<>();
+    private final Map<String, List<Denotation.FunctionType>> virtualDefs = new HashMap<>();
+    private final Resolve resolve;
 
-    void setResolve(Resolve resolve) {
+    public ResolveFunction(Resolve resolve) {
         this.resolve = resolve;
     }
 
-    public void declare(DexFunction function) {
-        String functionName = function.identifier().toString();
-        List<Denotation.FunctionType> types = defined.computeIfAbsent(functionName, k -> new ArrayList<>());
+    public void define(DexFunction elem) {
+        String functionName = elem.identifier().toString();
+        List<Denotation.Function> functions = concreteDefs.computeIfAbsent(functionName, k -> new ArrayList<>());
         List<Denotation.Type> args = new ArrayList<>();
-        for (DexParam param : function.sig().params()) {
+        for (DexParam param : elem.sig().params()) {
             args.add(resolve.resolveType(param.paramType()));
         }
-        Denotation.Type ret = resolve.resolveType(function.sig().ret());
-        types.add(new Denotation.FunctionType(functionName, function, args, ret));
+        Denotation.Type ret = resolve.resolveType(elem.sig().ret());
+        Denotation.FunctionType functionType = new Denotation.FunctionType(functionName, elem, args, ret);
+        Denotation.ActorType actorType = new Denotation.ActorType(resolve, elem);
+        Denotation.Function function = new Denotation.Function(functionName, functionType, actorType, elem);
+        functions.add(function);
+    }
+
+    public void define(Denotation.FunctionType functionType) {
+        List<Denotation.FunctionType> functionTypes = virtualDefs.computeIfAbsent(
+                functionType.name(), k -> new ArrayList<>());
+        functionTypes.add(functionType);
     }
 
     @NotNull
-    public List<Denotation.FunctionType> resolveFunctions(DexNewExpr newExpr) {
-        DexReference ref = newExpr.target().asRef();
-        String functionName = ref.toString();
+    public List<Denotation.Function> resolveFunctions(DexNewExpr newExpr) {
+        String functionName = newExpr.target().asRef().toString();
+        List<Denotation.Function> candidates = concreteDefs.get(functionName);
         List<Denotation.Type> argTypes = new ArrayList<>();
         for (DexExpr arg : newExpr.args()) {
-            argTypes.add(resolve.resolveType(arg));
+            Denotation.Type argType = resolveType(arg);
+            argTypes.add(argType);
         }
-        return resolveFunctions(newExpr, functionName, argTypes);
+        List<Denotation.Function> impls = new ArrayList<>();
+        for (Denotation.Function candidate : candidates) {
+            boolean paramsMatched = areParamsAssignable(candidate.functionType().params(), argTypes);
+            if (paramsMatched) {
+                impls.add(candidate);
+            }
+        }
+        return impls;
+    }
+
+    @NotNull
+    public List<Denotation.Function> resolveFunctions(DexInfFunction infFunction) {
+        String functionName = infFunction.identifier().toString();
+        List<Denotation.Function> candidates = concreteDefs.get(functionName);
+        List<Denotation.Type> paramTypes = new ArrayList<>();
+        for (DexParam param : infFunction.sig().params()) {
+            Denotation.Type paramType = resolve.resolveType(param.paramType());
+            paramTypes.add(paramType);
+        }
+        Denotation.Type retType = resolve.resolveType(infFunction.sig().ret());
+        List<Denotation.Function> impls = new ArrayList<>();
+        for (Denotation.Function candidate : candidates) {
+            boolean paramsMatched = areParamsAssignable(candidate.functionType().params(), paramTypes);
+            boolean retMatched = candidate.functionType().ret().isAssignableFrom(retType);
+            if (paramsMatched && retMatched) {
+                impls.add(candidate);
+            }
+        }
+        return impls;
     }
 
     @NotNull
@@ -52,7 +90,7 @@ final class ResolveFunction {
         for (DexExpr arg : callExpr.args()) {
             argTypes.add(resolve.resolveType(arg));
         }
-        return resolveFunctions(callExpr, functionName, argTypes);
+        return resolveFunctions(functionName, argTypes);
     }
 
     @NotNull
@@ -64,7 +102,7 @@ final class ResolveFunction {
         for (DexExpr arg : callExpr.args()) {
             argTypes.add(resolve.resolveType(arg));
         }
-        return resolveFunctions(callExpr, functionName, argTypes);
+        return resolveFunctions(functionName, argTypes);
     }
 
     @NotNull
@@ -72,31 +110,38 @@ final class ResolveFunction {
         List<Denotation.Type> argTypes = new ArrayList<>();
         argTypes.add(resolve.resolveType(addExpr.left()));
         argTypes.add(resolve.resolveType(addExpr.right()));
-        return resolveFunctions(addExpr, "Add__", argTypes);
+        return resolveFunctions("Add__", argTypes);
     }
 
     @NotNull
     public List<Denotation.FunctionType> resolveFunctions(DexConsumeExpr consumeExpr) {
         List<Denotation.Type> argTypes = new ArrayList<>();
         argTypes.add(resolve.resolveType(consumeExpr.right()));
-        return resolveFunctions(consumeExpr, "Consume__", argTypes);
+        return resolveFunctions("Consume__", argTypes);
     }
 
-    private List<Denotation.FunctionType> resolveFunctions(DexElement elem, String functionName, List<Denotation.Type> paramTypes) {
-        List<Denotation.FunctionType> candidates = defined.get(functionName);
-        if (candidates == null) {
-            return new ArrayList<>();
-        }
+    private List<Denotation.FunctionType> resolveFunctions(String functionName, List<Denotation.Type> paramTypes) {
         List<Denotation.FunctionType> resolved = new ArrayList<>();
-        for (Denotation.FunctionType candidate : candidates) {
-            if (signatureMatch(paramTypes, candidate.params())) {
-                resolved.add(candidate);
+        if (concreteDefs.containsKey(functionName)) {
+            List<Denotation.Function> candidates = concreteDefs.get(functionName);
+            for (Denotation.Function candidate : candidates) {
+                if (areParamsAssignable(paramTypes, candidate.functionType().params())) {
+                    resolved.add(candidate.functionType());
+                }
+            }
+        }
+        if (virtualDefs.containsKey(functionName)) {
+            List<Denotation.FunctionType> candidates = virtualDefs.get(functionName);
+            for (Denotation.FunctionType candidate : candidates) {
+                if (areParamsAssignable(paramTypes, candidate.params())) {
+                    resolved.add(candidate);
+                }
             }
         }
         return resolved;
     }
 
-    private boolean signatureMatch(List<Denotation.Type> argTypes, List<Denotation.Type> paramTypes) {
+    private boolean areParamsAssignable(List<Denotation.Type> argTypes, List<Denotation.Type> paramTypes) {
         if (paramTypes.size() != argTypes.size()) {
             return false;
         }
@@ -110,52 +155,34 @@ final class ResolveFunction {
     }
 
     public boolean canProvide(String functionName, List<Denotation.Type> params, Denotation.Type ret) {
-        List<Denotation.FunctionType> candidates = defined.get(functionName);
-        if (candidates == null) {
-            return false;
+        if (concreteDefs.containsKey(functionName)) {
+            List<Denotation.Function> candidates = concreteDefs.get(functionName);
+            for (Denotation.Function candidate : candidates) {
+                if (candidate.functionType().canProvide(functionName, params, ret)) {
+                    return true;
+                }
+            }
         }
-        for (Denotation.FunctionType candidate : candidates) {
-            if (candidate.canProvide(functionName, params, ret)) {
-                return true;
+        if (virtualDefs.containsKey(functionName)) {
+            List<Denotation.FunctionType> candidates = virtualDefs.get(functionName);
+            for (Denotation.FunctionType candidate : candidates) {
+                if (candidate.canProvide(functionName, params, ret)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public void declare(Denotation.FunctionType functionType) {
-        List<Denotation.FunctionType> functionTypes = defined.computeIfAbsent(
-                functionType.name(), k -> new ArrayList<>());
-        functionTypes.add(functionType);
-    }
-
-    public List<Denotation.FunctionType> resolveFunctions(DexInfFunction infFunction) {
-        List<Denotation.FunctionType> candidates = defined.get(infFunction.identifier().toString());
-        List<Denotation.Type> paramTypes = new ArrayList<>();
-        for (DexParam param : infFunction.sig().params()) {
-            Denotation.Type paramType = resolve.resolveType(param.paramType());
-            paramTypes.add(paramType);
-        }
-        List<Denotation.FunctionType> impls = new ArrayList<>();
-        for (Denotation.FunctionType candidate : candidates) {
-            if (!candidate.isImpl()){
-                continue;
-            }
-            if (signatureMatch(candidate.params(), paramTypes)) {
-                impls.add(candidate);
-            }
-        }
-        return impls;
-    }
-
     public Denotation.Type resolveType(DexFunction function) {
-        Denotation.FunctionInterfaceType type = function.attachmentOfType(Denotation.FunctionInterfaceType.class);
+        Denotation.ActorType type = function.attachmentOfType(Denotation.ActorType.class);
         if (type != null) {
             return type;
         }
-        type = new Denotation.FunctionInterfaceType(resolve, function);
+        type = new Denotation.ActorType(resolve, function);
         function.attach(type);
         for (Denotation.FunctionType member : type.members()) {
-            declare(member);
+            define(member);
         }
         return type;
     }
@@ -214,12 +241,12 @@ final class ResolveFunction {
     }
 
     private Denotation.Type eval(DexNewExpr newExpr) {
-        List<Denotation.FunctionType> functions = resolveFunctions(newExpr);
+        List<Denotation.Function> functions = resolveFunctions(newExpr);
         if (functions.size() == 0) {
             return BuiltinTypes.UNDEFINED_TYPE;
         }
         if (functions.size() == 1) {
-            DexFunction definedBy = (DexFunction) functions.get(0).definedBy();
+            DexFunction definedBy = functions.get(0).definedBy();
             return resolveType(definedBy);
         }
         throw new UnsupportedOperationException("not implemented: intersection type of multiple functions");

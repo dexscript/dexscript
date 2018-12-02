@@ -35,7 +35,7 @@ public class Town {
         Denotation.FunctionType addStringString = new Denotation.FunctionType(
                 "Add__", null, params, BuiltinTypes.STRING_TYPE);
         addStringString.setBoat(new Boat(new Pier("Add__", 2), "Add__", "String_String"));
-        resolve.declare(addStringString);
+        resolve.define(addStringString);
         g.__("package com.dexscript.runtime.gen__"
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
@@ -59,14 +59,14 @@ public class Town {
         for (DexRootDecl rootDecl : iFile.rootDecls()) {
             if (rootDecl.function() != null) {
                 DexFunction iFunction = rootDecl.function();
-                resolve.declare(iFunction);
+                resolve.define(iFunction);
                 List<DexParam> params = iFunction.sig().params();
                 Pier pier = new Pier(iFunction.identifier().toString(), params.size());
                 Boat boat = allocate(pier);
                 iFunction.attach(boat);
             } else if (rootDecl.inf() != null) {
                 DexInterface inf = rootDecl.inf();
-                resolve.declare(inf);
+                resolve.define(inf);
                 for (DexInfMember member : inf.members()) {
                     if (member instanceof DexInfMethod) {
                         declare(inf, (DexInfMethod) member);

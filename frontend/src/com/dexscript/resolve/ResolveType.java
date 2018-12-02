@@ -11,22 +11,14 @@ import java.util.Map;
 final class ResolveType {
 
     private final Map<String, List<DexFunction>> declaredFunctions = new HashMap<>();
-    private final DenotationTable<Denotation.Type> declared;
-    private Resolve resolve;
+    private final DenotationTable<Denotation.Type> declared = BuiltinTypes.BUILTIN_TYPES;
+    private final Resolve resolve;
 
-    ResolveType(DenotationTable<Denotation.Type> builtin) {
-        this.declared = builtin;
-    }
-
-    ResolveType() {
-        this(BuiltinTypes.BUILTIN_TYPES);
-    }
-
-    public void setResolve(Resolve resolve) {
+    ResolveType(Resolve resolve) {
         this.resolve = resolve;
     }
 
-    public void declare(Denotation.InterfaceType inf) {
+    public void define(Denotation.InterfaceType inf) {
         declared.put(inf.name(), inf);
     }
 
@@ -51,7 +43,7 @@ final class ResolveType {
         return type;
     }
 
-    public void declare(DexFunction function) {
+    public void define(DexFunction function) {
         String functionName = function.identifier().toString();
         List<DexFunction> functions = declaredFunctions.computeIfAbsent(functionName, k -> new ArrayList<>());
         functions.add(function);

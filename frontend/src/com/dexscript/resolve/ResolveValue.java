@@ -11,20 +11,11 @@ import java.util.List;
 
 final class ResolveValue {
 
-    public static final DenotationTable<Denotation.Value> BUILTIN_VALUES = new DenotationTable<>();
-    private final DenotationTable<Denotation.Value> builtin;
-    private Resolve resolve;
+    private final DenotationTable<Denotation.Value> builtin = new DenotationTable<>();
+    private final Resolve resolve;
 
-    ResolveValue(DenotationTable<Denotation.Value> builtin) {
-        this.builtin = builtin;
-    }
-
-    ResolveValue() {
-        this(BUILTIN_VALUES);
-    }
-
-    void setResolve(Resolve resolveType) {
-        this.resolve = resolveType;
+    public ResolveValue(Resolve resolve) {
+        this.resolve = resolve;
     }
 
     public Denotation resolveValue(DexReference ref) {

@@ -18,7 +18,7 @@ public class ResolveTypeTest {
     public void reference_interface() {
         DexInterface duckInf = new DexInterface("interface Duck{}");
         Resolve resolve = new Resolve();
-        resolve.declare(duckInf);
+        resolve.define(duckInf);
         DexFunction function = new DexFunction("function hello(): Duck {}");
         Denotation retType = new Resolve().resolveType(function.sig().ret());
         Assert.assertEquals("Duck", retType.name());
@@ -27,11 +27,11 @@ public class ResolveTypeTest {
     @Test
     public void reference_function_as_interface() {
         Resolve resolve = new Resolve();
-        resolve.declare(new DexFunction("" +
+        resolve.define(new DexFunction("" +
                 "function Hello(): string {\n" +
                 "   return 'hello'\n" +
                 "}"));
-        resolve.declare(new DexInterface("" +
+        resolve.define(new DexInterface("" +
                 "interface StringPromise {\n" +
                 "   GetResult__(): string" +
                 "}"));

@@ -22,7 +22,7 @@ public class ResolveFunctionTest {
                 "}";
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
-        resolve.declare(file);
+        resolve.define(file);
         DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asFunctionCall();
@@ -45,7 +45,7 @@ public class ResolveFunctionTest {
                 "}";
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
-        resolve.declare(file);
+        resolve.define(file);
         DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asFunctionCall();
@@ -67,14 +67,13 @@ public class ResolveFunctionTest {
                 "}";
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
-        resolve.declare(file);
+        resolve.define(file);
         Denotation.Type string = resolve.resolveType("string");
         Denotation.InterfaceType Duck = (Denotation.InterfaceType) resolve.resolveType("Duck");
         Assert.assertTrue(Duck.isAssignableFrom(string));
         Assert.assertFalse(string.isAssignableFrom(Duck));
         DexInfFunction infFunction = (DexInfFunction) Duck.definedBy().members().get(0);
-        List<Denotation.FunctionType> functions = resolve.resolveFunctions(infFunction);
+        List<Denotation.Function> functions = resolve.resolveFunctions(infFunction);
         Assert.assertEquals(1, functions.size());
-        Assert.assertTrue(functions.get(0).isImpl());
     }
 }

@@ -49,6 +49,30 @@ public class Denotation {
         }
     }
 
+    public static class Function extends Denotation {
+
+        private final ActorType actorType;
+        private final DexFunction definedBy;
+
+        public Function(String name, Denotation.FunctionType type, Denotation.ActorType actorType, DexFunction definedBy) {
+            super(name, type);
+            this.actorType = actorType;
+            this.definedBy = definedBy;
+        }
+
+        public final DexFunction definedBy() {
+            return definedBy;
+        }
+
+        public final Denotation.FunctionType functionType() {
+            return (FunctionType) type();
+        }
+
+        public final Denotation.ActorType actorType() {
+            return actorType;
+        }
+    }
+
     public static abstract class Type extends Denotation {
 
         private final String javaClassName;
@@ -169,13 +193,13 @@ public class Denotation {
         }
     }
 
-    public static class FunctionInterfaceType extends Type {
+    public static class ActorType extends Type {
 
         private final Resolve resolve;
         private final DexFunction definedBy;
         private List<FunctionType> members;
 
-        public FunctionInterfaceType(Resolve resolve, DexFunction definedBy) {
+        public ActorType(Resolve resolve, DexFunction definedBy) {
             super(definedBy.identifier().toString(), TypeKind.INTERFACE, "Object");
             this.resolve = resolve;
             this.definedBy  = definedBy;
@@ -187,7 +211,7 @@ public class Denotation {
                 Denotation.Type retType = (Type) resolve.resolveType(definedBy.sig().ret());
                 ArrayList<Type> params = new ArrayList<>();
                 params.add(this);
-                members.add(new FunctionType("GetResult__", definedBy, params, retType));
+                members.add(new FunctionType("Consume__", definedBy, params, retType));
             }
             return members;
         }

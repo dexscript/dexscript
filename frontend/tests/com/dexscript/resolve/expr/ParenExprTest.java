@@ -12,7 +12,7 @@ public class ParenExprTest {
     @Test
     public void can_get_result() {
         Resolve resolve = new Resolve();
-        resolve.declare(new DexFunction("function Hello(): string { return 'hello' }"));
+        resolve.define(new DexFunction("function Hello(): string { return 'hello' }"));
         Denotation.Type type = resolve.resolveType(DexExpr.parse("(Hello{})"));
         Assert.assertEquals("Hello", type.name());
     }

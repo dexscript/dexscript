@@ -12,42 +12,52 @@ import java.util.List;
 
 public class Resolve {
 
-    private final ResolveType resolveType = new ResolveType();
-    private final ResolveValue resolveValue = new ResolveValue();
-    private final ResolveFunction resolveFunction = new ResolveFunction();
+    private final ResolveType resolveType;
+    private final ResolveValue resolveValue;
+    private final ResolveFunction resolveFunction;
 
     public Resolve() {
-        resolveValue.setResolve(this);
-        resolveFunction.setResolve(this);
-        resolveType.setResolve(this);
+        resolveValue = new ResolveValue(this);
+        resolveFunction = new ResolveFunction(this);
+        resolveType = new ResolveType(this);
     }
 
-    public void declare(DexFile file) {
+    public void define(DexFile file) {
         for (DexRootDecl rootDecl : file.rootDecls()) {
             if (rootDecl.function() != null) {
-                declare(rootDecl.function());
+                define(rootDecl.function());
             } else if (rootDecl.inf() != null) {
-                declare(rootDecl.inf());
+                define(rootDecl.inf());
             }
         }
     }
 
-    public void declare(DexFunction function) {
-        resolveFunction.declare(function);
-        resolveType.declare(function);
+    public void define(DexFunction function) {
+        resolveFunction.define(function);
+        resolveType.define(function);
     }
 
 
-    public void declare(DexInterface inf) {
+    public void define(DexInterface inf) {
         Denotation.InterfaceType infType = new Denotation.InterfaceType(this, inf);
-        resolveType.declare(infType);
+        resolveType.define(infType);
         for (Denotation.FunctionType functionType : infType.members()) {
-            resolveFunction.declare(functionType);
+            resolveFunction.define(functionType);
         }
     }
 
-    public void declare(Denotation.FunctionType functionType) {
-        resolveFunction.declare(functionType);
+    public void define(Denotation.FunctionType functionType) {
+        resolveFunction.define(functionType);
+    }
+
+    @NotNull
+    public List<Denotation.Function> resolveFunctions(DexNewExpr newExpr) {
+        return resolveFunction.resolveFunctions(newExpr);
+    }
+
+    @NotNull
+    public List<Denotation.Function> resolveFunctions(DexInfFunction infFunction) {
+        return resolveFunction.resolveFunctions(infFunction);
     }
 
     @NotNull
@@ -56,17 +66,8 @@ public class Resolve {
     }
 
     @NotNull
-    public List<Denotation.FunctionType> resolveFunctions(DexNewExpr newExpr) {
-        return resolveFunction.resolveFunctions(newExpr);
-    }
-
-    @NotNull
     public List<Denotation.FunctionType> resolveFunctions(DexMethodCallExpr callExpr) {
         return resolveFunction.resolveFunctions(callExpr);
-    }
-
-    public List<Denotation.FunctionType> resolveFunctions(DexInfFunction infFunction) {
-        return resolveFunction.resolveFunctions(infFunction);
     }
 
     @NotNull

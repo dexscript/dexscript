@@ -10,7 +10,7 @@ public class InterfaceTypeTest {
     @Test
     public void define_interface_type_by_member_function() {
         Resolve resolve = new Resolve();
-        resolve.declare(new DexInterface("" +
+        resolve.define(new DexInterface("" +
                 "interface Duck {\n" +
                 "  ::Quack(duck: Duck): string\n" +
                 "}"));
@@ -22,7 +22,7 @@ public class InterfaceTypeTest {
     @Test
     public void define_interface_type_by_member_method() {
         Resolve resolve = new Resolve();
-        resolve.declare(new DexInterface("" +
+        resolve.define(new DexInterface("" +
                 "interface Duck {\n" +
                 "  Quack(): string\n" +
                 "}"));
@@ -34,11 +34,11 @@ public class InterfaceTypeTest {
     @Test
     public void test_compatibility() {
         Resolve resolve = new Resolve();
-        resolve.declare(new DexInterface("" +
+        resolve.define(new DexInterface("" +
                 "interface Duck1 {\n" +
                 "  ::Quack(duck: Duck1): string\n" +
                 "}"));
-        resolve.declare(new DexInterface("" +
+        resolve.define(new DexInterface("" +
                 "interface Duck2 {\n" +
                 "  ::Quack(duck: Duck2): string\n" +
                 "}"));
@@ -51,11 +51,11 @@ public class InterfaceTypeTest {
     @Test
     public void test_subtype() {
         Resolve resolve = new Resolve();
-        resolve.declare(new DexInterface("" +
+        resolve.define(new DexInterface("" +
                 "interface Duck {\n" +
                 "  ::Quack(duck: Duck): string\n" +
                 "}"));
-        resolve.declare(new DexInterface("" +
+        resolve.define(new DexInterface("" +
                 "interface Donald {\n" +
                 "  ::Quack(duck: Donald): string\n" +
                 "  ::IAmDonald(duck: Duck): string\n" +
@@ -69,8 +69,8 @@ public class InterfaceTypeTest {
     @Test
     public void implement_interface_by_function() {
         Resolve resolve = new Resolve();
-        resolve.declare(new DexInterface("interface Duck{ ::Quack(duck: Duck): string }"));
-        resolve.declare(new DexFunction("function Quack(i: int64): string { return 'duck'; }"));
+        resolve.define(new DexInterface("interface Duck{ ::Quack(duck: Duck): string }"));
+        resolve.define(new DexFunction("function Quack(i: int64): string { return 'duck'; }"));
         Denotation.Type int64 = (Denotation.Type) resolve.resolveType("int64");
         Denotation.Type duck = (Denotation.Type) resolve.resolveType("Duck");
         Assert.assertTrue(duck.isAssignableFrom(int64));
@@ -80,15 +80,15 @@ public class InterfaceTypeTest {
     @Test
     public void implement_interface_by_another_interface() {
         Resolve resolve = new Resolve();
-        resolve.declare(new DexInterface("interface Quackable{ ::Quack(duck: Quackable): string }"));
-        resolve.declare(new DexInterface("interface Swimable{ ::Swim(duck: Swimable): string }"));
-        resolve.declare(new DexInterface("" +
+        resolve.define(new DexInterface("interface Quackable{ ::Quack(duck: Quackable): string }"));
+        resolve.define(new DexInterface("interface Swimable{ ::Swim(duck: Swimable): string }"));
+        resolve.define(new DexInterface("" +
                 "interface Duck{\n" +
                 "   ::TakeTwo(duck0: Duck, duck1: Quackable, duck2: Swimable): string\n" +
                 "}"));
-        resolve.declare(new DexFunction("function Quack(i: int64): string { return 'quack' }"));
-        resolve.declare(new DexFunction("function Swim(i: int64): string { return 'swim' }"));
-        resolve.declare(new DexFunction("" +
+        resolve.define(new DexFunction("function Quack(i: int64): string { return 'quack' }"));
+        resolve.define(new DexFunction("function Swim(i: int64): string { return 'swim' }"));
+        resolve.define(new DexFunction("" +
                 "function TakeTwo(duck0: int64, duck1: Swimable, duck2: Quackable): string {\n" +
                 "   return 'duck'\n" +
                 "}"));
