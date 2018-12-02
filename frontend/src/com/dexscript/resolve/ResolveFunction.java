@@ -34,29 +34,29 @@ final class ResolveFunction {
     }
 
     @NotNull
-    public Denotation resolveFunction(DexNewExpr newExpr) {
+    public List<Denotation.FunctionType> resolveFunctions(DexNewExpr newExpr) {
         DexReference ref = newExpr.target().asRef();
         String functionName = ref.toString();
         List<Denotation.Type> argTypes = new ArrayList<>();
         for (DexExpr arg : newExpr.args()) {
             argTypes.add(resolve.resolveType(arg));
         }
-        return resolveFunction(newExpr, functionName, argTypes);
+        return resolveFunctions(newExpr, functionName, argTypes);
     }
 
     @NotNull
-    public Denotation resolveFunction(DexFunctionCallExpr callExpr) {
+    public List<Denotation.FunctionType> resolveFunctions(DexFunctionCallExpr callExpr) {
         DexReference ref = callExpr.target().asRef();
         String functionName = ref.toString();
         List<Denotation.Type> argTypes = new ArrayList<>();
         for (DexExpr arg : callExpr.args()) {
             argTypes.add(resolve.resolveType(arg));
         }
-        return resolveFunction(callExpr, functionName, argTypes);
+        return resolveFunctions(callExpr, functionName, argTypes);
     }
 
     @NotNull
-    public Denotation resolveFunction(DexMethodCallExpr callExpr) {
+    public List<Denotation.FunctionType> resolveFunctions(DexMethodCallExpr callExpr) {
         DexReference ref = callExpr.method();
         String functionName = ref.toString();
         List<Denotation.Type> argTypes = new ArrayList<>();
@@ -64,35 +64,36 @@ final class ResolveFunction {
         for (DexExpr arg : callExpr.args()) {
             argTypes.add(resolve.resolveType(arg));
         }
-        return resolveFunction(callExpr, functionName, argTypes);
+        return resolveFunctions(callExpr, functionName, argTypes);
     }
 
     @NotNull
-    public Denotation resolveFunction(DexAddExpr addExpr) {
+    public List<Denotation.FunctionType> resolveFunctions(DexAddExpr addExpr) {
         List<Denotation.Type> argTypes = new ArrayList<>();
         argTypes.add(resolve.resolveType(addExpr.left()));
         argTypes.add(resolve.resolveType(addExpr.right()));
-        return resolveFunction(addExpr, "Add__", argTypes);
+        return resolveFunctions(addExpr, "Add__", argTypes);
     }
 
     @NotNull
-    public Denotation resolveFunction(DexConsumeExpr getResultExpr) {
+    public List<Denotation.FunctionType> resolveFunctions(DexConsumeExpr consumeExpr) {
         List<Denotation.Type> argTypes = new ArrayList<>();
-        argTypes.add(resolve.resolveType(getResultExpr.right()));
-        return resolveFunction(getResultExpr, "GetResult__", argTypes);
+        argTypes.add(resolve.resolveType(consumeExpr.right()));
+        return resolveFunctions(consumeExpr, "Consume__", argTypes);
     }
 
-    private Denotation resolveFunction(DexElement elem, String functionName, List<Denotation.Type> paramTypes) {
+    private List<Denotation.FunctionType> resolveFunctions(DexElement elem, String functionName, List<Denotation.Type> paramTypes) {
         List<Denotation.FunctionType> candidates = defined.get(functionName);
         if (candidates == null) {
-            return new Denotation.Error(functionName, elem, "can not resolve " + functionName + " to a function");
+            return new ArrayList<>();
         }
+        List<Denotation.FunctionType> resolved = new ArrayList<>();
         for (Denotation.FunctionType candidate : candidates) {
             if (signatureMatch(paramTypes, candidate.params())) {
-                return candidate;
+                resolved.add(candidate);
             }
         }
-        return new Denotation.Error(functionName, elem, "can not resolve " + functionName + " to a function");
+        return resolved;
     }
 
     private boolean signatureMatch(List<Denotation.Type> argTypes, List<Denotation.Type> paramTypes) {
@@ -186,19 +187,19 @@ final class ResolveFunction {
             return resolveType(((DexParenExpr)expr).body());
         }
         if (expr instanceof DexFunctionCallExpr) {
-            return returnTypeOf(resolveFunction((DexFunctionCallExpr)expr));
+            return returnTypeOf(resolveFunctions((DexFunctionCallExpr)expr));
         }
         if (expr instanceof DexMethodCallExpr) {
-            return returnTypeOf(resolveFunction((DexMethodCallExpr)expr));
+            return returnTypeOf(resolveFunctions((DexMethodCallExpr)expr));
         }
         if (expr instanceof DexAddExpr) {
-            return returnTypeOf(resolveFunction((DexAddExpr)expr));
+            return returnTypeOf(resolveFunctions((DexAddExpr)expr));
         }
         if (expr instanceof DexNewExpr) {
             return eval((DexNewExpr)expr);
         }
         if (expr instanceof DexConsumeExpr) {
-            return returnTypeOf(resolveFunction((DexConsumeExpr)expr));
+            return returnTypeOf(resolveFunctions((DexConsumeExpr)expr));
         }
         return BuiltinTypes.UNDEFINED_TYPE;
     }
@@ -213,11 +214,14 @@ final class ResolveFunction {
     }
 
     private Denotation.Type eval(DexNewExpr newExpr) {
-        Denotation typeObj = resolveFunction(newExpr);
-        if (!(typeObj instanceof Denotation.FunctionType)) {
+        List<Denotation.FunctionType> functions = resolveFunctions(newExpr);
+        if (functions.size() == 0) {
             return BuiltinTypes.UNDEFINED_TYPE;
         }
-        DexFunction definedBy = (DexFunction) ((Denotation.FunctionType) typeObj).definedBy();
-        return resolveType(definedBy);
+        if (functions.size() == 1) {
+            DexFunction definedBy = (DexFunction) functions.get(0).definedBy();
+            return resolveType(definedBy);
+        }
+        throw new UnsupportedOperationException("not implemented: intersection type of multiple functions");
     }
 }

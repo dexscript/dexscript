@@ -158,11 +158,14 @@ public class Denotation {
             return definedBy instanceof DexFunction;
         }
 
-        public static Denotation.Type returnTypeOf(Denotation denotation) {
-            if (denotation instanceof Denotation.FunctionType) {
-                return ((FunctionType)denotation).ret();
+        public static Denotation.Type returnTypeOf(List<Denotation.FunctionType> functions) {
+            if (functions.size()== 0) {
+                return BuiltinTypes.UNDEFINED_TYPE;
             }
-            return BuiltinTypes.UNDEFINED_TYPE;
+            if (functions.size() == 1) {
+                return functions.get(0).ret();
+            }
+            throw new UnsupportedOperationException("not implemented: support intersection type of multiple functions");
         }
     }
 

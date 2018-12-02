@@ -1,7 +1,6 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 
 import java.util.ArrayList;

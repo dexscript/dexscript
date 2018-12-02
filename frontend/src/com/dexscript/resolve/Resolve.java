@@ -51,18 +51,18 @@ public class Resolve {
     }
 
     @NotNull
-    public Denotation resolveFunction(DexFunctionCallExpr callExpr) {
-        return resolveFunction.resolveFunction(callExpr);
+    public List<Denotation.FunctionType> resolveFunctions(DexFunctionCallExpr callExpr) {
+        return resolveFunction.resolveFunctions(callExpr);
     }
 
     @NotNull
-    public Denotation resolveFunction(DexNewExpr newExpr) {
-        return resolveFunction.resolveFunction(newExpr);
+    public List<Denotation.FunctionType> resolveFunctions(DexNewExpr newExpr) {
+        return resolveFunction.resolveFunctions(newExpr);
     }
 
     @NotNull
-    public Denotation resolveFunction(DexMethodCallExpr callExpr) {
-        return resolveFunction.resolveFunction(callExpr);
+    public List<Denotation.FunctionType> resolveFunctions(DexMethodCallExpr callExpr) {
+        return resolveFunction.resolveFunctions(callExpr);
     }
 
     public List<Denotation.FunctionType> resolveFunctions(DexInfFunction infFunction) {

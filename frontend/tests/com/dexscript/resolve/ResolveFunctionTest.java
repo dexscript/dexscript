@@ -26,7 +26,7 @@ public class ResolveFunctionTest {
         DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asFunctionCall();
-        Denotation.FunctionType type = (Denotation.FunctionType) resolve.resolveFunction(callExpr);
+        Denotation.FunctionType type = resolve.resolveFunctions(callExpr).get(0);
         Assert.assertEquals("String", type.ret().javaClassName());
     }
 
@@ -49,7 +49,7 @@ public class ResolveFunctionTest {
         DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
                 .asReturn().expr()
                 .asFunctionCall();
-        Denotation.FunctionType type = (Denotation.FunctionType) resolve.resolveFunction(callExpr);
+        Denotation.FunctionType type = resolve.resolveFunctions(callExpr).get(0);
         Assert.assertEquals("Long", type.ret().javaClassName());
     }
 
@@ -68,7 +68,7 @@ public class ResolveFunctionTest {
         DexFile file = new DexFile(src);
         Resolve resolve = new Resolve();
         resolve.declare(file);
-        Denotation.Type string = (Denotation.Type) resolve.resolveType("string");
+        Denotation.Type string = resolve.resolveType("string");
         Denotation.InterfaceType Duck = (Denotation.InterfaceType) resolve.resolveType("Duck");
         Assert.assertTrue(Duck.isAssignableFrom(string));
         Assert.assertFalse(string.isAssignableFrom(Duck));
