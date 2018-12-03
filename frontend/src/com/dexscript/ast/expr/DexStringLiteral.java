@@ -45,6 +45,10 @@ public class DexStringLiteral extends DexLeafExpr {
         return syntaxError;
     }
 
+    public String literalValue() {
+        return src.slice(matched.begin + 1, matched.end - 1).toString();
+    }
+
     private class Parser {
 
         int i = src.begin;

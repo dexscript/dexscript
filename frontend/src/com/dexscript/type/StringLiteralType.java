@@ -31,4 +31,9 @@ public final class StringLiteralType extends Type {
     public int hashCode() {
         return Objects.hash(literalValue);
     }
+
+    @Override
+    public String toString() {
+        return "'" + literalValue + "'";
+    }
 }

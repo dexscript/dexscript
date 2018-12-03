@@ -5,7 +5,7 @@ import com.dexscript.type.BuiltinTypes;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ValueTable {
+class ValueTable {
 
     private final Map<String, Value> values;
 

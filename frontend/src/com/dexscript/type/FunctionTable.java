@@ -39,7 +39,8 @@ public class FunctionTable implements InterfaceType.ResolveFunction {
         for (int i = 0; i < params.size(); i++) {
             Type param = params.get(i);
             Type arg = args.get(i);
-            if (!arg.isAssignableFrom(param)) {
+            boolean argMatched = arg.isAssignableFrom(param) || param.isAssignableFrom(arg);
+            if (!argMatched) {
                 return false;
             }
         }
