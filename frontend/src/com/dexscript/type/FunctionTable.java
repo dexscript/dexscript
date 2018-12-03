@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FunctionTable implements InterfaceType.ResolveFunction {
+public class FunctionTable implements InterfaceType.ResolveFunction, ActorType.ResolveFunction {
 
     private final Map<String, List<FunctionType>> defined = new HashMap<>();
     private final List<FunctionsProvider> providers = new ArrayList<>();

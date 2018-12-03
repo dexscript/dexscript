@@ -1,5 +1,6 @@
 package com.dexscript.infer;
 
+import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.type.InterfaceType;
@@ -14,6 +15,10 @@ public class InferNewTest {
     public void match_one() {
         DebugUtils.turnOnDebugLog();
         TypeSystem ts = new TypeSystem();
+        ts.defineActor(new DexFunction("" +
+                "function Hello(arg: int64): string {\n" +
+                "   return 'hello'\n" +
+                "}"));
         Type type = InferType.inferType(ts, DexExpr.parse("Hello{100}"));
         InterfaceType promise = ts.defineInterface(new DexInterface("" +
                 "interface PromiseString {\n" +
