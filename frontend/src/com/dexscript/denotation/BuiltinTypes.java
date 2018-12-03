@@ -1,22 +1,19 @@
 package com.dexscript.denotation;
 
-import com.dexscript.ast.expr.DexReference;
+public interface BuiltinTypes {
 
-public class BuiltinTypes implements TypeInterface.Resolve {
+    TopLevelType STRING = new TypeString();
+    TopLevelType VOID = new TypeVoid();
+    TopLevelType UNDEFINED = new TypeUndefined();
 
-    public static final Type STRING = new TypeString();
-    public static final Type VOID = new TypeVoid();
-    public static final Type UNDEFINED = new TypeUndefined();
+    TopLevelType[] TYPE_ARRAY = new TopLevelType[]{
+            STRING,
+            VOID
+    };
 
-    @Override
-    public Type resolveType(DexReference ref) {
-        String typeName = ref.toString();
-        switch (typeName) {
-            case "string":
-                return STRING;
-            case "void":
-                return VOID;
+    TopLevelTypeTable TYPE_TABLE = new TopLevelTypeTable() {{
+        for (TopLevelType type : BuiltinTypes.TYPE_ARRAY) {
+            put(type.name(), type);
         }
-        return UNDEFINED;
-    }
+    }};
 }

@@ -1,9 +1,9 @@
 package com.dexscript.denotation;
 
-public class TypeUndefined extends Type {
+public class TypeUndefined extends TopLevelType {
 
     public TypeUndefined() {
-        super(null);
+        super("undefined", null);
     }
 
     @Override

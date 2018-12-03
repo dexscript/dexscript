@@ -87,7 +87,7 @@ public class TypeInterface extends TopLevelType implements FunctionGroup {
     @Override
     public boolean contains(TypeFunction function) {
         for (TypeFunction member : members()) {
-            if (member.isAssignableFrom(function)) {
+            if (function.isAssignableFrom(member)) {
                 return true;
             }
         }

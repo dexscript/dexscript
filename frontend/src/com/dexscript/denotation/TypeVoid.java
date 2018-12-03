@@ -1,9 +1,9 @@
 package com.dexscript.denotation;
 
-public class TypeVoid extends Type {
+public class TypeVoid extends TopLevelType {
 
     public TypeVoid() {
-        super("Object");
+        super("void", "Object");
     }
 
     @Override
