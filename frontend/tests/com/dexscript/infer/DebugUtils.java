@@ -9,5 +9,8 @@ public class DebugUtils {
         InferFunctionCall.ON_MISSING_FUNCTION = (ts, callExpr, funcName, args) -> {
             System.out.println("can not resolve " + funcName + " with " + args + " to any function");
         };
+        InferNew.ON_MISSING_FUNCTION = (ts, newExpr, actorName, args) -> {
+            System.out.println("can not resolve New__ " + args + " to any function");
+        };
     }
 }

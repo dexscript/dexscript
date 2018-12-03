@@ -14,8 +14,8 @@ public class TypeSystem {
         functionTable.define(function);
     }
 
-    public void defineInterface(DexInterface inf) {
-        new InterfaceType(typeTable, functionTable, inf);
+    public InterfaceType defineInterface(DexInterface inf) {
+        return new InterfaceType(typeTable, functionTable, inf);
     }
 
     public Type resolveType(String typeName) {
