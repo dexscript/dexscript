@@ -12,14 +12,14 @@ public class FunctionTable implements InterfaceType.ResolveFunction {
     private final Map<String, List<FunctionType>> defined = new HashMap<>();
     private final List<FunctionsProvider> providers = new ArrayList<>();
 
-    public void define(FunctionType function) {
-        List<FunctionType> functions = defined.computeIfAbsent(function.name(), k -> new ArrayList<>());
-        functions.add(function);
+    public void define(FunctionType func) {
+        List<FunctionType> functions = defined.computeIfAbsent(func.name(), k -> new ArrayList<>());
+        functions.add(func);
     }
 
-    public List<FunctionType> resolve(String functionName, List<Type> args) {
+    public List<FunctionType> resolve(String funcName, List<Type> args) {
         pullFromProviders();
-        List<FunctionType> functions = defined.get(functionName);
+        List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
             return new ArrayList<>();
         }
