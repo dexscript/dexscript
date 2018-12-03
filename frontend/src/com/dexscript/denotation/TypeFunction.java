@@ -2,7 +2,9 @@ package com.dexscript.denotation;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class TypeFunction extends Type {
 
@@ -27,6 +29,16 @@ public final class TypeFunction extends Type {
         return name;
     }
 
+    @NotNull
+    public List<Type> params() {
+        return params;
+    }
+
+    @NotNull
+    public Type ret() {
+        return ret;
+    }
+
     @Override
     public boolean isAssignableFrom(Type thatObj) {
         if (!(thatObj instanceof TypeFunction)) {
@@ -47,5 +59,15 @@ public final class TypeFunction extends Type {
             }
         }
         return this.ret.isAssignableFrom(that.ret);
+    }
+
+    @Override
+    protected Type expand(Map<Type, Type> lookup) {
+        List<Type> expandedParams = new ArrayList<>();
+        for (Type param : params()) {
+            expandedParams.add(param.expand(lookup));
+        }
+        Type expandedRet = ret().expand(lookup);
+        return new TypeFunction(name, expandedParams, expandedRet);
     }
 }
