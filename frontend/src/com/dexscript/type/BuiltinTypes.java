@@ -1,11 +1,11 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
 public interface BuiltinTypes {
 
-    TopLevelType STRING = new TypeString();
-    TopLevelType INT64 = new TypeInt64();
-    TopLevelType VOID = new TypeVoid();
-    TopLevelType UNDEFINED = new TypeUndefined();
+    TopLevelType STRING = new StringType();
+    TopLevelType INT64 = new Int64Type();
+    TopLevelType VOID = new VoidType();
+    TopLevelType UNDEFINED = new UndefinedType();
 
     TopLevelType[] TYPE_ARRAY = new TopLevelType[]{
             STRING,

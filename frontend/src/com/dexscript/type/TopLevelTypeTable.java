@@ -1,11 +1,9 @@
-package com.dexscript.denotation;
-
-import com.dexscript.ast.expr.DexReference;
+package com.dexscript.type;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class TopLevelTypeTable implements TypeInterface.ResolveType {
+public class TopLevelTypeTable implements InterfaceType.ResolveType {
 
     protected final Map<String, TopLevelType> defined = new HashMap<>();
 

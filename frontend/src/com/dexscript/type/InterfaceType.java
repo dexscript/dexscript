@@ -1,4 +1,4 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexParam;
@@ -12,22 +12,22 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TypeInterface extends TopLevelType implements FunctionsProvider {
+public class InterfaceType extends TopLevelType implements FunctionsProvider {
 
     public interface ResolveType {
         Type resolveType(String name);
     }
 
     public interface ResolveFunction {
-        boolean isDefined(TypeFunction function);
+        boolean isDefined(FunctionType function);
     }
 
     private final ResolveType resolveType;
     private final ResolveFunction resolveFunction;
     private final DexInterface inf;
-    private List<TypeFunction> members;
+    private List<FunctionType> members;
 
-    public TypeInterface(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable, @NotNull DexInterface inf) {
+    public InterfaceType(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable, @NotNull DexInterface inf) {
         super(inf.identifier().toString(), "Object");
         typeTable.define(this);
         functionTable.lazyDefine(this);
@@ -36,7 +36,7 @@ public class TypeInterface extends TopLevelType implements FunctionsProvider {
         this.inf = inf;
     }
 
-    public List<TypeFunction> functions() {
+    public List<FunctionType> functions() {
         if (members != null) {
             return members;
         }
@@ -58,7 +58,7 @@ public class TypeInterface extends TopLevelType implements FunctionsProvider {
             params.add(resolveType.resolveType(param.paramType().toString()));
         }
         Type ret = resolveType.resolveType(infFunction.sig().ret().toString());
-        members.add(new TypeFunction(name, params, ret));
+        members.add(new FunctionType(name, params, ret));
     }
 
     private void addInfMethod(DexInfMethod infMethod) {
@@ -69,7 +69,7 @@ public class TypeInterface extends TopLevelType implements FunctionsProvider {
             params.add(resolveType.resolveType(param.paramType().toString()));
         }
         Type ret = resolveType.resolveType(infMethod.sig().ret().toString());
-        members.add(new TypeFunction(name, params, ret));
+        members.add(new FunctionType(name, params, ret));
     }
 
     @Override
@@ -77,13 +77,13 @@ public class TypeInterface extends TopLevelType implements FunctionsProvider {
         if (super.isAssignableFrom(thatObj)) {
             return true;
         }
-        if (thatObj instanceof TypeSame) {
+        if (thatObj instanceof SameType) {
             return false;
         }
         Map<Type, Type> lookup = new HashMap<>();
-        lookup.put(this, new TypeSame(thatObj));
-        for (TypeFunction member : functions()) {
-            TypeFunction expandedMember = (TypeFunction) member.expand(lookup);
+        lookup.put(this, new SameType(thatObj));
+        for (FunctionType member : functions()) {
+            FunctionType expandedMember = (FunctionType) member.expand(lookup);
             if (!resolveFunction.isDefined(expandedMember)) {
                 return false;
             }

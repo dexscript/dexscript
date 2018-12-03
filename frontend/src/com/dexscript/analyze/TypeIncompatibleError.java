@@ -1,7 +1,7 @@
 package com.dexscript.analyze;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.denotation.Type;
+import com.dexscript.type.Type;
 import com.dexscript.resolve.DexSemanticError;
 
 public class TypeIncompatibleError implements DexSemanticError {

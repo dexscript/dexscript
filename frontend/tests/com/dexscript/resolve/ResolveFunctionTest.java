@@ -1,14 +1,5 @@
 package com.dexscript.resolve;
 
-import com.dexscript.ast.DexFile;
-import com.dexscript.ast.expr.DexFunctionCallExpr;
-import com.dexscript.ast.inf.DexInfFunction;
-import com.dexscript.denotation.Type;
-import org.junit.Assert;
-import org.junit.Test;
-
-import java.util.List;
-
 public class ResolveFunctionTest {
 
 //    @Test

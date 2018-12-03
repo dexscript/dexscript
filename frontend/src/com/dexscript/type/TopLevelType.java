@@ -1,4 +1,4 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 

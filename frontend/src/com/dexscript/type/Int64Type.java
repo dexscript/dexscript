@@ -1,8 +1,8 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
-public class TypeInt64 extends TopLevelType {
+public class Int64Type extends TopLevelType {
 
-    public TypeInt64() {
+    public Int64Type() {
         super("int64", "Long");
     }
 

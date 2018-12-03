@@ -1,17 +1,17 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FunctionTable implements TypeInterface.ResolveFunction {
+public class FunctionTable implements InterfaceType.ResolveFunction {
 
-    private final Map<String, List<TypeFunction>> defined = new HashMap<>();
+    private final Map<String, List<FunctionType>> defined = new HashMap<>();
     private final List<FunctionsProvider> providers = new ArrayList<>();
 
-    public void define(TypeFunction function) {
-        List<TypeFunction> functions = defined.computeIfAbsent(function.name(), k -> new ArrayList<>());
+    public void define(FunctionType function) {
+        List<FunctionType> functions = defined.computeIfAbsent(function.name(), k -> new ArrayList<>());
         functions.add(function);
     }
 
@@ -20,13 +20,13 @@ public class FunctionTable implements TypeInterface.ResolveFunction {
     }
 
     @Override
-    public boolean isDefined(TypeFunction that) {
+    public boolean isDefined(FunctionType that) {
         pullFromProviders();
-        List<TypeFunction> functions = defined.get(that.name());
+        List<FunctionType> functions = defined.get(that.name());
         if (functions == null) {
             return false;
         }
-        for (TypeFunction function : functions) {
+        for (FunctionType function : functions) {
             if (that.isAssignableFrom(function)) {
                 return true;
             }
@@ -39,7 +39,7 @@ public class FunctionTable implements TypeInterface.ResolveFunction {
             return;
         }
         for (FunctionsProvider provider : providers) {
-            for (TypeFunction function : provider.functions()) {
+            for (FunctionType function : provider.functions()) {
                 define(function);
             }
         }

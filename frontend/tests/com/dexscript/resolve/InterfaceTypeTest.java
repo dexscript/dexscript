@@ -1,11 +1,5 @@
 package com.dexscript.resolve;
 
-import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.DexInterface;
-import com.dexscript.denotation.Type;
-import org.junit.Assert;
-import org.junit.Test;
-
 public class InterfaceTypeTest {
 
 //    @Test

@@ -1,8 +1,8 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
-public class TypeString extends TopLevelType {
+public class StringType extends TopLevelType {
 
-    public TypeString() {
+    public StringType() {
         super("string", "String");
     }
 
@@ -11,7 +11,7 @@ public class TypeString extends TopLevelType {
         if (super.isAssignableFrom(that)) {
             return true;
         }
-        return that instanceof TypeString || that instanceof TypeStringLiteral;
+        return that instanceof StringType || that instanceof StringLiteralType;
     }
 
     @Override

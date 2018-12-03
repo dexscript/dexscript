@@ -1,8 +1,8 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
-public class TypeUndefined extends TopLevelType {
+public class UndefinedType extends TopLevelType {
 
-    public TypeUndefined() {
+    public UndefinedType() {
         super("undefined", null);
     }
 

@@ -1,12 +1,12 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 
-public class TypeStringLiteral extends Type {
+public class StringLiteralType extends Type {
 
     private final String literalValue;
 
-    public TypeStringLiteral(@NotNull String literalValue) {
+    public StringLiteralType(@NotNull String literalValue) {
         super("String");
         this.literalValue = literalValue;
     }

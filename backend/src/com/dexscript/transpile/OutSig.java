@@ -2,7 +2,7 @@ package com.dexscript.transpile;
 
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.denotation.Type;
+import com.dexscript.type.Type;
 import com.dexscript.transpile.gen.Gen;
 
 public class OutSig {

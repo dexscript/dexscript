@@ -2,7 +2,7 @@ package com.dexscript.transpile;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.denotation.Type;
+import com.dexscript.type.Type;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;

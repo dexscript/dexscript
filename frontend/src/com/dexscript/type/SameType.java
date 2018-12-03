@@ -1,10 +1,10 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
-public class TypeSame extends Type {
+public class SameType extends Type {
 
     private final Type sameType;
 
-    public TypeSame(Type sameType) {
+    public SameType(Type sameType) {
         super(null);
         this.sameType = sameType;
     }
@@ -16,7 +16,7 @@ public class TypeSame extends Type {
 
     @Override
     public String toString() {
-        return "TypeSame{" +
+        return "SameType{" +
                 "sameType=" + sameType +
                 '}';
     }

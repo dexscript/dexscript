@@ -1,14 +1,14 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
-public class TypeVoid extends TopLevelType {
+public class VoidType extends TopLevelType {
 
-    public TypeVoid() {
+    public VoidType() {
         super("void", "Object");
     }
 
     @Override
     public boolean isAssignableFrom(Type that) {
-        return that instanceof TypeVoid;
+        return that instanceof VoidType;
     }
 
     @Override

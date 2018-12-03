@@ -1,4 +1,4 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
 import java.util.Map;
 
@@ -18,8 +18,8 @@ public abstract class Type {
         if (this.equals(that)) {
             return true;
         }
-        if (that instanceof TypeSame) {
-            return this.equals(((TypeSame)that).sameType());
+        if (that instanceof SameType) {
+            return this.equals(((SameType)that).sameType());
         }
         return false;
     }
@@ -30,5 +30,9 @@ public abstract class Type {
             return expanded;
         }
         return this;
+    }
+
+    public Type union(Type that) {
+        return new UnionType(this, that);
     }
 }

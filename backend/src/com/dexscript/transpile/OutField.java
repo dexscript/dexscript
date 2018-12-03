@@ -1,7 +1,7 @@
 package com.dexscript.transpile;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.denotation.Type;
+import com.dexscript.type.Type;
 
 public final class OutField {
 

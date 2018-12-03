@@ -1,6 +1,7 @@
-package com.dexscript.denotation;
+package com.dexscript.resolve;
 
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.type.Type;
 import org.jetbrains.annotations.NotNull;
 
 public final class Value {

@@ -1,9 +1,9 @@
 package com.dexscript.transpile;
 
 import com.dexscript.ast.expr.*;
-import com.dexscript.denotation.Value;
+import com.dexscript.resolve.Value;
 import com.dexscript.resolve.Boat;
-import com.dexscript.denotation.BuiltinTypes;
+import com.dexscript.type.BuiltinTypes;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 

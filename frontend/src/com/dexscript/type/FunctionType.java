@@ -1,4 +1,4 @@
-package com.dexscript.denotation;
+package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public final class TypeFunction extends Type {
+public final class FunctionType extends Type {
 
     @NotNull
     private final String name;
@@ -17,7 +17,7 @@ public final class TypeFunction extends Type {
     @NotNull
     private final Type ret;
 
-    public TypeFunction(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
+    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
         super("Object");
         this.name = name;
         this.params = params;
@@ -44,10 +44,10 @@ public final class TypeFunction extends Type {
         if (super.isAssignableFrom(thatObj)) {
             return true;
         }
-        if (!(thatObj instanceof TypeFunction)) {
+        if (!(thatObj instanceof FunctionType)) {
             return false;
         }
-        TypeFunction that = (TypeFunction) thatObj;
+        FunctionType that = (FunctionType) thatObj;
         if (!this.name.equals(that.name)) {
             return false;
         }
@@ -71,7 +71,7 @@ public final class TypeFunction extends Type {
             expandedParams.add(param.expand(lookup));
         }
         Type expandedRet = ret().expand(lookup);
-        return new TypeFunction(name, expandedParams, expandedRet);
+        return new FunctionType(name, expandedParams, expandedRet);
     }
 
     @Override

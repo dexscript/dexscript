@@ -10,13 +10,13 @@ final class ResolveValue {
 //    }
 //
 //    public Denotation resolveValue(DexReference ref) {
-//        Denotation denotation = ref.attachmentOfType(Denotation.class);
-//        if (denotation != null) {
-//            return denotation;
+//        Denotation type = ref.attachmentOfType(Denotation.class);
+//        if (type != null) {
+//            return type;
 //        }
-//        denotation = _resolveValue(ref);
-//        ref.attach(denotation);
-//        return denotation;
+//        type = _resolveValue(ref);
+//        ref.attach(type);
+//        return type;
 //    }
 //
 //    private Denotation _resolveValue(DexReference ref) {
@@ -35,11 +35,11 @@ final class ResolveValue {
 //            parentDT = denotationTable(elem, parentDT);
 //        }
 //        String refName = ref.toString();
-//        Denotation denotation = parentDT.get(refName);
-//        if (denotation == null) {
+//        Denotation type = parentDT.get(refName);
+//        if (type == null) {
 //            return new Denotation.Error(refName, ref, "can not resolve " + refName + " to a value");
 //        }
-//        return denotation;
+//        return type;
 //    }
 //
 //    private DenotationTable denotationTable(DexElement elem, DenotationTable<Value> parentDT) {

@@ -169,13 +169,13 @@ final class ResolveFunction {
 //    }
 //
 //    public Type resolveType(DexExpr expr) {
-//        Type denotation = expr.attachmentOfType(Type.class);
-//        if (denotation != null) {
-//            return denotation;
+//        Type type = expr.attachmentOfType(Type.class);
+//        if (type != null) {
+//            return type;
 //        }
-//        denotation = _resolveType(expr);
-//        expr.attach(denotation);
-//        return denotation;
+//        type = _resolveType(expr);
+//        expr.attach(type);
+//        return type;
 //    }
 //
 //    private Type _resolveType(DexExpr expr) {

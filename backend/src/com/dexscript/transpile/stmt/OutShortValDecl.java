@@ -1,7 +1,7 @@
 package com.dexscript.transpile.stmt;
 
 import com.dexscript.ast.func.DexShortVarDecl;
-import com.dexscript.denotation.Type;
+import com.dexscript.type.Type;
 import com.dexscript.transpile.OutCtor;
 import com.dexscript.transpile.OutExpr;
 import com.dexscript.transpile.OutField;
