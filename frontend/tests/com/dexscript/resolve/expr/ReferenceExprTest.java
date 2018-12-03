@@ -15,6 +15,6 @@ public class ReferenceExprTest {
 //                "   return msg\n" +
 //                "}");
 //        Denotation type = new Resolve().resolveType(function.stmts().get(0).asReturn().expr());
-//        Assert.assertEquals(BuiltinTypes.STRING_TYPE, type);
+//        Assert.assertEquals(BuiltinTypes.STRING, type);
 //    }
 }

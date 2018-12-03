@@ -186,7 +186,7 @@ final class ResolveFunction {
 //            return BuiltinTypes.FLOAT64_TYPE;
 //        }
 //        if (expr instanceof DexStringLiteral) {
-//            return BuiltinTypes.STRING_TYPE;
+//            return BuiltinTypes.STRING;
 //        }
 //        if (expr instanceof DexReference) {
 //            return eval((DexReference) expr);

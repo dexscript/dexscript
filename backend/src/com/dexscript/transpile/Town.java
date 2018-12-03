@@ -33,10 +33,10 @@ public class Town {
     public Town() {
         resolve = new Resolve();
         ArrayList<Type> params = new ArrayList<>();
-        params.add(BuiltinTypes.STRING_TYPE);
-        params.add(BuiltinTypes.STRING_TYPE);
+        params.add(BuiltinTypes.STRING);
+        params.add(BuiltinTypes.STRING);
         Denotation.FunctionType addStringString = new Denotation.FunctionType(
-                "Add__", null, params, BuiltinTypes.STRING_TYPE);
+                "Add__", null, params, BuiltinTypes.STRING);
         addStringString.setBoat(new Boat(new Pier("Add__", 2), "Add__", "String_String"));
         resolve.define(addStringString);
         g.__("package com.dexscript.runtime.gen__"

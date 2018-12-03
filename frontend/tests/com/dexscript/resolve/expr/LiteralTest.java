@@ -20,6 +20,6 @@ public class LiteralTest {
 //
 //    @Test
 //    public void string_literal_is_string() {
-//        Assert.assertEquals(BuiltinTypes.STRING_TYPE, new Resolve().resolveType(DexExpr.parse("'hello'")));
+//        Assert.assertEquals(BuiltinTypes.STRING, new Resolve().resolveType(DexExpr.parse("'hello'")));
 //    }
 }

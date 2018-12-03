@@ -15,7 +15,7 @@ public class CallExprTest {
 //    public void call_concrete_function() {
 //        Resolve resolve = new Resolve();
 //        resolve.define(new DexFunction("function ToString(i: int64): string { return '' }"));
-//        Assert.assertEquals(BuiltinTypes.STRING_TYPE, resolve.resolveType(DexExpr.parse("ToString(100)")));
+//        Assert.assertEquals(BuiltinTypes.STRING, resolve.resolveType(DexExpr.parse("ToString(100)")));
 //    }
 //
 //    @Test
@@ -29,7 +29,7 @@ public class CallExprTest {
 //        Resolve resolve = new Resolve();
 //        resolve.define(new DexFunction("function ToString(i: int64): string { return '' }"));
 //        DexMethodCallExpr expr = (DexMethodCallExpr) DexExpr.parse("100.ToString()");
-//        Assert.assertEquals(BuiltinTypes.STRING_TYPE, resolve.resolveType(expr));
+//        Assert.assertEquals(BuiltinTypes.STRING, resolve.resolveType(expr));
 //    }
 //
 //    @Test

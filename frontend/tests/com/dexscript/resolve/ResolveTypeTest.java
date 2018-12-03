@@ -13,7 +13,7 @@ public class ResolveTypeTest {
 //    public void reference_builtin_type() {
 //        DexFunction function = new DexFunction("function hello(): string {}");
 //        Denotation retType = new Resolve().resolveType(function.sig().ret());
-//        Assert.assertEquals(BuiltinTypes.STRING_TYPE, retType);
+//        Assert.assertEquals(BuiltinTypes.STRING, retType);
 //    }
 //
 //    @Test

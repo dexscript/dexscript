@@ -15,6 +15,6 @@ public class ConsumeExprTest {
 //        Resolve resolve = new Resolve();
 //        resolve.define(new DexFunction("function Hello(): string { return 'hello' }"));
 //        Type type = resolve.resolveType(DexExpr.parse("<-(Hello{})"));
-//        Assert.assertEquals(BuiltinTypes.STRING_TYPE, type);
+//        Assert.assertEquals(BuiltinTypes.STRING, type);
 //    }
 }
