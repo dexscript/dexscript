@@ -1,5 +1,7 @@
 package com.dexscript.type;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +15,35 @@ public class FunctionTable implements InterfaceType.ResolveFunction {
     public void define(FunctionType function) {
         List<FunctionType> functions = defined.computeIfAbsent(function.name(), k -> new ArrayList<>());
         functions.add(function);
+    }
+
+    public List<FunctionType> resolve(String functionName, List<Type> args) {
+        pullFromProviders();
+        List<FunctionType> functions = defined.get(functionName);
+        if (functions == null) {
+            return new ArrayList<>();
+        }
+        List<FunctionType> resolved = new ArrayList<>();
+        for (FunctionType function : functions) {
+            if (function.params().size() != args.size()) {
+                continue;
+            }
+            if (matchSig(args, function.params())) {
+                resolved.add(function);
+            }
+        }
+        return resolved;
+    }
+
+    private boolean matchSig(@NotNull List<Type> args, @NotNull List<Type> params) {
+        for (int i = 0; i < params.size(); i++) {
+            Type param = params.get(i);
+            Type arg = args.get(i);
+            if (!arg.isAssignableFrom(param)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void lazyDefine(FunctionsProvider provider) {
