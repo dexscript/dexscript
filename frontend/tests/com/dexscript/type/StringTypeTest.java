@@ -16,4 +16,10 @@ public class StringTypeTest {
         Assert.assertTrue(BuiltinTypes.STRING.isAssignableFrom(new StringLiteralType("hello")));
         Assert.assertFalse(new StringLiteralType("hello").isAssignableFrom(BuiltinTypes.STRING));
     }
+
+    @Test
+    public void string_literal_is_assignable_from_string_literal() {
+        Assert.assertTrue(new StringLiteralType("A").isAssignableFrom(
+                new StringLiteralType("A")));
+    }
 }

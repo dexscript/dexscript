@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-public class SameType extends Type {
+public final class SameType extends Type {
 
     private final Type sameType;
 

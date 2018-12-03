@@ -2,8 +2,11 @@ package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 
-public class StringLiteralType extends Type {
+import java.util.Objects;
 
+public final class StringLiteralType extends Type {
+
+    @NotNull
     private final String literalValue;
 
     public StringLiteralType(@NotNull String literalValue) {
@@ -11,7 +14,21 @@ public class StringLiteralType extends Type {
         this.literalValue = literalValue;
     }
 
+    @NotNull
     public String literalValue() {
         return literalValue;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StringLiteralType that = (StringLiteralType) o;
+        return literalValue.equals(that.literalValue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(literalValue);
     }
 }

@@ -31,6 +31,21 @@ public class UnionType extends Type {
     }
 
     @Override
+    public Type intersect(Type that) {
+        if (that instanceof UnionType) {
+            List<Type> thatTypes = ((UnionType) that).types;
+            List<Type> union = new ArrayList<>();
+            for (Type type : this.types) {
+                if (thatTypes.contains(type)) {
+                    union.add(type);
+                }
+            }
+            return new UnionType(union);
+        }
+        return super.intersect(that);
+    }
+
+    @Override
     public boolean isAssignableFrom(Type that) {
         for (Type type : types) {
             if (type.isAssignableFrom(that)) {

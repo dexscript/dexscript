@@ -21,6 +21,22 @@ public abstract class Type {
         if (that instanceof SameType) {
             return this.equals(((SameType)that).sameType());
         }
+        if (that instanceof IntersectionType) {
+            for (Type elem : ((IntersectionType) that).types()) {
+                if (this.isAssignableFrom(elem)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (that instanceof UnionType) {
+            for (Type elem : ((UnionType) that).types()) {
+                if (!this.isAssignableFrom(elem)) {
+                    return false;
+                }
+            }
+            return true;
+        }
         return false;
     }
 
@@ -34,5 +50,9 @@ public abstract class Type {
 
     public Type union(Type that) {
         return new UnionType(this, that);
+    }
+
+    public Type intersect(Type that) {
+        return new IntersectionType(this, that);
     }
 }
