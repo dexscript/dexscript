@@ -44,4 +44,24 @@ public class TypeFunctionTest {
         Assert.assertFalse(new TypeFunction("hello", new ArrayList<>(), BuiltinTypes.STRING).isAssignableFrom(
                 new TypeFunction("hello", new ArrayList<>(), BuiltinTypes.VOID)));
     }
+
+    @Test
+    public void param_is_sub_type() {
+        TypeFunction hello1 = new TypeFunction("hello", new ArrayList<>() {{
+            add(BuiltinTypes.STRING);
+        }}, BuiltinTypes.VOID);
+        TypeFunction hello2 = new TypeFunction("hello", new ArrayList<>() {{
+            add(new TypeStringLiteral("abc"));
+        }}, BuiltinTypes.VOID);
+        Assert.assertFalse(hello1.isAssignableFrom(hello2));
+        Assert.assertTrue(hello2.isAssignableFrom(hello1));
+    }
+
+    @Test
+    public void ret_is_sub_type() {
+        TypeFunction hello1 = new TypeFunction("hello", new ArrayList<>(), BuiltinTypes.STRING);
+        TypeFunction hello2 = new TypeFunction("hello", new ArrayList<>(), new TypeStringLiteral("abc"));
+        Assert.assertTrue(hello1.isAssignableFrom(hello2));
+        Assert.assertFalse(hello2.isAssignableFrom(hello1));
+    }
 }

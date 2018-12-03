@@ -2,7 +2,6 @@ package com.dexscript.denotation;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexParam;
-import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMember;
 import com.dexscript.ast.inf.DexInfMethod;
@@ -16,7 +15,7 @@ import java.util.Map;
 public class TypeInterface extends TopLevelType implements FunctionsProvider {
 
     public interface ResolveType {
-        Type resolveType(DexReference ref);
+        Type resolveType(String name);
     }
 
     public interface ResolveFunction {
@@ -56,9 +55,9 @@ public class TypeInterface extends TopLevelType implements FunctionsProvider {
         String name = infFunction.identifier().toString();
         List<Type> params = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
-            params.add(resolveType.resolveType(param.paramType()));
+            params.add(resolveType.resolveType(param.paramType().toString()));
         }
-        Type ret = resolveType.resolveType(infFunction.sig().ret());
+        Type ret = resolveType.resolveType(infFunction.sig().ret().toString());
         members.add(new TypeFunction(name, params, ret));
     }
 
@@ -67,21 +66,25 @@ public class TypeInterface extends TopLevelType implements FunctionsProvider {
         List<Type> params = new ArrayList<>();
         params.add(this);
         for (DexParam param : infMethod.sig().params()) {
-            params.add(resolveType.resolveType(param.paramType()));
+            params.add(resolveType.resolveType(param.paramType().toString()));
         }
-        Type ret = resolveType.resolveType(infMethod.sig().ret());
+        Type ret = resolveType.resolveType(infMethod.sig().ret().toString());
         members.add(new TypeFunction(name, params, ret));
     }
 
     @Override
     public boolean isAssignableFrom(Type thatObj) {
-        if (this.equals(thatObj)) {
+        if (super.isAssignableFrom(thatObj)) {
             return true;
+        }
+        if (thatObj instanceof TypeSame) {
+            return false;
         }
         Map<Type, Type> lookup = new HashMap<>();
         lookup.put(this, new TypeSame(thatObj));
         for (TypeFunction member : functions()) {
-            if (!resolveFunction.isDefined((TypeFunction) member.expand(lookup))) {
+            TypeFunction expandedMember = (TypeFunction) member.expand(lookup);
+            if (!resolveFunction.isDefined(expandedMember)) {
                 return false;
             }
         }

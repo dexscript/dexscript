@@ -15,7 +15,13 @@ public abstract class Type {
     }
 
     public boolean isAssignableFrom(Type that) {
-        return this.equals(that);
+        if (this.equals(that)) {
+            return true;
+        }
+        if (that instanceof TypeSame) {
+            return this.equals(((TypeSame)that).sameType());
+        }
+        return false;
     }
 
     protected Type expand(Map<Type, Type> lookup) {

@@ -13,4 +13,15 @@ public class TypeSame extends Type {
     public boolean isAssignableFrom(Type that) {
         return sameType.equals(that);
     }
+
+    @Override
+    public String toString() {
+        return "TypeSame{" +
+                "sameType=" + sameType +
+                '}';
+    }
+
+    public Type sameType() {
+        return sameType;
+    }
 }

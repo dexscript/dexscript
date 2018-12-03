@@ -17,8 +17,8 @@ public class TopLevelTypeTable implements TypeInterface.ResolveType {
     }
 
     @Override
-    public Type resolveType(DexReference ref) {
-        TopLevelType type = defined.get(ref.toString());
+    public Type resolveType(String name) {
+        TopLevelType type = defined.get(name);
         if (type == null) {
             return BuiltinTypes.UNDEFINED;
         }

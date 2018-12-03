@@ -41,6 +41,9 @@ public final class TypeFunction extends Type {
 
     @Override
     public boolean isAssignableFrom(Type thatObj) {
+        if (super.isAssignableFrom(thatObj)) {
+            return true;
+        }
         if (!(thatObj instanceof TypeFunction)) {
             return false;
         }
@@ -54,7 +57,7 @@ public final class TypeFunction extends Type {
         for (int i = 0; i < params.size(); i++) {
             Type thisParam = this.params.get(i);
             Type thatParam = that.params.get(i);
-            if (!thisParam.isAssignableFrom(thatParam)) {
+            if (!thatParam.isAssignableFrom(thisParam)) {
                 return false;
             }
         }

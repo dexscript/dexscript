@@ -64,8 +64,8 @@ public class TypeInterfaceTest {
                 "interface World {\n" +
                 "   Action(arg: SubType): string\n" +
                 "}"));
-        Assert.assertTrue(inf1.isAssignableFrom(inf2));
-        Assert.assertFalse(inf2.isAssignableFrom(inf1));
+        Assert.assertFalse(inf1.isAssignableFrom(inf2));
+        Assert.assertTrue(inf2.isAssignableFrom(inf1));
     }
 
     @Test
@@ -106,5 +106,33 @@ public class TypeInterfaceTest {
         }}, BuiltinTypes.STRING));
         Assert.assertFalse(BuiltinTypes.STRING.isAssignableFrom(someInf));
         Assert.assertTrue(someInf.isAssignableFrom(BuiltinTypes.STRING));
+    }
+
+    @Test
+    public void argument_is_sub_type_can_still_implement() {
+        FunctionTable functionTable = new FunctionTable();
+        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        TypeInterface quackable = new TypeInterface(typeTable, functionTable, new DexInterface(
+                "interface Quackable{ Quack(): string }"));
+        TypeInterface swimable = new TypeInterface(typeTable, functionTable, new DexInterface(
+                "interface Swimable{ Swim(): string }"));
+        TypeInterface duck = new TypeInterface(typeTable, functionTable, new DexInterface(
+                "interface Duck{\n" +
+                        "   DoBoth(duck1: int64, duck2: Swimable): string\n" +
+                        "}"));
+        functionTable.define(new TypeFunction("Quack", new ArrayList<>() {{
+            add(BuiltinTypes.INT64);
+        }}, BuiltinTypes.STRING));
+        functionTable.define(new TypeFunction("Swim", new ArrayList<>() {{
+            add(BuiltinTypes.INT64);
+        }}, BuiltinTypes.STRING));
+        functionTable.define(new TypeFunction("DoBoth", new ArrayList<>() {{
+            add(BuiltinTypes.INT64);
+            add(quackable);
+            add(swimable);
+        }}, BuiltinTypes.STRING));
+        Assert.assertTrue(swimable.isAssignableFrom(BuiltinTypes.INT64));
+        Assert.assertTrue(quackable.isAssignableFrom(BuiltinTypes.INT64));
+        Assert.assertTrue(duck.isAssignableFrom(BuiltinTypes.INT64));
     }
 }
