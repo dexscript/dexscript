@@ -1,9 +1,4 @@
-package com.dexscript.resolve;
-
-import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.expr.DexReference;
-import org.junit.Assert;
-import org.junit.Test;
+package com.dexscript.infer;
 
 public class ResolveValueTest {
 

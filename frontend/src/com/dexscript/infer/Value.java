@@ -1,4 +1,4 @@
-package com.dexscript.resolve;
+package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.type.Type;

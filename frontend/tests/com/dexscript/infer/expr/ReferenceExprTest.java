@@ -1,4 +1,4 @@
-package com.dexscript.resolve.expr;
+package com.dexscript.infer.expr;
 
 public class ReferenceExprTest {
 

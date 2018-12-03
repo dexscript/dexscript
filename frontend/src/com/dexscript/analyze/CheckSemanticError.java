@@ -8,11 +8,11 @@ public class CheckSemanticError implements DexElement.Visitor {
 
     }
 
-//    private final ResolveType resolve;
+//    private final ResolveType infer;
 //    private boolean hasError;
 //
-//    public CheckSemanticError(ResolveType resolve, DexElement elem) {
-//        this.resolve = resolve;
+//    public CheckSemanticError(ResolveType infer, DexElement elem) {
+//        this.infer = infer;
 //        visit(elem);
 //    }
 //
@@ -28,7 +28,7 @@ public class CheckSemanticError implements DexElement.Visitor {
 //            return;
 //        }
 //        if (elem instanceof DexReference) {
-//            notError(resolve.resolveValue((DexReference) elem));
+//            notError(infer.resolveValue((DexReference) elem));
 //            return;
 //        }
 //        if (elem instanceof DexReturnStmt) {
@@ -54,7 +54,7 @@ public class CheckSemanticError implements DexElement.Visitor {
 //        for (DexExpr arg : elem.args()) {
 //            visit(arg);
 //        }
-//        notError(resolve.resolveType(elem));
+//        notError(infer.resolveType(elem));
 //    }
 //
 //    private void check(DexMethodCallExpr elem) {
@@ -62,14 +62,14 @@ public class CheckSemanticError implements DexElement.Visitor {
 //        for (DexExpr arg : elem.args()) {
 //            visit(arg);
 //        }
-//        notError(resolve.resolveType(elem));
+//        notError(infer.resolveType(elem));
 //    }
 //
 //    private void check(DexFunctionCallExpr elem) {
 //        for (DexExpr arg : elem.args()) {
 //            visit(arg);
 //        }
-//        notError(resolve.resolveType(elem));
+//        notError(infer.resolveType(elem));
 //    }
 //
 //    private void check(DexReturnStmt returnStmt) {
@@ -85,7 +85,7 @@ public class CheckSemanticError implements DexElement.Visitor {
 //    }
 //
 //    private Type getExprType(DexExpr expr) {
-//        Denotation exprType = resolve.resolveType(expr);
+//        Denotation exprType = infer.resolveType(expr);
 //        if (exprType instanceof Type) {
 //            return (Type) exprType;
 //        }
@@ -99,7 +99,7 @@ public class CheckSemanticError implements DexElement.Visitor {
 //        if (sig.ret() == null) {
 //            return BuiltinTypes.UNDEFINED_TYPE;
 //        }
-//        Denotation type = resolve.resolveType(sig.ret());
+//        Denotation type = infer.resolveType(sig.ret());
 //        if (type instanceof Type) {
 //            return (Type) type;
 //        }
@@ -118,10 +118,10 @@ public class CheckSemanticError implements DexElement.Visitor {
 //
 //    private void check(DexSig sig) {
 //        for (DexParam param : sig.params()) {
-//            notError(resolve.resolveType(param.paramType()));
+//            notError(infer.resolveType(param.paramType()));
 //        }
 //        if (sig.ret() != null) {
-//            notError(resolve.resolveType(sig.ret()));
+//            notError(infer.resolveType(sig.ret()));
 //        }
 //    }
 }

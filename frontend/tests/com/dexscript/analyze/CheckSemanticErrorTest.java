@@ -1,10 +1,5 @@
 package com.dexscript.analyze;
 
-import com.dexscript.ast.DexFile;
-import com.dexscript.resolve.Resolve;
-import org.junit.Assert;
-import org.junit.Test;
-
 public class CheckSemanticErrorTest {
 
 //    @Test
@@ -46,9 +41,9 @@ public class CheckSemanticErrorTest {
 //                "   return 'xxx'\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        ResolveType resolve = new ResolveType();
-//        resolve.define(file);
-//        CheckSemanticError result = new CheckSemanticError(resolve, file);
+//        ResolveType infer = new ResolveType();
+//        infer.define(file);
+//        CheckSemanticError result = new CheckSemanticError(infer, file);
 //        Assert.assertFalse(result.hasError());
 //    }
 //

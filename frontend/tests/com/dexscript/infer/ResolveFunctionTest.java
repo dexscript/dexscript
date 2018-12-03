@@ -1,4 +1,4 @@
-package com.dexscript.resolve;
+package com.dexscript.infer;
 
 public class ResolveFunctionTest {
 
@@ -13,12 +13,12 @@ public class ResolveFunctionTest {
 //                "   return 'a'\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        ResolveType resolve = new ResolveType();
-//        resolve.define(file);
+//        ResolveType infer = new ResolveType();
+//        infer.define(file);
 //        DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
 //                .asReturn().expr()
 //                .asFunctionCall();
-//        Denotation.FunctionType type = resolve.resolveFunctions(callExpr).get(0);
+//        Denotation.FunctionType type = infer.resolveFunctions(callExpr).get(0);
 //        Assert.assertEquals("String", type.ret().javaClassName());
 //    }
 //
@@ -36,12 +36,12 @@ public class ResolveFunctionTest {
 //                "   return 0\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        ResolveType resolve = new ResolveType();
-//        resolve.define(file);
+//        ResolveType infer = new ResolveType();
+//        infer.define(file);
 //        DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
 //                .asReturn().expr()
 //                .asFunctionCall();
-//        Denotation.FunctionType type = resolve.resolveFunctions(callExpr).get(0);
+//        Denotation.FunctionType type = infer.resolveFunctions(callExpr).get(0);
 //        Assert.assertEquals("Long", type.ret().javaClassName());
 //    }
 //
@@ -58,14 +58,14 @@ public class ResolveFunctionTest {
 //                "   return duck + ' quack'\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        ResolveType resolve = new ResolveType();
-//        resolve.define(file);
-//        Type string = resolve.resolveType("string");
-//        Denotation.InterfaceType Duck = (Denotation.InterfaceType) resolve.resolveType("Duck");
+//        ResolveType infer = new ResolveType();
+//        infer.define(file);
+//        Type string = infer.resolveType("string");
+//        Denotation.InterfaceType Duck = (Denotation.InterfaceType) infer.resolveType("Duck");
 //        Assert.assertTrue(Duck.isAssignableFrom(string));
 //        Assert.assertFalse(string.isAssignableFrom(Duck));
 //        DexInfFunction infFunction = (DexInfFunction) Duck.definedBy().members().get(0);
-//        List<Denotation.Function> functions = resolve.resolveFunctions(infFunction);
+//        List<Denotation.Function> functions = infer.resolveFunctions(infFunction);
 //        Assert.assertEquals(1, functions.size());
 //    }
 }

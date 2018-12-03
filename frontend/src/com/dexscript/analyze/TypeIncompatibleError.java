@@ -2,9 +2,8 @@ package com.dexscript.analyze;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.type.Type;
-import com.dexscript.resolve.DexSemanticError;
 
-public class TypeIncompatibleError implements DexSemanticError {
+public class TypeIncompatibleError {
 
     private final DexElement occurredAt;
     private final Type expectedType;
@@ -16,7 +15,6 @@ public class TypeIncompatibleError implements DexSemanticError {
         this.actualType = actualType;
     }
 
-    @Override
     public DexElement occurredAt() {
         return occurredAt;
     }
