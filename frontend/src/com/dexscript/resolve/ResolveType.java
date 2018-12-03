@@ -4,9 +4,9 @@ final class ResolveType {
 
 //    private final Map<String, List<DexFunction>> definedFunctions = new HashMap<>();
 //    private final DenotationTable<Type> defined = BuiltinTypes.BUILTIN_TYPES;
-//    private final Resolve resolve;
+//    private final ResolveType resolve;
 //
-//    ResolveType(Resolve resolve) {
+//    ResolveType(ResolveType resolve) {
 //        this.resolve = resolve;
 //    }
 //

@@ -14,7 +14,7 @@ public class ResolveValueTest {
 //                "   return msg;\n" +
 //                "}";
 //        DexReference ref = new DexFunction(src).stmts().get(0).asReturn().expr().asRef();
-//        Denotation resolved = new Resolve().resolveValue(ref);
+//        Denotation resolved = new ResolveType().resolveValue(ref);
 //        Assert.assertNotNull(resolved);
 //    }
 //
@@ -26,7 +26,7 @@ public class ResolveValueTest {
 //                "   return a;\n" +
 //                "}";
 //        DexReference ref = new DexFunction(src).stmts().get(1).asReturn().expr().asRef();
-//        Denotation resolved = new Resolve().resolveValue(ref);
+//        Denotation resolved = new ResolveType().resolveValue(ref);
 //        Assert.assertNotNull(resolved);
 //    }
 }

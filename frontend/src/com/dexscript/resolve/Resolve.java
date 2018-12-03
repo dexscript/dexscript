@@ -6,7 +6,7 @@ public class Resolve {
 //    private final ResolveValue resolveValue;
 //    private final ResolveFunction resolveFunction;
 //
-//    public Resolve() {
+//    public ResolveType() {
 //        resolveValue = new ResolveValue(this);
 //        resolveFunction = new ResolveFunction(this);
 //        resolveType = new ResolveType(this);

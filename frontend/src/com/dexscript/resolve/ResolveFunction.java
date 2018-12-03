@@ -4,9 +4,9 @@ final class ResolveFunction {
 
 //    private final Map<String, List<Denotation.Function>> concreteDefs = new HashMap<>();
 //    private final Map<String, List<Denotation.FunctionType>> virtualDefs = new HashMap<>();
-//    private final Resolve resolve;
+//    private final ResolveType resolve;
 //
-//    public ResolveFunction(Resolve resolve) {
+//    public ResolveFunction(ResolveType resolve) {
 //        this.resolve = resolve;
 //    }
 //

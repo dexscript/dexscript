@@ -8,10 +8,10 @@ public class CheckSemanticError implements DexElement.Visitor {
 
     }
 
-//    private final Resolve resolve;
+//    private final ResolveType resolve;
 //    private boolean hasError;
 //
-//    public CheckSemanticError(Resolve resolve, DexElement elem) {
+//    public CheckSemanticError(ResolveType resolve, DexElement elem) {
 //        this.resolve = resolve;
 //        visit(elem);
 //    }

@@ -10,4 +10,9 @@ public class TypeString extends TopLevelType {
     public boolean isAssignableFrom(Type that) {
         return that instanceof TypeString || that instanceof TypeStringLiteral;
     }
+
+    @Override
+    public String toString() {
+        return "string";
+    }
 }

@@ -13,23 +13,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TypeInterface extends TopLevelType implements FunctionGroup {
+public class TypeInterface extends TopLevelType implements FunctionsProvider {
 
-    public interface Resolve {
+    public interface ResolveType {
         Type resolveType(DexReference ref);
     }
 
-    private final Resolve resolve;
+    public interface ResolveFunction {
+        boolean isDefined(TypeFunction function);
+    }
+
+    private final ResolveType resolveType;
+    private final ResolveFunction resolveFunction;
     private final DexInterface inf;
     private List<TypeFunction> members;
 
-    public TypeInterface(@NotNull Resolve resolve, @NotNull DexInterface inf) {
+    public TypeInterface(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable, @NotNull DexInterface inf) {
         super(inf.identifier().toString(), "Object");
-        this.resolve = resolve;
+        typeTable.define(this);
+        functionTable.lazyDefine(this);
+        this.resolveType = typeTable;
+        this.resolveFunction = functionTable;
         this.inf = inf;
     }
 
-    public List<TypeFunction> members() {
+    public List<TypeFunction> functions() {
         if (members != null) {
             return members;
         }
@@ -48,9 +56,9 @@ public class TypeInterface extends TopLevelType implements FunctionGroup {
         String name = infFunction.identifier().toString();
         List<Type> params = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
-            params.add(resolve.resolveType(param.paramType()));
+            params.add(resolveType.resolveType(param.paramType()));
         }
-        Type ret = resolve.resolveType(infFunction.sig().ret());
+        Type ret = resolveType.resolveType(infFunction.sig().ret());
         members.add(new TypeFunction(name, params, ret));
     }
 
@@ -59,9 +67,9 @@ public class TypeInterface extends TopLevelType implements FunctionGroup {
         List<Type> params = new ArrayList<>();
         params.add(this);
         for (DexParam param : infMethod.sig().params()) {
-            params.add(resolve.resolveType(param.paramType()));
+            params.add(resolveType.resolveType(param.paramType()));
         }
-        Type ret = resolve.resolveType(infMethod.sig().ret());
+        Type ret = resolveType.resolveType(infMethod.sig().ret());
         members.add(new TypeFunction(name, params, ret));
     }
 
@@ -70,14 +78,10 @@ public class TypeInterface extends TopLevelType implements FunctionGroup {
         if (this.equals(thatObj)) {
             return true;
         }
-        if (!(thatObj instanceof FunctionGroup)) {
-            return false;
-        }
-        FunctionGroup that = (FunctionGroup) thatObj;
         Map<Type, Type> lookup = new HashMap<>();
-        lookup.put(this, thatObj);
-        for (TypeFunction member : members()) {
-            if (!that.contains((TypeFunction) member.expand(lookup))) {
+        lookup.put(this, new TypeSame(thatObj));
+        for (TypeFunction member : functions()) {
+            if (!resolveFunction.isDefined((TypeFunction) member.expand(lookup))) {
                 return false;
             }
         }
@@ -85,12 +89,7 @@ public class TypeInterface extends TopLevelType implements FunctionGroup {
     }
 
     @Override
-    public boolean contains(TypeFunction function) {
-        for (TypeFunction member : members()) {
-            if (function.isAssignableFrom(member)) {
-                return true;
-            }
-        }
-        return false;
+    public String toString() {
+        return name();
     }
 }

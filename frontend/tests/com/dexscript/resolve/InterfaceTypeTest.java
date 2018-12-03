@@ -10,7 +10,7 @@ public class InterfaceTypeTest {
 
 //    @Test
 //    public void define_interface_type_by_member_function() {
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(new DexInterface("" +
 //                "interface Duck {\n" +
 //                "  ::Quack(duck: Duck): string\n" +
@@ -22,7 +22,7 @@ public class InterfaceTypeTest {
 //
 //    @Test
 //    public void define_interface_type_by_member_method() {
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(new DexInterface("" +
 //                "interface Duck {\n" +
 //                "  Quack(): string\n" +
@@ -34,7 +34,7 @@ public class InterfaceTypeTest {
 //
 //    @Test
 //    public void test_compatibility() {
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(new DexInterface("" +
 //                "interface Duck1 {\n" +
 //                "  ::Quack(duck: Duck1): string\n" +
@@ -51,7 +51,7 @@ public class InterfaceTypeTest {
 //
 //    @Test
 //    public void test_subtype() {
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(new DexInterface("" +
 //                "interface Duck {\n" +
 //                "  ::Quack(duck: Duck): string\n" +
@@ -69,7 +69,7 @@ public class InterfaceTypeTest {
 //
 //    @Test
 //    public void implement_interface_by_function() {
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(new DexInterface("interface Duck{ ::Quack(duck: Duck): string }"));
 //        resolve.define(new DexFunction("function Quack(i: int64): string { return 'duck'; }"));
 //        Type int64 = resolve.resolveType("int64");
@@ -80,7 +80,7 @@ public class InterfaceTypeTest {
 //
 //    @Test
 //    public void implement_interface_by_another_interface() {
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(new DexInterface("interface Quackable{ ::Quack(duck: Quackable): string }"));
 //        resolve.define(new DexInterface("interface Swimable{ ::Swim(duck: Swimable): string }"));
 //        resolve.define(new DexInterface("" +

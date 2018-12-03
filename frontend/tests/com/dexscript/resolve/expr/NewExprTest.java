@@ -12,7 +12,7 @@ public class NewExprTest {
 
 //    @Test
 //    public void can_consume() {
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(new DexInterface("" +
 //                "interface ConsumeInf {\n" +
 //                "   Consume__(): string\n" +

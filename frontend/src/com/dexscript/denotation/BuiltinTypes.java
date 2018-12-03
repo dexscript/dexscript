@@ -11,9 +11,17 @@ public interface BuiltinTypes {
             VOID
     };
 
-    TopLevelTypeTable TYPE_TABLE = new TopLevelTypeTable() {{
-        for (TopLevelType type : BuiltinTypes.TYPE_ARRAY) {
-            put(type.name(), type);
+    TopLevelTypeTable TYPE_TABLE = new TopLevelTypeTable() {
+
+        {
+            for (TopLevelType type : BuiltinTypes.TYPE_ARRAY) {
+                defined.put(type.name(), type);
+            }
         }
-    }};
+
+        @Override
+        public void define(TopLevelType type) {
+            throw new UnsupportedOperationException("builtin type table is readonly");
+        }
+    };
 }

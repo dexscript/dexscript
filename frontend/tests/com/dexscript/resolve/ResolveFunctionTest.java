@@ -22,7 +22,7 @@ public class ResolveFunctionTest {
 //                "   return 'a'\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(file);
 //        DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
 //                .asReturn().expr()
@@ -45,7 +45,7 @@ public class ResolveFunctionTest {
 //                "   return 0\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(file);
 //        DexFunctionCallExpr callExpr = file.rootDecls().get(0).function().stmts().get(0)
 //                .asReturn().expr()
@@ -67,7 +67,7 @@ public class ResolveFunctionTest {
 //                "   return duck + ' quack'\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(file);
 //        Type string = resolve.resolveType("string");
 //        Denotation.InterfaceType Duck = (Denotation.InterfaceType) resolve.resolveType("Duck");

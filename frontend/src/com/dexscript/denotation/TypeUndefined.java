@@ -10,4 +10,9 @@ public class TypeUndefined extends TopLevelType {
     public boolean isAssignableFrom(Type that) {
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "undefined";
+    }
 }

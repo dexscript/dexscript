@@ -13,7 +13,7 @@ public class CheckSemanticErrorTest {
 //                "function Hello() {\n" +
 //                "   return msg\n" +
 //                "}";
-//        CheckSemanticError result = new CheckSemanticError(new Resolve(), new DexFile(src));
+//        CheckSemanticError result = new CheckSemanticError(new ResolveType(), new DexFile(src));
 //        Assert.assertTrue(result.hasError());
 //    }
 //
@@ -22,7 +22,7 @@ public class CheckSemanticErrorTest {
 //        String src = "package abc\n" +
 //                "function Hello(msg: int10) {\n" +
 //                "}";
-//        CheckSemanticError result = new CheckSemanticError(new Resolve(), new DexFile(src));
+//        CheckSemanticError result = new CheckSemanticError(new ResolveType(), new DexFile(src));
 //        Assert.assertTrue(result.hasError());
 //    }
 //
@@ -32,7 +32,7 @@ public class CheckSemanticErrorTest {
 //                "function Hello(): string {\n" +
 //                "   return 1\n" +
 //                "}";
-//        CheckSemanticError result = new CheckSemanticError(new Resolve(), new DexFile(src));
+//        CheckSemanticError result = new CheckSemanticError(new ResolveType(), new DexFile(src));
 //        Assert.assertTrue(result.hasError());
 //    }
 //
@@ -46,7 +46,7 @@ public class CheckSemanticErrorTest {
 //                "   return 'xxx'\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(file);
 //        CheckSemanticError result = new CheckSemanticError(resolve, file);
 //        Assert.assertFalse(result.hasError());
@@ -58,7 +58,7 @@ public class CheckSemanticErrorTest {
 //                "function Hello() {\n" +
 //                "   NoSuchFunction()\n" +
 //                "}";
-//        CheckSemanticError result = new CheckSemanticError(new Resolve(), new DexFile(src));
+//        CheckSemanticError result = new CheckSemanticError(new ResolveType(), new DexFile(src));
 //        Assert.assertTrue(result.hasError());
 //    }
 }

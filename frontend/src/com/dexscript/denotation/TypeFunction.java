@@ -70,4 +70,20 @@ public final class TypeFunction extends Type {
         Type expandedRet = ret().expand(lookup);
         return new TypeFunction(name, expandedParams, expandedRet);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder msg = new StringBuilder();
+        msg.append(name);
+        msg.append('(');
+        for (int i = 0; i < params.size(); i++) {
+            if (i > 0) {
+                msg.append(", ");
+            }
+            msg.append(params.get(i).toString());
+        }
+        msg.append(") => ");
+        msg.append(ret.toString());
+        return msg.toString();
+    }
 }

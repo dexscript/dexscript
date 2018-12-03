@@ -3,9 +3,9 @@ package com.dexscript.resolve;
 final class ResolveValue {
 
 //    private final DenotationTable<Value> builtin = new DenotationTable<>();
-//    private final Resolve resolve;
+//    private final ResolveType resolve;
 //
-//    public ResolveValue(Resolve resolve) {
+//    public ResolveValue(ResolveType resolve) {
 //        this.resolve = resolve;
 //    }
 //

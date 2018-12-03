@@ -12,23 +12,23 @@ public class ResolveTypeTest {
 //    @Test
 //    public void reference_builtin_type() {
 //        DexFunction function = new DexFunction("function hello(): string {}");
-//        Denotation retType = new Resolve().resolveType(function.sig().ret());
+//        Denotation retType = new ResolveType().resolveType(function.sig().ret());
 //        Assert.assertEquals(BuiltinTypes.STRING, retType);
 //    }
 //
 //    @Test
 //    public void reference_interface() {
 //        DexInterface duckInf = new DexInterface("interface Duck{}");
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(duckInf);
 //        DexFunction function = new DexFunction("function hello(): Duck {}");
-//        Denotation retType = new Resolve().resolveType(function.sig().ret());
+//        Denotation retType = new ResolveType().resolveType(function.sig().ret());
 //        Assert.assertEquals("Duck", retType.name());
 //    }
 //
 //    @Test
 //    public void reference_function_as_interface() {
-//        Resolve resolve = new Resolve();
+//        ResolveType resolve = new ResolveType();
 //        resolve.define(new DexFunction("" +
 //                "function Hello(): string {\n" +
 //                "   return 'hello'\n" +
