@@ -6,6 +6,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.func.DexReturnStmt;
+import com.dexscript.ast.func.DexShortVarDecl;
 import com.dexscript.type.TypeSystem;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public interface InferValue {
         });
         put(DexReturnStmt.class, (ts, elem, table) -> {
         });
+        put(DexShortVarDecl.class, new InferShortVarDecl());
     }};
 
     void fillTable(TypeSystem ts, DexElement elem, ValueTable table);

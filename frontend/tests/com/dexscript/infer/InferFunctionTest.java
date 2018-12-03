@@ -7,12 +7,12 @@ import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class InferFuncArgTest {
+public class InferFunctionTest {
 
     @Test
-    public void infer_value() {
+    public void argument_can_be_referenced() {
         DexFunction func = new DexFunction("" +
-                "function Hello(arg: string): string {" +
+                "function Hello(arg: string): string {\n" +
                 "   return arg\n" +
                 "}");
         DexReference ref = func.stmts().get(0).asReturn().expr().asRef();
