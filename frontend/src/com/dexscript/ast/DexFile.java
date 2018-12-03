@@ -10,7 +10,7 @@ public final class DexFile extends DexElement {
 
     private final String fileName;
     private DexPackageClause packageClause;
-    private List<DexRootDecl> rootDecls;
+    private List<DexTopLevelDecl> rootDecls;
 
     public DexFile(Text src, String fileName) {
         super(src);
@@ -38,7 +38,7 @@ public final class DexFile extends DexElement {
         return packageClause;
     }
 
-    public List<DexRootDecl> rootDecls() {
+    public List<DexTopLevelDecl> rootDecls() {
         if (rootDecls != null) {
             return rootDecls;
         }
@@ -48,7 +48,7 @@ public final class DexFile extends DexElement {
         }
         rootDecls = new ArrayList<>();
         while (true) {
-            DexRootDecl rootDecl = new DexRootDecl(remaining);
+            DexTopLevelDecl rootDecl = new DexTopLevelDecl(remaining);
             rootDecl.reparent(this);
             if (rootDecl.matched()) {
                 rootDecls.add(rootDecl);
@@ -80,7 +80,7 @@ public final class DexFile extends DexElement {
             visitor.visit(packageClause());
         }
         if (rootDecls() != null) {
-            for (DexRootDecl rootDecl : rootDecls()) {
+            for (DexTopLevelDecl rootDecl : rootDecls()) {
                 visitor.visit(rootDecl);
             }
         }

@@ -6,6 +6,9 @@ import com.dexscript.ast.expr.*;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMember;
 import com.dexscript.ast.inf.DexInfMethod;
+import com.dexscript.denotation.BuiltinTypes;
+import com.dexscript.denotation.Type;
+import com.dexscript.denotation.Value;
 import com.dexscript.resolve.*;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
@@ -29,7 +32,7 @@ public class Town {
 
     public Town() {
         resolve = new Resolve();
-        ArrayList<Denotation.Type> params = new ArrayList<>();
+        ArrayList<Type> params = new ArrayList<>();
         params.add(BuiltinTypes.STRING_TYPE);
         params.add(BuiltinTypes.STRING_TYPE);
         Denotation.FunctionType addStringString = new Denotation.FunctionType(
@@ -56,7 +59,7 @@ public class Town {
     }
 
     public void declare(DexFile iFile) {
-        for (DexRootDecl rootDecl : iFile.rootDecls()) {
+        for (DexTopLevelDecl rootDecl : iFile.rootDecls()) {
             if (rootDecl.function() != null) {
                 DexFunction iFunction = rootDecl.function();
                 resolve.define(iFunction);
@@ -90,7 +93,7 @@ public class Town {
     }
 
     public void define(DexFile iFile) {
-        for (DexRootDecl rootDecl : iFile.rootDecls()) {
+        for (DexTopLevelDecl rootDecl : iFile.rootDecls()) {
             if (rootDecl.function() != null) {
                 define(rootDecl.function());
             } else if (rootDecl.inf() != null) {
@@ -197,20 +200,20 @@ public class Town {
         return (Denotation.FunctionType) resolve.resolveFunction(callExpr);
     }
 
-    public Denotation.Type resolveType(DexReference ref) {
+    public Type resolveType(DexReference ref) {
         Denotation denotation = resolve.resolveType(ref);
-        if (denotation instanceof Denotation.Type) {
-            return (Denotation.Type) denotation;
+        if (denotation instanceof Type) {
+            return (Type) denotation;
         }
         throw new DexTranspileException(denotation.toString());
     }
 
-    public Denotation.Value resolveValue(DexReference ref) {
-        return (Denotation.Value) resolve.resolveValue(ref);
+    public Value resolveValue(DexReference ref) {
+        return (Value) resolve.resolveValue(ref);
     }
 
-    public Denotation.Type resolveType(DexExpr expr) {
-        return (Denotation.Type) resolve.resolveType(expr);
+    public Type resolveType(DexExpr expr) {
+        return (Type) resolve.resolveType(expr);
     }
 
     public void checkSemanticError(DexFile iFile) {

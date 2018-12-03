@@ -3,7 +3,7 @@ package com.dexscript.ast;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DexRootDeclTest {
+public class DexTopLevelDeclTest {
 
     @Test
     public void missing_left_paren() {
@@ -13,7 +13,7 @@ public class DexRootDeclTest {
         Assert.assertEquals("" +
                 "<unmatched>function hello ) {\n" +
                 "}\n" +
-                "</unmatched>", new DexRootDecl(src).toString());
+                "</unmatched>", new DexTopLevelDecl(src).toString());
     }
 
     @Test
@@ -23,6 +23,6 @@ public class DexRootDeclTest {
                 "}\n";
         Assert.assertEquals("" +
                 "<error/>function hello () {\n" +
-                "}\n", new DexRootDecl(src).toString());
+                "}\n", new DexTopLevelDecl(src).toString());
     }
 }

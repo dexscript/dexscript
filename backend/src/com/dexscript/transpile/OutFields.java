@@ -1,7 +1,7 @@
 package com.dexscript.transpile;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.resolve.Denotation;
+import com.dexscript.denotation.Type;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +11,7 @@ public final class OutFields implements Iterable<OutField> {
 
     private static Map<String, OutField> fields = new HashMap<>();
 
-    public OutField allocate(DexElement iElem, Denotation.Type type) {
+    public OutField allocate(DexElement iElem, Type type) {
         String suggestedName = iElem.toString();
         OutField field = tryAllocate(suggestedName, iElem, type);
         if (field != null) {
@@ -28,7 +28,7 @@ public final class OutFields implements Iterable<OutField> {
         }
     }
 
-    private OutField tryAllocate(String name, DexElement iElem, Denotation.Type type) {
+    private OutField tryAllocate(String name, DexElement iElem, Type type) {
         if (fields.containsKey(name)) {
             return null;
         }

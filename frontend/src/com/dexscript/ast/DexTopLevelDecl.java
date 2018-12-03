@@ -1,21 +1,20 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
-import com.dexscript.ast.expr.DexFloatLiteral;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
-public class DexRootDecl extends DexElement {
+public class DexTopLevelDecl extends DexElement {
 
     private DexElement matched;
     private DexSyntaxError syntaxError;
 
-    public DexRootDecl(Text src) {
+    public DexTopLevelDecl(Text src) {
         super(src);
         new Parser();
     }
 
-    public DexRootDecl(String src) {
+    public DexTopLevelDecl(String src) {
         this(new Text(src));
     }
 

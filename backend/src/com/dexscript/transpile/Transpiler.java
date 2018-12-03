@@ -2,7 +2,7 @@ package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexRootDecl;
+import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
@@ -51,7 +51,7 @@ public class Transpiler {
         for (DexFile iFile : iFiles) {
             town.checkSemanticError(iFile);
             town.define(iFile);
-            for (DexRootDecl iRootDecl : iFile.rootDecls()) {
+            for (DexTopLevelDecl iRootDecl : iFile.rootDecls()) {
                 if (iRootDecl.function() != null) {
                     OutClass oClass = new OutClass(town, iRootDecl.function());
                     addSource(oClass.qualifiedClassName(), oClass.toString());

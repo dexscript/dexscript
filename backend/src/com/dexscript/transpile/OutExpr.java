@@ -1,9 +1,9 @@
 package com.dexscript.transpile;
 
 import com.dexscript.ast.expr.*;
+import com.dexscript.denotation.Value;
 import com.dexscript.resolve.Boat;
-import com.dexscript.resolve.BuiltinTypes;
-import com.dexscript.resolve.Denotation;
+import com.dexscript.denotation.BuiltinTypes;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 
@@ -124,7 +124,7 @@ public class OutExpr {
     }
 
     private void gen(DexReference iRef) {
-        Denotation.Value dntVal = oCtor.town().resolveValue(iRef);
+        Value dntVal = oCtor.town().resolveValue(iRef);
         OutField oField = dntVal.referenced().attachmentOfType(OutField.class);
         val.__(oField.fieldName);
     }

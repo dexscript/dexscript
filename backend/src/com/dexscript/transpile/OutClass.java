@@ -2,7 +2,7 @@ package com.dexscript.transpile;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.resolve.Denotation;
+import com.dexscript.denotation.Type;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -64,7 +64,7 @@ public class OutClass {
         return g.toString();
     }
 
-    public OutField allocateField(DexElement iElem, Denotation.Type type) {
+    public OutField allocateField(DexElement iElem, Type type) {
         return oFields.allocate(iElem, type);
     }
 

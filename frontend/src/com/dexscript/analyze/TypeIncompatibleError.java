@@ -1,16 +1,16 @@
 package com.dexscript.analyze;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.resolve.Denotation;
+import com.dexscript.denotation.Type;
 import com.dexscript.resolve.DexSemanticError;
 
 public class TypeIncompatibleError implements DexSemanticError {
 
     private final DexElement occurredAt;
-    private final Denotation.Type expectedType;
-    private final Denotation.Type actualType;
+    private final Type expectedType;
+    private final Type actualType;
 
-    public TypeIncompatibleError(DexElement occurredAt, Denotation.Type expectedType, Denotation.Type actualType) {
+    public TypeIncompatibleError(DexElement occurredAt, Type expectedType, Type actualType) {
         this.occurredAt = occurredAt;
         this.expectedType = expectedType;
         this.actualType = actualType;
@@ -21,11 +21,11 @@ public class TypeIncompatibleError implements DexSemanticError {
         return occurredAt;
     }
 
-    public Denotation.Type expectedType() {
+    public Type expectedType() {
         return expectedType;
     }
 
-    public Denotation.Type actualType() {
+    public Type actualType() {
         return actualType;
     }
 

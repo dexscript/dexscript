@@ -2,7 +2,7 @@ package com.dexscript.transpile;
 
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.resolve.Denotation;
+import com.dexscript.denotation.Type;
 import com.dexscript.transpile.gen.Gen;
 
 public class OutSig {
@@ -17,7 +17,7 @@ public class OutSig {
             }
             DexParam param = iSig.params().get(i);
             if (hasType) {
-                Denotation.Type type = town.resolveType(param.paramType());
+                Type type = town.resolveType(param.paramType());
                 g.__(type.javaClassName());
             } else {
                 g.__("Object");

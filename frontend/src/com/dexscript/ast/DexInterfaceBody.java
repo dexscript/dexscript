@@ -16,7 +16,7 @@ public class DexInterfaceBody extends DexElement {
 
     public DexInterfaceBody(Text src) {
         super(src);
-        DexRootDecl nextRootDecl = new DexRootDecl(src);
+        DexTopLevelDecl nextRootDecl = new DexTopLevelDecl(src);
         if (nextRootDecl.matched()) {
             matched = new Text(src.bytes, src.begin, nextRootDecl.begin());
         } else {
