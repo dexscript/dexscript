@@ -29,7 +29,7 @@ public class OutTown {
     private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
     private final List<DexFile> iFiles = new ArrayList<>();
     private final TypeSystem ts = new TypeSystem();
-    private final OutShim oShim = new OutShim();
+    private final OutShim oShim = new OutShim(ts);
 
     public OutTown addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);

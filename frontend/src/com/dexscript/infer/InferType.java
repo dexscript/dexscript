@@ -8,11 +8,12 @@ import java.util.*;
 public interface InferType {
 
     interface OnUnknownExpr {
-        void handle(Class<? extends DexExpr> clazz);
+        void handle(DexExpr expr);
     }
 
     class Events {
-        public static OnUnknownExpr ON_UNKNOWN_EXPR = clazz -> {
+        public static OnUnknownExpr ON_UNKNOWN_EXPR = expr -> {
+            throw new UnsupportedOperationException("not implemented: " + expr.getClass());
         };
     }
 
@@ -44,7 +45,7 @@ public interface InferType {
     static Type inferType(TypeSystem ts, DexExpr expr) {
         InferType inferType = handlers.get(expr.getClass());
         if (inferType == null) {
-            Events.ON_UNKNOWN_EXPR.handle(expr.getClass());
+            Events.ON_UNKNOWN_EXPR.handle(expr);
             return BuiltinTypes.UNDEFINED;
         }
         return inferType.infer(ts, expr);
