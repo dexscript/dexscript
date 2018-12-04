@@ -1,6 +1,7 @@
 package com.dexscript.transpile.elem;
 
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexStringLiteral;
 import com.dexscript.ast.func.DexReturnStmt;
 import com.dexscript.transpile.OutClass;
@@ -21,8 +22,9 @@ public interface Translate {
     }
 
     Map<Class<? extends DexElement>, Translate> handlers = new HashMap<>() {{
-        put(DexReturnStmt.class, new TranslateReturnStmt());
+        put(DexReturnStmt.class, new TranslateReturn());
         put(DexStringLiteral.class, new TranslateStringLiteral());
+        put(DexFunctionCallExpr.class, new TranslateFunctionCall());
     }};
 
     void handle(OutClass oClass, DexElement iElem);

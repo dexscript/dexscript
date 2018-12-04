@@ -24,7 +24,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
     private List<FunctionType> members;
 
     public ActorType(ActorTable actorTable, FunctionTable functionTable, DexFunction func) {
-        super(func.identifier().toString(), "Object");
+        super(func.identifier().toString(), "Result");
         this.func = func;
         this.resolveType = actorTable;
         this.resolveFunction = functionTable;
@@ -40,8 +40,18 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         members = new ArrayList<>();
         members.add(consumeFunc());
         List<FunctionType> functions = new ArrayList<>(members);
+        functions.add(callFunc());
         functions.add(newFunc());
         return functions;
+    }
+
+    private FunctionType callFunc() {
+        Type ret = resolveType.resolveType(func.sig().ret().toString());
+        ArrayList<Type> params = new ArrayList<>();
+        for (DexParam param : func.sig().params()) {
+            params.add(resolveType.resolveType(param.paramType().toString()));
+        }
+        return new FunctionType(func, name(), params, ret);
     }
 
     private FunctionType newFunc() {
@@ -50,14 +60,14 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         for (DexParam param : func.sig().params()) {
             params.add(resolveType.resolveType(param.paramType().toString()));
         }
-        return new FunctionType("New__", params, this);
+        return new FunctionType(func, "New__", params, this);
     }
 
     private FunctionType consumeFunc() {
         Type ret = resolveType.resolveType(func.sig().ret().toString());
         ArrayList<Type> params = new ArrayList<>();
         params.add(this);
-        return new FunctionType("Consume__", params, ret);
+        return new FunctionType(func,"Consume__", params, ret);
     }
 
     @Override

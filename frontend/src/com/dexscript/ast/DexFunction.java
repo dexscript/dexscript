@@ -2,6 +2,7 @@ package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.func.DexStatement;
@@ -54,6 +55,14 @@ public final class DexFunction extends DexElement {
         return body().sig();
     }
 
+    public List<DexParam> params() {
+        return sig().params();
+    }
+
+    public DexReference ret() {
+        return sig().ret();
+    }
+
     public DexBlock block() {
         return body().blk();
     }
@@ -86,6 +95,10 @@ public final class DexFunction extends DexElement {
 
     public List<DexStatement> stmts() {
         return block().stmts();
+    }
+
+    public String actorName() {
+        return identifier.toString();
     }
 
     private class Parser {

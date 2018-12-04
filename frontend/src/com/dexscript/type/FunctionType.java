@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.core.DexElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,8 +18,15 @@ public final class FunctionType extends Type {
     @NotNull
     private final Type ret;
 
+    private final DexElement definedBy;
+
     public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
+        this(null, name, params, ret);
+    }
+
+    public FunctionType(DexElement definedBy, @NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
         super("Object");
+        this.definedBy = definedBy;
         this.name = name;
         this.params = params;
         this.ret = ret;
@@ -88,5 +96,9 @@ public final class FunctionType extends Type {
         msg.append(") => ");
         msg.append(ret.toString());
         return msg.toString();
+    }
+
+    public DexElement definedBy() {
+        return definedBy;
     }
 }

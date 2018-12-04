@@ -1,7 +1,6 @@
 package com.dexscript.transpile;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -14,16 +13,18 @@ public class OutClass {
     private final DexFunction iFunc;
     private final Gen g = new Gen();
     private final OutFields oFields = new OutFields();
+    private final OutShim oShim;
     private OutMethod oMethod;
 
-    public OutClass(TypeSystem ts, DexFunction iFunc) {
+    public OutClass(TypeSystem ts, OutShim oShim, DexFunction iFunc) {
         this.ts = ts;
+        this.oShim = oShim;
         this.iFunc = iFunc;
         g.__("package "
         ).__(packageName()
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
-//        g.__(new Line("import com.dexscript.runtime.gen__.*;"));
+        g.__(new Line("import com.dexscript.runtime.gen__.*;"));
         g.__("public class "
         ).__(className()
         ).__(" extends Actor {"
@@ -36,7 +37,7 @@ public class OutClass {
 
     public static String qualifiedClassNameOf(DexFunction iFunction) {
         String packageName = iFunction.file().packageClause().identifier().toString();
-        return packageName + "." + iFunction.identifier().toString();
+        return packageName + "." + iFunction.actorName();
     }
 
     private void genFields() {
@@ -54,7 +55,7 @@ public class OutClass {
     }
 
     public String className() {
-        return iFunc.identifier().toString();
+        return iFunc.actorName();
     }
 
     public String qualifiedClassName() {
@@ -66,8 +67,8 @@ public class OutClass {
         return g.toString();
     }
 
-    public OutField allocateField(DexElement iElem, Type type) {
-        return oFields.allocate(iElem, type);
+    public OutField allocateField(String name, Type type) {
+        return oFields.allocate(name, type);
     }
 
     public String indention() {
@@ -89,4 +90,6 @@ public class OutClass {
     public void changeMethod(OutMethod oMethod) {
         this.oMethod = oMethod;
     }
+
+    public OutShim oShim() { return oShim; }
 }

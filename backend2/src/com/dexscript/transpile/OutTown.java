@@ -29,6 +29,7 @@ public class OutTown {
     private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
     private final List<DexFile> iFiles = new ArrayList<>();
     private final TypeSystem ts = new TypeSystem();
+    private final OutShim oShim = new OutShim();
 
     public OutTown addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);
@@ -36,22 +37,22 @@ public class OutTown {
             throw new DexTranspileException();
         }
         ts.defineFile(iFile);
+        oShim.defineFile(iFile);
         iFiles.add(iFile);
         return this;
     }
 
     public Map<String, Class<?>> transpile() {
         for (DexFile iFile : iFiles) {
-//            town.define(iFile);
-            for (DexTopLevelDecl iRootDecl : iFile.topLevelDecls()) {
-                if (iRootDecl.function() != null) {
-                    OutClass oClass = new OutClass(ts, iRootDecl.function());
+            for (DexTopLevelDecl iTopLevelDecl : iFile.topLevelDecls()) {
+                if (iTopLevelDecl.function() != null) {
+                    OutClass oClass = new OutClass(ts, oShim, iTopLevelDecl.function());
                     addSource(oClass.qualifiedClassName(), oClass.toString());
                 }
             }
         }
         try {
-//            addSource(Town.TOWN_QUALIFIED_CLASSNAME, town.finish());
+            addSource(OutShim.QUALIFIED_CLASSNAME, oShim.finish());
             return compiler.compileAll();
         } catch (Exception e) {
             throw new DexTranspileException(e);
