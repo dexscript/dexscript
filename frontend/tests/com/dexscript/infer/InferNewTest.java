@@ -13,7 +13,6 @@ public class InferNewTest {
 
     @Test
     public void match_one() {
-        DebugUtils.turnOnDebugLog();
         TypeSystem ts = new TypeSystem();
         ts.defineActor(new DexFunction("" +
                 "function Hello(arg: int64): string {\n" +

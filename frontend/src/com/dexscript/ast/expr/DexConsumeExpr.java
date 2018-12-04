@@ -7,7 +7,6 @@ import com.dexscript.ast.token.Keyword;
 public class DexConsumeExpr extends DexUnaryOperator {
 
     private static final int LEFT_RANK = 10;
-    private static final int RIGHT_RANK = 100;
 
     public DexConsumeExpr(Text src) {
         super(src);
@@ -17,10 +16,10 @@ public class DexConsumeExpr extends DexUnaryOperator {
                 continue;
             }
             if (Keyword.__(src, i, '<', '-')) {
-                right = DexExpr.parse(new Text(src.bytes, i + 2, src.end), RIGHT_RANK);
+                right = DexExpr.parse(new Text(src.bytes, i + 2, src.end), 0);
                 return;
             }
-            // not plus
+            // not <-
             return;
         }
     }
