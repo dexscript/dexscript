@@ -1,2 +1,2 @@
 rootProject.name = 'dexscript'
-include 'frontend', 'backend'
+include 'frontend', 'backend', 'backend2'

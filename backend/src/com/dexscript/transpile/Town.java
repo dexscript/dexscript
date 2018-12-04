@@ -9,7 +9,6 @@ import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.Type;
 import com.dexscript.infer.Value;
-import com.dexscript.infer.*;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -59,7 +58,7 @@ public class Town {
     }
 
     public void declare(DexFile iFile) {
-        for (DexTopLevelDecl rootDecl : iFile.rootDecls()) {
+        for (DexTopLevelDecl rootDecl : iFile.topLevelDecls()) {
             if (rootDecl.function() != null) {
                 DexFunction iFunction = rootDecl.function();
                 resolve.define(iFunction);
@@ -93,7 +92,7 @@ public class Town {
     }
 
     public void define(DexFile iFile) {
-        for (DexTopLevelDecl rootDecl : iFile.rootDecls()) {
+        for (DexTopLevelDecl rootDecl : iFile.topLevelDecls()) {
             if (rootDecl.function() != null) {
                 define(rootDecl.function());
             } else if (rootDecl.inf() != null) {

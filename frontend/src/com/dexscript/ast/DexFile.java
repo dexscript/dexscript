@@ -38,7 +38,7 @@ public final class DexFile extends DexElement {
         return packageClause;
     }
 
-    public List<DexTopLevelDecl> rootDecls() {
+    public List<DexTopLevelDecl> topLevelDecls() {
         if (rootDecls != null) {
             return rootDecls;
         }
@@ -79,8 +79,8 @@ public final class DexFile extends DexElement {
         if (packageClause() != null) {
             visitor.visit(packageClause());
         }
-        if (rootDecls() != null) {
-            for (DexTopLevelDecl rootDecl : rootDecls()) {
+        if (topLevelDecls() != null) {
+            for (DexTopLevelDecl rootDecl : topLevelDecls()) {
                 visitor.visit(rootDecl);
             }
         }

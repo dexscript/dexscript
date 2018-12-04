@@ -16,7 +16,7 @@ public interface InferType {
         };
     }
 
-    Map<Class<? extends DexExpr>, InferType> inferTypes = new HashMap<>() {{
+    Map<Class<? extends DexExpr>, InferType> handlers = new HashMap<>() {{
         put(DexStringLiteral.class, (ts, expr) -> new StringLiteralType(((DexStringLiteral) expr).literalValue()));
         put(DexIntegerLiteral.class, (ts, expr) -> new IntegerLiteralType(expr.toString()));
         put(DexReference.class, (ts, expr) -> InferValue.inferValue(ts, (DexReference) expr).type());
@@ -42,7 +42,7 @@ public interface InferType {
     Type infer(TypeSystem ts, DexExpr expr);
 
     static Type inferType(TypeSystem ts, DexExpr expr) {
-        InferType inferType = inferTypes.get(expr.getClass());
+        InferType inferType = handlers.get(expr.getClass());
         if (inferType == null) {
             Events.ON_UNKNOWN_EXPR.handle(expr.getClass());
             return BuiltinTypes.UNDEFINED;

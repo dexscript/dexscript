@@ -4,63 +4,64 @@ import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
+import com.dexscript.type.TypeSystem;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Transpiler {
+public class OutTown {
 
-    public final static boolean DEBUG = true;
-    private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
-    private final List<DexFile> iFiles = new ArrayList<>();
-    private final Town town;
-
-    public Transpiler() {
-        town = new Town();
+    public interface OnSourceAdded {
+        void handle(String className, String classSrc);
     }
 
-    public Transpiler addFile(String fileName, String src) {
+    public static OnSourceAdded ON_SOURCE_ADDED = (className, classSrc) -> {
+        System.out.println(">>> " + className);
+        String lines[] = classSrc.split("\\r?\\n");
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            System.out.println((i + 1) + ":\t" + line);
+        }
+    };
+
+    private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
+    private final List<DexFile> iFiles = new ArrayList<>();
+    private final TypeSystem ts = new TypeSystem();
+
+    public OutTown addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);
         if (new CheckSyntaxError(iFile).hasError()) {
             throw new DexTranspileException();
         }
-        town.declare(iFile);
+        ts.defineFile(iFile);
         iFiles.add(iFile);
         return this;
     }
 
-    private void addSource(String className, String classSrc) {
-        if (DEBUG) {
-            System.out.println(">>> " + className);
-            String lines[] = classSrc.split("\\r?\\n");
-            for (int i = 0; i < lines.length; i++) {
-                String line = lines[i];
-                System.out.println((i + 1) + ":\t" + line);
-            }
-        }
-        try {
-            compiler.addSource(className, classSrc);
-        } catch (Exception e) {
-            throw new DexTranspileException(e);
-        }
-    }
-
     public Map<String, Class<?>> transpile() {
         for (DexFile iFile : iFiles) {
-            town.checkSemanticError(iFile);
-            town.define(iFile);
+//            town.define(iFile);
             for (DexTopLevelDecl iRootDecl : iFile.topLevelDecls()) {
                 if (iRootDecl.function() != null) {
-                    OutClass oClass = new OutClass(town, iRootDecl.function());
+                    OutClass oClass = new OutClass(ts, iRootDecl.function());
                     addSource(oClass.qualifiedClassName(), oClass.toString());
                 }
             }
         }
         try {
-            addSource(Town.TOWN_QUALIFIED_CLASSNAME, town.finish());
+//            addSource(Town.TOWN_QUALIFIED_CLASSNAME, town.finish());
             return compiler.compileAll();
+        } catch (Exception e) {
+            throw new DexTranspileException(e);
+        }
+    }
+
+    private void addSource(String className, String classSrc) {
+        try {
+            compiler.addSource(className, classSrc);
+            ON_SOURCE_ADDED.handle(className, classSrc);
         } catch (Exception e) {
             throw new DexTranspileException(e);
         }

@@ -1,7 +1,9 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.expr.DexReference;
 
 import java.util.List;
@@ -34,5 +36,15 @@ public class TypeSystem {
 
     public List<FunctionType> resolveFunctions(String funcName, List<Type> args) {
         return functionTable.resolve(funcName, args);
+    }
+
+    public void defineFile(DexFile file) {
+        for (DexTopLevelDecl topLevelDecl : file.topLevelDecls()) {
+            if (topLevelDecl.function() != null) {
+                defineActor(topLevelDecl.function());
+            } else if (topLevelDecl.inf() != null) {
+                defineInterface(topLevelDecl.inf());
+            }
+        }
     }
 }

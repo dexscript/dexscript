@@ -3,6 +3,7 @@ package com.dexscript.infer;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexReference;
 import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.func.DexReturnStmt;
@@ -16,7 +17,16 @@ import java.util.Map;
 
 public interface InferValue {
 
-    Map<Class<? extends DexElement>, InferValue> inferValues = new HashMap<>() {{
+    interface OnUnknownElem {
+        void handle(Class<? extends DexElement> clazz);
+    }
+
+    class Events {
+        public static OnUnknownElem ON_UNKNOWN_ELEM = clazz -> {
+        };
+    }
+
+    Map<Class<? extends DexElement>, InferValue> handlers = new HashMap<>() {{
         put(DexFunction.class, new InferFunction());
         put(DexFunctionBody.class, (ts, elem, table) -> {
         });
@@ -52,11 +62,12 @@ public interface InferValue {
         if (table != null) {
             return table;
         }
-        table = elem.attach(parentTable.copy());
-        InferValue inferValue = inferValues.get(elem.getClass());
+        InferValue inferValue = handlers.get(elem.getClass());
         if (inferValue == null) {
-            throw new UnsupportedOperationException("not implemented: " + elem.getClass());
+            Events.ON_UNKNOWN_ELEM.handle(elem.getClass());
+            return parentTable;
         }
+        table = elem.attach(parentTable.copy());
         inferValue.fillTable(ts, elem, table);
         return table;
     }

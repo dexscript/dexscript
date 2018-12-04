@@ -18,8 +18,8 @@ public class DexFileTest {
                 "function hello() {\n" +
                 "}";
         DexFile file = new DexFile(src);
-        Assert.assertEquals(1, file.rootDecls().size());
-        DexFunction rootDecl = file.rootDecls().get(0).function();
+        Assert.assertEquals(1, file.topLevelDecls().size());
+        DexFunction rootDecl = file.topLevelDecls().get(0).function();
         Assert.assertEquals("hello", rootDecl.identifier().toString());
     }
 
@@ -30,8 +30,8 @@ public class DexFileTest {
                 "function hello() {\n" +
                 "}";
         DexFile file = new DexFile(src);
-        Assert.assertEquals(1, file.rootDecls().size());
-        DexFunction rootDecl = file.rootDecls().get(0).function();
+        Assert.assertEquals(1, file.topLevelDecls().size());
+        DexFunction rootDecl = file.topLevelDecls().get(0).function();
         Assert.assertEquals("hello", rootDecl.identifier().toString());
     }
 
@@ -44,9 +44,9 @@ public class DexFileTest {
                 "function world() {\n" +
                 "}";
         DexFile file = new DexFile(src);
-        Assert.assertEquals(2, file.rootDecls().size());
-        DexFunction function0 = file.rootDecls().get(0).function();
-        DexFunction function1 = file.rootDecls().get(1).function();
+        Assert.assertEquals(2, file.topLevelDecls().size());
+        DexFunction function0 = file.topLevelDecls().get(0).function();
+        DexFunction function1 = file.topLevelDecls().get(1).function();
         Assert.assertEquals("hello", function0.identifier().toString());
         Assert.assertEquals("world", function1.identifier().toString());
     }
