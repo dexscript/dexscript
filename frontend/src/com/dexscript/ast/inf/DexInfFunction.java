@@ -18,10 +18,10 @@ public class DexInfFunction extends DexInfMember {
         Text matched = null;
         for (; i < src.end; i++) {
             byte b = src.bytes[i];
-            if (Blank.__(b)) {
+            if (Blank.$(b)) {
                 continue;
             }
-            if (Keyword.__(src, i, ':', ':')) {
+            if (Keyword.$(src, i, ':', ':')) {
                 matched = src.slice(i + 2);
                 break;
             }

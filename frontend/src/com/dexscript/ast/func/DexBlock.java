@@ -75,7 +75,7 @@ public class DexBlock extends DexStatement {
         State leftBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '{') {
@@ -93,7 +93,7 @@ public class DexBlock extends DexStatement {
         State stmtOrRightBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ';') {
@@ -120,7 +120,7 @@ public class DexBlock extends DexStatement {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     return this::stmtOrRightBrace;
                 }
                 if ('}' == b) {

@@ -71,7 +71,7 @@ public final class DexParenExpr extends DexExpr {
         State leftParen() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '(') {
@@ -100,7 +100,7 @@ public final class DexParenExpr extends DexExpr {
             int savedCursor = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ')') {
@@ -117,11 +117,11 @@ public final class DexParenExpr extends DexExpr {
         State lineEnd() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     matched = new Text(src.bytes, parenBegin, i);
                     return reportError();
                 }
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
             }

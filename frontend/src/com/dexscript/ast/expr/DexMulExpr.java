@@ -12,7 +12,7 @@ public class DexMulExpr extends DexBinaryOperator {
         super(src, left);
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
-            if (Blank.__(b)) {
+            if (Blank.$(b)) {
                 continue;
             }
             if (b == '*') {

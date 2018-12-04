@@ -99,14 +99,14 @@ public class DexShortVarDecl extends DexStatement {
         State commaOrColonEqual() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ',') {
                     i += 1;
                     return this::moreIdentifiers;
                 }
-                if (Keyword.__(src, i, ':', '=')) {
+                if (Keyword.$(src, i, ':', '=')) {
                     i += 2;
                     return this::expr;
                 }

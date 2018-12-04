@@ -62,7 +62,7 @@ public class DexStringLiteral extends DexLeafExpr {
         State leftQuote() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '\'') {

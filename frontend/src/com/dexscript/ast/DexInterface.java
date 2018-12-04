@@ -82,10 +82,10 @@ public class DexInterface extends DexElement {
         private State interfaceKeyword() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.__(src, i,
+                if (Keyword.$(src, i,
                         'i', 'n', 't', 'e', 'r', 'f', 'a', 'c', 'e')) {
                     interfaceBegin = i;
                     i = i + 9;
@@ -100,7 +100,7 @@ public class DexInterface extends DexElement {
         public State blank() {
             int j = 0;
             for (; i < src.end; i++, j++) {
-                if (Blank.__(src.bytes[i])) {
+                if (Blank.$(src.bytes[i])) {
                     continue;
                 }
                 break;
@@ -124,7 +124,7 @@ public class DexInterface extends DexElement {
         @Expect("{")
         private State leftBrace() {
             for (; i < src.end; i++) {
-                if (!Blank.__(src.bytes[i])) {
+                if (!Blank.$(src.bytes[i])) {
                     break;
                 }
             }

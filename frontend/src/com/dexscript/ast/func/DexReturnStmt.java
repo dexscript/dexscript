@@ -82,10 +82,10 @@ public class DexReturnStmt extends DexStatement {
         State returnKeyword() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.__(src, i, 'r', 'e', 't', 'u', 'r', 'n')) {
+                if (Keyword.$(src, i, 'r', 'e', 't', 'u', 'r', 'n')) {
                     returnBegin = i;
                     i += 6;
                     return this::blank;
@@ -100,7 +100,7 @@ public class DexReturnStmt extends DexStatement {
             int j = 0;
             for (; i < src.end; i++, j++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 break;
@@ -126,7 +126,7 @@ public class DexReturnStmt extends DexStatement {
         State missingExpr() {
             reportError();
             for (; i < src.end; i++) {
-                if (LineEnd.__(src.bytes[i])) {
+                if (LineEnd.$(src.bytes[i])) {
                     returnEnd = i;
                     return null;
                 }

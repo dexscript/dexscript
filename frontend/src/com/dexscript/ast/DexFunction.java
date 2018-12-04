@@ -101,10 +101,10 @@ public final class DexFunction extends DexElement {
         State functionKeyword() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.__(src, i,
+                if (Keyword.$(src, i,
                         'f', 'u', 'n', 'c', 't', 'i', 'o', 'n')) {
                     functionBegin = i;
                     i = i + 8;
@@ -119,7 +119,7 @@ public final class DexFunction extends DexElement {
         State blank() {
             int j = 0;
             for (; i < src.end; i++, j++) {
-                if (Blank.__(src.bytes[i])) {
+                if (Blank.$(src.bytes[i])) {
                     continue;
                 }
                 break;
@@ -143,7 +143,7 @@ public final class DexFunction extends DexElement {
         @Expect("(")
         State leftParen() {
             for (; i < src.end; i++) {
-                if (!Blank.__(src.bytes[i])) {
+                if (!Blank.$(src.bytes[i])) {
                     break;
                 }
             }

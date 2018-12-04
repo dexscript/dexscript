@@ -12,10 +12,10 @@ public class DexAwaitExit extends DexAwaitCase {
         super(src);
         for(int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
-            if (Blank.__(b)) {
+            if (Blank.$(b)) {
                 continue;
             }
-            if (Keyword.__(src, i, 'e', 'x', 'i', 't', '!')) {
+            if (Keyword.$(src, i, 'e', 'x', 'i', 't', '!')) {
                 stmtEnd = i + 5;
                 return;
             }

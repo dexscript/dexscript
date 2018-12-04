@@ -98,7 +98,7 @@ public class DexFunctionCallExpr extends DexExpr {
         State leftParen() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '(') {
@@ -115,7 +115,7 @@ public class DexFunctionCallExpr extends DexExpr {
         State argument() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ')') {
@@ -142,7 +142,7 @@ public class DexFunctionCallExpr extends DexExpr {
                     callExprEnd = i + 1;
                     return null;
                 }
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     callExprEnd = i;
                     return null;
                 }
@@ -157,7 +157,7 @@ public class DexFunctionCallExpr extends DexExpr {
             int originalCursor = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ',') {
@@ -178,7 +178,7 @@ public class DexFunctionCallExpr extends DexExpr {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     callExprEnd = i;
                     return null;
                 }

@@ -88,7 +88,7 @@ public class DexSig extends DexElement {
         State leftParen() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '(') {
@@ -105,7 +105,7 @@ public class DexSig extends DexElement {
         State parameter() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ')') {
@@ -133,7 +133,7 @@ public class DexSig extends DexElement {
                     i += 1;
                     return this::colon;
                 }
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     sigEnd = i;
                     return null;
                 }
@@ -148,7 +148,7 @@ public class DexSig extends DexElement {
             int originalCursor = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ',') {
@@ -168,7 +168,7 @@ public class DexSig extends DexElement {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     sigEnd = i;
                     return null;
                 }
@@ -182,7 +182,7 @@ public class DexSig extends DexElement {
             int cursorBeforeSearchColon = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ':') {

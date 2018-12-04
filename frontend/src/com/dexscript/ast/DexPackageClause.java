@@ -78,11 +78,11 @@ public final class DexPackageClause extends DexElement {
         @Expect("package")
         State packageKeyword() {
             for (int j = 0; i < src.end; i++, j++) {
-                if (Blank.__(src.bytes[i])) {
+                if (Blank.$(src.bytes[i])) {
                     continue;
                 }
                 boolean hasSpaceInPrelude = i == 0 || j > 0;
-                boolean matchPackage = Keyword.__(src, i, 'p', 'a', 'c', 'k', 'a', 'g', 'e');
+                boolean matchPackage = Keyword.$(src, i, 'p', 'a', 'c', 'k', 'a', 'g', 'e');
                 if (hasSpaceInPrelude && matchPackage) {
                     packageBegin = i;
                     i += 7;
@@ -98,7 +98,7 @@ public final class DexPackageClause extends DexElement {
         State blank() {
             int j = 0;
             for (; i < src.end; i++, j++) {
-                if (Blank.__(src.bytes[i])) {
+                if (Blank.$(src.bytes[i])) {
                     continue;
                 }
                 break;
@@ -123,7 +123,7 @@ public final class DexPackageClause extends DexElement {
         private State missingIdentifier() {
             reportError();
             for (; i < src.end; i++) {
-                if (LineEnd.__(src.bytes[i])) {
+                if (LineEnd.$(src.bytes[i])) {
                     packageEnd = i;
                     return null;
                 }

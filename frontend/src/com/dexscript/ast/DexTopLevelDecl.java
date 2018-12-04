@@ -77,10 +77,10 @@ public class DexTopLevelDecl extends DexElement {
         State functionOrInterface() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.__(src, i, 'f', 'u', 'n', 'c', 't', 'i', 'o', 'n')) {
+                if (Keyword.$(src, i, 'f', 'u', 'n', 'c', 't', 'i', 'o', 'n')) {
                     matched = new DexFunction(src.slice(i));
                     if (matched.matched()) {
                         return null;
@@ -89,7 +89,7 @@ public class DexTopLevelDecl extends DexElement {
                         return this::skipError;
                     }
                 }
-                if (Keyword.__(src, i,
+                if (Keyword.$(src, i,
                         'i', 'n', 't', 'e', 'r', 'f', 'a', 'c', 'e')) {
                     matched = new DexInterface(src.slice(i));
                     if (matched.matched()) {
@@ -108,7 +108,7 @@ public class DexTopLevelDecl extends DexElement {
         State skipError() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     return this::functionOrInterface;
                 }
             }

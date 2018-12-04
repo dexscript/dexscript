@@ -12,10 +12,10 @@ public class DexConsumeExpr extends DexUnaryOperator {
         super(src);
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
-            if (Blank.__(b)) {
+            if (Blank.$(b)) {
                 continue;
             }
-            if (Keyword.__(src, i, '<', '-')) {
+            if (Keyword.$(src, i, '<', '-')) {
                 right = DexExpr.parse(new Text(src.bytes, i + 2, src.end), 0);
                 return;
             }

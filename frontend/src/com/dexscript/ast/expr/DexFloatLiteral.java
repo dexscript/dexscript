@@ -59,11 +59,11 @@ public class DexFloatLiteral extends DexLeafExpr {
         State firstChar() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if ('0' == b) {
-                    if (Keyword.__(src, i+1, '.')) {
+                    if (Keyword.$(src, i+1, '.')) {
                         integerBegin = i;
                         i += 2;
                         return this::dotFound;
@@ -71,7 +71,7 @@ public class DexFloatLiteral extends DexLeafExpr {
                     matched = new Text(src.bytes, i, i+1);
                     return null;
                 }
-                if (One2Nine.__(b)) {
+                if (One2Nine.$(b)) {
                     integerBegin = i;
                     return this::remainingChars;
                 }
@@ -83,7 +83,7 @@ public class DexFloatLiteral extends DexLeafExpr {
         State remainingChars() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Zero2Nine.__(b)) {
+                if (Zero2Nine.$(b)) {
                     continue;
                 }
                 if ('e' == b) {
@@ -103,7 +103,7 @@ public class DexFloatLiteral extends DexLeafExpr {
         State dotFound() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Zero2Nine.__(b)) {
+                if (Zero2Nine.$(b)) {
                     continue;
                 }
                 if (b == 'e' || b == 'E') {
@@ -120,7 +120,7 @@ public class DexFloatLiteral extends DexLeafExpr {
         State eFound() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Zero2Nine.__(b)) {
+                if (Zero2Nine.$(b)) {
                     continue;
                 }
                 if (b == '+' || b == '-') {
@@ -137,7 +137,7 @@ public class DexFloatLiteral extends DexLeafExpr {
             int j = 0;
             for (; i < src.end; i++, j++) {
                 byte b = src.bytes[i];
-                if (Zero2Nine.__(b)) {
+                if (Zero2Nine.$(b)) {
                     continue;
                 }
                 break;

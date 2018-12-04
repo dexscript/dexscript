@@ -1,8 +1,8 @@
 package com.dexscript.ast.token;
 
-public class A2Z {
+public interface A2Z {
 
-    public static boolean __(byte b) {
+    static boolean $(byte b) {
         return ('a' <= b && b <= 'z') || ('A' <= b && b <= 'Z');
     }
 }

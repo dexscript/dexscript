@@ -77,7 +77,7 @@ public class DexInterfaceBody extends DexElement {
         State leftBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '{') {
@@ -94,10 +94,10 @@ public class DexInterfaceBody extends DexElement {
         State memberOrRightBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     continue;
                 }
                 if (b == '}') {
@@ -120,7 +120,7 @@ public class DexInterfaceBody extends DexElement {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     return this::memberOrRightBrace;
                 }
                 if ('}' == b) {

@@ -65,10 +65,10 @@ public class DexAwaitProducer extends DexAwaitCase {
         State caseKeyword() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.__(src, i, 'c', 'a', 's', 'e')) {
+                if (Keyword.$(src, i, 'c', 'a', 's', 'e')) {
                     i += 4;
                     return this::blank;
                 }
@@ -81,7 +81,7 @@ public class DexAwaitProducer extends DexAwaitCase {
         State blank() {
             int j = 0;
             for (; i < src.end; i++, j++) {
-                if (Blank.__(src.bytes[i])) {
+                if (Blank.$(src.bytes[i])) {
                     continue;
                 }
                 break;
@@ -98,7 +98,7 @@ public class DexAwaitProducer extends DexAwaitCase {
             int consumeStmtBegin = i;
             int consumeStmtEnd = -1;
             for (; i < src.end; i++) {
-                if (Keyword.__(src, i, '<', '-')) {
+                if (Keyword.$(src, i, '<', '-')) {
                     foundConsumeSymbol = true;
                     continue;
                 }

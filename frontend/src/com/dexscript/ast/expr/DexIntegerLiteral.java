@@ -1,6 +1,5 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
@@ -52,14 +51,14 @@ public class DexIntegerLiteral extends DexLeafExpr {
         State firstChar() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '0') {
                     matched = new Text(src.bytes, i, i + 1);
                     return null;
                 }
-                if (One2Nine.__(b)) {
+                if (One2Nine.$(b)) {
                     integerBegin = i;
                     return this::remainingChars;
                 }
@@ -71,7 +70,7 @@ public class DexIntegerLiteral extends DexLeafExpr {
         State remainingChars() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Zero2Nine.__(b)) {
+                if (Zero2Nine.$(b)) {
                     continue;
                 }
                 break;

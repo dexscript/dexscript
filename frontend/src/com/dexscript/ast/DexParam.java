@@ -86,7 +86,7 @@ public final class DexParam extends DexElement {
         State colon() {
             for (;i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ':') {

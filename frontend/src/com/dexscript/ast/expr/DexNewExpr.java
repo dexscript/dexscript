@@ -94,7 +94,7 @@ public class DexNewExpr extends DexExpr {
         State leftBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '{') {
@@ -111,7 +111,7 @@ public class DexNewExpr extends DexExpr {
         State argument() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '}') {
@@ -138,7 +138,7 @@ public class DexNewExpr extends DexExpr {
                     newExprEnd = i + 1;
                     return null;
                 }
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     newExprEnd = i;
                     return null;
                 }
@@ -153,7 +153,7 @@ public class DexNewExpr extends DexExpr {
             int originalCursor = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ',') {
@@ -174,7 +174,7 @@ public class DexNewExpr extends DexExpr {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     newExprEnd = i;
                     return null;
                 }

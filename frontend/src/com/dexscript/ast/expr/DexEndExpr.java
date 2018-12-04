@@ -1,6 +1,5 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 
@@ -12,7 +11,7 @@ public class DexEndExpr extends DexLeafExpr {
         super(src);
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
-            if (Blank.__(b)) {
+            if (Blank.$(b)) {
                 continue;
             }
             if (b == ';') {

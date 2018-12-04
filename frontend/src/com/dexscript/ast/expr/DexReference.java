@@ -64,10 +64,10 @@ public class DexReference extends DexLeafExpr {
         State firstChar() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (A2Z.__(b)) {
+                if (A2Z.$(b)) {
                     identifierBegin = i;
                     i += 1;
                     return this::remainingChars;
@@ -84,7 +84,7 @@ public class DexReference extends DexLeafExpr {
         State remainingChars() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (A2Z.__(b) || Zero2Nine.__(b) || b == '_') {
+                if (A2Z.$(b) || Zero2Nine.$(b) || b == '_') {
                     continue;
                 }
                 break;

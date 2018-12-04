@@ -66,10 +66,10 @@ public class DexAwaitStmt extends DexStatement {
         State await() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.__(src, i, 'a', 'w', 'a', 'i', 't')) {
+                if (Keyword.$(src, i, 'a', 'w', 'a', 'i', 't')) {
                     i += 6;
                     return this::leftBrace;
                 }
@@ -82,7 +82,7 @@ public class DexAwaitStmt extends DexStatement {
         State leftBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '{') {
@@ -100,7 +100,7 @@ public class DexAwaitStmt extends DexStatement {
         private State caseOrRightBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == ';'){
@@ -126,7 +126,7 @@ public class DexAwaitStmt extends DexStatement {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     return this::caseOrRightBrace;
                 }
                 if ('}' == b) {

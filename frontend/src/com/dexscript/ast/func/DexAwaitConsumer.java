@@ -81,10 +81,10 @@ public class DexAwaitConsumer extends DexAwaitCase {
         State caseKeyword() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.__(src, i, 'c', 'a', 's', 'e')) {
+                if (Keyword.$(src, i, 'c', 'a', 's', 'e')) {
                     i += 4;
                     return this::blank;
                 }
@@ -97,7 +97,7 @@ public class DexAwaitConsumer extends DexAwaitCase {
         State blank() {
             int j = 0;
             for (; i < src.end; i++, j++) {
-                if (Blank.__(src.bytes[i])) {
+                if (Blank.$(src.bytes[i])) {
                     continue;
                 }
                 break;
@@ -122,7 +122,7 @@ public class DexAwaitConsumer extends DexAwaitCase {
         State leftParen() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.__(b)) {
+                if (Blank.$(b)) {
                     continue;
                 }
                 if (b == '(') {
@@ -161,7 +161,7 @@ public class DexAwaitConsumer extends DexAwaitCase {
             }
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (LineEnd.__(b)) {
+                if (LineEnd.$(b)) {
                     stmtEnd = i;
                     return null;
                 }
