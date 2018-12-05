@@ -13,7 +13,7 @@ class InferFunction implements InferValue {
         DexFunction func = (DexFunction) elem;
         for (DexParam param : func.sig().params()) {
             String name = param.paramName().toString();
-            Type type = ts.resolveType(param.paramType());
+            Type type = InferType.inferType(ts, param.paramType());
             table.define(new Value(name, type, param));
         }
     }

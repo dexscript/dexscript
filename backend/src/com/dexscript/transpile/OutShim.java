@@ -4,6 +4,7 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexTopLevelDecl;
+import com.dexscript.infer.InferType;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
@@ -175,7 +176,7 @@ public class OutShim {
                     g.__(", ");
                 }
                 DexParam param = function.params().get(i);
-                Type paramType = ts.resolveType(param.paramType());
+                Type paramType = InferType.inferType(ts, param.paramType());
                 g.__("(("
                 ).__(paramType.javaClassName()
                 ).__(')'

@@ -3,6 +3,7 @@ package com.dexscript.transpile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.func.DexStatement;
+import com.dexscript.infer.InferType;
 import com.dexscript.transpile.elem.Translate;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
@@ -32,7 +33,7 @@ public class OutCtor implements OutMethod {
 
     private void genBody() {
         for (DexParam param : iFunc.sig().params()) {
-            OutField oField = oClass.allocateField(param.paramName().toString(), ts.resolveType(param.paramType()));
+            OutField oField = oClass.allocateField(param.paramName().toString(), InferType.inferType(ts, param.paramType()));
             param.attach(oField);
             g.__("this."
             ).__(oField.value()

@@ -31,10 +31,6 @@ public class TypeSystem {
         return typeTable.resolveType(typeName);
     }
 
-    public Type resolveType(DexType ref) {
-        return resolveType(ref.toString());
-    }
-
     public List<FunctionType> resolveFunctions(String funcName, List<Type> args) {
         return functionTable.resolve(funcName, args);
     }

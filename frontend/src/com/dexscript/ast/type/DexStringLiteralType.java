@@ -43,4 +43,8 @@ public class DexStringLiteralType extends DexType {
     public void walkDown(Visitor visitor) {
 
     }
+
+    public String literalValue() {
+        return matched.slice(matched.begin + 1, matched.end - 1).toString();
+    }
 }

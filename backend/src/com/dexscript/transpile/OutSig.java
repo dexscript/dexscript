@@ -2,6 +2,7 @@ package com.dexscript.transpile;
 
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.infer.InferType;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
@@ -18,7 +19,7 @@ public class OutSig {
             }
             DexParam param = iSig.params().get(i);
             if (hasType) {
-                Type type = ts.resolveType(param.paramType());
+                Type type = InferType.inferType(ts, param.paramType());
                 g.__(type.javaClassName());
             } else {
                 g.__("Object");
