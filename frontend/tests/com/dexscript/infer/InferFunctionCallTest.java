@@ -15,14 +15,14 @@ public class InferFunctionCallTest {
         ts.defineFunction(new FunctionType("Hello", new ArrayList<>() {{
             add(BuiltinTypes.STRING);
         }}, BuiltinTypes.STRING));
-        Type type = InferType.inferType(ts, DexExpr.parse("Hello('hello')"));
+        Type type = InferType.$(ts, DexExpr.parse("Hello('hello')"));
         Assert.assertEquals(BuiltinTypes.STRING, type);
     }
 
     @Test
     public void match_none() {
         TypeSystem ts = new TypeSystem();
-        Type type = InferType.inferType(ts, DexExpr.parse("Hello('hello')"));
+        Type type = InferType.$(ts, DexExpr.parse("Hello('hello')"));
         Assert.assertEquals(BuiltinTypes.UNDEFINED, type);
     }
 
@@ -35,7 +35,7 @@ public class InferFunctionCallTest {
         ts.defineFunction(new FunctionType("Hello", new ArrayList<>() {{
             add(BuiltinTypes.STRING);
         }}, new StringLiteralType("b")));
-        Type type = InferType.inferType(ts, DexExpr.parse("Hello('hello')"));
+        Type type = InferType.$(ts, DexExpr.parse("Hello('hello')"));
         Assert.assertTrue(type.isAssignableFrom(new StringLiteralType("a")));
         Assert.assertTrue(type.isAssignableFrom(new StringLiteralType("b")));
     }

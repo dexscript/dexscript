@@ -19,7 +19,7 @@ public class OutSig {
             }
             DexParam param = iSig.params().get(i);
             if (hasType) {
-                Type type = InferType.inferType(ts, param.paramType());
+                Type type = InferType.$(ts, param.paramType());
                 g.__(type.javaClassName());
             } else {
                 g.__("Object");

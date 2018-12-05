@@ -17,7 +17,7 @@ public class InferShortVarDeclTest {
                 "   return local\n" +
                 "}");
         DexValueRef ref = func.stmts().get(1).asReturn().expr().asRef();
-        Value value = InferValue.inferValue(new TypeSystem(), ref);
+        Value value = InferValue.$(new TypeSystem(), ref);
         Assert.assertEquals("local", value.definedBy().toString());
         Assert.assertEquals(BuiltinTypes.STRING, value.type());
     }
@@ -32,7 +32,7 @@ public class InferShortVarDeclTest {
                 "   return local\n" +
                 "}");
         DexValueRef ref = func.stmts().get(1).asReturn().expr().asRef();
-        Value value = InferValue.inferValue(new TypeSystem(), ref);
+        Value value = InferValue.$(new TypeSystem(), ref);
         Assert.assertNull(value.definedBy());
         Assert.assertEquals(BuiltinTypes.UNDEFINED, value.type());
     }

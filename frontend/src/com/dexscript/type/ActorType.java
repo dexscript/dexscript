@@ -10,24 +10,16 @@ import java.util.Map;
 
 public class ActorType extends TopLevelType implements FunctionsProvider {
 
-    public interface ResolveType {
-        Type resolveType(String name);
-    }
-
-    public interface ResolveFunction {
-        boolean isDefined(FunctionType function);
-    }
-
-    private final ResolveType resolveType;
-    private final ResolveFunction resolveFunction;
+    private final TopLevelTypeTable typeTable;
+    private final FunctionTable functionTable;
     private final DexFunction func;
     private List<FunctionType> members;
 
     public ActorType(ActorTable actorTable, FunctionTable functionTable, DexFunction func) {
         super(func.identifier().toString(), "Result");
         this.func = func;
-        this.resolveType = actorTable;
-        this.resolveFunction = functionTable;
+        this.typeTable = actorTable.typeTable();
+        this.functionTable = functionTable;
         actorTable.define(this);
         functionTable.lazyDefine(this);
     }
@@ -46,10 +38,10 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
     }
 
     private FunctionType callFunc() {
-        Type ret = resolveType.resolveType(func.sig().ret().toString());
+        Type ret = ResolveType.$(typeTable, func.sig().ret());
         ArrayList<Type> params = new ArrayList<>();
         for (DexParam param : func.sig().params()) {
-            params.add(resolveType.resolveType(param.paramType().toString()));
+            params.add(ResolveType.$(typeTable, param.paramType()));
         }
         return new FunctionType(func, name(), params, ret);
     }
@@ -58,13 +50,13 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         ArrayList<Type> params = new ArrayList<>();
         params.add(new StringLiteralType(name()));
         for (DexParam param : func.sig().params()) {
-            params.add(resolveType.resolveType(param.paramType().toString()));
+            params.add(ResolveType.$(typeTable, param.paramType()));
         }
         return new FunctionType(func, "New__", params, this);
     }
 
     private FunctionType consumeFunc() {
-        Type ret = resolveType.resolveType(func.sig().ret().toString());
+        Type ret = ResolveType.$(typeTable, func.sig().ret());
         ArrayList<Type> params = new ArrayList<>();
         params.add(this);
         return new FunctionType(func,"Consume__", params, ret);
@@ -82,7 +74,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         lookup.put(this, new SameType(thatObj));
         for (FunctionType member : functions()) {
             FunctionType expandedMember = (FunctionType) member.expand(lookup);
-            if (!resolveFunction.isDefined(expandedMember)) {
+            if (!functionTable.isDefined(expandedMember)) {
                 return false;
             }
         }

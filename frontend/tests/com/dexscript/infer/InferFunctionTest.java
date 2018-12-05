@@ -16,7 +16,7 @@ public class InferFunctionTest {
                 "   return arg\n" +
                 "}");
         DexValueRef ref = func.stmts().get(0).asReturn().expr().asRef();
-        Value val = InferValue.inferValue(new TypeSystem(), ref);
+        Value val = InferValue.$(new TypeSystem(), ref);
         Assert.assertEquals("arg: string", val.definedBy().toString());
         Assert.assertEquals(BuiltinTypes.STRING, val.type());
     }

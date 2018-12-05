@@ -14,16 +14,8 @@ import java.util.Map;
 
 public class InterfaceType extends TopLevelType implements FunctionsProvider {
 
-    public interface ResolveType {
-        Type resolveType(String name);
-    }
-
-    public interface ResolveFunction {
-        boolean isDefined(FunctionType function);
-    }
-
-    private final ResolveType resolveType;
-    private final ResolveFunction resolveFunction;
+    private final TopLevelTypeTable typeTable;
+    private final FunctionTable functionTable;
     private final DexInterface inf;
     private List<FunctionType> members;
 
@@ -31,8 +23,8 @@ public class InterfaceType extends TopLevelType implements FunctionsProvider {
         super(inf.identifier().toString(), "Object");
         typeTable.define(this);
         functionTable.lazyDefine(this);
-        this.resolveType = typeTable;
-        this.resolveFunction = functionTable;
+        this.typeTable = typeTable;
+        this.functionTable = functionTable;
         this.inf = inf;
     }
 
@@ -55,9 +47,9 @@ public class InterfaceType extends TopLevelType implements FunctionsProvider {
         String name = infFunction.identifier().toString();
         List<Type> params = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
-            params.add(resolveType.resolveType(param.paramType().toString()));
+            params.add(ResolveType.$(typeTable, param.paramType()));
         }
-        Type ret = resolveType.resolveType(infFunction.sig().ret().toString());
+        Type ret = ResolveType.$(typeTable, infFunction.sig().ret());
         members.add(new FunctionType(name, params, ret));
     }
 
@@ -66,9 +58,9 @@ public class InterfaceType extends TopLevelType implements FunctionsProvider {
         List<Type> params = new ArrayList<>();
         params.add(this);
         for (DexParam param : infMethod.sig().params()) {
-            params.add(resolveType.resolveType(param.paramType().toString()));
+            params.add(ResolveType.$(typeTable, param.paramType()));
         }
-        Type ret = resolveType.resolveType(infMethod.sig().ret().toString());
+        Type ret = ResolveType.$(typeTable, infMethod.sig().ret());
         members.add(new FunctionType(name, params, ret));
     }
 
@@ -84,7 +76,7 @@ public class InterfaceType extends TopLevelType implements FunctionsProvider {
         lookup.put(this, new SameType(thatObj));
         for (FunctionType member : functions()) {
             FunctionType expandedMember = (FunctionType) member.expand(lookup);
-            if (!resolveFunction.isDefined(expandedMember)) {
+            if (!functionTable.isDefined(expandedMember)) {
                 return false;
             }
         }

@@ -17,7 +17,7 @@ public class InferConsumeTest {
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
                 "}"));
-        Type type = InferType.inferType(ts, DexExpr.parse("<-Hello{100}"));
+        Type type = InferType.$(ts, DexExpr.parse("<-Hello{100}"));
         Assert.assertEquals(BuiltinTypes.STRING, type);
     }
 }

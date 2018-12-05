@@ -41,9 +41,9 @@ public class CheckSemanticErrorTest {
 //                "   return 'xxx'\n" +
 //                "}";
 //        DexFile file = new DexFile(src);
-//        ResolveType infer = new ResolveType();
-//        infer.define(file);
-//        CheckSemanticError result = new CheckSemanticError(infer, file);
+//        ResolveType handle = new ResolveType();
+//        handle.define(file);
+//        CheckSemanticError result = new CheckSemanticError(handle, file);
 //        Assert.assertFalse(result.hasError());
 //    }
 //

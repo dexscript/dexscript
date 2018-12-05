@@ -176,7 +176,7 @@ public class OutShim {
                     g.__(", ");
                 }
                 DexParam param = function.params().get(i);
-                Type paramType = InferType.inferType(ts, param.paramType());
+                Type paramType = InferType.$(ts, param.paramType());
                 g.__("(("
                 ).__(paramType.javaClassName()
                 ).__(')'

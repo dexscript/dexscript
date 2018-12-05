@@ -33,7 +33,7 @@ public class OutCtor implements OutMethod {
 
     private void genBody() {
         for (DexParam param : iFunc.sig().params()) {
-            OutField oField = oClass.allocateField(param.paramName().toString(), InferType.inferType(ts, param.paramType()));
+            OutField oField = oClass.allocateField(param.paramName().toString(), InferType.$(ts, param.paramType()));
             param.attach(oField);
             g.__("this."
             ).__(oField.value()

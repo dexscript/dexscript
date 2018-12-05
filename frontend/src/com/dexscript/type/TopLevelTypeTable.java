@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TopLevelTypeTable implements InterfaceType.ResolveType {
+public class TopLevelTypeTable {
 
     protected final Map<String, TopLevelType> defined = new HashMap<>();
     private final List<TopLevelTypesProvider> providers = new ArrayList<>();
@@ -17,7 +17,6 @@ public class TopLevelTypeTable implements InterfaceType.ResolveType {
         defined.putAll(copiedFrom.defined);
     }
 
-    @Override
     public Type resolveType(String name) {
         pullFromProviders();
         TopLevelType type = defined.get(name);

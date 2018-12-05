@@ -47,7 +47,7 @@ public class TranslateFunctionCall implements Translate {
         }
         g.__(new Line(");"));
 
-        Type resultType = InferType.inferType(ts, iCallExpr);
+        Type resultType = InferType.$(ts, iCallExpr);
         OutField oResultField = oClass.allocateField(funcName + "Result", resultType);
         g.__(oResultField.value()
         ).__(" = (("

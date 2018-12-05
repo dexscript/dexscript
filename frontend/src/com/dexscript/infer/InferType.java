@@ -2,8 +2,7 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
-import com.dexscript.ast.type.DexStringLiteralType;
-import com.dexscript.ast.type.DexTypeRef;
+import com.dexscript.ast.type.DexType;
 import com.dexscript.type.*;
 
 import java.util.*;
@@ -11,11 +10,11 @@ import java.util.*;
 public interface InferType {
 
     interface OnUnknownElem {
-        void handle(DexElement elem);
+        void handle(DexExpr elem);
     }
 
     class Events {
-        public static OnUnknownElem ON_UNKNOWN_EXPR = elem -> {
+        public static OnUnknownElem ON_UNKNOWN_ELEM = elem -> {
             throw new UnsupportedOperationException("not implemented: " + elem.getClass());
         };
     }
@@ -23,7 +22,7 @@ public interface InferType {
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<>() {{
         put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(((DexStringLiteral) elem).literalValue()));
         put(DexIntegerLiteral.class, (ts, elem) -> new IntegerLiteralType(elem.toString()));
-        put(DexValueRef.class, (ts, elem) -> InferValue.inferValue(ts, (DexValueRef) elem).type());
+        put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
         put(DexFunctionCallExpr.class, (ts, elem) -> {
             DexFunctionCallExpr callExpr = (DexFunctionCallExpr) elem;
             String funcName = callExpr.target().asRef().toString();
@@ -38,31 +37,30 @@ public interface InferType {
             return ResolveReturnType.$(ts, "New__", args);
         });
         put(DexConsumeExpr.class, (ts, elem) -> {
-            Type target = inferType(ts, ((DexConsumeExpr) elem).right());
+            Type target = $(ts, ((DexConsumeExpr) elem).right());
             return ResolveReturnType.$(ts, "Consume__", Arrays.asList(target));
-        });
-        put(DexTypeRef.class, (ts, elem) -> ts.resolveType(elem.toString()));
-        put(DexStringLiteralType.class, (ts, elem) -> {
-            String literalValue = ((DexStringLiteralType) (elem)).literalValue();
-            return new StringLiteralType(literalValue);
         });
     }};
 
-    Type infer(TypeSystem ts, DexElement elem);
+    Type handle(TypeSystem ts, DexExpr elem);
 
-    static Type inferType(TypeSystem ts, DexElement elem) {
+    static Type $(TypeSystem ts, DexExpr elem) {
         InferType inferType = handlers.get(elem.getClass());
         if (inferType == null) {
-            Events.ON_UNKNOWN_EXPR.handle(elem);
+            Events.ON_UNKNOWN_ELEM.handle(elem);
             return BuiltinTypes.UNDEFINED;
         }
-        return inferType.infer(ts, elem);
+        return inferType.handle(ts, elem);
+    }
+
+    static Type $(TypeSystem ts, DexType elem) {
+        return ResolveType.$(ts.typeTable(), elem);
     }
 
     static List<Type> inferTypes(TypeSystem ts, List<DexExpr> elems) {
         ArrayList<Type> types = new ArrayList<>();
         for (DexExpr elem : elems) {
-            types.add(InferType.inferType(ts, elem));
+            types.add(InferType.$(ts, elem));
         }
         return types;
     }
@@ -71,7 +69,7 @@ public interface InferType {
         ArrayList<Type> types = new ArrayList<>();
         types.add(type1);
         for (DexExpr elem : elems) {
-            types.add(InferType.inferType(ts, elem));
+            types.add(InferType.$(ts, elem));
         }
         return types;
     }

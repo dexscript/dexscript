@@ -36,9 +36,9 @@ public interface InferValue {
         put(DexShortVarDecl.class, new InferShortVarDecl());
     }};
 
-    void fillTable(TypeSystem ts, DexElement elem, ValueTable table);
+    void handle(TypeSystem ts, DexElement elem, ValueTable table);
 
-    static Value inferValue(TypeSystem ts, DexValueRef ref) {
+    static Value $(TypeSystem ts, DexValueRef ref) {
         List<DexElement> prevElems = new ArrayList<>();
         DexElement current = ref;
         while (true) {
@@ -67,7 +67,7 @@ public interface InferValue {
             return parentTable;
         }
         table = elem.attach(parentTable.copy());
-        inferValue.fillTable(ts, elem, table);
+        inferValue.handle(ts, elem, table);
         return table;
     }
 }

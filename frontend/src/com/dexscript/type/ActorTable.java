@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ActorTable implements TopLevelTypesProvider, ActorType.ResolveType {
+public class ActorTable implements TopLevelTypesProvider {
 
     private final Map<String, List<ActorType>> defined = new HashMap<>();
     private final TopLevelTypeTable typeTable;
@@ -33,8 +33,7 @@ public class ActorTable implements TopLevelTypesProvider, ActorType.ResolveType 
         return types;
     }
 
-    @Override
-    public Type resolveType(String name) {
-        return typeTable.resolveType(name);
+    public TopLevelTypeTable typeTable() {
+        return typeTable;
     }
 }

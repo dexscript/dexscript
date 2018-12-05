@@ -44,4 +44,8 @@ public class TypeSystem {
             }
         }
     }
+
+    public TopLevelTypeTable typeTable() {
+        return typeTable;
+    }
 }

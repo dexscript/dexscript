@@ -28,7 +28,7 @@ public interface Translate {
         put(DexStringLiteral.class, new TranslateStringLiteral());
         put(DexFunctionCallExpr.class, new TranslateFunctionCall());
         put(DexValueRef.class, (oClass, iElem) -> {
-            Value refValue = InferValue.inferValue(oClass.typeSystem(), (DexValueRef) iElem);
+            Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
             OutValue oValue = refValue.definedBy().attachmentOfType(OutValue.class);
             iElem.attach(oValue);
         });

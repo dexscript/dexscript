@@ -2,7 +2,6 @@ package com.dexscript.transpile.elem;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexNewExpr;
 import com.dexscript.infer.InferType;
 import com.dexscript.transpile.OutClass;
@@ -27,7 +26,7 @@ public class TranslateNew implements Translate {
         String funcName = iNewExpr.target().asRef().toString();
         TypeSystem ts = oClass.typeSystem();
 
-        Type actorType = InferType.inferType(ts, iNewExpr);
+        Type actorType = InferType.$(ts, iNewExpr);
 
         List<FunctionType> funcTypes = ts.resolveFunctions(funcName, InferType.inferTypes(ts, iArgs));
         String newF = oClass.oShim().newF(funcTypes);
