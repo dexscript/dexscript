@@ -38,6 +38,10 @@ public abstract class DexStatement extends DexElement {
         if (stmt.matched()) {
             return stmt;
         }
+        stmt = new DexAwaitStmt(src);
+        if (stmt.matched()) {
+            return stmt;
+        }
         return new DexExprStmt(src);
     }
 

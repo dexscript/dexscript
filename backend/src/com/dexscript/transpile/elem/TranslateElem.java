@@ -3,6 +3,7 @@ package com.dexscript.transpile.elem;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
 import com.dexscript.ast.func.DexReturnStmt;
+import com.dexscript.ast.func.DexShortVarDecl;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
 import com.dexscript.transpile.OutClass;
@@ -34,6 +35,7 @@ public interface TranslateElem {
         });
         put(DexConsumeExpr.class, new TranslateConsume());
         put(DexNewExpr.class, new TranslateNew());
+        put(DexShortVarDecl.class, new TranslateShortVarDecl());
     }};
 
     void handle(OutClass oClass, DexElement iElem);
