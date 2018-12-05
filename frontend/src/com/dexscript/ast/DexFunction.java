@@ -9,6 +9,8 @@ import com.dexscript.ast.func.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
 import java.util.List;
 
 public final class DexFunction extends DexElement {
@@ -17,6 +19,7 @@ public final class DexFunction extends DexElement {
     private int signatureBegin = -1;
     private DexIdentifier identifier;
     private DexFunctionBody body;
+    private String actorName;
 
     public DexFunction(String src) {
         this(new Text(src));
@@ -98,6 +101,21 @@ public final class DexFunction extends DexElement {
     }
 
     public String actorName() {
+        if (actorName != null) {
+            return actorName;
+        }
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(toString().getBytes());
+            byte[] digest = md.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            return actorName = identifier.toString() + bigInt.toString(16);
+        } catch (Exception e) {
+            throw new DexParseException(e);
+        }
+    }
+
+    public String functionName() {
         return identifier.toString();
     }
 

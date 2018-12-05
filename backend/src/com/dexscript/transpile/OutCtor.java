@@ -23,7 +23,7 @@ public class OutCtor implements OutMethod {
         oClass.changeMethod(this);
         g = new Gen(oClass.indention());
         g.__("public "
-        ).__(className()
+        ).__(this.iFunc.actorName()
         ).__(new OutSig(ts, iFunc.sig(),true).toString()
         ).__(" {"
         ).__(new Indent(this::genBody)
@@ -43,10 +43,6 @@ public class OutCtor implements OutMethod {
         for (DexStatement stmt : iFunc.stmts()) {
             Translate.$(oClass, stmt);
         }
-    }
-
-    public String className() {
-        return iFunc.identifier().toString();
     }
 
     @Override

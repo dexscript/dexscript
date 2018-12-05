@@ -1,17 +1,18 @@
 package com.dexscript.transpile;
 
-import com.dexscript.runtime.Result;
-
+import java.lang.reflect.Method;
 import java.util.Map;
 
 public interface Transpile {
 
-    static Result $(String src) {
+    static Object $(String src, Object... args) {
         try {
             Map<String, Class<?>> oTown = new OutTown()
                     .addFile("hello.ds", "package abc\n" + src)
                     .transpile();
-            return (Result) oTown.get("abc.Hello").getConstructor().newInstance();
+            Class<?> shimClass = oTown.get("com.dexscript.runtime.gen__.Shim__");
+            Method newHello = shimClass.getMethod("Hello");
+            return newHello.invoke(null, args);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {

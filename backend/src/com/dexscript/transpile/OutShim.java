@@ -4,18 +4,12 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexTopLevelDecl;
-import com.dexscript.infer.InferType;
-import com.dexscript.transpile.gen.Gen;
-import com.dexscript.transpile.gen.Indent;
-import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.gen.*;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OutShim {
 
@@ -25,21 +19,67 @@ public class OutShim {
     private final TypeSystem ts;
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
-    private final List<ShimF> shimFs = new ArrayList<>();
+    private final List<ActorEntry> actors = new ArrayList<>();
+    private final Map<VirtualEntry, List<ConcreteEntry>> impls = new HashMap<>();
 
-    private static class ShimF {
 
-        private final DexFunction function;
+    private static class VirtualEntry {
+
+        private final String funcName;
+        private final int paramsCount;
+
+        private VirtualEntry(String funcName, int paramsCount) {
+            this.funcName = funcName;
+            this.paramsCount = paramsCount;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            VirtualEntry that = (VirtualEntry) o;
+            return paramsCount == that.paramsCount &&
+                    Objects.equals(funcName, that.funcName);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(funcName, paramsCount);
+        }
+    }
+
+    private static class ConcreteEntry {
+
         private final String canF;
         private final String callF;
         private final String newF;
 
-        private ShimF(DexFunction function, String canF, String callF, String newF) {
-            function.attach(this);
-            this.function = function;
+        private ConcreteEntry(String canF, String callF, String newF) {
             this.canF = canF;
             this.callF = callF;
             this.newF = newF;
+        }
+    }
+
+    private static class ActorEntry extends ConcreteEntry {
+
+        private final DexFunction function;
+        private final String canF;
+        private final String newF;
+
+        private ActorEntry(Map<VirtualEntry, List<ConcreteEntry>> impls, DexFunction function, String canF, String newF) {
+            super(canF, null, newF);
+            function.attach(this);
+            this.function = function;
+            this.canF = canF;
+            this.newF = newF;
+            VirtualEntry virtualEntry = virtualEntry();
+            List<ConcreteEntry> concreteEntries = impls.computeIfAbsent(virtualEntry, k -> new ArrayList<>());
+            concreteEntries.add(this);
+        }
+
+        private VirtualEntry virtualEntry() {
+            return new VirtualEntry(function.functionName(), function.params().size());
         }
     }
 
@@ -66,23 +106,50 @@ public class OutShim {
     public void defineActor(DexFunction function) {
         String newF = allocateShim("new__" + function.actorName());
         String canF = allocateShim("can__" + function.actorName());
-        ShimF shimF = new ShimF(function, canF, null, newF);
-        shimFs.add(shimF);
+        ActorEntry actorEntry = new ActorEntry(impls, function, canF, newF);
+        actors.add(actorEntry);
     }
 
     public String finish() {
         if (finished) {
             throw new IllegalStateException();
         }
-        for (ShimF shimF : shimFs) {
-            defineNew(shimF.function, shimF.newF);
-            defineCan(shimF.function, shimF.canF);
+        for (ActorEntry actorEntry : actors) {
+            defineNew(actorEntry.function, actorEntry.newF);
+            defineCan(actorEntry.function, actorEntry.canF);
+        }
+        for (Map.Entry<VirtualEntry, List<ConcreteEntry>> entry : impls.entrySet()) {
+            defineEntry(entry.getKey(), entry.getValue());
         }
         finished = true;
         g.indention("");
         g.__(new Line());
         g.__(new Line("}"));
         return g.toString();
+    }
+
+    private void defineEntry(VirtualEntry virtualEntry, List<ConcreteEntry> concreteEntries) {
+        g.__("public static Object "
+        ).__(virtualEntry.funcName);
+        DeclareParams.$(g, virtualEntry.paramsCount);
+        g.__(" {");
+        g.__(new Indent(() -> {
+            for (ConcreteEntry concreteEntry : concreteEntries) {
+                g.__("if ("
+                ).__(concreteEntry.canF);
+                InvokeParams.$(g, virtualEntry.paramsCount);
+                g.__(new Line(") {"));
+                g.__(new Indent(() -> {
+                    g.__("return "
+                    ).__(concreteEntry.newF);
+                    InvokeParams.$(g, virtualEntry.paramsCount);
+                    g.__(new Line(".value();"));
+                }));
+                g.__(new Line("}"));
+            }
+            g.__(new Line("throw new RuntimeException();"));
+        }));
+        g.__(new Line("}"));
     }
 
     private void defineNew(DexFunction function, String newF) {
@@ -150,7 +217,7 @@ public class OutShim {
             throw new UnsupportedOperationException("not implemented");
         }
         FunctionType funcType = funcTypes.get(0);
-        ShimF shims = funcType.definedBy().attachmentOfType(ShimF.class);
+        ActorEntry shims = funcType.definedBy().attachmentOfType(ActorEntry.class);
         return CLASSNAME + "." + shims.newF;
     }
 }
