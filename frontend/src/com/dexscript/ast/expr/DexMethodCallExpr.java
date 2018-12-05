@@ -15,7 +15,7 @@ public class DexMethodCallExpr extends DexExpr {
     private static final int RIGHT_RANK = 0;
 
     private DexExpr obj;
-    private DexReference method;
+    private DexValueRef method;
     private DexFunctionCallExpr functionCallExpr;
 
     public DexMethodCallExpr(Text src, DexExpr obj) {
@@ -28,7 +28,7 @@ public class DexMethodCallExpr extends DexExpr {
         return obj;
     }
 
-    public DexReference method() {
+    public DexValueRef method() {
         return method;
     }
 
@@ -110,7 +110,7 @@ public class DexMethodCallExpr extends DexExpr {
 
         @Expect("reference")
         State method() {
-            method = new DexReference(src.slice(i));
+            method = new DexValueRef(src.slice(i));
             if (!method.matched()) {
                 return null;
             }

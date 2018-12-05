@@ -27,8 +27,8 @@ public class CheckSemanticError implements DexElement.Visitor {
 //            check(sig);
 //            return;
 //        }
-//        if (elem instanceof DexReference) {
-//            notError(infer.resolveValue((DexReference) elem));
+//        if (elem instanceof DexValueRef) {
+//            notError(infer.resolveValue((DexValueRef) elem));
 //            return;
 //        }
 //        if (elem instanceof DexReturnStmt) {

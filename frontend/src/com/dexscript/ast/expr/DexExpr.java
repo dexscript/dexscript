@@ -58,7 +58,7 @@ public abstract class DexExpr extends DexElement {
     }
 
     private static DexExpr parseLeft(Text src) {
-        DexExpr expr = new DexReference(src);
+        DexExpr expr = new DexValueRef(src);
         if (expr.matched()) {
             return expr;
         }
@@ -134,8 +134,8 @@ public abstract class DexExpr extends DexElement {
         return (DexFunctionCallExpr) this;
     }
 
-    public DexReference asRef() {
-        return (DexReference) this;
+    public DexValueRef asRef() {
+        return (DexValueRef) this;
     }
 
     public DexMethodCallExpr asMethodCall() {

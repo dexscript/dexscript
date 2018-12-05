@@ -20,7 +20,7 @@ public interface InferType {
     Map<Class<? extends DexExpr>, InferType> handlers = new HashMap<>() {{
         put(DexStringLiteral.class, (ts, expr) -> new StringLiteralType(((DexStringLiteral) expr).literalValue()));
         put(DexIntegerLiteral.class, (ts, expr) -> new IntegerLiteralType(expr.toString()));
-        put(DexReference.class, (ts, expr) -> InferValue.inferValue(ts, (DexReference) expr).type());
+        put(DexValueRef.class, (ts, expr) -> InferValue.inferValue(ts, (DexValueRef) expr).type());
         put(DexFunctionCallExpr.class, (ts, expr) -> {
             DexFunctionCallExpr callExpr = (DexFunctionCallExpr) expr;
             String funcName = callExpr.target().asRef().toString();

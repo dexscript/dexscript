@@ -16,7 +16,7 @@ public class DexProduceExpr extends DexBinaryOperator {
                 continue;
             }
             if (Keyword.$(src, i, '-', '>')) {
-                right = new DexReference(src.slice(i + 2));
+                right = new DexValueRef(src.slice(i + 2));
                 return;
             }
             // not ->

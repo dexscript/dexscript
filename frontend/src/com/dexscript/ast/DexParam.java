@@ -1,14 +1,15 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.type.DexType;
 
 public final class DexParam extends DexElement {
 
     private DexIdentifier paramName;
-    private DexReference paramType;
+    private DexType paramType;
 
     public DexParam(Text src) {
         super(src);
@@ -19,7 +20,7 @@ public final class DexParam extends DexElement {
         return paramName;
     }
 
-    public DexReference paramType() {
+    public DexType paramType() {
         return paramType;
     }
 
@@ -50,7 +51,7 @@ public final class DexParam extends DexElement {
             paramName().reparent(this);
         }
         if (paramType() != null) {
-            paramType().reparent(this, null);
+            paramType().reparent(this);
         }
     }
 
@@ -100,7 +101,7 @@ public final class DexParam extends DexElement {
 
         @Expect("reference")
         State paramType() {
-            paramType = new DexReference(new Text(src.bytes, i, src.end));
+            paramType = DexType.parse(src.slice(i));
             if (paramType.matched()) {
                 return null;
             }

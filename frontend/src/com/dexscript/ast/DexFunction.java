@@ -2,12 +2,13 @@ package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.func.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
+import com.dexscript.ast.type.DexType;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -62,7 +63,7 @@ public final class DexFunction extends DexElement {
         return sig().params();
     }
 
-    public DexReference ret() {
+    public DexType ret() {
         return sig().ret();
     }
 

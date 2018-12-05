@@ -1,7 +1,7 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
@@ -16,7 +16,7 @@ public class InferShortVarDeclTest {
                 "   local := arg\n" +
                 "   return local\n" +
                 "}");
-        DexReference ref = func.stmts().get(1).asReturn().expr().asRef();
+        DexValueRef ref = func.stmts().get(1).asReturn().expr().asRef();
         Value value = InferValue.inferValue(new TypeSystem(), ref);
         Assert.assertEquals("local", value.definedBy().toString());
         Assert.assertEquals(BuiltinTypes.STRING, value.type());
@@ -31,7 +31,7 @@ public class InferShortVarDeclTest {
                 "   }\n" +
                 "   return local\n" +
                 "}");
-        DexReference ref = func.stmts().get(1).asReturn().expr().asRef();
+        DexValueRef ref = func.stmts().get(1).asReturn().expr().asRef();
         Value value = InferValue.inferValue(new TypeSystem(), ref);
         Assert.assertNull(value.definedBy());
         Assert.assertEquals(BuiltinTypes.UNDEFINED, value.type());

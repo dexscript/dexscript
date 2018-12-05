@@ -1,7 +1,7 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
@@ -15,7 +15,7 @@ public class InferFunctionTest {
                 "function Hello(arg: string): string {\n" +
                 "   return arg\n" +
                 "}");
-        DexReference ref = func.stmts().get(0).asReturn().expr().asRef();
+        DexValueRef ref = func.stmts().get(0).asReturn().expr().asRef();
         Value val = InferValue.inferValue(new TypeSystem(), ref);
         Assert.assertEquals("arg: string", val.definedBy().toString());
         Assert.assertEquals(BuiltinTypes.STRING, val.type());

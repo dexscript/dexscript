@@ -3,8 +3,7 @@ package com.dexscript.infer;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.func.DexReturnStmt;
 import com.dexscript.ast.func.DexShortVarDecl;
@@ -39,7 +38,7 @@ public interface InferValue {
 
     void fillTable(TypeSystem ts, DexElement elem, ValueTable table);
 
-    static Value inferValue(TypeSystem ts, DexReference ref) {
+    static Value inferValue(TypeSystem ts, DexValueRef ref) {
         List<DexElement> prevElems = new ArrayList<>();
         DexElement current = ref;
         while (true) {

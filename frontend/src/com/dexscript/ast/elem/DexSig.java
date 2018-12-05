@@ -2,9 +2,10 @@ package com.dexscript.ast.elem;
 
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.*;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
+import com.dexscript.ast.type.DexType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,7 @@ public class DexSig extends DexElement {
     private int sigBegin = -1;
     private int sigEnd = -1;
     private DexSyntaxError syntaxError;
-    private DexReference ret;
+    private DexType ret;
 
     public DexSig(Text src) {
         super(src);
@@ -30,7 +31,7 @@ public class DexSig extends DexElement {
         return params;
     }
 
-    public DexReference ret() {
+    public DexType ret() {
         return ret;
     }
 
@@ -198,9 +199,9 @@ public class DexSig extends DexElement {
 
         @Expect("type")
         State ret() {
-            ret = new DexReference(new Text(src.bytes, i, src.end));
+            ret = DexType.parse(src.slice(i));
             if (ret.matched()) {
-                ret.reparent(DexSig.this, null);
+                ret.reparent(DexSig.this);
                 sigEnd = ret.end();
             } else {
                 reportError();

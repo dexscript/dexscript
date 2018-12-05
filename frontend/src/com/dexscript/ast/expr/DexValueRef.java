@@ -5,16 +5,16 @@ import com.dexscript.ast.token.A2Z;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Zero2Nine;
 
-public class DexReference extends DexLeafExpr {
+public class DexValueRef extends DexLeafExpr {
 
     private DexSyntaxError syntaxError;
     private Text matched;
 
-    public DexReference(String src) {
+    public DexValueRef(String src) {
         this(new Text(src));
     }
 
-    public DexReference(Text src) {
+    public DexValueRef(Text src) {
         super(src);
         new Parser();
     }

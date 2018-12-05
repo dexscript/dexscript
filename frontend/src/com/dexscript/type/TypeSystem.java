@@ -4,7 +4,8 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
-import com.dexscript.ast.expr.DexReference;
+import com.dexscript.ast.expr.DexValueRef;
+import com.dexscript.ast.type.DexType;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class TypeSystem {
         return typeTable.resolveType(typeName);
     }
 
-    public Type resolveType(DexReference ref) {
+    public Type resolveType(DexType ref) {
         return resolveType(ref.toString());
     }
 
