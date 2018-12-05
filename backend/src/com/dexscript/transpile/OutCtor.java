@@ -4,7 +4,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.func.DexStatement;
 import com.dexscript.infer.InferType;
-import com.dexscript.transpile.elem.Translate;
+import com.dexscript.transpile.elem.TranslateElem;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -42,7 +42,7 @@ public class OutCtor implements OutMethod {
             ).__(new Line(";"));
         }
         for (DexStatement stmt : iFunc.stmts()) {
-            Translate.$(oClass, stmt);
+            TranslateElem.$(oClass, stmt);
         }
     }
 

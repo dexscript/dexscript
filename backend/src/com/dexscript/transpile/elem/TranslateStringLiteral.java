@@ -5,7 +5,7 @@ import com.dexscript.ast.expr.DexStringLiteral;
 import com.dexscript.transpile.OutClass;
 import com.dexscript.transpile.OutValue;
 
-public class TranslateStringLiteral implements Translate {
+public class TranslateStringLiteral implements TranslateElem {
 
     @Override
     public void handle(OutClass oClass, DexElement iElem) {

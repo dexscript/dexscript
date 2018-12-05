@@ -8,7 +8,7 @@ public interface InvokeParams {
             if (i > 0) {
                 g.__(", ");
             }
-            g.__("param"
+            g.__("arg"
             ).__(i);
         }
         g.__(')');

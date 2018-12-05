@@ -9,9 +9,11 @@ import com.dexscript.ast.func.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.type.DexType;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 public final class DexFunction extends DexElement {
@@ -105,15 +107,7 @@ public final class DexFunction extends DexElement {
         if (actorName != null) {
             return actorName;
         }
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(toString().getBytes());
-            byte[] digest = md.digest();
-            BigInteger bigInt = new BigInteger(1, digest);
-            return actorName = identifier.toString() + bigInt.toString(16);
-        } catch (Exception e) {
-            throw new DexParseException(e);
-        }
+        return actorName = identifier.toString() + md5(toString());
     }
 
     public String functionName() {
@@ -185,6 +179,19 @@ public final class DexFunction extends DexElement {
             // matched
             signatureBegin = i;
             return null;
+        }
+    }
+
+    @NotNull
+    private static String md5(String mySrc) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(mySrc.getBytes());
+            byte[] digest = md.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            return bigInt.toString(16);
+        } catch (NoSuchAlgorithmException e) {
+            throw new DexParseException(e);
         }
     }
 }

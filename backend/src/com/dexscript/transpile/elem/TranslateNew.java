@@ -13,14 +13,14 @@ import com.dexscript.type.*;
 
 import java.util.List;
 
-public class TranslateNew implements Translate {
+public class TranslateNew implements TranslateElem {
 
     @Override
     public void handle(OutClass oClass, DexElement iElem) {
         DexNewExpr iNewExpr = (DexNewExpr) iElem;
         List<DexExpr> iArgs = iNewExpr.args();
         for (DexExpr iArg : iArgs) {
-            Translate.$(oClass, iArg);
+            TranslateElem.$(oClass, iArg);
         }
 
         String funcName = iNewExpr.target().asRef().toString();
@@ -29,7 +29,7 @@ public class TranslateNew implements Translate {
         Type actorType = InferType.$(ts, iNewExpr);
 
         List<FunctionType> funcTypes = ts.resolveFunctions(funcName, InferType.inferTypes(ts, iArgs));
-        String newF = oClass.oShim().newF(funcTypes);
+        String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), funcTypes);
         OutField oActorField = oClass.allocateField(funcName, actorType);
         Gen g = oClass.g();
         g.__(oActorField.value()

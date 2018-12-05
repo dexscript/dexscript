@@ -11,7 +11,7 @@ import com.dexscript.transpile.OutValue;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface Translate {
+public interface TranslateElem {
 
     interface OnUnknownElem {
         void handle(DexElement iElem);
@@ -23,7 +23,7 @@ public interface Translate {
         };
     }
 
-    Map<Class<? extends DexElement>, Translate> handlers = new HashMap<>() {{
+    Map<Class<? extends DexElement>, TranslateElem> handlers = new HashMap<>() {{
         put(DexReturnStmt.class, new TranslateReturn());
         put(DexStringLiteral.class, new TranslateStringLiteral());
         put(DexFunctionCallExpr.class, new TranslateFunctionCall());
@@ -39,7 +39,7 @@ public interface Translate {
     void handle(OutClass oClass, DexElement iElem);
 
     static void $(OutClass oClass, DexElement iElem) {
-        Translate translate = handlers.get(iElem.getClass());
+        TranslateElem translate = handlers.get(iElem.getClass());
         if (translate == null) {
             Events.ON_UNKNOWN_ELEM.handle(iElem);
             return;

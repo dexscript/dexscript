@@ -6,6 +6,7 @@ import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.infer.InferType;
 import com.dexscript.transpile.gen.*;
+import com.dexscript.transpile.type.TranslateType;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
@@ -189,19 +190,25 @@ public class OutShim {
     }
 
     private void defineCan(DexFunction function, String canF) {
-        g.__("public static boolean "
-        ).__(canF
-        ).__('(');
-        for (int i = 0; i < function.params().size(); i++) {
-            if (i > 0) {
-                g.__(", ");
-            }
-            DexParam param = function.params().get(i);
-            g.__("Object "
-            ).__(param.paramName());
+        List<String> typeChecks = new ArrayList<>();
+        for (DexParam param : function.params()) {
+            Type type = InferType.$(ts, param.paramType());
+            String typeCheck = TranslateType.$(g, type, null, null);
+            typeChecks.add(typeCheck);
         }
-        g.__(") {");
+        g.__("public static boolean "
+        ).__(canF);
+        DeclareParams.$(g, function.params().size());
+        g.__(" {");
         g.__(new Indent(() -> {
+            for (int i = 0; i < typeChecks.size(); i++) {
+                String typeCheck = typeChecks.get(i);
+                g.__("if (!"
+                ).__(typeCheck
+                ).__("(arg"
+                ).__(i
+                ).__(new Line(")) { return false; }"));
+            }
             g.__("return true;");
         }));
         g.__(new Line("}"));
@@ -213,12 +220,35 @@ public class OutShim {
         return shimName + count;
     }
 
-    public String newF(List<FunctionType> funcTypes) {
-        if (funcTypes.size() != 1) {
-            throw new UnsupportedOperationException("not implemented");
+    public String combineNewF(String funcName, int paramsCount, List<FunctionType> funcTypes) {
+        if (funcTypes.size() == 1) {
+            FunctionType funcType = funcTypes.get(0);
+            ActorEntry shims = funcType.definedBy().attachmentOfType(ActorEntry.class);
+            return CLASSNAME + "." + shims.newF;
         }
-        FunctionType funcType = funcTypes.get(0);
-        ActorEntry shims = funcType.definedBy().attachmentOfType(ActorEntry.class);
-        return CLASSNAME + "." + shims.newF;
+        String cNewF = allocateShim("cnew__" + funcName);
+        g.__("public static Result "
+        ).__(cNewF);
+        DeclareParams.$(g, paramsCount);
+        g.__(" {");
+        g.__(new Indent(() -> {
+            for (FunctionType funcType : funcTypes) {
+                ConcreteEntry concreteEntry = funcType.definedBy().attachmentOfType(ConcreteEntry.class);
+                g.__("if ("
+                ).__(concreteEntry.canF);
+                InvokeParams.$(g, paramsCount);
+                g.__(new Line(") {"));
+                g.__(new Indent(() -> {
+                    g.__("return "
+                    ).__(concreteEntry.newF);
+                    InvokeParams.$(g, paramsCount);
+                    g.__(new Line(";"));
+                }));
+                g.__(new Line("}"));
+            }
+            g.__(new Line("throw new RuntimeException();"));
+        }));
+        g.__(new Line("}"));
+        return CLASSNAME + "." + cNewF;
     }
 }

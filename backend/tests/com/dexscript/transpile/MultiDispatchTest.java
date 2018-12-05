@@ -31,7 +31,7 @@ public class MultiDispatchTest {
                 "}\n" +
                 "function World(msg: string): string {\n" +
                 "   return 'no, no'\n" +
-                "}");
+                "}\n");
         Assert.assertEquals("yes, world", result);
     }
 }

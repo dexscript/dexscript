@@ -8,7 +8,7 @@ public interface DeclareParams {
             if (i > 0) {
                 g.__(", ");
             }
-            g.__("Object param"
+            g.__("Object arg"
             ).__(i);
         }
         g.__(')');

@@ -8,14 +8,14 @@ public class UnionType extends Type {
     private final List<Type> types;
 
     public UnionType(Type type1, Type type2) {
-        super("Object");
+        super(inferJavaClassName(type1, type2));
         types = new ArrayList<>();
         types.add(type1);
         types.add(type2);
     }
 
     public UnionType(List<Type> types) {
-        super("Object");
+        super(inferJavaClassName(types));
         this.types = types;
     }
 
@@ -53,5 +53,22 @@ public class UnionType extends Type {
             }
         }
         return false;
+    }
+
+    private static String inferJavaClassName(Type type1, Type type2) {
+        if (type1.javaClassName().equals(type2.javaClassName())) {
+            return type1.javaClassName();
+        }
+        return "Object";
+    }
+
+    private static String inferJavaClassName(List<Type> types) {
+        String javaClassName = types.get(0).javaClassName();
+        for (Type type : types) {
+            if (!type.javaClassName().equals(javaClassName)) {
+                return "Object";
+            }
+        }
+        return javaClassName;
     }
 }
