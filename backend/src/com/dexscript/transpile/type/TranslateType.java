@@ -1,6 +1,7 @@
 package com.dexscript.transpile.type;
 
 import com.dexscript.transpile.gen.Gen;
+import com.dexscript.type.Int64Type;
 import com.dexscript.type.StringLiteralType;
 import com.dexscript.type.StringType;
 import com.dexscript.type.Type;
@@ -26,6 +27,7 @@ public interface TranslateType {
     Map<Class<? extends Type>, TranslateType> handlers = new HashMap<>() {{
         put(StringType.class, new TranslateStringType());
         put(StringLiteralType.class, new TranslateStringLiteralType());
+        put(Int64Type.class, new TranslateInt64Type());
     }};
 
     static String $(Gen g, Type type, List<Class> javaClasses, List<Class> javaInterfaces) {
