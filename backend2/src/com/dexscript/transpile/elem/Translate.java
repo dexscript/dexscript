@@ -1,9 +1,7 @@
 package com.dexscript.transpile.elem;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.expr.DexFunctionCallExpr;
-import com.dexscript.ast.expr.DexReference;
-import com.dexscript.ast.expr.DexStringLiteral;
+import com.dexscript.ast.expr.*;
 import com.dexscript.ast.func.DexReturnStmt;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
@@ -34,6 +32,8 @@ public interface Translate {
             OutValue oValue = refValue.definedBy().attachmentOfType(OutValue.class);
             iElem.attach(oValue);
         });
+        put(DexConsumeExpr.class, new TranslateConsume());
+        put(DexNewExpr.class, new TranslateNew());
     }};
 
     void handle(OutClass oClass, DexElement iElem);
