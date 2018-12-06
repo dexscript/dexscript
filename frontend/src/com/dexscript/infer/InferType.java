@@ -7,7 +7,7 @@ import com.dexscript.type.*;
 
 import java.util.*;
 
-public interface InferType {
+public interface InferType<E extends DexExpr> {
 
     interface OnUnknownElem {
         void handle(DexExpr elem);
@@ -48,7 +48,7 @@ public interface InferType {
         });
     }};
 
-    Type handle(TypeSystem ts, DexExpr elem);
+    Type handle(TypeSystem ts, E elem);
 
     static Type $(TypeSystem ts, DexExpr elem) {
         InferType inferType = handlers.get(elem.getClass());

@@ -1,20 +1,19 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.func.DexReturnStmt;
-import com.dexscript.ast.func.DexShortVarDecl;
 import com.dexscript.type.TypeSystem;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface InferValue {
+public interface InferValue<E extends DexElement> {
 
     interface OnUnknownElem {
         void handle(Class<? extends DexElement> clazz);
@@ -25,18 +24,25 @@ public interface InferValue {
         };
     }
 
-    Map<Class<? extends DexElement>, InferValue> handlers = new HashMap<>() {{
-        put(DexFunction.class, new InferFunction());
-        put(DexFunctionBody.class, (ts, elem, table) -> {
-        });
-        put(DexBlock.class, (ts, elem, table) -> {
-        });
-        put(DexReturnStmt.class, (ts, elem, table) -> {
-        });
-        put(DexShortVarDecl.class, new InferShortVarDecl());
-    }};
+    Map<Class<? extends DexElement>, InferValue> handlers = new HashMap<>() {
+        {
+            put(DexFunctionBody.class, (ts, elem, table) -> {
+            });
+            put(DexBlock.class, (ts, elem, table) -> {
+            });
+            put(DexReturnStmt.class, (ts, elem, table) -> {
+            });
+            add(new InferShortVarDecl());
+            add(new InferFunction());
+        }
 
-    void handle(TypeSystem ts, DexElement elem, ValueTable table);
+        private void add(InferValue<?> handler) {
+            ParameterizedType translateInf = (ParameterizedType) handler.getClass().getGenericInterfaces()[0];
+            put((Class<? extends DexElement>) translateInf.getActualTypeArguments()[0], handler);
+        }
+    };
+
+    void handle(TypeSystem ts, E elem, ValueTable table);
 
     static Value $(TypeSystem ts, DexValueRef ref) {
         List<DexElement> prevElems = new ArrayList<>();

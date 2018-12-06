@@ -1,7 +1,6 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.type.DexStringLiteralType;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.ast.type.DexTypeRef;
@@ -10,7 +9,7 @@ import com.dexscript.ast.type.DexVoidType;
 import java.util.HashMap;
 import java.util.Map;
 
-public interface ResolveType {
+public interface ResolveType<E extends DexType> {
 
     interface OnUnknownElem {
         void handle(DexType elem);
@@ -31,7 +30,7 @@ public interface ResolveType {
         put(DexVoidType.class, (typeTable, elem) -> BuiltinTypes.VOID);
     }};
 
-    Type handle(TopLevelTypeTable typeTable, DexType elem);
+    Type handle(TopLevelTypeTable typeTable, E elem);
 
     static Type $(TopLevelTypeTable typeTable, DexType elem) {
         ResolveType resolveType = handlers.get(elem.getClass());

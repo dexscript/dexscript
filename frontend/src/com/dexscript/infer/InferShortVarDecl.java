@@ -1,16 +1,14 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.func.DexShortVarDecl;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
-public class InferShortVarDecl implements InferValue {
+public class InferShortVarDecl implements InferValue<DexShortVarDecl> {
 
     @Override
-    public void handle(TypeSystem ts, DexElement elem, ValueTable table) {
-        DexShortVarDecl shortVarDecl = (DexShortVarDecl) elem;
+    public void handle(TypeSystem ts, DexShortVarDecl shortVarDecl, ValueTable table) {
         if (shortVarDecl.decls().size() != 1) {
             throw new UnsupportedOperationException("not implemented");
         }
