@@ -1,12 +1,10 @@
 package com.dexscript.transpile.type;
 
-import com.dexscript.ast.core.DexParseException;
 import com.dexscript.transpile.DexTranspileException;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.type.StringLiteralType;
-import com.dexscript.type.Type;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -14,11 +12,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public class TranslateStringLiteralType implements TranslateType {
+public class CheckStringLiteralType implements CheckType<StringLiteralType> {
 
     @Override
-    public String handle(Gen g, Type type, List<Class> javaClasses, List<Class> javaInterfaces) {
-        StringLiteralType stringLiteralType = (StringLiteralType) type;
+    public String handle(Gen g, StringLiteralType stringLiteralType, List<Class> javaClasses, List<Class> javaInterfaces) {
         String typeCheck = "is__" + md5(stringLiteralType.literalValue());
         g.__("public static boolean "
         ).__(typeCheck

@@ -93,6 +93,10 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         return name();
     }
 
+    public DexFunction elem() {
+        return func;
+    }
+
     private class AwaitConsumerCollector implements DexElement.Visitor {
 
         @Override

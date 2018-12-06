@@ -11,9 +11,9 @@ public class CheckSemanticError implements DexElement.Visitor {
 //    private final ResolveType handle;
 //    private boolean hasError;
 //
-//    public CheckSemanticError(ResolveType handle, DexElement elem) {
+//    public CheckSemanticError(ResolveType handle, DexElement body) {
 //        this.handle = handle;
-//        visit(elem);
+//        visit(body);
 //    }
 //
 //    public boolean hasError() {
@@ -21,55 +21,55 @@ public class CheckSemanticError implements DexElement.Visitor {
 //    }
 //
 //    @Override
-//    public void visit(DexElement elem) {
-//        if (elem instanceof DexSig) {
-//            DexSig sig = (DexSig) elem;
+//    public void visit(DexElement body) {
+//        if (body instanceof DexSig) {
+//            DexSig sig = (DexSig) body;
 //            check(sig);
 //            return;
 //        }
-//        if (elem instanceof DexValueRef) {
-//            notError(handle.resolveValue((DexValueRef) elem));
+//        if (body instanceof DexValueRef) {
+//            notError(handle.resolveValue((DexValueRef) body));
 //            return;
 //        }
-//        if (elem instanceof DexReturnStmt) {
-//            check((DexReturnStmt) elem);
+//        if (body instanceof DexReturnStmt) {
+//            check((DexReturnStmt) body);
 //            return;
 //        }
-//        if (elem instanceof DexFunctionCallExpr) {
-//            check((DexFunctionCallExpr)elem);
+//        if (body instanceof DexFunctionCallExpr) {
+//            check((DexFunctionCallExpr)body);
 //            return;
 //        }
-//        if (elem instanceof DexMethodCallExpr) {
-//            check((DexMethodCallExpr)elem);
+//        if (body instanceof DexMethodCallExpr) {
+//            check((DexMethodCallExpr)body);
 //            return;
 //        }
-//        if (elem instanceof DexNewExpr) {
-//            check((DexNewExpr)elem);
+//        if (body instanceof DexNewExpr) {
+//            check((DexNewExpr)body);
 //            return;
 //        }
-//        elem.walkDown(this);
+//        body.walkDown(this);
 //    }
 //
-//    private void check(DexNewExpr elem) {
-//        for (DexExpr arg : elem.args()) {
+//    private void check(DexNewExpr body) {
+//        for (DexExpr arg : body.args()) {
 //            visit(arg);
 //        }
-//        notError(handle.resolveType(elem));
+//        notError(handle.resolveType(body));
 //    }
 //
-//    private void check(DexMethodCallExpr elem) {
-//        visit(elem.obj());
-//        for (DexExpr arg : elem.args()) {
+//    private void check(DexMethodCallExpr body) {
+//        visit(body.obj());
+//        for (DexExpr arg : body.args()) {
 //            visit(arg);
 //        }
-//        notError(handle.resolveType(elem));
+//        notError(handle.resolveType(body));
 //    }
 //
-//    private void check(DexFunctionCallExpr elem) {
-//        for (DexExpr arg : elem.args()) {
+//    private void check(DexFunctionCallExpr body) {
+//        for (DexExpr arg : body.args()) {
 //            visit(arg);
 //        }
-//        notError(handle.resolveType(elem));
+//        notError(handle.resolveType(body));
 //    }
 //
 //    private void check(DexReturnStmt returnStmt) {

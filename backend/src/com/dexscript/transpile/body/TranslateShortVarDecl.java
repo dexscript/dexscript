@@ -1,10 +1,9 @@
-package com.dexscript.transpile.elem;
+package com.dexscript.transpile.body;
 
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.func.DexShortVarDecl;
-import com.dexscript.transpile.OutClass;
-import com.dexscript.transpile.OutValue;
+import com.dexscript.transpile.skeleton.OutClass;
 
 public class TranslateShortVarDecl implements Translate<DexShortVarDecl> {
 

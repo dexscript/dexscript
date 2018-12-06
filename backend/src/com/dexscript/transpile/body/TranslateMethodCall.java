@@ -1,8 +1,8 @@
-package com.dexscript.transpile.elem;
+package com.dexscript.transpile.body;
 
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexMethodCallExpr;
-import com.dexscript.transpile.OutClass;
+import com.dexscript.transpile.skeleton.OutClass;
 
 import java.util.ArrayList;
 import java.util.List;

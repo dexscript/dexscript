@@ -1,8 +1,8 @@
-package com.dexscript.transpile.elem;
+package com.dexscript.transpile.body;
 
 import com.dexscript.ast.func.DexAwaitConsumer;
-import com.dexscript.transpile.OutClass;
-import com.dexscript.transpile.method.OutAwaitConsumerMethod;
+import com.dexscript.transpile.skeleton.OutClass;
+import com.dexscript.transpile.skeleton.OutAwaitConsumerMethod;
 
 public class TranslateAwaitConsumer implements Translate<DexAwaitConsumer> {
 

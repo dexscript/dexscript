@@ -8,7 +8,7 @@ import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.type.TranslateType;
+import com.dexscript.transpile.type.CheckType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
@@ -23,7 +23,7 @@ interface DefineCan {
         List<String> typeChecks = new ArrayList<>();
         for (DexParam param : function.params()) {
             Type type = InferType.$(ts, param.paramType());
-            String typeCheck = TranslateType.$(g, type, null, null);
+            String typeCheck = CheckType.$(g, type, null, null);
             typeChecks.add(typeCheck);
         }
         g.__("public static boolean "
@@ -51,7 +51,7 @@ interface DefineCan {
         List<String> typeChecks = new ArrayList<>();
         for (DexParam param : awaitConsumer.params()) {
             Type type = InferType.$(ts, param.paramType());
-            String typeCheck = TranslateType.$(g, type, null, null);
+            String typeCheck = CheckType.$(g, type, null, null);
             typeChecks.add(typeCheck);
         }
         g.__("public static boolean "

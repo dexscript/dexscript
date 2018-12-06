@@ -1,7 +1,6 @@
-package com.dexscript.transpile;
+package com.dexscript.transpile.skeleton;
 
 import com.dexscript.transpile.gen.Gen;
-import com.dexscript.transpile.method.OutMethod;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;

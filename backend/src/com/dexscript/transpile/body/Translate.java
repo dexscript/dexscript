@@ -1,12 +1,11 @@
-package com.dexscript.transpile.elem;
+package com.dexscript.transpile.body;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexStringLiteral;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
-import com.dexscript.transpile.OutClass;
-import com.dexscript.transpile.OutValue;
+import com.dexscript.transpile.skeleton.OutClass;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;

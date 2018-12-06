@@ -1,8 +1,7 @@
-package com.dexscript.transpile.elem;
+package com.dexscript.transpile.body;
 
 import com.dexscript.ast.expr.DexConsumeExpr;
-import com.dexscript.transpile.OutClass;
-import com.dexscript.transpile.OutValue;
+import com.dexscript.transpile.skeleton.OutClass;
 
 public class TranslateConsume implements Translate<DexConsumeExpr> {
 

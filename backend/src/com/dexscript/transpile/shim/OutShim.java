@@ -7,7 +7,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.ast.func.DexAwaitStmt;
 import com.dexscript.ast.func.DexBlock;
-import com.dexscript.transpile.OutTopLevelClass;
+import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.TypeSystem;

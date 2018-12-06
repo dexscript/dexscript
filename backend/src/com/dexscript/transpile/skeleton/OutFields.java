@@ -1,4 +1,4 @@
-package com.dexscript.transpile;
+package com.dexscript.transpile.skeleton;
 
 import com.dexscript.type.IsStorableType;
 import com.dexscript.type.Type;

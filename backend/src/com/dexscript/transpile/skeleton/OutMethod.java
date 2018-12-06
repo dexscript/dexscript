@@ -1,4 +1,4 @@
-package com.dexscript.transpile.method;
+package com.dexscript.transpile.skeleton;
 
 import com.dexscript.transpile.gen.Gen;
 

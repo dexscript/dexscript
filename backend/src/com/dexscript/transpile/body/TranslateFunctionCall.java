@@ -1,11 +1,10 @@
-package com.dexscript.transpile.elem;
+package com.dexscript.transpile.body;
 
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.infer.InferType;
-import com.dexscript.transpile.OutClass;
-import com.dexscript.transpile.OutField;
-import com.dexscript.transpile.OutValue;
+import com.dexscript.transpile.skeleton.OutClass;
+import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.type.*;

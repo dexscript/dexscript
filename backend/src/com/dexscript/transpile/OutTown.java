@@ -5,6 +5,7 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
 import com.dexscript.transpile.shim.OutShim;
+import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.TypeSystem;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
@@ -19,12 +20,6 @@ public class OutTown {
     }
 
     public static OnSourceAdded ON_SOURCE_ADDED = (className, classSrc) -> {
-        System.out.println(">>> " + className);
-        String lines[] = classSrc.split("\\r?\\n");
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-            System.out.println((i + 1) + ":\t" + line);
-        }
     };
 
     private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();

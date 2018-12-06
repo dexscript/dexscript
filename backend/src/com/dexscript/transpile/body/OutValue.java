@@ -1,4 +1,4 @@
-package com.dexscript.transpile;
+package com.dexscript.transpile.body;
 
 import com.dexscript.ast.core.DexElement;
 

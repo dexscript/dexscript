@@ -4,7 +4,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.infer.InferType;
-import com.dexscript.transpile.OutTopLevelClass;
+import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
@@ -34,8 +34,8 @@ interface DefineNew {
                 Type paramType = InferType.$(ts, param.paramType());
                 g.__("(("
                 ).__(paramType.javaClassName()
-                ).__(')'
-                ).__(param.paramName()
+                ).__(")arg"
+                ).__(i
                 ).__(')');
             }
             g.__(");");
@@ -67,8 +67,8 @@ interface DefineNew {
                 Type paramType = InferType.$(ts, param.paramType());
                 g.__("(("
                 ).__(paramType.javaClassName()
-                ).__(')'
-                ).__(param.paramName()
+                ).__(")arg"
+                ).__(i
                 ).__(')');
             }
             g.__(");");

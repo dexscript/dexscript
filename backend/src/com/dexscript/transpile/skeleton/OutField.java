@@ -1,5 +1,6 @@
-package com.dexscript.transpile;
+package com.dexscript.transpile.skeleton;
 
+import com.dexscript.transpile.body.OutValue;
 import com.dexscript.type.Type;
 
 public final class OutField extends OutValue {

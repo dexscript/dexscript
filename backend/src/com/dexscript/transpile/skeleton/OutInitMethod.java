@@ -1,14 +1,11 @@
-package com.dexscript.transpile.method;
+package com.dexscript.transpile.skeleton;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.ast.func.DexStatement;
 import com.dexscript.infer.InferType;
-import com.dexscript.transpile.OutClass;
-import com.dexscript.transpile.OutField;
-import com.dexscript.transpile.OutInnerClass;
-import com.dexscript.transpile.elem.Translate;
+import com.dexscript.transpile.body.Translate;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;

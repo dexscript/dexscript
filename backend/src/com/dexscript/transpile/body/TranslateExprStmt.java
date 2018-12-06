@@ -1,7 +1,7 @@
-package com.dexscript.transpile.elem;
+package com.dexscript.transpile.body;
 
 import com.dexscript.ast.func.DexExprStmt;
-import com.dexscript.transpile.OutClass;
+import com.dexscript.transpile.skeleton.OutClass;
 
 public class TranslateExprStmt implements Translate<DexExprStmt> {
 
