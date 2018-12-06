@@ -4,7 +4,7 @@ public class CheckSemanticErrorTest {
 
 //    @Test
 //    public void reference_not_existing_variable() {
-//        String src = "package abc\n" +
+//        String src = "package example\n" +
 //                "function Hello() {\n" +
 //                "   return msg\n" +
 //                "}";
@@ -14,7 +14,7 @@ public class CheckSemanticErrorTest {
 //
 //    @Test
 //    public void reference_not_existing_type() {
-//        String src = "package abc\n" +
+//        String src = "package example\n" +
 //                "function Hello(msg: int10) {\n" +
 //                "}";
 //        CheckSemanticError result = new CheckSemanticError(new ResolveType(), new DexFile(src));
@@ -23,7 +23,7 @@ public class CheckSemanticErrorTest {
 //
 //    @Test
 //    public void return_type_mismatch() {
-//        String src = "package abc\n" +
+//        String src = "package example\n" +
 //                "function Hello(): string {\n" +
 //                "   return 1\n" +
 //                "}";
@@ -33,7 +33,7 @@ public class CheckSemanticErrorTest {
 //
 //    @Test
 //    public void deduce_expr_type_from_function() {
-//        String src = "package abc\n" +
+//        String src = "package example\n" +
 //                "function Hello(): string {\n" +
 //                "   return ToString(1)\n" +
 //                "}\n" +
@@ -49,7 +49,7 @@ public class CheckSemanticErrorTest {
 //
 //    @Test
 //    public void call_not_existing_function() {
-//        String src = "package abc\n" +
+//        String src = "package example\n" +
 //                "function Hello() {\n" +
 //                "   NoSuchFunction()\n" +
 //                "}";

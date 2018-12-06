@@ -10,19 +10,19 @@ interface CombineNew {
     static void $(Gen g, List<FunctionType> funcTypes, int paramsCount, String cNewF) {
         g.__("public static Result "
         ).__(cNewF);
-        DeclareParams.$(g, paramsCount);
+        DeclareParams.$(g, paramsCount, true);
         g.__(" {");
         g.__(new Indent(() -> {
             for (FunctionType funcType : funcTypes) {
                 ConcreteEntry concreteEntry = funcType.definedBy().attachmentOfType(ConcreteEntry.class);
                 g.__("if ("
                 ).__(concreteEntry.canF());
-                InvokeParams.$(g, paramsCount);
+                InvokeParams.$(g, paramsCount, true);
                 g.__(new Line(") {"));
                 g.__(new Indent(() -> {
                     g.__("return "
                     ).__(concreteEntry.newF());
-                    InvokeParams.$(g, paramsCount);
+                    InvokeParams.$(g, paramsCount, true);
                     g.__(new Line(";"));
                 }));
                 g.__(new Line("}"));

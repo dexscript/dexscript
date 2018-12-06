@@ -50,10 +50,10 @@ public class DexFunctionTest {
     @Test
     public void skip_garbage_in_prelude() {
         String src = "" +
-                " abc function hello () {\n" +
+                " example function hello () {\n" +
                 "}\n";
         Assert.assertEquals("" +
-                "<unmatched> abc function hello () {\n" +
+                "<unmatched> example function hello () {\n" +
                 "}\n" +
                 "</unmatched>", new DexFunction(src).toString());
     }

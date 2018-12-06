@@ -19,17 +19,15 @@ interface DefineNew {
         String newF = actor.newF();
         g.__("public static Result "
         ).__(newF);
-        DeclareParams.$(g, function.params().size());
+        DeclareParams.$(g, function.params().size(), true);
         g.__(" {");
         g.__(new Indent(() -> {
             String className = OutTopLevelClass.qualifiedClassNameOf(function);
             g.__("return new "
             ).__(className
-            ).__('(');
+            ).__("(scheduler");
             for (int i = 0; i < function.params().size(); i++) {
-                if (i > 0) {
-                    g.__(", ");
-                }
+                g.__(", ");
                 DexParam param = function.params().get(i);
                 Type paramType = InferType.$(ts, param.paramType());
                 g.__("(("
@@ -49,7 +47,7 @@ interface DefineNew {
         String outerClassName = innerActor.outerClassName();
         g.__("public static Result "
         ).__(newF);
-        DeclareParams.$(g, awaitConsumer.params().size() + 1);
+        DeclareParams.$(g, awaitConsumer.params().size() + 1, true);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__(outerClassName
@@ -58,11 +56,9 @@ interface DefineNew {
             ).__(new Line(")arg0;"));
             g.__("return obj.new "
             ).__(awaitConsumer.identifier().toString()
-            ).__('(');
+            ).__("(scheduler");
             for (int i = 1; i < awaitConsumer.params().size() + 1; i++) {
-                if (i > 0) {
-                    g.__(", ");
-                }
+                g.__(", ");
                 DexParam param = awaitConsumer.params().get(i);
                 Type paramType = InferType.$(ts, param.paramType());
                 g.__("(("

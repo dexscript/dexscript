@@ -7,9 +7,9 @@ public class DexFileTest {
 
     @Test
     public void package_clause() {
-        DexFile file = new DexFile("package abc\n");
+        DexFile file = new DexFile("package example\n");
         DexPackageClause pkgClause = file.packageClause();
-        Assert.assertEquals("abc", pkgClause.identifier().toString());
+        Assert.assertEquals("example", pkgClause.identifier().toString());
     }
 
     @Test
@@ -26,7 +26,7 @@ public class DexFileTest {
     @Test
     public void one_function() {
         String src = "" +
-                "package abc;\n" +
+                "package example;\n" +
                 "function hello() {\n" +
                 "}";
         DexFile file = new DexFile(src);
@@ -38,7 +38,7 @@ public class DexFileTest {
     @Test
     public void two_functions() {
         String src = "" +
-                "package abc;\n" +
+                "package example;\n" +
                 "function hello() {\n" +
                 "}\n" +
                 "function world() {\n" +

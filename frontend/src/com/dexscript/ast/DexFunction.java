@@ -1,9 +1,9 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
+import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.func.DexBlock;
-import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.func.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
@@ -106,7 +106,7 @@ public final class DexFunction extends DexElement {
         if (actorName != null) {
             return actorName;
         }
-        return actorName = identifier.toString() + "_" + md5(toString()).substring(0, 4) + "_";
+        return actorName = identifier.toString() + "__" + md5(toString()).substring(0, 4);
     }
 
     public String functionName() {

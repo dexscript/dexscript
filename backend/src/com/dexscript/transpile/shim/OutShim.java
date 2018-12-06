@@ -79,7 +79,7 @@ public class OutShim {
     private String allocateShim(String shimName) {
         int count = shims.computeIfAbsent(shimName, k -> 0);
         count += 1;
-        return shimName + count;
+        return shimName + "__" + count;
     }
 
     public String combineNewF(String funcName, int paramsCount, List<FunctionType> funcTypes) {

@@ -45,6 +45,7 @@ public class OutInitMethod implements OutMethod {
     }
 
     private void genBody(List<DexParam> params, List<DexStatement> stmts) {
+        g.__(new Line("super(scheduler);"));
         for (DexParam param : params) {
             OutField oField = oClass.allocateField(param.paramName().toString(), InferType.$(ts, param.paramType()));
             param.attach(oField);

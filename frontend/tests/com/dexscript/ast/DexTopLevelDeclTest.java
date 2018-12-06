@@ -19,7 +19,7 @@ public class DexTopLevelDeclTest {
     @Test
     public void skip_garbage_in_prelude() {
         String src = "" +
-                " abc function hello () {\n" +
+                " example function hello () {\n" +
                 "}\n";
         Assert.assertEquals("" +
                 "<error/>function hello () {\n" +

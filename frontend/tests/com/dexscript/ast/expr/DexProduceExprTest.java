@@ -7,8 +7,8 @@ public class DexProduceExprTest {
 
     @Test
     public void matched() {
-        DexProduceExpr produceExpr = (DexProduceExpr) DexExpr.parse("'hello' -> abc");
+        DexProduceExpr produceExpr = (DexProduceExpr) DexExpr.parse("'hello' -> example");
         Assert.assertEquals("'hello'", produceExpr.left().toString());
-        Assert.assertEquals("abc", produceExpr.right().toString());
+        Assert.assertEquals("example", produceExpr.right().toString());
     }
 }

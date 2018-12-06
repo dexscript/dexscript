@@ -7,9 +7,9 @@ public class DexPackageClauseTest {
 
     @Test
     public void matched() {
-        DexPackageClause pkg = new DexPackageClause(" package abc");
-        Assert.assertEquals("abc", pkg.identifier().toString());
-        Assert.assertEquals("package abc", pkg.toString());
+        DexPackageClause pkg = new DexPackageClause(" package example");
+        Assert.assertEquals("example", pkg.identifier().toString());
+        Assert.assertEquals("package example", pkg.toString());
     }
 
     @Test
@@ -27,21 +27,21 @@ public class DexPackageClauseTest {
 
     @Test
     public void invalid_identifier_recover_by_semicolon() {
-        DexPackageClause pkg = new DexPackageClause(" package ?;abc");
-        Assert.assertEquals("<unmatched>?;abc</unmatched>", pkg.identifier().toString());
+        DexPackageClause pkg = new DexPackageClause(" package ?;example");
+        Assert.assertEquals("<unmatched>?;example</unmatched>", pkg.identifier().toString());
         Assert.assertEquals("package <error/>?", pkg.toString());
     }
 
     @Test
     public void garbage_in_prelude() {
-        DexPackageClause pkg = new DexPackageClause("ddd package abc");
-        Assert.assertEquals("abc", pkg.identifier().toString());
-        Assert.assertEquals("<error/>package abc", pkg.toString());
+        DexPackageClause pkg = new DexPackageClause("ddd package example");
+        Assert.assertEquals("example", pkg.identifier().toString());
+        Assert.assertEquals("<error/>package example", pkg.toString());
     }
 
     @Test
     public void garbage_in_prelude_without_space() {
-        DexPackageClause pkg = new DexPackageClause("dddpackage abc");
-        Assert.assertEquals("<unmatched>dddpackage abc</unmatched>", pkg.toString());
+        DexPackageClause pkg = new DexPackageClause("dddpackage example");
+        Assert.assertEquals("<unmatched>dddpackage example</unmatched>", pkg.toString());
     }
 }

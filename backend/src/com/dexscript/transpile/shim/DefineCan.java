@@ -28,7 +28,7 @@ interface DefineCan {
         }
         g.__("public static boolean "
         ).__(canF);
-        DeclareParams.$(g, function.params().size());
+        DeclareParams.$(g, function.params().size(), false);
         g.__(" {");
         g.__(new Indent(() -> {
             for (int i = 0; i < typeChecks.size(); i++) {
@@ -56,7 +56,7 @@ interface DefineCan {
         }
         g.__("public static boolean "
         ).__(canF);
-        DeclareParams.$(g, awaitConsumer.params().size() + 1);
+        DeclareParams.$(g, awaitConsumer.params().size() + 1, false);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__("if (!(arg0 instanceof "

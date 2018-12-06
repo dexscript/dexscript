@@ -8,8 +8,14 @@ import com.dexscript.type.TypeSystem;
 
 public interface DeclareParams {
 
-    static void $(Gen g, int paramsCount) {
+    static void $(Gen g, int paramsCount, boolean addSchedulerParam) {
         g.__('(');
+        if (addSchedulerParam) {
+            g.__("Scheduler scheduler");
+            if (paramsCount > 0) {
+                g.__(", ");
+            }
+        }
         for (int i = 0; i < paramsCount; i++) {
             if (i > 0) {
                 g.__(", ");
@@ -21,11 +27,9 @@ public interface DeclareParams {
     }
 
     static void $(Gen g, TypeSystem ts, DexSig sig) {
-        g.__('(');
+        g.__("(Scheduler scheduler");
         for (int i = 0; i < sig.params().size(); i++) {
-            if (i > 0) {
-                g.__(", ");
-            }
+            g.__(", ");
             DexParam param = sig.params().get(i);
             Type type = InferType.$(ts, param.paramType());
             g.__(type.javaClassName());

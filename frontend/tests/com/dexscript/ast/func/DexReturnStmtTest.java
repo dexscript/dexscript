@@ -7,12 +7,12 @@ public class DexReturnStmtTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("return abc", new DexReturnStmt(" return abc").toString());
+        Assert.assertEquals("return example", new DexReturnStmt(" return example").toString());
     }
 
     @Test
     public void garbage_in_prelude() {
-        Assert.assertEquals("<unmatched>ddreturn abc</unmatched>", new DexReturnStmt("ddreturn abc").toString());
+        Assert.assertEquals("<unmatched>ddreturn example</unmatched>", new DexReturnStmt("ddreturn example").toString());
     }
 
     @Test
@@ -22,7 +22,7 @@ public class DexReturnStmtTest {
 
     @Test
     public void missing_expr_recover_by_line_end() {
-        Assert.assertEquals("return <error/>", new DexReturnStmt("return ; abc").toString());
+        Assert.assertEquals("return <error/>", new DexReturnStmt("return ; example").toString());
     }
 
     @Test
@@ -32,6 +32,6 @@ public class DexReturnStmtTest {
 
     @Test
     public void walk_up() {
-        Assert.assertEquals("return abc", new DexReturnStmt("return abc").expr().prev().toString());
+        Assert.assertEquals("return example", new DexReturnStmt("return example").expr().prev().toString());
     }
 }

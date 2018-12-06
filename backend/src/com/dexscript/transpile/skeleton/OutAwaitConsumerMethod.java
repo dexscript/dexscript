@@ -24,6 +24,7 @@ public class OutAwaitConsumerMethod implements OutMethod {
         }));
         g.__(new Line("}"));
         g.__(new OutInnerClass(oClass, iAwaitConsumer));
+        new OutStateMethod(oClass, 1);
     }
 
     public OutClass oClass() {

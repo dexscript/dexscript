@@ -51,7 +51,7 @@ public class FunctionTypeTest {
             add(BuiltinTypes.STRING);
         }}, BuiltinTypes.VOID);
         FunctionType hello2 = new FunctionType("hello", new ArrayList<>() {{
-            add(new StringLiteralType("abc"));
+            add(new StringLiteralType("example"));
         }}, BuiltinTypes.VOID);
         Assert.assertFalse(hello1.isAssignableFrom(hello2));
         Assert.assertTrue(hello2.isAssignableFrom(hello1));
@@ -60,7 +60,7 @@ public class FunctionTypeTest {
     @Test
     public void ret_is_sub_type() {
         FunctionType hello1 = new FunctionType("hello", new ArrayList<>(), BuiltinTypes.STRING);
-        FunctionType hello2 = new FunctionType("hello", new ArrayList<>(), new StringLiteralType("abc"));
+        FunctionType hello2 = new FunctionType("hello", new ArrayList<>(), new StringLiteralType("example"));
         Assert.assertTrue(hello1.isAssignableFrom(hello2));
         Assert.assertFalse(hello2.isAssignableFrom(hello1));
     }
