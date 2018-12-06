@@ -120,7 +120,7 @@ public class DexAwaitProducer extends DexAwaitCase {
             return this::block;
         }
 
-        @Expect("block")
+        @Expect("blk")
         private State block() {
             blk = new DexBlock(src.slice(i));
             blk.reparent(DexAwaitProducer.this, null);

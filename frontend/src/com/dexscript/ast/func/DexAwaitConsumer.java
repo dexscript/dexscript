@@ -81,6 +81,10 @@ public class DexAwaitConsumer extends DexAwaitCase {
         return produceSig.ret();
     }
 
+    public List<DexStatement> stmts() {
+        return blk().stmts();
+    }
+
     private class Parser {
 
         int i = src.begin;
@@ -156,7 +160,7 @@ public class DexAwaitConsumer extends DexAwaitCase {
             return this::reportError;
         }
 
-        @Expect("block")
+        @Expect("blk")
         State block() {
             blk = new DexBlock(src.slice(i));
             blk.reparent(DexAwaitConsumer.this, null);

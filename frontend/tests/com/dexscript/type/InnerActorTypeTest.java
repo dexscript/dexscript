@@ -6,7 +6,7 @@ import com.dexscript.ast.func.DexAwaitConsumer;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class NestedActorTypeTest {
+public class InnerActorTypeTest {
 
     @Test
     public void can_consume_from_actor() {
@@ -20,12 +20,12 @@ public class NestedActorTypeTest {
         DexAwaitConsumer awaitConsumer = (DexAwaitConsumer) function.stmts().get(0).asAwait().cases().get(0);
         TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
         FunctionTable functionTable = new FunctionTable();
-        NestedActorType nestedActorType = new NestedActorType(typeTable, functionTable, awaitConsumer);
+        InnerActorType innerActorType = new InnerActorType(typeTable, functionTable, awaitConsumer);
         InterfaceType inf = new InterfaceType(typeTable, functionTable, new DexInterface("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
-        Assert.assertTrue(inf.isAssignableFrom(nestedActorType));
-        Assert.assertTrue(nestedActorType.isAssignableFrom(inf));
+        Assert.assertTrue(inf.isAssignableFrom(innerActorType));
+        Assert.assertTrue(innerActorType.isAssignableFrom(inf));
     }
 }

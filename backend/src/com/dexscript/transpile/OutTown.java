@@ -47,7 +47,7 @@ public class OutTown {
         for (DexFile iFile : iFiles) {
             for (DexTopLevelDecl iTopLevelDecl : iFile.topLevelDecls()) {
                 if (iTopLevelDecl.function() != null) {
-                    OutClass oClass = new OutClass(ts, oShim, iTopLevelDecl.function());
+                    OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, iTopLevelDecl.function());
                     addSource(oClass.qualifiedClassName(), oClass.toString());
                 }
             }

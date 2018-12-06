@@ -7,14 +7,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NestedActorType extends Type implements FunctionsProvider {
+public class InnerActorType extends Type implements FunctionsProvider {
 
     private final TopLevelTypeTable typeTable;
     private final DexAwaitConsumer awaitConsumer;
     private final FunctionTable functionTable;
     private List<FunctionType> members;
 
-    public NestedActorType(TopLevelTypeTable typeTable, FunctionTable functionTable, DexAwaitConsumer awaitConsumer) {
+    public InnerActorType(TopLevelTypeTable typeTable, FunctionTable functionTable, DexAwaitConsumer awaitConsumer) {
         super("Result");
         functionTable.lazyDefine(this);
         this.typeTable = typeTable;

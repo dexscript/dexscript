@@ -4,6 +4,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.infer.InferType;
 import com.dexscript.transpile.OutClass;
+import com.dexscript.transpile.OutTopLevelClass;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -26,7 +27,7 @@ interface DefineNew {
         }
         g.__(") {");
         g.__(new Indent(() -> {
-            String className = OutClass.qualifiedClassNameOf(function);
+            String className = OutTopLevelClass.qualifiedClassNameOf(function);
             g.__("return new "
             ).__(className
             ).__('(');

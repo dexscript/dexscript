@@ -14,7 +14,7 @@ public class DexFunctionTest {
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
         Assert.assertEquals("()", function.sig().toString());
-        Assert.assertEquals("{\n}", function.block().toString());
+        Assert.assertEquals("{\n}", function.blk().toString());
         Assert.assertEquals(src.substring(1), function.toString());
     }
 
@@ -32,7 +32,7 @@ public class DexFunctionTest {
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
         Assert.assertEquals("(msg:string)", function.sig().toString());
-        Assert.assertEquals("{\n}", function.block().toString());
+        Assert.assertEquals("{\n}", function.blk().toString());
         Assert.assertEquals(src.substring(1), function.toString());
     }
 

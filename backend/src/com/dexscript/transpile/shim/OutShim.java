@@ -22,7 +22,7 @@ public class OutShim {
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
     private final List<ActorEntry> actors = new ArrayList<>();
-    private final List<NestedActorEntry> nestedActors = new ArrayList<>();
+    private final List<InnerActorEntry> nestedActors = new ArrayList<>();
     private final Map<VirtualEntry, List<ConcreteEntry>> impls = new HashMap<>();
 
     public OutShim(TypeSystem ts) {
@@ -68,7 +68,7 @@ public class OutShim {
         String canF = allocateShim("can__" + function.actorName());
         ActorEntry actorEntry = new ActorEntry(impls, function, canF, newF);
         actors.add(actorEntry);
-        new AwaitConsumerCollector().visit(function.block());
+        new AwaitConsumerCollector().visit(function.blk());
     }
 
     private String allocateShim(String shimName) {
@@ -105,7 +105,7 @@ public class OutShim {
             String funcName = awaitConsumer.identifier().toString();
             String newF = allocateShim("new__" + funcName);
             String canF = allocateShim("can__" + funcName);
-            NestedActorEntry nestedActor = new NestedActorEntry(impls, awaitConsumer, canF, newF);
+            InnerActorEntry nestedActor = new InnerActorEntry(impls, awaitConsumer, canF, newF);
             nestedActors.add(nestedActor);
         }
     }

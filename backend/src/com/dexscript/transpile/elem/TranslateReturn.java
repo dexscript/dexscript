@@ -13,7 +13,7 @@ public class TranslateReturn implements Translate<DexReturnStmt> {
         DexExpr iExpr = iReturnStmt.expr();
         Translate.$(oClass, iExpr);
         oClass.g().__("finish("
-        ).__(iExpr.attachmentOfType(OutValue.class).value()
+        ).__(OutValue.of(iExpr)
         ).__(new Line(");"));
     }
 }

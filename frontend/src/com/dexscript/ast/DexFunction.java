@@ -2,7 +2,6 @@ package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.func.DexStatement;
@@ -69,7 +68,7 @@ public final class DexFunction extends DexElement {
         return sig().ret();
     }
 
-    public DexBlock block() {
+    public DexBlock blk() {
         return body().blk();
     }
 
@@ -100,7 +99,7 @@ public final class DexFunction extends DexElement {
     }
 
     public List<DexStatement> stmts() {
-        return block().stmts();
+        return blk().stmts();
     }
 
     public String actorName() {

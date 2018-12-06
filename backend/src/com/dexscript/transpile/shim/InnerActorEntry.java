@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class NestedActorEntry extends ConcreteEntry {
+class InnerActorEntry extends ConcreteEntry {
 
     private final DexAwaitConsumer awaitConsumer;
     private final String canF;
     private final String newF;
 
-    public NestedActorEntry(Map<VirtualEntry, List<ConcreteEntry>> impls, DexAwaitConsumer awaitConsumer, String canF, String newF) {
+    public InnerActorEntry(Map<VirtualEntry, List<ConcreteEntry>> impls, DexAwaitConsumer awaitConsumer, String canF, String newF) {
         super(canF, null, newF);
         awaitConsumer.attach(this);
         this.awaitConsumer = awaitConsumer;

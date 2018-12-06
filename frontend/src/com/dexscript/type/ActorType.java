@@ -37,7 +37,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         }
         members = new ArrayList<>();
         members.add(consumeFunc());
-        new AwaitConsumerCollector().visit(func.block());
+        new AwaitConsumerCollector().visit(func.blk());
         List<FunctionType> functions = new ArrayList<>(members);
         functions.add(callFunc());
         functions.add(newFunc());
@@ -113,7 +113,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
 
         @NotNull
         private FunctionType newFunc(DexAwaitConsumer awaitConsumer) {
-            NestedActorType nestedActor = new NestedActorType(typeTable, functionTable, awaitConsumer);
+            InnerActorType nestedActor = new InnerActorType(typeTable, functionTable, awaitConsumer);
             ArrayList<Type> params = new ArrayList<>();
             String funcName = awaitConsumer.identifier().toString();
             params.add(new StringLiteralType(funcName));
