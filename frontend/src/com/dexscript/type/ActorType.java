@@ -2,6 +2,11 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.func.DexAwaitConsumer;
+import com.dexscript.ast.func.DexAwaitStmt;
+import com.dexscript.ast.func.DexBlock;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +36,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         }
         members = new ArrayList<>();
         members.add(consumeFunc());
+        new AwaitConsumerCollector().visit(func.block());
         List<FunctionType> functions = new ArrayList<>(members);
         functions.add(callFunc());
         functions.add(newFunc());
@@ -84,5 +90,31 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
     @Override
     public String toString() {
         return name();
+    }
+
+    private class AwaitConsumerCollector implements DexElement.Visitor {
+
+        @Override
+        public void visit(DexElement elem) {
+            if (elem instanceof DexBlock || elem instanceof DexAwaitStmt) {
+                elem.walkDown(this);
+                return;
+            }
+            if (elem instanceof DexAwaitConsumer) {
+                visitAwaitConsumer((DexAwaitConsumer) elem);
+            }
+        }
+
+        private void visitAwaitConsumer(DexAwaitConsumer awaitConsumer) {
+            DexSig sig = awaitConsumer.produceSig();
+            String funcName = awaitConsumer.identifier().toString();
+            Type ret = ResolveType.$(typeTable, sig.ret());
+            ArrayList<Type> params = new ArrayList<>();
+            params.add(ActorType.this);
+            for (DexParam param : sig.params()) {
+                params.add(ResolveType.$(typeTable, param.paramType()));
+            }
+            members.add(new FunctionType(awaitConsumer, funcName, params, ret));
+        }
     }
 }

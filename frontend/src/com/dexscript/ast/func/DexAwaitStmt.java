@@ -43,6 +43,11 @@ public class DexAwaitStmt extends DexStatement {
 
     @Override
     public void walkDown(Visitor visitor) {
+        if (cases() != null) {
+            for (DexAwaitCase awaitCase : cases()) {
+                visitor.visit(awaitCase);
+            }
+        }
     }
 
     @Override
@@ -103,7 +108,7 @@ public class DexAwaitStmt extends DexStatement {
                 if (Blank.$(b)) {
                     continue;
                 }
-                if (b == ';'){
+                if (b == ';') {
                     continue;
                 }
                 if (b == '}') {

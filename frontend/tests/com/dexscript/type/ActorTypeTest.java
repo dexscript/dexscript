@@ -28,6 +28,25 @@ public class ActorTypeTest {
     }
 
     @Test
+    public void await_consumer() {
+        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        ActorTable actorTable = new ActorTable(typeTable);
+        FunctionTable functionTable = new FunctionTable();
+        ActorType actor = new ActorType(actorTable, functionTable, new DexFunction("" +
+                "function Hello() {\n" +
+                "   await {\n" +
+                "   case AA(): string{\n" +
+                "       return 'hello'\n" +
+                "   }}\n" +
+                "}"));
+        InterfaceType inf = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+                "interface HasAA {\n" +
+                "   AA(): string\n" +
+                "}"));
+        Assert.assertTrue(inf.isAssignableFrom(actor));
+    }
+
+    @Test
     public void return_void() {
         TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
         ActorTable actorTable = new ActorTable(typeTable);
