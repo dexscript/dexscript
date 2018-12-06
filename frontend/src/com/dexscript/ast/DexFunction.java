@@ -106,7 +106,7 @@ public final class DexFunction extends DexElement {
         if (actorName != null) {
             return actorName;
         }
-        return actorName = identifier.toString() + md5(toString());
+        return actorName = identifier.toString() + "_" + md5(toString().substring(0, 4));
     }
 
     public String functionName() {

@@ -2,6 +2,7 @@ package com.dexscript.transpile.shim;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
+import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.infer.InferType;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
@@ -16,7 +17,9 @@ import java.util.List;
 
 interface DefineCan {
 
-    static void $(Gen g, TypeSystem ts, DexFunction function, String canF) {
+    static void $(Gen g, TypeSystem ts, ActorEntry actor) {
+        DexFunction function = actor.function();
+        String canF = actor.canF();
         List<String> typeChecks = new ArrayList<>();
         for (DexParam param : function.params()) {
             Type type = InferType.$(ts, param.paramType());
@@ -29,6 +32,34 @@ interface DefineCan {
         g.__(" {");
         g.__(new Indent(() -> {
             for (int i = 0; i < typeChecks.size(); i++) {
+                String typeCheck = typeChecks.get(i);
+                g.__("if (!"
+                ).__(typeCheck
+                ).__("(arg"
+                ).__(i
+                ).__(new Line(")) { return false; }"));
+            }
+            g.__("return true;");
+        }));
+        g.__(new Line("}"));
+    }
+
+    static void $(Gen g, TypeSystem ts, InnerActorEntry innerActor) {
+        DexAwaitConsumer awaitConsumer = innerActor.awaitConsumer();
+        String canF = innerActor.canF();
+        List<String> typeChecks = new ArrayList<>();
+        for (DexParam param : awaitConsumer.params()) {
+            Type type = InferType.$(ts, param.paramType());
+            String typeCheck = TranslateType.$(g, type, null, null);
+            typeChecks.add(typeCheck);
+        }
+        g.__("public static boolean "
+        ).__(canF);
+        DeclareParams.$(g, awaitConsumer.params().size() + 1);
+        g.__(" {");
+        g.__(new Indent(() -> {
+            // TODO: check outer class
+            for (int i = 1; i < typeChecks.size() + 1; i++) {
                 String typeCheck = typeChecks.get(i);
                 g.__("if (!"
                 ).__(typeCheck

@@ -1,12 +1,38 @@
 package com.dexscript.transpile;
 
+import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.transpile.gen.Gen;
+import com.dexscript.transpile.gen.Indent;
+import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.method.OutMethod;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
 public class OutInnerClass implements OutClass {
+
+    private final TypeSystem ts;
+    private final OutShim oShim;
+    private final OutClass oOuterClass;
+    private final DexAwaitConsumer iAwaitConsumer;
+    private final Gen g;
+    private OutMethod oMethod;
+
+    public OutInnerClass(OutClass oOuterClass, DexAwaitConsumer iAwaitConsumer) {
+        this.ts = oOuterClass.typeSystem();
+        this.oShim = oOuterClass.oShim();
+        this.oOuterClass = oOuterClass;
+        this.iAwaitConsumer = iAwaitConsumer;
+        g = new Gen(oOuterClass.indention());
+        g.__("public class "
+        ).__(iAwaitConsumer.identifier().toString()
+        ).__(" extends Actor {");
+        g.__(new Indent(() -> {
+
+        }));
+        g.__(new Line("}"));
+    }
+
     @Override
     public TypeSystem typeSystem() {
         return null;
@@ -14,26 +40,34 @@ public class OutInnerClass implements OutClass {
 
     @Override
     public void changeMethod(OutMethod oMethod) {
-
+        if (this.oMethod != null) {
+            g.__(this.oMethod.finish());
+        }
+        this.oMethod = oMethod;
     }
 
     @Override
     public String indention() {
-        return null;
+        return g.indention();
     }
 
     @Override
     public OutField allocateField(String fieldName, Type fieldType) {
-        return null;
+        return oOuterClass.allocateField(fieldName, fieldType);
     }
 
     @Override
     public OutShim oShim() {
-        return null;
+        return oShim;
     }
 
     @Override
     public Gen g() {
-        return null;
+        return g;
+    }
+
+    @Override
+    public String toString() {
+        return g.toString();
     }
 }

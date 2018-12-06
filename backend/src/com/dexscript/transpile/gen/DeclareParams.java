@@ -30,7 +30,7 @@ public interface DeclareParams {
             Type type = InferType.$(ts, param.paramType());
             g.__(type.javaClassName());
             g.__(' '
-            ).__(param.paramName().toString());
+            ).__(param.paramName());
         }
         g.__(')');
     }
