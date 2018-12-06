@@ -44,6 +44,11 @@ public class ActorTypeTest {
                 "   AA(): string\n" +
                 "}"));
         Assert.assertTrue(inf.isAssignableFrom(actor));
+        List<FunctionType> newNestedActor = functionTable.resolve("New__", new ArrayList<>() {{
+            add(new StringLiteralType("AA"));
+            add(actor);
+        }});
+        Assert.assertEquals(1, newNestedActor.size());
     }
 
     @Test

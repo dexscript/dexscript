@@ -7,6 +7,7 @@ import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.ast.func.DexAwaitStmt;
 import com.dexscript.ast.func.DexBlock;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,6 +107,26 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         }
 
         private void visitAwaitConsumer(DexAwaitConsumer awaitConsumer) {
+            members.add(callFunc(awaitConsumer));
+            members.add(newFunc(awaitConsumer));
+        }
+
+        @NotNull
+        private FunctionType newFunc(DexAwaitConsumer awaitConsumer) {
+            NestedActorType nestedActor = new NestedActorType(typeTable, functionTable, awaitConsumer);
+            ArrayList<Type> params = new ArrayList<>();
+            String funcName = awaitConsumer.identifier().toString();
+            params.add(new StringLiteralType(funcName));
+            params.add(ActorType.this);
+            DexSig sig = awaitConsumer.produceSig();
+            for (DexParam param : sig.params()) {
+                params.add(ResolveType.$(typeTable, param.paramType()));
+            }
+            return new FunctionType("New__", params, nestedActor);
+        }
+
+        @NotNull
+        private FunctionType callFunc(DexAwaitConsumer awaitConsumer) {
             DexSig sig = awaitConsumer.produceSig();
             String funcName = awaitConsumer.identifier().toString();
             Type ret = ResolveType.$(typeTable, sig.ret());
@@ -114,7 +135,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
             for (DexParam param : sig.params()) {
                 params.add(ResolveType.$(typeTable, param.paramType()));
             }
-            members.add(new FunctionType(awaitConsumer, funcName, params, ret));
+            return new FunctionType(awaitConsumer, funcName, params, ret);
         }
     }
 }

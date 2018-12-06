@@ -66,14 +66,14 @@ public class FunctionTable {
     }
 
     private void pullFromProviders() {
-        if (providers.isEmpty()) {
-            return;
-        }
-        for (FunctionsProvider provider : providers) {
-            for (FunctionType function : provider.functions()) {
-                define(function);
+        while (!(providers.isEmpty())) {
+            ArrayList<FunctionsProvider> toPull = new ArrayList<>(providers);
+            providers.clear();
+            for (FunctionsProvider provider : toPull) {
+                for (FunctionType function : provider.functions()) {
+                    define(function);
+                }
             }
         }
-        providers.clear();
     }
 }
