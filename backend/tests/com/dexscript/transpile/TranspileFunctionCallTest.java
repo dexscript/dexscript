@@ -28,4 +28,16 @@ public class TranspileFunctionCallTest {
                 "}");
         Assert.assertEquals("hello world", result);
     }
+
+    @Test
+    public void function_without_return_value() {
+        Object result = Transpile.$("" +
+                "function Hello(): string {\n" +
+                "   World()\n" +
+                "   return 'hello world'\n" +
+                "}\n" +
+                "function World() {\n" +
+                "}");
+        Assert.assertEquals("hello world", result);
+    }
 }

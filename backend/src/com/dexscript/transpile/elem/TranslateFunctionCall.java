@@ -48,6 +48,9 @@ public class TranslateFunctionCall implements Translate<DexFunctionCallExpr> {
         g.__(new Line(");"));
 
         Type resultType = InferType.$(ts, iElem);
+        if (BuiltinTypes.VOID.equals(resultType)) {
+            return;
+        }
         OutField oResultField = oClass.allocateField(funcName + "Result", resultType);
         g.__(oResultField.value()
         ).__(" = (("

@@ -43,4 +43,8 @@ public class DexExprStmt extends DexStatement {
     public String toString() {
         return expr.toString();
     }
+
+    public DexExpr expr() {
+        return expr;
+    }
 }

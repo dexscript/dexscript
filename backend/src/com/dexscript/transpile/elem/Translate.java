@@ -43,6 +43,7 @@ public interface Translate<E extends DexElement> {
             add(new TranslateShortVarDecl());
             add(new TranslateAwait());
             add(new TranslateAwaitConsumer());
+            add(new TranslateExprStmt());
         }
 
         private void add(Translate<?> handler) {
