@@ -2,14 +2,9 @@ package com.dexscript.transpile.shim;
 
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.DexParam;
 import com.dexscript.ast.DexTopLevelDecl;
-import com.dexscript.infer.InferType;
-import com.dexscript.transpile.OutClass;
 import com.dexscript.transpile.gen.*;
-import com.dexscript.transpile.type.TranslateType;
 import com.dexscript.type.FunctionType;
-import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
 import java.util.*;
@@ -57,101 +52,17 @@ public class OutShim {
             throw new IllegalStateException();
         }
         for (ActorEntry actorEntry : actors) {
-            defineNew(actorEntry.function(), actorEntry.newF());
-            defineCan(actorEntry.function(), actorEntry.canF());
+            DefineNew.$(g, ts, actorEntry.function(), actorEntry.newF());
+            DefineCan.$(g, ts, actorEntry.function(), actorEntry.canF());
         }
         for (Map.Entry<VirtualEntry, List<ConcreteEntry>> entry : impls.entrySet()) {
-            defineEntry(entry.getKey(), entry.getValue());
+            DefineEntry.$(g, entry.getKey(), entry.getValue());
         }
         finished = true;
         g.indention("");
         g.__(new Line());
         g.__(new Line("}"));
         return g.toString();
-    }
-
-    private void defineEntry(VirtualEntry virtualEntry, List<ConcreteEntry> concreteEntries) {
-        g.__("public static Object "
-        ).__(virtualEntry.funcName());
-        DeclareParams.$(g, virtualEntry.paramsCount());
-        g.__(" {");
-        g.__(new Indent(() -> {
-            for (ConcreteEntry concreteEntry : concreteEntries) {
-                g.__("if ("
-                ).__(concreteEntry.canF());
-                InvokeParams.$(g, virtualEntry.paramsCount());
-                g.__(new Line(") {"));
-                g.__(new Indent(() -> {
-                    g.__("return "
-                    ).__(concreteEntry.newF());
-                    InvokeParams.$(g, virtualEntry.paramsCount());
-                    g.__(new Line(".value();"));
-                }));
-                g.__(new Line("}"));
-            }
-            g.__(new Line("throw new RuntimeException();"));
-        }));
-        g.__(new Line("}"));
-    }
-
-    private void defineNew(DexFunction function, String newF) {
-        g.__("public static Result "
-        ).__(newF
-        ).__('(');
-        for (int i = 0; i < function.params().size(); i++) {
-            if (i > 0) {
-                g.__(", ");
-            }
-            DexParam param = function.params().get(i);
-            g.__("Object "
-            ).__(param.paramName());
-        }
-        g.__(") {");
-        g.__(new Indent(() -> {
-            String className = OutClass.qualifiedClassNameOf(function);
-            g.__("return new "
-            ).__(className
-            ).__('(');
-            for (int i = 0; i < function.params().size(); i++) {
-                if (i > 0) {
-                    g.__(", ");
-                }
-                DexParam param = function.params().get(i);
-                Type paramType = InferType.$(ts, param.paramType());
-                g.__("(("
-                ).__(paramType.javaClassName()
-                ).__(')'
-                ).__(param.paramName()
-                ).__(')');
-            }
-            g.__(");");
-        }));
-        g.__(new Line("}"));
-    }
-
-    private void defineCan(DexFunction function, String canF) {
-        List<String> typeChecks = new ArrayList<>();
-        for (DexParam param : function.params()) {
-            Type type = InferType.$(ts, param.paramType());
-            String typeCheck = TranslateType.$(g, type, null, null);
-            typeChecks.add(typeCheck);
-        }
-        g.__("public static boolean "
-        ).__(canF);
-        DeclareParams.$(g, function.params().size());
-        g.__(" {");
-        g.__(new Indent(() -> {
-            for (int i = 0; i < typeChecks.size(); i++) {
-                String typeCheck = typeChecks.get(i);
-                g.__("if (!"
-                ).__(typeCheck
-                ).__("(arg"
-                ).__(i
-                ).__(new Line(")) { return false; }"));
-            }
-            g.__("return true;");
-        }));
-        g.__(new Line("}"));
     }
 
     private String allocateShim(String shimName) {
