@@ -1,9 +1,11 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.type.DexStringLiteralType;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.ast.type.DexTypeRef;
+import com.dexscript.ast.type.DexVoidType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +28,7 @@ public interface ResolveType {
             String literalValue = ((DexStringLiteralType) (elem)).literalValue();
             return new StringLiteralType(literalValue);
         });
+        put(DexVoidType.class, (typeTable, elem) -> BuiltinTypes.VOID);
     }};
 
     Type handle(TopLevelTypeTable typeTable, DexType elem);

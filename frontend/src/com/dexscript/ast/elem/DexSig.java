@@ -6,6 +6,7 @@ import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
+import com.dexscript.ast.type.DexVoidType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -190,9 +191,11 @@ public class DexSig extends DexElement {
                     i += 1;
                     return this::ret;
                 }
+                ret = new DexVoidType(src.slice(i), true);
                 sigEnd = cursorBeforeSearchColon;
                 return null;
             }
+            ret = new DexVoidType(src.slice(i), true);
             sigEnd = cursorBeforeSearchColon;
             return null;
         }

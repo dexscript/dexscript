@@ -12,11 +12,15 @@ public abstract class DexType extends DexElement {
     public abstract int leftRank();
 
     public static DexType parse(Text src) {
-        DexType type = new DexTypeRef(src);
+        DexType type = new DexStringLiteralType(src);
         if (type.matched()) {
             return type;
         }
-        return new DexStringLiteralType(src);
+        type = new DexVoidType(src);
+        if (type.matched()) {
+            return type;
+        }
+        return new DexTypeRef(src);
     }
 
     public void reparent(DexElement parent) {

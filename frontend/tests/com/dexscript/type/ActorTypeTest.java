@@ -5,6 +5,9 @@ import com.dexscript.ast.DexInterface;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ActorTypeTest {
 
     @Test
@@ -22,5 +25,18 @@ public class ActorTypeTest {
                 "}"));
         Assert.assertTrue(inf.isAssignableFrom(actor));
         Assert.assertTrue(actor.isAssignableFrom(inf));
+    }
+
+    @Test
+    public void return_void() {
+        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        ActorTable actorTable = new ActorTable(typeTable);
+        FunctionTable functionTable = new FunctionTable();
+        new ActorType(actorTable, functionTable, new DexFunction("" +
+                "function Hello() {\n" +
+                "}"));
+        List<FunctionType> functionTypes = functionTable.resolve("Hello", new ArrayList<>());
+        Assert.assertEquals(1, functionTypes.size());
+        Assert.assertEquals(BuiltinTypes.VOID, functionTypes.get(0).ret());
     }
 }
