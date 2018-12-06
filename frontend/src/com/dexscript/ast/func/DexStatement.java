@@ -52,4 +52,8 @@ public abstract class DexStatement extends DexElement {
     public DexReturnStmt asReturn() {
         return (DexReturnStmt) this;
     }
+
+    public DexAwaitStmt asAwait() {
+        return (DexAwaitStmt) this;
+    }
 }
