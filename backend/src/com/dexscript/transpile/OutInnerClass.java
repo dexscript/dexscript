@@ -4,6 +4,7 @@ import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.method.OutInitMethod;
 import com.dexscript.transpile.method.OutMethod;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.Type;
@@ -28,7 +29,8 @@ public class OutInnerClass implements OutClass {
         ).__(iAwaitConsumer.identifier().toString()
         ).__(" extends Actor {");
         g.__(new Indent(() -> {
-
+            new OutInitMethod(this, iAwaitConsumer);
+            g.__(oMethod.finish());
         }));
         g.__(new Line("}"));
     }
@@ -63,7 +65,7 @@ public class OutInnerClass implements OutClass {
 
     @Override
     public Gen g() {
-        return g;
+        return oMethod.g();
     }
 
     @Override

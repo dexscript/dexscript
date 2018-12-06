@@ -1,12 +1,9 @@
 package com.dexscript.transpile.method;
 
-import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.transpile.OutClass;
 import com.dexscript.transpile.OutInnerClass;
 import com.dexscript.transpile.gen.*;
-import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.type.TypeSystem;
 
 public class OutAwaitConsumerMethod implements OutMethod {
 
