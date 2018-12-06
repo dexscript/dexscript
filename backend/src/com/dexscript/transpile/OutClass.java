@@ -4,6 +4,7 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 

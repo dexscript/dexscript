@@ -4,6 +4,7 @@ import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
+import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.TypeSystem;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
