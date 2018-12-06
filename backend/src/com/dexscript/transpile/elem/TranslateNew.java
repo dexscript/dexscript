@@ -1,6 +1,5 @@
 package com.dexscript.transpile.elem;
 
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexNewExpr;
 import com.dexscript.infer.InferType;
@@ -9,18 +8,19 @@ import com.dexscript.transpile.OutField;
 import com.dexscript.transpile.OutValue;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.type.*;
+import com.dexscript.type.FunctionType;
+import com.dexscript.type.Type;
+import com.dexscript.type.TypeSystem;
 
 import java.util.List;
 
-public class TranslateNew implements TranslateElem {
+public class TranslateNew implements Translate<DexNewExpr> {
 
     @Override
-    public void handle(OutClass oClass, DexElement iElem) {
-        DexNewExpr iNewExpr = (DexNewExpr) iElem;
+    public void handle(OutClass oClass, DexNewExpr iNewExpr) {
         List<DexExpr> iArgs = iNewExpr.args();
         for (DexExpr iArg : iArgs) {
-            TranslateElem.$(oClass, iArg);
+            Translate.$(oClass, iArg);
         }
 
         String funcName = iNewExpr.target().asRef().toString();
@@ -45,6 +45,6 @@ public class TranslateNew implements TranslateElem {
             g.__(oValue.value());
         }
         g.__(new Line(");"));
-        iElem.attach(oActorField);
+        iNewExpr.attach(oActorField);
     }
 }

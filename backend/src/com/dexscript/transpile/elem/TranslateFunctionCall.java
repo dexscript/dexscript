@@ -1,6 +1,5 @@
 package com.dexscript.transpile.elem;
 
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.infer.InferType;
@@ -13,18 +12,17 @@ import com.dexscript.type.*;
 
 import java.util.List;
 
-public class TranslateFunctionCall implements TranslateElem {
+public class TranslateFunctionCall implements Translate<DexFunctionCallExpr> {
 
     @Override
-    public void handle(OutClass oClass, DexElement iElem) {
-        DexFunctionCallExpr iCallExpr = (DexFunctionCallExpr) iElem;
+    public void handle(OutClass oClass, DexFunctionCallExpr iCallExpr) {
         String funcName = iCallExpr.target().asRef().toString();
-        handle(oClass, (DexExpr) iElem, funcName, iCallExpr.args());
+        handle(oClass, iCallExpr, funcName, iCallExpr.args());
     }
 
     public static void handle(OutClass oClass, DexExpr iElem, String funcName, List<DexExpr> iArgs) {
         for (DexExpr iArg : iArgs) {
-            TranslateElem.$(oClass, iArg);
+            Translate.$(oClass, iArg);
         }
         TypeSystem ts = oClass.typeSystem();
 
