@@ -46,6 +46,7 @@ interface DefineCan {
 
     static void $(Gen g, TypeSystem ts, InnerActorEntry innerActor) {
         DexAwaitConsumer awaitConsumer = innerActor.awaitConsumer();
+        String outerClassName = innerActor.outerClassName();
         String canF = innerActor.canF();
         List<String> typeChecks = new ArrayList<>();
         for (DexParam param : awaitConsumer.params()) {
@@ -58,7 +59,9 @@ interface DefineCan {
         DeclareParams.$(g, awaitConsumer.params().size() + 1);
         g.__(" {");
         g.__(new Indent(() -> {
-            // TODO: check outer class
+            g.__("if (!(arg0 instanceof "
+            ).__(outerClassName
+            ).__(new Line(")) { return false; }"));
             for (int i = 1; i < typeChecks.size() + 1; i++) {
                 String typeCheck = typeChecks.get(i);
                 g.__("if (!"

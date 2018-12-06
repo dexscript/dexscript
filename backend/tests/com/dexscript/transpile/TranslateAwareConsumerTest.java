@@ -20,4 +20,26 @@ public class TranslateAwareConsumerTest {
                 "}\n");
         Assert.assertEquals("hello", result);
     }
+
+    @Test
+    public void block() {
+        // translate to FSM
+        Object result = Transpile.$("" +
+                "function Hello(): string {\n" +
+                "   a := A{}\n" +
+                "   b := B{a}\n" +
+                "   a.Resume()\n" +
+                "   return <-b\n" +
+                "}\n" +
+                "function A(): string {\n" +
+                "   await {\n" +
+                "   case Resume() {\n" +
+                "   }}\n" +
+                "   return 'hello'\n" +
+                "}\n" +
+                "function B(a: A): string {\n" +
+                "   return <-a\n" +
+                "}\n");
+        Assert.assertEquals("hello", result);
+    }
 }
