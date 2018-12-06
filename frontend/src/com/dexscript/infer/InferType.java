@@ -29,6 +29,12 @@ public interface InferType {
             List<Type> args = InferType.inferTypes(ts, callExpr.args());
             return ResolveReturnType.$(ts, funcName, args);
         });
+        put(DexMethodCallExpr.class, (ts, elem) -> {
+            DexMethodCallExpr callExpr = (DexMethodCallExpr) elem;
+            String funcName = callExpr.method().toString();
+            List<Type> args = InferType.inferTypes(ts, callExpr.obj(), callExpr.args());
+            return ResolveReturnType.$(ts, funcName, args);
+        });
         put(DexNewExpr.class, (ts, elem) -> {
             DexNewExpr newExpr = (DexNewExpr) elem;
             String actorName = newExpr.target().asRef().toString();
@@ -68,6 +74,15 @@ public interface InferType {
     static List<Type> inferTypes(TypeSystem ts, Type type1, List<DexExpr> elems) {
         ArrayList<Type> types = new ArrayList<>();
         types.add(type1);
+        for (DexExpr elem : elems) {
+            types.add(InferType.$(ts, elem));
+        }
+        return types;
+    }
+
+    static List<Type> inferTypes(TypeSystem ts, DexExpr elem1, List<DexExpr> elems) {
+        ArrayList<Type> types = new ArrayList<>();
+        types.add(InferType.$(ts, elem1));
         for (DexExpr elem : elems) {
             types.add(InferType.$(ts, elem));
         }

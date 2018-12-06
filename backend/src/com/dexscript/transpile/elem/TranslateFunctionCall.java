@@ -18,16 +18,18 @@ public class TranslateFunctionCall implements TranslateElem {
     @Override
     public void handle(OutClass oClass, DexElement iElem) {
         DexFunctionCallExpr iCallExpr = (DexFunctionCallExpr) iElem;
-        List<DexExpr> iArgs = iCallExpr.args();
+        String funcName = iCallExpr.target().asRef().toString();
+        handle(oClass, (DexExpr) iElem, funcName, iCallExpr.args());
+    }
+
+    public static void handle(OutClass oClass, DexExpr iElem, String funcName, List<DexExpr> iArgs) {
         for (DexExpr iArg : iArgs) {
             TranslateElem.$(oClass, iArg);
         }
-
-        String funcName = iCallExpr.target().asRef().toString();
         TypeSystem ts = oClass.typeSystem();
 
         StringLiteralType arg1 = new StringLiteralType(funcName);
-        Type actorType = ResolveReturnType.$(ts, "New__", InferType.inferTypes(ts, arg1, iCallExpr.args()));
+        Type actorType = ResolveReturnType.$(ts, "New__", InferType.inferTypes(ts, arg1, iArgs));
 
         List<FunctionType> funcTypes = ts.resolveFunctions(funcName, InferType.inferTypes(ts, iArgs));
         String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), funcTypes);
@@ -47,7 +49,7 @@ public class TranslateFunctionCall implements TranslateElem {
         }
         g.__(new Line(");"));
 
-        Type resultType = InferType.$(ts, iCallExpr);
+        Type resultType = InferType.$(ts, iElem);
         OutField oResultField = oClass.allocateField(funcName + "Result", resultType);
         g.__(oResultField.value()
         ).__(" = (("

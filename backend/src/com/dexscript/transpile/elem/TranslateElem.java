@@ -28,6 +28,7 @@ public interface TranslateElem {
         put(DexReturnStmt.class, new TranslateReturn());
         put(DexStringLiteral.class, new TranslateStringLiteral());
         put(DexFunctionCallExpr.class, new TranslateFunctionCall());
+        put(DexMethodCallExpr.class, new TranslateMethodCall());
         put(DexValueRef.class, (oClass, iElem) -> {
             Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
             OutValue oValue = refValue.definedBy().attachmentOfType(OutValue.class);

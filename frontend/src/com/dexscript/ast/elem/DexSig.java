@@ -192,10 +192,12 @@ public class DexSig extends DexElement {
                     return this::ret;
                 }
                 ret = new DexVoidType(src.slice(i), true);
+                ret.reparent(DexSig.this);
                 sigEnd = cursorBeforeSearchColon;
                 return null;
             }
             ret = new DexVoidType(src.slice(i), true);
+            ret.reparent(DexSig.this);
             sigEnd = cursorBeforeSearchColon;
             return null;
         }
