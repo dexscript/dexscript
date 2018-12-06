@@ -1,5 +1,6 @@
 package com.dexscript.ast.func;
 
+import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
@@ -9,6 +10,9 @@ import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
+import com.dexscript.ast.type.DexType;
+
+import java.util.List;
 
 public class DexAwaitConsumer extends DexAwaitCase {
 
@@ -67,6 +71,14 @@ public class DexAwaitConsumer extends DexAwaitCase {
 
     public DexAwaitConsumer(String src) {
         this(new Text(src));
+    }
+
+    public List<DexParam> params() {
+        return produceSig.params();
+    }
+
+    public DexType ret() {
+        return produceSig.ret();
     }
 
     private class Parser {

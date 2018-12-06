@@ -3,6 +3,10 @@ package com.dexscript.transpile.shim;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexTopLevelDecl;
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.func.DexAwaitConsumer;
+import com.dexscript.ast.func.DexAwaitStmt;
+import com.dexscript.ast.func.DexBlock;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.TypeSystem;
@@ -18,6 +22,7 @@ public class OutShim {
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
     private final List<ActorEntry> actors = new ArrayList<>();
+    private final List<NestedActorEntry> nestedActors = new ArrayList<>();
     private final Map<VirtualEntry, List<ConcreteEntry>> impls = new HashMap<>();
 
     public OutShim(TypeSystem ts) {
@@ -30,21 +35,6 @@ public class OutShim {
         ).__(" {");
         g.indention("  ");
         g.__(new Line());
-    }
-
-    public void defineFile(DexFile file) {
-        for (DexTopLevelDecl topLevelDecl : file.topLevelDecls()) {
-            if (topLevelDecl.function() != null) {
-                defineActor(topLevelDecl.function());
-            }
-        }
-    }
-
-    public void defineActor(DexFunction function) {
-        String newF = allocateShim("new__" + function.actorName());
-        String canF = allocateShim("can__" + function.actorName());
-        ActorEntry actorEntry = new ActorEntry(impls, function, canF, newF);
-        actors.add(actorEntry);
     }
 
     public String finish() {
@@ -61,8 +51,24 @@ public class OutShim {
         finished = true;
         g.indention("");
         g.__(new Line());
-        g.__(new Line("}"));
+        g.__(new Line("}")); // end of class Shim__
         return g.toString();
+    }
+
+    public void defineFile(DexFile file) {
+        for (DexTopLevelDecl topLevelDecl : file.topLevelDecls()) {
+            if (topLevelDecl.function() != null) {
+                defineActor(topLevelDecl.function());
+            }
+        }
+    }
+
+    public void defineActor(DexFunction function) {
+        String newF = allocateShim("new__" + function.actorName());
+        String canF = allocateShim("can__" + function.actorName());
+        ActorEntry actorEntry = new ActorEntry(impls, function, canF, newF);
+        actors.add(actorEntry);
+        new AwaitConsumerCollector().visit(function.block());
     }
 
     private String allocateShim(String shimName) {
@@ -74,32 +80,33 @@ public class OutShim {
     public String combineNewF(String funcName, int paramsCount, List<FunctionType> funcTypes) {
         if (funcTypes.size() == 1) {
             FunctionType funcType = funcTypes.get(0);
-            ActorEntry shims = funcType.definedBy().attachmentOfType(ActorEntry.class);
+            ConcreteEntry shims = funcType.definedBy().attachmentOfType(ConcreteEntry.class);
             return CLASSNAME + "." + shims.newF();
         }
         String cNewF = allocateShim("cnew__" + funcName);
-        g.__("public static Result "
-        ).__(cNewF);
-        DeclareParams.$(g, paramsCount);
-        g.__(" {");
-        g.__(new Indent(() -> {
-            for (FunctionType funcType : funcTypes) {
-                ConcreteEntry concreteEntry = funcType.definedBy().attachmentOfType(ConcreteEntry.class);
-                g.__("if ("
-                ).__(concreteEntry.canF());
-                InvokeParams.$(g, paramsCount);
-                g.__(new Line(") {"));
-                g.__(new Indent(() -> {
-                    g.__("return "
-                    ).__(concreteEntry.newF());
-                    InvokeParams.$(g, paramsCount);
-                    g.__(new Line(";"));
-                }));
-                g.__(new Line("}"));
-            }
-            g.__(new Line("throw new RuntimeException();"));
-        }));
-        g.__(new Line("}"));
+        CombineNew.$(g, funcTypes, paramsCount, cNewF);
         return CLASSNAME + "." + cNewF;
+    }
+
+    private class AwaitConsumerCollector implements DexElement.Visitor {
+
+        @Override
+        public void visit(DexElement elem) {
+            if (elem instanceof DexBlock || elem instanceof DexAwaitStmt) {
+                elem.walkDown(this);
+                return;
+            }
+            if (elem instanceof DexAwaitConsumer) {
+                visitAwaitConsumer((DexAwaitConsumer) elem);
+            }
+        }
+
+        private void visitAwaitConsumer(DexAwaitConsumer awaitConsumer) {
+            String funcName = awaitConsumer.identifier().toString();
+            String newF = allocateShim("new__" + funcName);
+            String canF = allocateShim("can__" + funcName);
+            NestedActorEntry nestedActor = new NestedActorEntry(impls, awaitConsumer, canF, newF);
+            nestedActors.add(nestedActor);
+        }
     }
 }
