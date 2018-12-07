@@ -22,7 +22,7 @@ public interface CheckType<E extends Type> {
 
     String handle(Gen g, E type, List<Class> javaClasses, List<Class> javaInterfaces);
 
-    Map<Class<? extends Type>, CheckType> handlers = new HashMap<>() {
+    Map<Class<? extends Type>, CheckType> handlers = new HashMap<Class<? extends Type>, CheckType>() {
 
         {
             add(new CheckStringType());

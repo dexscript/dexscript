@@ -24,7 +24,7 @@ public interface InferValue<E extends DexElement> {
         };
     }
 
-    Map<Class<? extends DexElement>, InferValue> handlers = new HashMap<>() {
+    Map<Class<? extends DexElement>, InferValue> handlers = new HashMap<Class<? extends DexElement>, InferValue>() {
         {
             put(DexFunctionBody.class, (ts, elem, table) -> {
             });
@@ -62,7 +62,7 @@ public interface InferValue<E extends DexElement> {
         return parentTable.resolveValue(ref.toString());
     }
 
-    private static ValueTable loadTable(TypeSystem ts, DexElement elem, ValueTable parentTable) {
+    static ValueTable loadTable(TypeSystem ts, DexElement elem, ValueTable parentTable) {
         ValueTable table = elem.attachmentOfType(ValueTable.class);
         if (table != null) {
             return table;

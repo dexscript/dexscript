@@ -2,7 +2,9 @@
 !/.gitignore
 /gradle
 *.iml
-/out
-/build
+/frontend/out
+/frontend/build
+/backend/out
+/backend/build
 *.java~
 /tmp

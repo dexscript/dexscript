@@ -19,7 +19,7 @@ public interface InferType<E extends DexExpr> {
         };
     }
 
-    Map<Class<? extends DexElement>, InferType> handlers = new HashMap<>() {{
+    Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {{
         put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(((DexStringLiteral) elem).literalValue()));
         put(DexIntegerLiteral.class, (ts, elem) -> new IntegerLiteralType(elem.toString()));
         put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());

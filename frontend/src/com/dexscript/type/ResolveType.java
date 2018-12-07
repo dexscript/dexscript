@@ -21,7 +21,7 @@ public interface ResolveType<E extends DexType> {
         };
     }
 
-    Map<Class<? extends DexElement>, ResolveType> handlers = new HashMap<>() {{
+    Map<Class<? extends DexElement>, ResolveType> handlers = new HashMap<Class<? extends DexElement>, ResolveType>() {{
         put(DexTypeRef.class, (typeTable, elem) -> typeTable.resolveType(elem.toString()));
         put(DexStringLiteralType.class, (typeTable, elem) -> {
             String literalValue = ((DexStringLiteralType) (elem)).literalValue();

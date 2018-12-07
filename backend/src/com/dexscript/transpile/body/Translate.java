@@ -23,7 +23,7 @@ public interface Translate<E extends DexElement> {
         };
     }
 
-    Map<Class<? extends DexElement>, Translate> handlers = new HashMap<>() {
+    Map<Class<? extends DexElement>, Translate> handlers = new HashMap<Class<? extends DexElement>, Translate>() {
         {
             put(DexStringLiteral.class, ((oClass, iElem) -> {
                 DexStringLiteral iStringLiteral = (DexStringLiteral) iElem;
