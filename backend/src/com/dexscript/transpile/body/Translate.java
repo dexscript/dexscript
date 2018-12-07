@@ -25,10 +25,10 @@ public interface Translate<E extends DexElement> {
 
     Map<Class<? extends DexElement>, Translate> handlers = new HashMap<Class<? extends DexElement>, Translate>() {
         {
-            put(DexStringLiteral.class, ((oClass, iElem) -> {
+            put(DexStringLiteral.class, (oClass, iElem) -> {
                 DexStringLiteral iStringLiteral = (DexStringLiteral) iElem;
                 iStringLiteral.attach(new OutValue("\"" + iStringLiteral.literalValue() + "\""));
-            }));
+            });
             put(DexValueRef.class, (oClass, iElem) -> {
                 Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
                 OutValue oValue = refValue.definedBy().attachmentOfType(OutValue.class);

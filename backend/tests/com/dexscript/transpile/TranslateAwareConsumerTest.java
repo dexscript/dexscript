@@ -15,7 +15,7 @@ public class TranslateAwareConsumerTest {
                 "function A() {\n" +
                 "   await {\n" +
                 "   case AA(): string {\n" +
-                "       return 'hello'\n" +
+                "       'hello' -> AA\n" +
                 "   }}\n" +
                 "}\n");
         Assert.assertEquals("hello", result);

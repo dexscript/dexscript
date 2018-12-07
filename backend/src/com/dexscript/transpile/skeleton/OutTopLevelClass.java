@@ -15,7 +15,9 @@ public class OutTopLevelClass implements OutClass {
     private final Gen g = new Gen();
     private final OutFields oFields = new OutFields();
     private final OutShim oShim;
+    private final OutStateMachine stateMachine = new OutStateMachine();
     private OutMethod oMethod;
+    private int state;
 
     public OutTopLevelClass(TypeSystem ts, OutShim oShim, DexFunction iFunc) {
         this.ts = ts;
@@ -32,6 +34,7 @@ public class OutTopLevelClass implements OutClass {
         ).__(new Indent(() -> {
             new OutInitMethod(this, iFunc);
             g.__(oMethod.finish());
+            stateMachine.genResumeMethods(g);
             genFields();
         }));
         g.__(new Line("}"));
@@ -87,6 +90,11 @@ public class OutTopLevelClass implements OutClass {
 
     public Gen g() {
         return oMethod.g();
+    }
+
+    @Override
+    public OutStateMachine oStateMachine() {
+        return stateMachine;
     }
 
     public void changeMethod(OutMethod oMethod) {

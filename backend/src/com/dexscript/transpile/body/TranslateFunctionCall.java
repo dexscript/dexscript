@@ -3,10 +3,12 @@ package com.dexscript.transpile.body;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.infer.InferType;
+import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
-import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.skeleton.OutStateMachine;
+import com.dexscript.transpile.skeleton.OutStateMethod;
 import com.dexscript.type.*;
 
 import java.util.List;
@@ -31,30 +33,56 @@ public class TranslateFunctionCall implements Translate<DexFunctionCallExpr> {
         List<FunctionType> funcTypes = ts.resolveFunctions(funcName, InferType.inferTypes(ts, iArgs));
         String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), funcTypes);
         OutField oActorField = oClass.allocateField(funcName, actorType);
-        Gen g = oClass.g();
-        g.__(oActorField.value()
+        oClass.g().__(oActorField.value()
         ).__(" = "
         ).__(newF
         ).__("(scheduler");
         for (int i = 0; i < iArgs.size(); i++) {
-            g.__(", ");
+            oClass.g().__(", ");
             DexExpr iArg = iArgs.get(i);
             OutValue oValue = iArg.attachmentOfType(OutValue.class);
-            g.__(oValue.value());
+            oClass.g().__(oValue.value());
         }
-        g.__(new Line(");"));
+        oClass.g().__(new Line(");"));
 
-        Type resultType = InferType.$(ts, iElem);
+        consume(oClass, iElem, oActorField.value());
+    }
+
+    public static void consume(OutClass oClass, DexExpr iElem, String targetActor) {
+        checkFinished(oClass, targetActor);
+        new OutStateMethod(oClass);
+        Type resultType = InferType.$(oClass.typeSystem(), iElem);
         if (BuiltinTypes.VOID.equals(resultType)) {
             return;
         }
-        OutField oResultField = oClass.allocateField(funcName + "Result", resultType);
-        g.__(oResultField.value()
+        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", resultType);
+        oClass.g().__(oResultField.value()
         ).__(" = (("
         ).__(resultType.javaClassName()
         ).__(")("
-        ).__(oActorField.value()
+        ).__(targetActor
         ).__(new Line(".value()));"));
         iElem.attach(oResultField);
+    }
+
+    private static void checkFinished(OutClass oClass, String targetActor) {
+        OutStateMachine oStateMachine = oClass.oStateMachine();
+        int fromState = oStateMachine.state();
+        int toState = oStateMachine.nextState();
+        oStateMachine.addTransition(fromState, targetActor, toState);
+        String stateMethodName = OutStateMethod.methodName(toState);
+        oClass.g().__("if ("
+        ).__(targetActor
+        ).__(".finished()) {"
+        ).__(new Indent(() -> {
+            oClass.g().__(stateMethodName).__("();");
+        })
+        ).__("} else {"
+        ).__(new Indent(() -> {
+            oClass.g().__("((Actor)"
+            ).__(targetActor
+            ).__(").addConsumer(this);");
+        })
+        ).__(new Line("}"));
     }
 }

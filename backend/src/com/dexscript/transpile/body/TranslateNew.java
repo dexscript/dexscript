@@ -34,11 +34,9 @@ public class TranslateNew implements Translate<DexNewExpr> {
         g.__(oActorField.value()
         ).__(" = "
         ).__(newF
-        ).__('(');
+        ).__("(scheduler");
         for (int i = 0; i < iArgs.size(); i++) {
-            if (i > 0) {
-                g.__(", ");
-            }
+            g.__(", ");
             DexExpr iArg = iArgs.get(i);
             OutValue oValue = iArg.attachmentOfType(OutValue.class);
             g.__(oValue.value());

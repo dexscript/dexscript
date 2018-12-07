@@ -9,6 +9,7 @@ public abstract class Actor implements Result {
     private boolean finished;
     private Object ret;
     private List<Actor> consumers;
+    private int state;
 
     public Actor(Scheduler scheduler) {
         this.scheduler = scheduler;
@@ -32,6 +33,14 @@ public abstract class Actor implements Result {
     @Override
     public Object value() {
         return ret;
+    }
+
+    public int Get__state() {
+        return state;
+    }
+
+    protected void Set__state(int state) {
+        this.state = state;
     }
 
     public void addConsumer(Actor consumer) {

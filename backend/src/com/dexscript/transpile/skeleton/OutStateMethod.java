@@ -8,15 +8,19 @@ public class OutStateMethod implements OutMethod {
     private final Gen g;
     private final OutClass oClass;
 
-    public OutStateMethod(OutClass oClass, int state) {
+    public OutStateMethod(OutClass oClass) {
         this.oClass = oClass;
         oClass.changeMethod(this);
         g = new Gen(oClass.indention());
+        int state = oClass.oStateMachine().state();
         g.__("public void "
         ).__(methodName(state)
         ).__("() {");
         g.indention(oClass.indention() + "  ");
         g.__(new Line());
+        g.__("Set__state("
+        ).__(state
+        ).__(new Line(");"));
     }
 
     public static String methodName(int state) {

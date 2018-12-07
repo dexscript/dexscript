@@ -18,4 +18,6 @@ public interface OutClass {
     OutShim oShim();
 
     Gen g();
+
+    OutStateMachine oStateMachine();
 }
