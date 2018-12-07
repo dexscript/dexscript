@@ -12,7 +12,7 @@ public class InferFunctionCallTest {
     @Test
     public void match_one() {
         TypeSystem ts = new TypeSystem();
-        ts.defineFunction(new FunctionType("Hello", new ArrayList<>() {{
+        ts.defineFunction(new FunctionType("Hello", new ArrayList<Type>() {{
             add(BuiltinTypes.STRING);
         }}, BuiltinTypes.STRING));
         Type type = InferType.$(ts, DexExpr.parse("Hello('hello')"));
@@ -29,10 +29,10 @@ public class InferFunctionCallTest {
     @Test
     public void match_two() {
         TypeSystem ts = new TypeSystem();
-        ts.defineFunction(new FunctionType("Hello", new ArrayList<>() {{
+        ts.defineFunction(new FunctionType("Hello", new ArrayList<Type>() {{
             add(BuiltinTypes.STRING);
         }}, new StringLiteralType("a")));
-        ts.defineFunction(new FunctionType("Hello", new ArrayList<>() {{
+        ts.defineFunction(new FunctionType("Hello", new ArrayList<Type>() {{
             add(BuiltinTypes.STRING);
         }}, new StringLiteralType("b")));
         Type type = InferType.$(ts, DexExpr.parse("Hello('hello')"));

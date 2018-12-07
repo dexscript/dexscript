@@ -31,6 +31,9 @@ public interface Translate<E extends DexElement> {
             });
             put(DexValueRef.class, (oClass, iElem) -> {
                 Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
+                if (refValue.definedBy() == null) {
+                    throw new IllegalStateException("referenced value not found: " + iElem);
+                }
                 OutValue oValue = refValue.definedBy().attachmentOfType(OutValue.class);
                 iElem.attach(oValue);
             });
@@ -38,6 +41,7 @@ public interface Translate<E extends DexElement> {
             add(new TranslateFunctionCall());
             add(new TranslateMethodCall());
             add(new TranslateConsume());
+            add(new TranslateProduce());
             add(new TranslateNew());
             add(new TranslateShortVarDecl());
             add(new TranslateAwait());

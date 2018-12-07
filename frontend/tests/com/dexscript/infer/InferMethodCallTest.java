@@ -15,7 +15,7 @@ public class InferMethodCallTest {
     @Test
     public void method_call_is_same_as_function_call() {
         TypeSystem ts = new TypeSystem();
-        ts.defineFunction(new FunctionType("Hello", new ArrayList<>() {{
+        ts.defineFunction(new FunctionType("Hello", new ArrayList<Type>() {{
             add(BuiltinTypes.STRING);
         }}, BuiltinTypes.STRING));
         Type type = InferType.$(ts, DexExpr.parse("'hello'.Hello()"));

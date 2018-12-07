@@ -28,12 +28,13 @@ public class TranslateAwareConsumerTest {
                 "function Hello(): string {\n" +
                 "   a := A{}\n" +
                 "   b := B{a}\n" +
-                "   a.Resume()\n" +
+                "   a.Unpause()\n" +
                 "   return <-b\n" +
                 "}\n" +
                 "function A(): string {\n" +
                 "   await {\n" +
-                "   case Resume() {\n" +
+                "   case Unpause() {\n" +
+                "       -> Unpause" +
                 "   }}\n" +
                 "   return 'hello'\n" +
                 "}\n" +

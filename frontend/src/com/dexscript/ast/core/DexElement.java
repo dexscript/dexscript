@@ -54,7 +54,10 @@ public abstract class DexElement {
     public final Text src() {
         return src;
     }
-    public abstract int begin();
+
+    public int begin() {
+        return src.begin;
+    }
     public abstract int end();
     public abstract boolean matched();
 

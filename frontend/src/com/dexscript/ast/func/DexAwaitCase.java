@@ -1,6 +1,7 @@
 package com.dexscript.ast.func;
 
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.expr.DexExpr;
 
 public abstract class DexAwaitCase extends DexStatement {
 
@@ -18,5 +19,9 @@ public abstract class DexAwaitCase extends DexStatement {
             return stmt;
         }
         return new DexAwaitExit(src);
+    }
+
+    public DexAwaitConsumer asAwaitConsumer() {
+        return (DexAwaitConsumer) this;
     }
 }

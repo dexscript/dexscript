@@ -24,17 +24,17 @@ public class FunctionTypeTest {
     @Test
     public void params_count_not_assignable() {
         Assert.assertFalse(new FunctionType("hello", new ArrayList<>(), BuiltinTypes.STRING).isAssignableFrom(
-                new FunctionType("hello", new ArrayList<>() {{
+                new FunctionType("hello", new ArrayList<Type>() {{
                     add(BuiltinTypes.STRING);
                 }}, BuiltinTypes.STRING)));
     }
 
     @Test
     public void params_not_assignable() {
-        Assert.assertFalse(new FunctionType("hello", new ArrayList<>() {{
+        Assert.assertFalse(new FunctionType("hello", new ArrayList<Type>() {{
             add(BuiltinTypes.VOID);
         }}, BuiltinTypes.STRING).isAssignableFrom(
-                new FunctionType("hello", new ArrayList<>() {{
+                new FunctionType("hello", new ArrayList<Type>() {{
                     add(BuiltinTypes.STRING);
                 }}, BuiltinTypes.STRING)));
     }
@@ -47,10 +47,10 @@ public class FunctionTypeTest {
 
     @Test
     public void param_is_sub_type() {
-        FunctionType hello1 = new FunctionType("hello", new ArrayList<>() {{
+        FunctionType hello1 = new FunctionType("hello", new ArrayList<Type>() {{
             add(BuiltinTypes.STRING);
         }}, BuiltinTypes.VOID);
-        FunctionType hello2 = new FunctionType("hello", new ArrayList<>() {{
+        FunctionType hello2 = new FunctionType("hello", new ArrayList<Type>() {{
             add(new StringLiteralType("example"));
         }}, BuiltinTypes.VOID);
         Assert.assertFalse(hello1.isAssignableFrom(hello2));

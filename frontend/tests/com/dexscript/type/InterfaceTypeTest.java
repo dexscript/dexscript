@@ -101,7 +101,7 @@ public class InterfaceTypeTest {
                 "interface SomeInf {\n" +
                 "   SomeAction(): string\n" +
                 "}"));
-        functionTable.define(new FunctionType("SomeAction", new ArrayList<>() {{
+        functionTable.define(new FunctionType("SomeAction", new ArrayList<Type>() {{
             add(BuiltinTypes.STRING);
         }}, BuiltinTypes.STRING));
         Assert.assertFalse(BuiltinTypes.STRING.isAssignableFrom(someInf));
@@ -120,13 +120,13 @@ public class InterfaceTypeTest {
                 "interface Duck{\n" +
                         "   DoBoth(duck1: int64, duck2: Swimable): string\n" +
                         "}"));
-        functionTable.define(new FunctionType("Quack", new ArrayList<>() {{
+        functionTable.define(new FunctionType("Quack", new ArrayList<Type>() {{
             add(BuiltinTypes.INT64);
         }}, BuiltinTypes.STRING));
-        functionTable.define(new FunctionType("Swim", new ArrayList<>() {{
+        functionTable.define(new FunctionType("Swim", new ArrayList<Type>() {{
             add(BuiltinTypes.INT64);
         }}, BuiltinTypes.STRING));
-        functionTable.define(new FunctionType("DoBoth", new ArrayList<>() {{
+        functionTable.define(new FunctionType("DoBoth", new ArrayList<Type>() {{
             add(BuiltinTypes.INT64);
             add(quackable);
             add(swimable);
