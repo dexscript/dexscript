@@ -3,7 +3,6 @@ package com.dexscript.transpile.shim;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.func.DexAwaitConsumer;
-import com.dexscript.infer.InferType;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
@@ -29,7 +28,7 @@ interface DefineNew {
             for (int i = 0; i < function.params().size(); i++) {
                 g.__(", ");
                 DexParam param = function.params().get(i);
-                Type paramType = InferType.$(ts, param.paramType());
+                Type paramType = ts.resolveType(param.paramType());
                 g.__("(("
                 ).__(paramType.javaClassName()
                 ).__(")arg"
@@ -60,7 +59,7 @@ interface DefineNew {
             for (int i = 1; i < awaitConsumer.params().size() + 1; i++) {
                 g.__(", ");
                 DexParam param = awaitConsumer.params().get(i);
-                Type paramType = InferType.$(ts, param.paramType());
+                Type paramType = ts.resolveType(param.paramType());
                 g.__("(("
                 ).__(paramType.javaClassName()
                 ).__(")arg"

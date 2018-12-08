@@ -4,7 +4,6 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.ast.func.DexStatement;
-import com.dexscript.infer.InferType;
 import com.dexscript.transpile.body.Translate;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
@@ -47,7 +46,7 @@ public class OutInitMethod implements OutMethod {
     private void genBody(List<DexParam> params, List<DexStatement> stmts) {
         g.__(new Line("super(scheduler);"));
         for (DexParam param : params) {
-            OutField oField = oClass.allocateField(param.paramName().toString(), InferType.$(ts, param.paramType()));
+            OutField oField = oClass.allocateField(param.paramName().toString(), ts.resolveType(param.paramType()));
             param.attach(oField);
             g.__("this."
             ).__(oField.value()

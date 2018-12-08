@@ -2,7 +2,6 @@ package com.dexscript.transpile.gen;
 
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.infer.InferType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
@@ -31,7 +30,7 @@ public interface DeclareParams {
         for (int i = 0; i < sig.params().size(); i++) {
             g.__(", ");
             DexParam param = sig.params().get(i);
-            Type type = InferType.$(ts, param.paramType());
+            Type type = ts.resolveType(param.paramType());
             g.__(type.javaClassName());
             g.__(' '
             ).__(param.paramName());

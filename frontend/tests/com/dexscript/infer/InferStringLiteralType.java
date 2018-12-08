@@ -11,7 +11,7 @@ public class InferStringLiteralType {
 
     @Test
     public void string_literal_type() {
-        Type type = InferType.$(new TypeSystem(), new DexStringLiteralType("'hello'"));
+        Type type = new TypeSystem().resolveType(new DexStringLiteralType("'hello'"));
         Assert.assertEquals(new StringLiteralType("hello"), type);
     }
 }

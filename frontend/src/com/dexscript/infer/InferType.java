@@ -60,15 +60,6 @@ public interface InferType<E extends DexExpr> {
         return inferType.handle(ts, elem);
     }
 
-    static Type $(TypeSystem ts, DexType elem) {
-        return ResolveType.$(ts.typeTable(), elem);
-    }
-
-    static Type $(TypeSystem ts, DexAwaitConsumer awaitConsumer) {
-        Type ret = $(ts, awaitConsumer.ret());
-        return ts.resolveType("Task", Arrays.asList(ret));
-    }
-
     static List<Type> inferTypes(TypeSystem ts, List<DexExpr> elems) {
         ArrayList<Type> types = new ArrayList<>();
         for (DexExpr elem : elems) {

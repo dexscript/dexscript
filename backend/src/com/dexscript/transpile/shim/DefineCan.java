@@ -3,7 +3,6 @@ package com.dexscript.transpile.shim;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.func.DexAwaitConsumer;
-import com.dexscript.infer.InferType;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
@@ -22,7 +21,7 @@ interface DefineCan {
         String canF = actor.canF();
         List<String> typeChecks = new ArrayList<>();
         for (DexParam param : function.params()) {
-            Type type = InferType.$(ts, param.paramType());
+            Type type = ts.resolveType(param.paramType());
             String typeCheck = CheckType.$(g, type, null, null);
             typeChecks.add(typeCheck);
         }
@@ -50,7 +49,7 @@ interface DefineCan {
         String canF = innerActor.canF();
         List<String> typeChecks = new ArrayList<>();
         for (DexParam param : awaitConsumer.params()) {
-            Type type = InferType.$(ts, param.paramType());
+            Type type = ts.resolveType(param.paramType());
             String typeCheck = CheckType.$(g, type, null, null);
             typeChecks.add(typeCheck);
         }

@@ -5,6 +5,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.func.DexAwaitStmt;
 import com.dexscript.ast.func.DexBlock;
+import com.dexscript.ast.func.DexProduceStmt;
 import com.dexscript.ast.func.DexReturnStmt;
 import com.dexscript.type.TypeSystem;
 
@@ -35,6 +36,8 @@ public interface InferValue<E extends DexElement> {
             put(DexReturnStmt.class, (ts, elem, table) -> {
             });
             put(DexAwaitStmt.class, (ts, elem, table) -> {
+            });
+            put(DexProduceStmt.class, (ts, elem, table) -> {
             });
             add(new InferShortVarDecl());
             add(new InferFunction());
