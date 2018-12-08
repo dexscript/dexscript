@@ -20,4 +20,6 @@ public interface OutClass {
     Gen g();
 
     OutStateMachine oStateMachine();
+
+    String className();
 }

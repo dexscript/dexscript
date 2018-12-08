@@ -12,6 +12,7 @@ public class OutInnerClass implements OutClass {
 
     private final OutShim oShim;
     private final OutClass oOuterClass;
+    private final DexAwaitConsumer iAwaitConsumer;
     private final Gen g;
     private final OutStateMachine oStateMachine = new OutStateMachine();
     private OutMethod oMethod;
@@ -19,12 +20,18 @@ public class OutInnerClass implements OutClass {
     public OutInnerClass(OutClass oOuterClass, DexAwaitConsumer iAwaitConsumer) {
         this.oShim = oOuterClass.oShim();
         this.oOuterClass = oOuterClass;
+        this.iAwaitConsumer = iAwaitConsumer;
+        int outerNextState = oOuterClass.oStateMachine().nextState();
         g = new Gen(oOuterClass.indention());
         g.__("public class "
         ).__(iAwaitConsumer.identifier().toString()
         ).__(" extends Actor {");
         g.__(new Indent(() -> {
             new OutInitMethod(this, iAwaitConsumer);
+            oMethod.g().__(oOuterClass.className()
+            ).__(".this."
+            ).__(OutStateMethod.methodName(outerNextState)
+            ).__("();");
             g.__(oMethod.finish());
             oStateMachine.genResumeMethods(g);
         }));
@@ -67,6 +74,11 @@ public class OutInnerClass implements OutClass {
     @Override
     public OutStateMachine oStateMachine() {
         return oStateMachine;
+    }
+
+    @Override
+    public String className() {
+        return oOuterClass.className() + "." + iAwaitConsumer.identifier().toString();
     }
 
     @Override

@@ -4,10 +4,7 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexValueRef;
-import com.dexscript.ast.func.DexAwaitStmt;
-import com.dexscript.ast.func.DexBlock;
-import com.dexscript.ast.func.DexProduceStmt;
-import com.dexscript.ast.func.DexReturnStmt;
+import com.dexscript.ast.func.*;
 import com.dexscript.type.TypeSystem;
 
 import java.lang.reflect.ParameterizedType;
@@ -24,7 +21,7 @@ public interface InferValue<E extends DexElement> {
 
     class Events {
         public static OnUnknownElem ON_UNKNOWN_ELEM = elem -> {
-            throw new UnsupportedOperationException("not implemented: " + elem.getClass());
+            throw new UnsupportedOperationException("not implemented: " + elem.getClass() + "\n" + elem);
         };
     }
 
@@ -41,6 +38,8 @@ public interface InferValue<E extends DexElement> {
             put(DexProduceStmt.class, (ts, elem, table) -> {
             });
             put(DexFile.class, (ts, elem, table) -> {
+            });
+            put(DexExprStmt.class, (ts, elem, table) -> {
             });
             add(new InferShortVarDecl());
             add(new InferFunction());
