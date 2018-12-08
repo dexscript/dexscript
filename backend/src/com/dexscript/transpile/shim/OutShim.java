@@ -70,8 +70,8 @@ public class OutShim {
     }
 
     public void defineActor(DexFunction function) {
-        String newF = allocateShim("new__" + function.actorName());
-        String canF = allocateShim("can__" + function.actorName());
+        String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
+        String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
         ActorEntry actorEntry = new ActorEntry(dispatchTable, function, canF, newF);
         actors.add(actorEntry);
         new AwaitConsumerCollector(OutTopLevelClass.qualifiedClassNameOf(function)).visit(function.blk());
@@ -114,10 +114,17 @@ public class OutShim {
 
         private void visitAwaitConsumer(DexAwaitConsumer awaitConsumer) {
             String funcName = awaitConsumer.identifier().toString();
-            String newF = allocateShim("new__" + funcName);
-            String canF = allocateShim("can__" + funcName);
+            String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
+            String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
             InnerActorEntry nestedActor = new InnerActorEntry(dispatchTable, outerClassName, awaitConsumer, canF, newF);
             innerActors.add(nestedActor);
         }
+    }
+
+    public static String stripPrefix(String f) {
+        if (!f.startsWith(OutShim.CLASSNAME)) {
+            throw new IllegalArgumentException();
+        }
+        return f.substring(OutShim.CLASSNAME.length() + 1);
     }
 }

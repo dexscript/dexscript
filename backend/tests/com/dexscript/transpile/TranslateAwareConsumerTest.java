@@ -9,7 +9,7 @@ public class TranslateAwareConsumerTest {
     public void non_block() {
         Object result = Transpile.$("" +
                 "function Hello(): string {\n" +
-                "   a := A{}\n" +
+                "   a := new A()\n" +
                 "   return a.AA()\n" +
                 "}\n" +
                 "function A() {\n" +
@@ -26,8 +26,8 @@ public class TranslateAwareConsumerTest {
         // translate to FSM
         Object result = Transpile.$("" +
                 "function Hello(): string {\n" +
-                "   a := A{}\n" +
-                "   b := B{a}\n" +
+                "   a := new A()\n" +
+                "   b := new B(a)\n" +
                 "   a.Unpause()\n" +
                 "   return <-b\n" +
                 "}\n" +

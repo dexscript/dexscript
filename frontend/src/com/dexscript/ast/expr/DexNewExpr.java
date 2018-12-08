@@ -96,6 +96,7 @@ public class DexNewExpr extends DexExpr {
                     i += 3;
                     return this::blankOrLeftParen;
                 }
+                return null;
             }
             return null;
         }

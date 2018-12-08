@@ -20,7 +20,7 @@ interface DefineCan {
 
     static void $(Gen g, TypeSystem ts, ActorEntry actor) {
         DexFunction function = actor.function();
-        String canF = actor.canF();
+        String canF = OutShim.stripPrefix(actor.canF());
         List<String> typeChecks = new ArrayList<>();
         for (DexParam param : function.params()) {
             Type type = ts.resolveType(param.paramType());
@@ -48,7 +48,7 @@ interface DefineCan {
     static void $(Gen g, TypeSystem ts, InnerActorEntry innerActor) {
         DexAwaitConsumer awaitConsumer = innerActor.awaitConsumer();
         String outerClassName = innerActor.outerClassName();
-        String canF = innerActor.canF();
+        String canF = OutShim.stripPrefix(innerActor.canF());
         List<String> typeChecks = new ArrayList<>();
         for (DexParam param : awaitConsumer.params()) {
             Type type = ts.resolveType(param.paramType());

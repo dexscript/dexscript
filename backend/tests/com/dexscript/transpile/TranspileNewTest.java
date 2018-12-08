@@ -9,7 +9,7 @@ public class TranspileNewTest {
     public void consume_new() {
         Object result = Transpile.$("" +
                 "function Hello(): string {\n" +
-                "   return <-World{}\n" +
+                "   return <-new World()\n" +
                 "}\n" +
                 "function World(): string {\n" +
                 "   return 'hello world'\n" +
