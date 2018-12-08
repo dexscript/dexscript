@@ -58,7 +58,7 @@ public class DexForStmt extends DexStatement {
                     continue;
                 }
                 if (Keyword.$(src, i, 'f', 'o', 'r')) {
-                    return this::blank;
+                    return this::blankOrLeftBrace;
                 }
                 return null;
             }
@@ -66,7 +66,8 @@ public class DexForStmt extends DexStatement {
         }
 
         @Expect("blank")
-        State blank() {
+        @Expect("{")
+        State blankOrLeftBrace() {
             int j = 0;
             for (; i < src.end; i++, j++) {
                 byte b = src.bytes[i];

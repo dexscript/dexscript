@@ -3,6 +3,7 @@ package com.dexscript.ast.expr;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
@@ -10,17 +11,16 @@ import java.util.List;
 
 public class DexNewExpr extends DexExpr {
 
-    private static final int LEFT_RANK = 1;
-    private static final int RIGHT_RANK = 0;
+    private static final int LEFT_RANK = 0;
+    private static final int RIGHT_RANK = 1;
 
-    private final DexExpr target;
+    private DexExpr target;
     private List<DexExpr> args;
     private int newExprEnd = -1;
     private DexSyntaxError syntaxError;
 
-    public DexNewExpr(Text src, DexExpr target) {
+    public DexNewExpr(Text src) {
         super(src);
-        this.target = target;
         new Parser();
     }
 
@@ -49,11 +49,6 @@ public class DexNewExpr extends DexExpr {
     @Override
     public int leftRank() {
         return LEFT_RANK;
-    }
-
-    @Override
-    public int begin() {
-        return target().begin();
     }
 
     @Override
@@ -87,20 +82,81 @@ public class DexNewExpr extends DexExpr {
         int i = src.begin;
 
         Parser() {
-            State.Play(this::leftBrace);
+            State.Play(this::newKeyword);
         }
 
-        @Expect("{")
-        State leftBrace() {
+        @Expect("new")
+        State newKeyword() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
                 }
-                if (b == '{') {
+                if (Keyword.$(src, i,'n', 'e', 'w')) {
+                    i += 3;
+                    return this::blankOrLeftParen;
+                }
+            }
+            return null;
+        }
+
+        @Expect("(")
+        State blankOrLeftParen() {
+            int j = 0;
+            for (; i < src.end; i++, j++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '(') {
+                    return this::target;
+                }
+                break;
+            }
+            if (j == 0) {
+                return null;
+            }
+            return this::target;
+        }
+
+        @Expect("expression")
+        State target() {
+            target = DexExpr.parse(src.slice(i), RIGHT_RANK);
+            if (!target.matched()) {
+                return this::missingTarget;
+            }
+            i = target.end();
+            return this::leftParen;
+        }
+
+        private State missingTarget() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    newExprEnd = i;
+                    return null;
+                }
+                if (b == '(') {
+                    return this::leftParen;
+                }
+            }
+            newExprEnd = i;
+            return null;
+        }
+
+
+        @Expect("(")
+        State leftParen() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '(') {
                     i += 1;
                     args = new ArrayList<>();
-                    return this::argument;
+                    return this::argumentOrRightParen;
                 }
                 break;
             }
@@ -108,13 +164,14 @@ public class DexNewExpr extends DexExpr {
         }
 
         @Expect("expression")
-        State argument() {
+        @Expect(")")
+        State argumentOrRightParen() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
                 }
-                if (b == '}') {
+                if (b == ')') {
                     newExprEnd = i + 1;
                     return null;
                 }
@@ -122,19 +179,23 @@ public class DexNewExpr extends DexExpr {
             }
             DexExpr arg = DexExpr.parse(new Text(src.bytes, i, src.end), RIGHT_RANK);
             args.add(arg);
-            if (arg.matched()) {
-                i = arg.end();
-                return this::commaOrRightBrace;
+            if (!arg.matched()) {
+                return this::missingArgument;
             }
+            i = arg.end();
+            return this::commaOrRightParen;
+        }
+
+        State missingArgument() {
             reportError();
             // try to recover from invalid argument
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (b == ',') {
                     i += 1;
-                    return this::argument;
+                    return this::argumentOrRightParen;
                 }
-                if (b == '}') {
+                if (b == ')') {
                     newExprEnd = i + 1;
                     return null;
                 }
@@ -149,7 +210,7 @@ public class DexNewExpr extends DexExpr {
 
         @Expect(",")
         @Expect(")")
-        State commaOrRightBrace() {
+        State commaOrRightParen() {
             int originalCursor = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
@@ -158,9 +219,9 @@ public class DexNewExpr extends DexExpr {
                 }
                 if (b == ',') {
                     i += 1;
-                    return this::argument;
+                    return this::argumentOrRightParen;
                 }
-                if (b == '}') {
+                if (b == ')') {
                     newExprEnd = i + 1;
                     return null;
                 }
