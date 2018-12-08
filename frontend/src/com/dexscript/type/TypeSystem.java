@@ -18,6 +18,16 @@ public class TypeSystem {
         return typeTable;
     }
 
+    public TypeSystem() {
+        /*
+        interface Task {
+            <T>: interface{}
+            Resolve__(value: T)
+        }
+         */
+        new TaskType(typeTable, functionTable);
+    }
+
     public void defineFunction(FunctionType function) {
         functionTable.define(function);
     }
