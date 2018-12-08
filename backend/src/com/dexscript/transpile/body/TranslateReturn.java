@@ -12,10 +12,11 @@ public class TranslateReturn implements Translate<DexReturnStmt> {
     public void handle(OutClass oClass, DexReturnStmt iReturnStmt) {
         DexExpr iExpr = iReturnStmt.expr();
         Translate.$(oClass, iExpr);
-        oClass.g().__("finish("
+        oClass.g().__("produce("
         ).__(OutValue.of(iExpr)
         ).__(new Line(");")
         ).__(new Line("return;"));
+        // discard following statements to avoid javac compiler complaining "unreachable"
         new OutDiscardMethod(oClass);
     }
 }

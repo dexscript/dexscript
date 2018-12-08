@@ -20,7 +20,7 @@ public abstract class Actor implements Promise {
         return finished;
     }
 
-    public final void finish(Object ret) {
+    public final void produce(Object ret) {
         finished = true;
         this.ret = ret;
         if (consumers != null) {
