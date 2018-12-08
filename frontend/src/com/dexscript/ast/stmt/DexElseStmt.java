@@ -53,6 +53,10 @@ public class DexElseStmt extends DexStatement {
         return blk;
     }
 
+    public boolean hasIf() {
+        return ifStmt != null && ifStmt.matched();
+    }
+
 
     private class Parser {
         int i = src.begin;

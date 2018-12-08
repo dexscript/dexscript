@@ -25,6 +25,9 @@ interface DefineEntry {
                     InvokeParams.$(g, virtualEntry.paramsCount(), true);
                     g.__(new Line(";"));
                     g.__(new Line("scheduler.schedule();"));
+                    g.__(new Line("if (!result.finished()) {"));
+                    g.__(new Line("  throw new DexRuntimeException(\"function never return\");"));
+                    g.__(new Line("}"));
                     g.__(new Line("return result.value();"));
                 }));
                 g.__(new Line("}"));

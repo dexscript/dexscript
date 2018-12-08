@@ -12,7 +12,7 @@ public class OutStateMethod implements OutMethod {
         this.oClass = oClass;
         oClass.changeMethod(this);
         g = new Gen(oClass.indention());
-        g.__("public void "
+        g.__("private final void "
         ).__(methodName(state)
         ).__("() {");
         g.indention(oClass.indention() + "  ");
@@ -24,6 +24,10 @@ public class OutStateMethod implements OutMethod {
 
     public static String methodName(int state) {
         return "State" + state + "__";
+    }
+
+    public static void call(Gen g, int state) {
+        g.__(OutStateMethod.methodName(state)).__(new Line("();"));
     }
 
     @Override
