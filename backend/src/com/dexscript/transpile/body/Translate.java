@@ -35,6 +35,9 @@ public interface Translate<E extends DexElement> {
                     throw new IllegalStateException("referenced value not found: " + iElem);
                 }
                 OutValue oValue = refValue.definedBy().attachmentOfType(OutValue.class);
+                if (oValue == null) {
+                    throw new IllegalStateException("referenced value not translated: " + iElem);
+                }
                 iElem.attach(oValue);
             });
             add(new TranslateReturn());

@@ -33,7 +33,7 @@ public class OutInnerClass implements OutClass {
 
     @Override
     public TypeSystem typeSystem() {
-        return null;
+        return oOuterClass.typeSystem();
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.List;
 interface CombineNew {
 
     static void $(Gen g, List<FunctionType> funcTypes, int paramsCount, String cNewF) {
-        g.__("public static Result "
+        g.__("public static Promise "
         ).__(cNewF);
         DeclareParams.$(g, paramsCount, true);
         g.__(" {");

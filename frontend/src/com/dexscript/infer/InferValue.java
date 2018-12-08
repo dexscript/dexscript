@@ -1,5 +1,6 @@
 package com.dexscript.infer;
 
+import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexValueRef;
@@ -38,6 +39,8 @@ public interface InferValue<E extends DexElement> {
             put(DexAwaitStmt.class, (ts, elem, table) -> {
             });
             put(DexProduceStmt.class, (ts, elem, table) -> {
+            });
+            put(DexFile.class, (ts, elem, table) -> {
             });
             add(new InferShortVarDecl());
             add(new InferFunction());

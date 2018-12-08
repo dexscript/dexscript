@@ -12,17 +12,6 @@ public class OutAwaitConsumerMethod implements OutMethod {
         oClass.changeMethod(this);
         this.oClass = oClass;
         g = new Gen(oClass.indention());
-        g.__("public Result "
-        ).__(iAwaitConsumer.identifier().toString());
-        DeclareParams.$(g, oClass.typeSystem(), iAwaitConsumer.produceSig());
-        g.__(" {"
-        ).__(new Indent(() -> {
-            g.__("return new "
-            ).__(iAwaitConsumer.identifier());
-            InvokeParams.$(g, iAwaitConsumer.produceSig());
-            g.__(";");
-        }));
-        g.__(new Line("}"));
         g.__(new OutInnerClass(oClass, iAwaitConsumer));
         new OutStateMethod(oClass);
     }

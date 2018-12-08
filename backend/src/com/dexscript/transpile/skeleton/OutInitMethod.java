@@ -28,7 +28,10 @@ public class OutInitMethod implements OutMethod {
         ).__(iFunc.actorName());
         DeclareParams.$(g, ts, iFunc.sig());
         g.__(" {"
-        ).__(new Indent(() -> genBody(iFunc.params(), iFunc.stmts())));
+        ).__(new Indent(() -> {
+            g.__(new Line("super(scheduler);"));
+            genBody(iFunc.params(), iFunc.stmts());
+        }));
     }
 
     public OutInitMethod(OutInnerClass oClass, DexAwaitConsumer iAwaitConsumer) {
@@ -40,11 +43,19 @@ public class OutInitMethod implements OutMethod {
         ).__(iAwaitConsumer.identifier().toString());
         DeclareParams.$(g, ts, iAwaitConsumer.produceSig());
         g.__(" {"
-        ).__(new Indent(() -> genBody(iAwaitConsumer.params(), iAwaitConsumer.stmts())));
+        ).__(new Indent(() -> {
+            g.__(new Line("super(scheduler);"));
+            OutField thisTask = oClass.allocateField(
+                    "TaskOf" + iAwaitConsumer.identifier().toString(),
+                    ts.resolveType("Task"));
+            iAwaitConsumer.attach(thisTask);
+            g.__(thisTask.value()
+            ).__(new Line(" = this;"));
+            genBody(iAwaitConsumer.params(), iAwaitConsumer.stmts());
+        }));
     }
 
     private void genBody(List<DexParam> params, List<DexStatement> stmts) {
-        g.__(new Line("super(scheduler);"));
         for (DexParam param : params) {
             OutField oField = oClass.allocateField(param.paramName().toString(), ts.resolveType(param.paramType()));
             param.attach(oField);

@@ -55,7 +55,7 @@ public class TranslateFunctionCall implements Translate<DexFunctionCallExpr> {
         if (BuiltinTypes.VOID.equals(resultType)) {
             return;
         }
-        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", resultType);
+        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Promise", resultType);
         oClass.g().__(oResultField.value()
         ).__(" = (("
         ).__(resultType.javaClassName()

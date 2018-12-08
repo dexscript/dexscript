@@ -22,7 +22,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
     private List<FunctionType> members;
 
     public ActorType(ActorTable actorTable, FunctionTable functionTable, DexFunction func) {
-        super(func.identifier().toString(), "Result");
+        super(func.identifier().toString(), "Promise");
         actorTable.define(this);
         functionTable.lazyDefine(this);
         this.func = func;

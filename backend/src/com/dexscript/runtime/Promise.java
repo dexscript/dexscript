@@ -1,6 +1,8 @@
 package com.dexscript.runtime;
 
-public interface Result {
+public interface Promise {
+
     boolean finished();
+
     Object value();
 }

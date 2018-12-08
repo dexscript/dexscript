@@ -16,7 +16,7 @@ interface DefineNew {
     static void $(Gen g, TypeSystem ts, ActorEntry actor) {
         DexFunction function = actor.function();
         String newF = actor.newF();
-        g.__("public static Result "
+        g.__("public static Promise "
         ).__(newF);
         DeclareParams.$(g, function.params().size(), true);
         g.__(" {");
@@ -44,7 +44,7 @@ interface DefineNew {
         String newF = innerActor.newF();
         DexAwaitConsumer awaitConsumer = innerActor.awaitConsumer();
         String outerClassName = innerActor.outerClassName();
-        g.__("public static Result "
+        g.__("public static Promise "
         ).__(newF);
         DeclareParams.$(g, awaitConsumer.params().size() + 1, true);
         g.__(" {");

@@ -3,7 +3,7 @@ package com.dexscript.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Actor implements Result {
+public abstract class Actor implements Promise {
 
     private final Scheduler scheduler;
     private boolean finished;
@@ -20,7 +20,7 @@ public abstract class Actor implements Result {
         return finished;
     }
 
-    protected final void finish(Object ret) {
+    public final void finish(Object ret) {
         finished = true;
         this.ret = ret;
         if (consumers != null) {

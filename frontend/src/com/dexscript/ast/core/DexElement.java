@@ -1,5 +1,7 @@
 package com.dexscript.ast.core;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public abstract class DexElement {
         return null;
     }
 
-    public <T> T attach(T attachment) {
+    public <T> T attach(@NotNull T attachment) {
         if (attachments == null) {
             attachments = new ArrayList<>();
         }

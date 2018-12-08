@@ -18,7 +18,7 @@ interface DefineEntry {
                 InvokeParams.$(g, virtualEntry.paramsCount(), false);
                 g.__(") {");
                 g.__(new Indent(() -> {
-                    g.__("Result result = "
+                    g.__("Promise result = "
                     ).__(concreteEntry.newF());
                     InvokeParams.$(g, virtualEntry.paramsCount(), true);
                     g.__(new Line(";"));

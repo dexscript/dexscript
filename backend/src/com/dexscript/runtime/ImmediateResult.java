@@ -1,6 +1,6 @@
 package com.dexscript.runtime;
 
-public class ImmediateResult implements Result {
+public class ImmediateResult implements Promise {
 
     private final Object value;
 
