@@ -97,11 +97,13 @@ public class DexElseStmt extends DexStatement {
         @Expect("if")
         State ifStmtOrBlock() {
             ifStmt = new DexIfStmt(src.slice(i));
+            ifStmt.reparent(DexElseStmt.this, DexElseStmt.this);
             if (ifStmt.matched()) {
                 elseStmtEnd = ifStmt.end();
                 return null;
             }
             blk = new DexBlock(src.slice(i));
+            blk.reparent(DexElseStmt.this, DexElseStmt.this);
             if (blk.matched()) {
                 elseStmtEnd = blk.end();
                 return null;

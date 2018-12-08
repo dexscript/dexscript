@@ -4,6 +4,7 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.stmt.DexReturnStmt;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.skeleton.OutDiscardMethod;
 
 public class TranslateReturn implements Translate<DexReturnStmt> {
 
@@ -13,6 +14,8 @@ public class TranslateReturn implements Translate<DexReturnStmt> {
         Translate.$(oClass, iExpr);
         oClass.g().__("finish("
         ).__(OutValue.of(iExpr)
-        ).__(new Line(");"));
+        ).__(new Line(");")
+        ).__(new Line("return;"));
+        new OutDiscardMethod(oClass);
     }
 }

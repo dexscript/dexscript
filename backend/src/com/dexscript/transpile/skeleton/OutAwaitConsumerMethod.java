@@ -13,7 +13,7 @@ public class OutAwaitConsumerMethod implements OutMethod {
         this.oClass = oClass;
         g = new Gen(oClass.indention());
         g.__(new OutInnerClass(oClass, iAwaitConsumer));
-        new OutStateMethod(oClass);
+        new OutStateMethod(oClass, oClass.oStateMachine().state());
     }
 
     public OutClass oClass() {

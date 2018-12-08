@@ -36,7 +36,7 @@ public class InnerActorType extends Type implements FunctionsProvider {
         Type ret = ResolveType.$(typeTable, awaitConsumer.produceSig().ret());
         ArrayList<Type> params = new ArrayList<>();
         params.add(this);
-        return new FunctionType(awaitConsumer,"Consume__", params, ret);
+        return new FunctionType("Consume__", params, ret, awaitConsumer);
     }
 
     @Override

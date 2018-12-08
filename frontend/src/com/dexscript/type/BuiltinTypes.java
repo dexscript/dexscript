@@ -3,6 +3,7 @@ package com.dexscript.type;
 public interface BuiltinTypes {
 
     Type ANY = new AnyType();
+    TopLevelType BOOL = new BoolType();
     TopLevelType STRING = new StringType();
     TopLevelType INT64 = new Int64Type();
     TopLevelType VOID = new VoidType();

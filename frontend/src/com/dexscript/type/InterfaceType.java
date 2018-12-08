@@ -65,22 +65,11 @@ public class InterfaceType extends TopLevelType implements FunctionsProvider {
     }
 
     @Override
-    public boolean isAssignableFrom(Type thatObj) {
-        if (super.isAssignableFrom(thatObj)) {
+    public boolean isAssignableFrom(Type that) {
+        if (super.isAssignableFrom(that)) {
             return true;
         }
-        if (thatObj instanceof SameType) {
-            return false;
-        }
-        Map<Type, Type> lookup = new HashMap<>();
-        lookup.put(this, new SameType(thatObj));
-        for (FunctionType member : functions()) {
-            FunctionType expandedMember = (FunctionType) member.expand(lookup);
-            if (!functionTable.isDefined(expandedMember)) {
-                return false;
-            }
-        }
-        return true;
+        return functionTable.isAssignableFrom(this, that);
     }
 
     @Override

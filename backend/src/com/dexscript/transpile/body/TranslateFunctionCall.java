@@ -27,12 +27,11 @@ public class TranslateFunctionCall implements Translate<DexFunctionCallExpr> {
         }
         TypeSystem ts = oClass.typeSystem();
 
-        StringLiteralType arg1 = new StringLiteralType(funcName);
-        Type actorType = ResolveReturnType.$(ts, "New__", InferType.inferTypes(ts, arg1, iArgs));
-
         List<FunctionType> funcTypes = ts.resolveFunctions(funcName, InferType.inferTypes(ts, iArgs));
         String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), funcTypes);
-        OutField oActorField = oClass.allocateField(funcName, actorType);
+
+        Type promiseType = ts.resolveType("Promise");
+        OutField oActorField = oClass.allocateField(funcName, promiseType);
         oClass.g().__(oActorField.value()
         ).__(" = "
         ).__(newF
@@ -50,12 +49,11 @@ public class TranslateFunctionCall implements Translate<DexFunctionCallExpr> {
 
     public static void consume(OutClass oClass, DexExpr iElem, String targetActor) {
         checkFinished(oClass, targetActor);
-        new OutStateMethod(oClass);
         Type resultType = InferType.$(oClass.typeSystem(), iElem);
         if (BuiltinTypes.VOID.equals(resultType)) {
             return;
         }
-        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Promise", resultType);
+        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", resultType);
         oClass.g().__(oResultField.value()
         ).__(" = (("
         ).__(resultType.javaClassName()
@@ -84,5 +82,6 @@ public class TranslateFunctionCall implements Translate<DexFunctionCallExpr> {
             ).__(").addConsumer(this);");
         })
         ).__(new Line("}"));
+        new OutStateMethod(oClass, toState);
     }
 }

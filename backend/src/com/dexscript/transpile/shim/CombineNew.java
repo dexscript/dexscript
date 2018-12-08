@@ -1,5 +1,6 @@
 package com.dexscript.transpile.shim;
 
+import com.dexscript.dispatch.ImplEntry;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.type.FunctionType;
 
@@ -14,14 +15,14 @@ interface CombineNew {
         g.__(" {");
         g.__(new Indent(() -> {
             for (FunctionType funcType : funcTypes) {
-                ConcreteEntry concreteEntry = funcType.definedBy().attachmentOfType(ConcreteEntry.class);
+                ImplEntry implEntry = funcType.definedBy().attachmentOfType(ImplEntry.class);
                 g.__("if ("
-                ).__(concreteEntry.canF());
+                ).__(implEntry.canF());
                 InvokeParams.$(g, paramsCount, true);
                 g.__(new Line(") {"));
                 g.__(new Indent(() -> {
                     g.__("return "
-                    ).__(concreteEntry.newF());
+                    ).__(implEntry.newF());
                     InvokeParams.$(g, paramsCount, true);
                     g.__(new Line(";"));
                 }));

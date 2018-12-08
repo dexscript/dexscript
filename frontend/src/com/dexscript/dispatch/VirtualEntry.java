@@ -1,8 +1,8 @@
-package com.dexscript.transpile.shim;
+package com.dexscript.dispatch;
 
 import java.util.Objects;
 
-class VirtualEntry {
+public class VirtualEntry {
 
     private final String funcName;
     private final int paramsCount;

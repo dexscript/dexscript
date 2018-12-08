@@ -50,7 +50,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         for (DexParam param : func.sig().params()) {
             params.add(ResolveType.$(typeTable, param.paramType()));
         }
-        return new FunctionType(func, name(), params, ret);
+        return new FunctionType(name(), params, ret, func);
     }
 
     private FunctionType newFunc() {
@@ -59,14 +59,14 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         for (DexParam param : func.sig().params()) {
             params.add(ResolveType.$(typeTable, param.paramType()));
         }
-        return new FunctionType(func, "New__", params, this);
+        return new FunctionType("New__", params, this, func);
     }
 
     private FunctionType consumeFunc() {
         Type ret = ResolveType.$(typeTable, func.sig().ret());
         ArrayList<Type> params = new ArrayList<>();
         params.add(this);
-        return new FunctionType(func,"Consume__", params, ret);
+        return new FunctionType("Consume__", params, ret, func);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
             for (DexParam param : sig.params()) {
                 params.add(ResolveType.$(typeTable, param.paramType()));
             }
-            return new FunctionType(awaitConsumer, funcName, params, ret);
+            return new FunctionType(funcName, params, ret, awaitConsumer);
         }
     }
 }

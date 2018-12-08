@@ -17,7 +17,6 @@ public class OutTopLevelClass implements OutClass {
     private final OutShim oShim;
     private final OutStateMachine stateMachine = new OutStateMachine();
     private OutMethod oMethod;
-    private int state;
 
     public OutTopLevelClass(TypeSystem ts, OutShim oShim, DexFunction iFunc) {
         this.ts = ts;

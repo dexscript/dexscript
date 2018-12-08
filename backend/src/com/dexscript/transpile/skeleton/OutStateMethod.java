@@ -8,11 +8,10 @@ public class OutStateMethod implements OutMethod {
     private final Gen g;
     private final OutClass oClass;
 
-    public OutStateMethod(OutClass oClass) {
+    public OutStateMethod(OutClass oClass, int state) {
         this.oClass = oClass;
         oClass.changeMethod(this);
         g = new Gen(oClass.indention());
-        int state = oClass.oStateMachine().state();
         g.__("public void "
         ).__(methodName(state)
         ).__("() {");

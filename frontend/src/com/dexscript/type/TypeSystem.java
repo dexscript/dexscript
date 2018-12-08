@@ -23,6 +23,13 @@ public class TypeSystem {
         }
          */
         new TaskType(typeTable, functionTable);
+        /*
+        interface Promise {
+            <T>: interface{}
+            Consume__(): T
+        }
+         */
+        new PromiseType(typeTable, functionTable);
     }
 
     public void defineFunction(FunctionType function) {

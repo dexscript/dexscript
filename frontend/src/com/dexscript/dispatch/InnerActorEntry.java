@@ -1,4 +1,4 @@
-package com.dexscript.transpile.shim;
+package com.dexscript.dispatch;
 
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 
@@ -6,26 +6,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class InnerActorEntry extends ConcreteEntry {
+public class InnerActorEntry extends ImplEntry {
 
     private final DexAwaitConsumer awaitConsumer;
     private final String canF;
     private final String newF;
-    private final Map<VirtualEntry, List<ConcreteEntry>> impls;
     private final String outerClassName;
 
-    public InnerActorEntry(Map<VirtualEntry, List<ConcreteEntry>> impls, String outerClassName,
+    public InnerActorEntry(DispatchTable dispatchTable, String outerClassName,
                            DexAwaitConsumer awaitConsumer, String canF, String newF) {
         super(canF, null, newF);
-        this.impls = impls;
         this.outerClassName = outerClassName;
         awaitConsumer.attach(this);
         this.awaitConsumer = awaitConsumer;
         this.canF = canF;
         this.newF = newF;
         VirtualEntry virtualEntry = virtualEntry();
-        List<ConcreteEntry> concreteEntries = impls.computeIfAbsent(virtualEntry, k -> new ArrayList<>());
-        concreteEntries.add(this);
+        dispatchTable.add(virtualEntry, this);
     }
 
     private VirtualEntry virtualEntry() {

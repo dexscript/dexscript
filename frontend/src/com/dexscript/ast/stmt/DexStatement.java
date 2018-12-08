@@ -34,6 +34,10 @@ public abstract class DexStatement extends DexElement {
         if (stmt.matched()) {
             return stmt;
         }
+        stmt = new DexIfStmt(src);
+        if (stmt.matched()) {
+            return stmt;
+        }
         stmt = new DexShortVarDecl(src);
         if (stmt.matched()) {
             return stmt;

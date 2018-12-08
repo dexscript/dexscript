@@ -116,6 +116,7 @@ public class DexIfStmt extends DexStatement {
                 return null;
             }
             condition = DexExpr.parse(src.slice(conditionBegin, conditionEnd));
+            condition.reparent(DexIfStmt.this, DexIfStmt.this);
             if (!condition.matched()) {
                 return null;
             }
@@ -126,6 +127,7 @@ public class DexIfStmt extends DexStatement {
         @Expect("block")
         private State block() {
             blk = new DexBlock(src.slice(i));
+            blk.reparent(DexIfStmt.this, DexIfStmt.this);
             i = blk.end();
             return this::elseSmt;
         }
@@ -133,6 +135,7 @@ public class DexIfStmt extends DexStatement {
         @Expect("else")
         private State elseSmt() {
             elseStmt = new DexElseStmt(src.slice(i));
+            elseStmt.reparent(DexIfStmt.this, DexIfStmt.this);
             if (elseStmt.matched()) {
                 ifStmtEnd = elseStmt.end();
                 return null;

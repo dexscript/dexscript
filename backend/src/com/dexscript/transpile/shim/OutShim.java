@@ -7,6 +7,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.dispatch.*;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.type.FunctionType;
@@ -24,7 +25,7 @@ public class OutShim {
     private final Map<String, Integer> shims = new HashMap<>();
     private final List<ActorEntry> actors = new ArrayList<>();
     private final List<InnerActorEntry> innerActors = new ArrayList<>();
-    private final Map<VirtualEntry, List<ConcreteEntry>> impls = new HashMap<>();
+    private final DispatchTable dispatchTable = new DispatchTable();
 
     public OutShim(TypeSystem ts) {
         this.ts = ts;
@@ -50,7 +51,7 @@ public class OutShim {
             DefineNew.$(g, ts, innerActor);
             DefineCan.$(g, ts, innerActor);
         }
-        for (Map.Entry<VirtualEntry, List<ConcreteEntry>> entry : impls.entrySet()) {
+        for (Map.Entry<VirtualEntry, List<ImplEntry>> entry : dispatchTable.entrySet()) {
             DefineEntry.$(g, entry.getKey(), entry.getValue());
         }
         finished = true;
@@ -71,7 +72,7 @@ public class OutShim {
     public void defineActor(DexFunction function) {
         String newF = allocateShim("new__" + function.actorName());
         String canF = allocateShim("can__" + function.actorName());
-        ActorEntry actorEntry = new ActorEntry(impls, function, canF, newF);
+        ActorEntry actorEntry = new ActorEntry(dispatchTable, function, canF, newF);
         actors.add(actorEntry);
         new AwaitConsumerCollector(OutTopLevelClass.qualifiedClassNameOf(function)).visit(function.blk());
     }
@@ -85,8 +86,7 @@ public class OutShim {
     public String combineNewF(String funcName, int paramsCount, List<FunctionType> funcTypes) {
         if (funcTypes.size() == 1) {
             FunctionType funcType = funcTypes.get(0);
-            ConcreteEntry shims = funcType.definedBy().attachmentOfType(ConcreteEntry.class);
-            return CLASSNAME + "." + shims.newF();
+            return funcType.impl().newF();
         }
         String cNewF = allocateShim("cnew__" + funcName);
         CombineNew.$(g, funcTypes, paramsCount, cNewF);
@@ -116,7 +116,7 @@ public class OutShim {
             String funcName = awaitConsumer.identifier().toString();
             String newF = allocateShim("new__" + funcName);
             String canF = allocateShim("can__" + funcName);
-            InnerActorEntry nestedActor = new InnerActorEntry(impls, outerClassName, awaitConsumer, canF, newF);
+            InnerActorEntry nestedActor = new InnerActorEntry(dispatchTable, outerClassName, awaitConsumer, canF, newF);
             innerActors.add(nestedActor);
         }
     }

@@ -34,6 +34,11 @@ public interface InferType<E extends DexExpr> {
             List<Type> args = InferType.inferTypes(ts, callExpr.obj(), callExpr.args());
             return ResolveReturnType.$(ts, funcName, args);
         });
+        put(DexEqualExpr.class, (ts, elem) -> {
+            DexEqualExpr equalExpr = (DexEqualExpr) elem;
+            List<Type> args = InferType.inferTypes(ts, Arrays.asList(equalExpr.left(), equalExpr.right()));
+            return ResolveReturnType.$(ts, "Equal__", args);
+        });
         put(DexNewExpr.class, (ts, elem) -> {
             DexNewExpr newExpr = (DexNewExpr) elem;
             String actorName = newExpr.target().asRef().toString();

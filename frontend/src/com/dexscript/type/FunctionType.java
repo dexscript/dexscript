@@ -1,6 +1,7 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.dispatch.ImplEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,16 +21,35 @@ public final class FunctionType extends Type {
 
     private final DexElement definedBy;
 
-    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
-        this(null, name, params, ret);
+    private final ImplEntry impl;
+
+    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret, ImplEntry impl) {
+        this(name, params, ret, null, impl);
     }
 
-    public FunctionType(DexElement definedBy, @NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
+    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
+        this(name, params, ret, null, null);
+    }
+
+    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret, DexElement definedBy) {
+        this(name, params, ret, definedBy, null);
+    }
+
+    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret,
+                        DexElement definedBy, ImplEntry impl) {
         super("Object");
         this.definedBy = definedBy;
         this.name = name;
         this.params = params;
         this.ret = ret;
+        this.impl = impl;
+    }
+
+    public final ImplEntry impl() {
+        if (impl != null) {
+            return impl;
+        }
+        return definedBy().attachmentOfType(ImplEntry.class);
     }
 
     @NotNull

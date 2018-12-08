@@ -1,4 +1,4 @@
-package com.dexscript.transpile.shim;
+package com.dexscript.dispatch;
 
 import com.dexscript.ast.DexFunction;
 
@@ -6,21 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-class ActorEntry extends ConcreteEntry {
+public class ActorEntry extends ImplEntry {
 
     private final DexFunction function;
     private final String canF;
     private final String newF;
 
-    public ActorEntry(Map<VirtualEntry, List<ConcreteEntry>> impls, DexFunction function, String canF, String newF) {
+    public ActorEntry(DispatchTable dispatchTable, DexFunction function, String canF, String newF) {
         super(canF, null, newF);
         function.attach(this);
         this.function = function;
         this.canF = canF;
         this.newF = newF;
-        VirtualEntry virtualEntry = virtualEntry();
-        List<ConcreteEntry> concreteEntries = impls.computeIfAbsent(virtualEntry, k -> new ArrayList<>());
-        concreteEntries.add(this);
+        dispatchTable.add(virtualEntry(), this);
     }
 
     private VirtualEntry virtualEntry() {

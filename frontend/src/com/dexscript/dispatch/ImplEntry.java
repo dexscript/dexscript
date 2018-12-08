@@ -1,15 +1,20 @@
-package com.dexscript.transpile.shim;
+package com.dexscript.dispatch;
 
-class ConcreteEntry {
+public class ImplEntry {
 
     private final String canF;
     private final String callF;
     private final String newF;
 
-    public ConcreteEntry(String canF, String callF, String newF) {
+    public ImplEntry(String canF, String callF, String newF) {
         this.canF = canF;
         this.callF = callF;
         this.newF = newF;
+    }
+
+    public static ImplEntry by(Class clazz) {
+        String callF = clazz.getName() + ".call";
+        return new ImplEntry(null, callF, callF);
     }
 
     public String canF() {

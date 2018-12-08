@@ -10,6 +10,7 @@ public interface ResolveReturnType {
 
     class Events {
         public static OnMissingFunction ON_MISSING_FUNCTION = (ts, funcName, args) -> {
+            System.out.println("missing function: " + funcName + " with " + args);
         };
     }
 

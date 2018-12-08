@@ -1,8 +1,11 @@
 package com.dexscript.transpile.body;
 
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexIntegerLiteral;
 import com.dexscript.ast.expr.DexStringLiteral;
 import com.dexscript.ast.expr.DexValueRef;
+import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
 import com.dexscript.transpile.skeleton.OutClass;
@@ -27,7 +30,11 @@ public interface Translate<E extends DexElement> {
         {
             put(DexStringLiteral.class, (oClass, iElem) -> {
                 DexStringLiteral iStringLiteral = (DexStringLiteral) iElem;
-                iStringLiteral.attach(new OutValue("\"" + iStringLiteral.literalValue() + "\""));
+                iElem.attach(new OutValue("\"" + iStringLiteral.literalValue() + "\""));
+            });
+            put(DexIntegerLiteral.class, (oClass, iElem) -> {
+                DexIntegerLiteral iIntegerLiteral = (DexIntegerLiteral) iElem;
+                iElem.attach(new OutValue(iIntegerLiteral.toString() + "L"));
             });
             put(DexValueRef.class, (oClass, iElem) -> {
                 Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
@@ -39,6 +46,12 @@ public interface Translate<E extends DexElement> {
                     throw new IllegalStateException("referenced value not translated: " + iElem);
                 }
                 iElem.attach(oValue);
+            });
+            put(DexBlock.class, (oClass, iElem) -> {
+                DexBlock iBlk = (DexBlock) iElem;
+                for (DexStatement stmt : iBlk.stmts()) {
+                    Translate.$(oClass, stmt);
+                }
             });
             add(new TranslateReturn());
             add(new TranslateFunctionCall());
@@ -52,6 +65,8 @@ public interface Translate<E extends DexElement> {
             add(new TranslateExprStmt());
             add(new TranslateVarDecl());
             add(new TranslateAssign());
+            add(new TranslateIf());
+            add(new TranslateEqual());
         }
 
         private void add(Translate<?> handler) {

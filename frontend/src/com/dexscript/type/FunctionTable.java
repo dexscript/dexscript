@@ -76,4 +76,19 @@ public class FunctionTable {
             }
         }
     }
+
+    public boolean isAssignableFrom(FunctionsProvider superType, Type subType) {
+        if (subType instanceof SameType) {
+            return false;
+        }
+        Map<Type, Type> lookup = new HashMap<>();
+        lookup.put((Type) superType, new SameType(subType));
+        for (FunctionType member : superType.functions()) {
+            FunctionType expandedMember = (FunctionType) member.expand(lookup);
+            if (!isDefined(expandedMember)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
