@@ -34,7 +34,7 @@ public class TranslateAwareConsumerTest {
                 "function A(): string {\n" +
                 "   await {\n" +
                 "   case Unpause() {\n" +
-                "       -> Unpause" +
+                "       resolve -> Unpause" +
                 "   }}\n" +
                 "   return 'hello'\n" +
                 "}\n" +

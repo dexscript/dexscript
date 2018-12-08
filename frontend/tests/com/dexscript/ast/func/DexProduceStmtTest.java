@@ -52,4 +52,13 @@ public class DexProduceStmtTest {
         Assert.assertEquals("'hello'", produceStmt.produced().toString());
         Assert.assertEquals("<unmatched> ??;example</unmatched>", produceStmt.target().toString());
     }
+
+    @Test
+    public void produced_is_optional() {
+        DexProduceStmt produceStmt = new DexProduceStmt("resolve-> example");
+        Assert.assertEquals("resolve-> example", produceStmt.toString());
+        Assert.assertNull(produceStmt.produced());
+        Assert.assertEquals("example", produceStmt.target().toString());
+        Assert.assertEquals("resolve -> example", new DexProduceStmt("resolve -> example").toString());
+    }
 }

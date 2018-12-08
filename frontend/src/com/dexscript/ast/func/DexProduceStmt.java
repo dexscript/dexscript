@@ -93,6 +93,10 @@ public class DexProduceStmt extends DexStatement {
                 if (Blank.$(src.bytes[i])) {
                     continue;
                 }
+                if (Keyword.$(src, i, '-', '>')) {
+                    i += 2;
+                    return this::target;
+                }
                 break;
             }
             if (j == 0) {
