@@ -4,9 +4,9 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.ast.func.DexAwaitConsumer;
-import com.dexscript.ast.func.DexAwaitStmt;
-import com.dexscript.ast.func.DexBlock;
+import com.dexscript.ast.stmt.DexAwaitConsumer;
+import com.dexscript.ast.stmt.DexAwaitStmt;
+import com.dexscript.ast.stmt.DexBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

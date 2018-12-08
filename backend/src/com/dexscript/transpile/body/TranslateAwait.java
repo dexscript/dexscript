@@ -1,7 +1,7 @@
 package com.dexscript.transpile.body;
 
-import com.dexscript.ast.func.DexAwaitCase;
-import com.dexscript.ast.func.DexAwaitStmt;
+import com.dexscript.ast.stmt.DexAwaitCase;
+import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.transpile.skeleton.OutClass;
 
 public class TranslateAwait implements Translate<DexAwaitStmt> {

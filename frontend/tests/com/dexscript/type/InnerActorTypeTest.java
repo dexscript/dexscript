@@ -2,7 +2,7 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.func.DexAwaitConsumer;
+import com.dexscript.ast.stmt.DexAwaitConsumer;
 import org.junit.Assert;
 import org.junit.Test;
 

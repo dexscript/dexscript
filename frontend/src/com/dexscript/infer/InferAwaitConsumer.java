@@ -1,6 +1,6 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.func.DexAwaitConsumer;
+import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 

@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.func.DexAwaitConsumer;
+import com.dexscript.ast.stmt.DexAwaitConsumer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

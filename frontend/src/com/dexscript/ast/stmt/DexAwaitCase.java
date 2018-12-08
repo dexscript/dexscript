@@ -1,7 +1,6 @@
-package com.dexscript.ast.func;
+package com.dexscript.ast.stmt;
 
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.expr.DexExpr;
 
 public abstract class DexAwaitCase extends DexStatement {
 

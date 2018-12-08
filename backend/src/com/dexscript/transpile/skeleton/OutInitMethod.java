@@ -2,8 +2,8 @@ package com.dexscript.transpile.skeleton;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
-import com.dexscript.ast.func.DexAwaitConsumer;
-import com.dexscript.ast.func.DexStatement;
+import com.dexscript.ast.stmt.DexAwaitConsumer;
+import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.transpile.body.Translate;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;

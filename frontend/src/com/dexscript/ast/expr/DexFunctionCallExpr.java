@@ -5,7 +5,7 @@ import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.func.DexStatement;
+import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 

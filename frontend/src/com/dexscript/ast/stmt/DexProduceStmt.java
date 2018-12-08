@@ -1,51 +1,51 @@
-package com.dexscript.ast.func;
+package com.dexscript.ast.stmt;
 
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.elem.DexIdentifier;
+import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
-import com.dexscript.ast.type.DexType;
 
-public class DexVarDecl extends DexStatement {
+public class DexProduceStmt extends DexStatement {
 
+    private DexExpr produced;
+    private DexValueRef target;
+    private int produceStmtEnd = -1;
     private DexSyntaxError syntaxError;
-    private DexIdentifier identifier;
-    private DexType type;
-    private int varDeclEnd = -1;
 
-    public DexVarDecl(Text src) {
+    public DexProduceStmt(Text src) {
         super(src);
-        new Parser();
+        this.new Parser();
     }
 
-    public DexVarDecl(String src) {
+    public DexProduceStmt(String src) {
         this(new Text(src));
     }
 
     @Override
     public int end() {
-        if (varDeclEnd == -1) {
+        if (produceStmtEnd == -1) {
             throw new IllegalStateException();
         }
-        return varDeclEnd;
+        return produceStmtEnd;
     }
 
     @Override
     public boolean matched() {
-        return varDeclEnd != -1;
+        return produceStmtEnd != -1;
     }
 
     @Override
     public void walkDown(Visitor visitor) {
-        if (identifier() != null) {
-            visitor.visit(identifier());
+        if (produced != null) {
+            visitor.visit(produced);
         }
-        if (type() != null) {
-            visitor.visit(type());
+        if (target != null) {
+            visitor.visit(target);
         }
     }
 
@@ -54,12 +54,12 @@ public class DexVarDecl extends DexStatement {
         return syntaxError;
     }
 
-    public DexIdentifier identifier() {
-        return identifier;
+    public DexValueRef target() {
+        return target;
     }
 
-    public DexType type() {
-        return type;
+    public DexExpr produced() {
+        return produced;
     }
 
     private class Parser {
@@ -67,18 +67,18 @@ public class DexVarDecl extends DexStatement {
         int i = src.begin;
 
         Parser() {
-            State.Play(this::varKeyword);
+            State.Play(this::produce);
         }
 
-        @Expect("var")
-        State varKeyword() {
+        @Expect("produce")
+        State produce() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.$(src, i, 'v', 'a', 'r')) {
-                    i += 3;
+                if (Keyword.$(src, i, 'r', 'e', 's', 'o', 'l', 'v', 'e')) {
+                    i += 7;
                     return this::blank;
                 }
                 return null;
@@ -93,99 +93,100 @@ public class DexVarDecl extends DexStatement {
                 if (Blank.$(src.bytes[i])) {
                     continue;
                 }
+                if (Keyword.$(src, i, '-', '>')) {
+                    i += 2;
+                    return this::target;
+                }
                 break;
             }
             if (j == 0) {
                 return null;
             }
-            return this::identifier;
+            return this::expr;
         }
 
-        @Expect("identifier")
-        State identifier() {
-            identifier = new DexIdentifier(src.slice(i));
-            identifier.reparent(DexVarDecl.this);
-            if (!identifier.matched()) {
-                return this::missingIdentifier;
+        @Expect("expression")
+        State expr() {
+            produced = DexExpr.parse(src.slice(i));
+            produced.reparent(DexProduceStmt.this, DexProduceStmt.this);
+            if (!produced.matched()) {
+                return this::missingExpr;
             }
-            i = identifier.end();
-            return this::colon;
+            i = produced.end();
+            return this::rightArrow;
         }
 
-        private State colon() {
-            for (;i<src.end;i++) {
-                byte b = src.bytes[i];
-                if (Blank.$(b)) {
+        @Expect("->")
+        State rightArrow() {
+            for (; i < src.end; i++) {
+                if (Blank.$(src.bytes[i])) {
                     continue;
                 }
-                if (b == ':') {
-                    i += 1;
-                    return this::type;
+                if (Keyword.$(src, i, '-', '>')) {
+                    i += 2;
+                    return this::target;
                 }
-                return this::missingColon;
+                return this::missingArrow;
             }
-            return this::missingColon;
+            return this::missingArrow;
         }
 
-        State missingColon() {
+        State missingArrow() {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (LineEnd.$(b)) {
-                    varDeclEnd = i;
+                    produceStmtEnd = i;
                     return null;
                 }
                 if (Blank.$(b)) {
                     i += 1;
-                    return this::type;
+                    return this::target;
                 }
             }
-            varDeclEnd = i;
+            produceStmtEnd = i;
             return null;
         }
 
-        @Expect("type")
-        State type() {
-            type = DexType.parse(src.slice(i));
-            type.reparent(DexVarDecl.this);
-            if (!type.matched()) {
-                return this::missingType;
+        @Expect("value reference")
+        State target() {
+            target = new DexValueRef(src.slice(i));
+            target.reparent(DexProduceStmt.this, DexProduceStmt.this);
+            if (!target.matched()) {
+                reportError();
+                return this::missingTarget;
             }
-            varDeclEnd = type.end();
+            produceStmtEnd = target.end();
             return null;
         }
 
-        State missingType() {
+        State missingTarget() {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (LineEnd.$(b)) {
-                    varDeclEnd = i;
+                    produceStmtEnd = i;
                     return null;
                 }
             }
-            varDeclEnd = i;
+            produceStmtEnd = i;
             return null;
         }
 
-        State missingIdentifier() {
+        State missingExpr() {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (LineEnd.$(b)) {
-                    varDeclEnd = i;
+                    produceStmtEnd = i;
                     return null;
-                }
-                if (b == ':') {
-                    i += 1;
-                    return this::type;
                 }
                 if (Blank.$(b)) {
                     i += 1;
-                    return this::colon;
+                    return this::rightArrow;
                 }
             }
-            varDeclEnd = i;
+            produceStmtEnd = i;
             return null;
         }
 

@@ -1,4 +1,4 @@
-package com.dexscript.ast.func;
+package com.dexscript.ast.stmt;
 
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;

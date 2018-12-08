@@ -1,7 +1,7 @@
 package com.dexscript.transpile.body;
 
 import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.func.DexReturnStmt;
+import com.dexscript.ast.stmt.DexReturnStmt;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.gen.Line;
 

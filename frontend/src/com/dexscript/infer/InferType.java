@@ -2,8 +2,6 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
-import com.dexscript.ast.func.DexAwaitConsumer;
-import com.dexscript.ast.type.DexType;
 import com.dexscript.type.*;
 
 import java.util.*;

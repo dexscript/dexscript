@@ -1,6 +1,6 @@
 package com.dexscript.transpile.body;
 
-import com.dexscript.ast.func.DexProduceStmt;
+import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 

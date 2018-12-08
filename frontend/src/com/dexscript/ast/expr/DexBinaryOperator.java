@@ -2,7 +2,7 @@ package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.func.DexStatement;
+import com.dexscript.ast.stmt.DexStatement;
 
 public abstract class DexBinaryOperator extends DexExpr {
 

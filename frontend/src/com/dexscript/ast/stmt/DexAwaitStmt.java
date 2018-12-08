@@ -1,4 +1,4 @@
-package com.dexscript.ast.func;
+package com.dexscript.ast.stmt;
 
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;

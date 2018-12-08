@@ -2,7 +2,7 @@ package com.dexscript.transpile.shim;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
-import com.dexscript.ast.func.DexAwaitConsumer;
+import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;

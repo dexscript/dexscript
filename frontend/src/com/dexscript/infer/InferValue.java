@@ -4,7 +4,7 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexValueRef;
-import com.dexscript.ast.func.*;
+import com.dexscript.ast.stmt.*;
 import com.dexscript.type.TypeSystem;
 
 import java.lang.reflect.ParameterizedType;

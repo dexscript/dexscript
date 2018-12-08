@@ -1,7 +1,7 @@
 package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.*;
-import com.dexscript.ast.func.DexStatement;
+import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 
