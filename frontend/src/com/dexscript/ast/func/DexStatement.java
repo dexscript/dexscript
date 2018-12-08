@@ -42,6 +42,10 @@ public abstract class DexStatement extends DexElement {
         if (stmt.matched()) {
             return stmt;
         }
+        stmt = new DexProduceStmt(src);
+        if (stmt.matched()) {
+            return stmt;
+        }
         return new DexExprStmt(src);
     }
 
@@ -55,5 +59,9 @@ public abstract class DexStatement extends DexElement {
 
     public DexAwaitStmt asAwait() {
         return (DexAwaitStmt) this;
+    }
+
+    public DexProduceStmt asProduce() {
+        return (DexProduceStmt) this;
     }
 }

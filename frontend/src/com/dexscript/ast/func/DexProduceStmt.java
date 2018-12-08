@@ -104,6 +104,7 @@ public class DexProduceStmt extends DexStatement {
         @Expect("expression")
         State expr() {
             produced = DexExpr.parse(src.slice(i));
+            produced.reparent(DexProduceStmt.this, DexProduceStmt.this);
             if (!produced.matched()) {
                 return this::missingExpr;
             }
@@ -146,6 +147,7 @@ public class DexProduceStmt extends DexStatement {
         @Expect("value reference")
         State target() {
             target = new DexValueRef(src.slice(i));
+            target.reparent(DexProduceStmt.this, DexProduceStmt.this);
             if (!target.matched()) {
                 reportError();
                 return this::missingTarget;

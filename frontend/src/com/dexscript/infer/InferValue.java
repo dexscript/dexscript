@@ -3,6 +3,7 @@ package com.dexscript.infer;
 import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexValueRef;
+import com.dexscript.ast.func.DexAwaitStmt;
 import com.dexscript.ast.func.DexBlock;
 import com.dexscript.ast.func.DexReturnStmt;
 import com.dexscript.type.TypeSystem;
@@ -16,11 +17,12 @@ import java.util.Map;
 public interface InferValue<E extends DexElement> {
 
     interface OnUnknownElem {
-        void handle(Class<? extends DexElement> clazz);
+        void handle(DexElement elem);
     }
 
     class Events {
-        public static OnUnknownElem ON_UNKNOWN_ELEM = clazz -> {
+        public static OnUnknownElem ON_UNKNOWN_ELEM = elem -> {
+            throw new UnsupportedOperationException("not implemented: " + elem.getClass());
         };
     }
 
@@ -32,8 +34,11 @@ public interface InferValue<E extends DexElement> {
             });
             put(DexReturnStmt.class, (ts, elem, table) -> {
             });
+            put(DexAwaitStmt.class, (ts, elem, table) -> {
+            });
             add(new InferShortVarDecl());
             add(new InferFunction());
+            add(new InferAwaitConsumer());
         }
 
         private void add(InferValue<?> handler) {
@@ -69,7 +74,7 @@ public interface InferValue<E extends DexElement> {
         }
         InferValue inferValue = handlers.get(elem.getClass());
         if (inferValue == null) {
-            Events.ON_UNKNOWN_ELEM.handle(elem.getClass());
+            Events.ON_UNKNOWN_ELEM.handle(elem);
             return parentTable;
         }
         table = elem.attach(parentTable.copy());

@@ -2,6 +2,7 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
+import com.dexscript.ast.func.DexAwaitConsumer;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.type.*;
 
@@ -61,6 +62,13 @@ public interface InferType<E extends DexExpr> {
 
     static Type $(TypeSystem ts, DexType elem) {
         return ResolveType.$(ts.typeTable(), elem);
+    }
+
+    static Type $(TypeSystem ts, DexAwaitConsumer awaitConsumer) {
+        Type ret = $(ts, awaitConsumer.ret());
+        HashMap<String, Type> typeArgs = new HashMap<>();
+        typeArgs.put("E", ret);
+        return ts.resolveType("Task", typeArgs);
     }
 
     static List<Type> inferTypes(TypeSystem ts, List<DexExpr> elems) {
