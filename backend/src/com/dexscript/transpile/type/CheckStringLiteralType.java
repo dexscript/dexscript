@@ -1,6 +1,6 @@
 package com.dexscript.transpile.type;
 
-import com.dexscript.transpile.DexTranspileException;
+import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -40,7 +40,7 @@ public class CheckStringLiteralType implements CheckType<StringLiteralType> {
             BigInteger bigInt = new BigInteger(1, digest);
             return bigInt.toString(16);
         } catch (NoSuchAlgorithmException e) {
-            throw new DexTranspileException(e);
+            throw new DexRuntimeException(e);
         }
     }
 }

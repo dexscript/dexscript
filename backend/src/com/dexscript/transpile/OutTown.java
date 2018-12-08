@@ -4,6 +4,7 @@ import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
+import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.TypeSystem;
@@ -30,7 +31,7 @@ public class OutTown {
     public OutTown addFile(String fileName, String src) {
         DexFile iFile = new DexFile(new Text(src), fileName);
         if (new CheckSyntaxError(iFile).hasError()) {
-            throw new DexTranspileException();
+            throw new DexRuntimeException();
         }
         ts.defineFile(iFile);
         oShim.defineFile(iFile);
@@ -51,7 +52,7 @@ public class OutTown {
             addSource(OutShim.QUALIFIED_CLASSNAME, oShim.finish());
             return compiler.compileAll();
         } catch (Exception e) {
-            throw new DexTranspileException(e);
+            throw new DexRuntimeException(e);
         }
     }
 
@@ -60,7 +61,7 @@ public class OutTown {
             compiler.addSource(className, classSrc);
             ON_SOURCE_ADDED.handle(className, classSrc);
         } catch (Exception e) {
-            throw new DexTranspileException(e);
+            throw new DexRuntimeException(e);
         }
     }
 }

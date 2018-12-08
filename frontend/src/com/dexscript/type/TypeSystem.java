@@ -50,15 +50,15 @@ public class TypeSystem {
         }
     }
 
-    public Type resolveType(String typeName) {
-        return typeTable.resolveType(typeName);
-    }
-
     public List<FunctionType> resolveFunctions(String funcName, List<Type> args) {
         return functionTable.resolve(funcName, args);
     }
 
-    public Type resolveType(String typeName, HashMap<String, Type> typeArgs) {
-        return null;
+    public Type resolveType(String typeName) {
+        return typeTable.resolveType(typeName);
+    }
+
+    public Type resolveType(String typeName, List<Type> typeArgs) {
+        return typeTable.resolveType(typeName, typeArgs);
     }
 }

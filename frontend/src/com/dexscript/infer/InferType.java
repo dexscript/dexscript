@@ -66,9 +66,7 @@ public interface InferType<E extends DexExpr> {
 
     static Type $(TypeSystem ts, DexAwaitConsumer awaitConsumer) {
         Type ret = $(ts, awaitConsumer.ret());
-        HashMap<String, Type> typeArgs = new HashMap<>();
-        typeArgs.put("E", ret);
-        return ts.resolveType("Task", typeArgs);
+        return ts.resolveType("Task", Arrays.asList(ret));
     }
 
     static List<Type> inferTypes(TypeSystem ts, List<DexExpr> elems) {

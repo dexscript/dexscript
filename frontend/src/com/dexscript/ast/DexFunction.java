@@ -190,7 +190,7 @@ public final class DexFunction extends DexElement {
             BigInteger bigInt = new BigInteger(1, digest);
             return bigInt.toString(16);
         } catch (NoSuchAlgorithmException e) {
-            throw new DexParseException(e);
+            throw new DexSyntaxException(e);
         }
     }
 }
