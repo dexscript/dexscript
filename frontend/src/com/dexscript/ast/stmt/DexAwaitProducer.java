@@ -8,7 +8,7 @@ import com.dexscript.ast.token.Keyword;
 
 public class DexAwaitProducer extends DexAwaitCase {
 
-    private DexStatement consumeStmt;
+    private DexSimpleStatement consumeStmt;
     private DexBlock blk;
 
     public DexAwaitProducer(Text src) {
@@ -32,7 +32,7 @@ public class DexAwaitProducer extends DexAwaitCase {
 
     @Override
     public boolean matched() {
-        return blk != null;
+        return blk != null && blk.matched();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class DexAwaitProducer extends DexAwaitCase {
         }
     }
 
-    public DexStatement consumeStmt() {
+    public DexSimpleStatement consumeStmt() {
         return consumeStmt;
     }
 
@@ -94,24 +94,7 @@ public class DexAwaitProducer extends DexAwaitCase {
 
         @Expect("consumeStmt statement")
         State consumeStmt() {
-            boolean foundConsumeSymbol = false;
-            int consumeStmtBegin = i;
-            int consumeStmtEnd = -1;
-            for (; i < src.end; i++) {
-                if (Keyword.$(src, i, '<', '-')) {
-                    foundConsumeSymbol = true;
-                    continue;
-                }
-                byte b = src.bytes[i];
-                if (foundConsumeSymbol && b == '{') {
-                    consumeStmtEnd = i;
-                    break;
-                }
-            }
-            if (consumeStmtEnd == -1) {
-                return null;
-            }
-            consumeStmt = DexStatement.parse(src.slice(consumeStmtBegin, consumeStmtEnd));
+            consumeStmt = DexSimpleStatement.parse(src.slice(i));
             consumeStmt.reparent(DexAwaitProducer.this, null);
             if (!consumeStmt.matched()) {
                 return null;

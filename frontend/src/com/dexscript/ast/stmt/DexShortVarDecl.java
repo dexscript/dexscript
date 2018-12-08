@@ -10,7 +10,7 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexShortVarDecl extends DexStatement {
+public class DexShortVarDecl extends DexSimpleStatement {
 
     private List<DexIdentifier> decls;
     private DexExpr expr;

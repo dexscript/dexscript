@@ -12,7 +12,7 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexAssignStmt extends DexStatement {
+public class DexAssignStmt extends DexSimpleStatement {
 
     private DexSyntaxError syntaxError;
     private List<DexValueRef> targets;

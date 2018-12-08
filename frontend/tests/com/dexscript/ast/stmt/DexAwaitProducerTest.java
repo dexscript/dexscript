@@ -14,12 +14,6 @@ public class DexAwaitProducerTest {
     }
 
     @Test
-    public void no_consume_statement() {
-        DexAwaitProducer stmt = new DexAwaitProducer("case 1+1 {}");
-        Assert.assertEquals("<unmatched>case 1+1 {}</unmatched>", stmt.toString());
-    }
-
-    @Test
     public void missing_left_brace() {
         DexAwaitProducer stmt = new DexAwaitProducer("case <-example }");
         Assert.assertEquals("<unmatched>case <-example }</unmatched>", stmt.toString());
