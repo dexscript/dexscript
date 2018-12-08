@@ -2,6 +2,7 @@ package com.dexscript.transpile.body;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexIntegerLiteral;
+import com.dexscript.ast.expr.DexParenExpr;
 import com.dexscript.ast.expr.DexStringLiteral;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.DexBlock;
@@ -52,6 +53,11 @@ public interface Translate<E extends DexElement> {
                 for (DexStatement stmt : iBlk.stmts()) {
                     Translate.$(oClass, stmt);
                 }
+            });
+            put(DexParenExpr.class, (oClass, iElem) -> {
+                DexParenExpr iParenExpr = (DexParenExpr) iElem;
+                Translate.$(oClass, iParenExpr.body());
+                iElem.attach(iParenExpr.body().attachmentOfType(OutValue.class));
             });
             add(new TranslateReturn());
             add(new TranslateFunctionCall());

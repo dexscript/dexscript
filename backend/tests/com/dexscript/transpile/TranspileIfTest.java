@@ -48,9 +48,9 @@ public class TranspileIfTest {
         Object result = Transpile.$("" +
                 "function Hello(): string {\n" +
                 "   var msg: string\n" +
-                "   if 1 == 0 {\n" +
+                "   if (1 == 0) {\n" +
                 "       msg = 'hello'\n" +
-                "   } else if 1 == 1 {\n" +
+                "   } else if (1 == 1) {\n" +
                 "       msg = 'world'\n" +
                 "   }" +
                 "   return msg\n" +
