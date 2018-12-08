@@ -5,6 +5,7 @@ import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
+import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class DexShortVarDecl extends DexStatement {
 
     private List<DexIdentifier> decls;
     private DexExpr expr;
+    private int shortVarDeclEnd = -1;
     private DexSyntaxError syntaxError;
 
     public DexShortVarDecl(Text src) {
@@ -25,27 +27,16 @@ public class DexShortVarDecl extends DexStatement {
     }
 
     @Override
-    public int begin() {
-        if (decls == null) {
-            throw new IllegalStateException();
-        }
-        if (decls.size() == 0) {
-            throw new IllegalStateException();
-        }
-        return decls.get(0).begin();
-    }
-
-    @Override
     public int end() {
-        if (expr == null) {
+        if (shortVarDeclEnd == -1) {
             throw new IllegalStateException();
         }
-        return expr.end();
+        return shortVarDeclEnd;
     }
 
     @Override
     public boolean matched() {
-        return decls != null;
+        return shortVarDeclEnd != -1;
     }
 
     @Override
@@ -78,16 +69,18 @@ public class DexShortVarDecl extends DexStatement {
         int i = src.begin;
 
         Parser() {
-            State.Play(this::firstIdentifier);
+            State.Play(this::identifier);
         }
 
         @Expect("identifier")
-        State firstIdentifier() {
-            DexIdentifier identifier = new DexIdentifier(src);
+        State identifier() {
+            DexIdentifier identifier = new DexIdentifier(src.slice(i));
             if (identifier.matched()) {
                 identifier.reparent(DexShortVarDecl.this);
                 i = identifier.end();
-                decls = new ArrayList<>();
+                if (decls == null) {
+                    decls = new ArrayList<>();
+                }
                 decls.add(identifier);
                 return this::commaOrColonEqual;
             }
@@ -104,7 +97,7 @@ public class DexShortVarDecl extends DexStatement {
                 }
                 if (b == ',') {
                     i += 1;
-                    return this::moreIdentifiers;
+                    return this::identifier;
                 }
                 if (Keyword.$(src, i, ':', '=')) {
                     i += 2;
@@ -116,22 +109,28 @@ public class DexShortVarDecl extends DexStatement {
             return null;
         }
 
-        @Expect("identifier")
-        State moreIdentifiers() {
-            DexIdentifier identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
-            if (identifier.matched()) {
-                i = identifier.end();
-                decls.add(identifier);
-                return this::commaOrColonEqual;
-            }
-            decls = null;
-            return null;
-        }
-
         State expr() {
             expr = DexExpr.parse(new Text(src.bytes, i, src.end), 0);
             expr.reparent(DexShortVarDecl.this, DexShortVarDecl.this);
-            // TODO: handle error
+            if (!expr.matched()) {
+                return this::missingExpr;
+            }
+            shortVarDeclEnd = expr.end();
+            return null;
+        }
+
+        private State missingExpr() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    shortVarDeclEnd = i;
+                    return null;
+                }
+            }
+            shortVarDeclEnd = i;
             return null;
         }
     }

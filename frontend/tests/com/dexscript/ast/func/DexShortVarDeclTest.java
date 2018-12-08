@@ -29,7 +29,7 @@ public class DexShortVarDeclTest {
 
     @Test
     public void expr_with_error() {
-        Assert.assertEquals("a:=", new DexShortVarDecl("a:=").toString());
+        Assert.assertEquals("a:=<error/>", new DexShortVarDecl("a:=").toString());
         Assert.assertEquals("<error/>", new DexShortVarDecl("a:=").expr().toString());
         Assert.assertEquals("a:=b(", new DexShortVarDecl("a:=b(").toString());
         Assert.assertEquals("b(<error/>", new DexShortVarDecl("a:=b(").expr().toString());
