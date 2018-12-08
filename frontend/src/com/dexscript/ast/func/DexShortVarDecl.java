@@ -75,8 +75,8 @@ public class DexShortVarDecl extends DexStatement {
         @Expect("identifier")
         State identifier() {
             DexIdentifier identifier = new DexIdentifier(src.slice(i));
+            identifier.reparent(DexShortVarDecl.this);
             if (identifier.matched()) {
-                identifier.reparent(DexShortVarDecl.this);
                 i = identifier.end();
                 if (decls == null) {
                     decls = new ArrayList<>();

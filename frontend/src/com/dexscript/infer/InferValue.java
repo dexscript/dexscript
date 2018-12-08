@@ -41,6 +41,9 @@ public interface InferValue<E extends DexElement> {
             });
             put(DexExprStmt.class, (ts, elem, table) -> {
             });
+            put(DexAssignStmt.class, (ts, elem, table) -> {
+            });
+            add(new InferVarDecl());
             add(new InferShortVarDecl());
             add(new InferFunction());
             add(new InferAwaitConsumer());

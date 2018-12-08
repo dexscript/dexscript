@@ -104,6 +104,7 @@ public class DexVarDecl extends DexStatement {
         @Expect("identifier")
         State identifier() {
             identifier = new DexIdentifier(src.slice(i));
+            identifier.reparent(DexVarDecl.this);
             if (!identifier.matched()) {
                 return this::missingIdentifier;
             }
@@ -146,6 +147,7 @@ public class DexVarDecl extends DexStatement {
         @Expect("type")
         State type() {
             type = DexType.parse(src.slice(i));
+            type.reparent(DexVarDecl.this);
             if (!type.matched()) {
                 return this::missingType;
             }

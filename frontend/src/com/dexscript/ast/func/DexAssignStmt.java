@@ -77,6 +77,7 @@ public class DexAssignStmt extends DexStatement {
         @Expect("value reference")
         State target() {
             DexValueRef target = new DexValueRef(src.slice(i));
+            target.reparent(DexAssignStmt.this, DexAssignStmt.this);
             if (!target.matched()) {
                 return null;
             }
@@ -112,6 +113,7 @@ public class DexAssignStmt extends DexStatement {
         @Expect("expression")
         State expr() {
             expr = DexExpr.parse(src.slice(i));
+            expr.reparent(DexAssignStmt.this, DexAssignStmt.this);
             if (!expr.matched()) {
                 return this::missingExpr;
             }
