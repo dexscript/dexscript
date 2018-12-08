@@ -18,6 +18,15 @@ public interface Keyword {
         return src.bytes[i] == b0 && src.bytes[i + 1] == b1;
     }
 
+    static boolean $(Text src, int i, char b0, char b1, char b2) {
+        if (i >= src.end) {
+            return false;
+        }
+        return src.bytes[i] == b0
+                && src.bytes[i + 1] == b1
+                && src.bytes[i + 2] == b2;
+    }
+
     static boolean $(Text src, int i, char b0, char b1, char b2, char b3) {
         if (i >= src.end) {
             return false;
