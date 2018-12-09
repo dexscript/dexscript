@@ -3,10 +3,11 @@ package com.dexscript.ast.expr;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 
-public class DexAddExpr extends DexBinaryOperator {
+public class DexAddExpr extends DexBinaryOperator implements DexInvocationExpr {
 
     private static final int LEFT_RANK = 10;
     private static final int RIGHT_RANK = 10;
+    private DexInvocation invocation;
 
     public DexAddExpr(Text src, DexExpr left) {
         super(src, left);
@@ -27,5 +28,13 @@ public class DexAddExpr extends DexBinaryOperator {
     @Override
     public int leftRank() {
         return LEFT_RANK;
+    }
+
+    @Override
+    public DexInvocation invocation() {
+        if (invocation == null) {
+            invocation = new DexInvocation("Add__", left(), right());
+        }
+        return invocation;
     }
 }

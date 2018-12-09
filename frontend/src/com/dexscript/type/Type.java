@@ -55,4 +55,8 @@ public abstract class Type {
     public Type intersect(Type that) {
         return new IntersectionType(this, that);
     }
+
+    public String initValue() {
+        return null;
+    }
 }

@@ -3,6 +3,7 @@ package com.dexscript.infer;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunctionBody;
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexLessThanExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.*;
 import com.dexscript.type.TypeSystem;
@@ -48,6 +49,8 @@ public interface InferValue<E extends DexElement> {
             put(DexElseStmt.class, (ts, elem, table) -> {
             });
             put(DexIncrStmt.class, (ts, elem, table) -> {
+            });
+            put(DexLessThanExpr.class, (ts, elem, table) -> {
             });
             add(new InferVarDecl());
             add(new InferShortVarDecl());

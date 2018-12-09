@@ -29,4 +29,9 @@ public class Int64Type extends TopLevelType {
         }
         return false;
     }
+
+    @Override
+    public String initValue() {
+        return "0L";
+    }
 }

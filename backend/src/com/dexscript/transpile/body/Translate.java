@@ -65,6 +65,8 @@ public interface Translate<E extends DexElement> {
             });
             add(new TranslateInvocation<DexMethodCallExpr>() {
             });
+            add(new TranslateInvocation<DexAddExpr>() {
+            });
             add(new TranslateReturn());
             add(new TranslateConsume());
             add(new TranslateProduce());
@@ -78,6 +80,7 @@ public interface Translate<E extends DexElement> {
             add(new TranslateIf());
             add(new TranslateElse());
             add(new TranslateIncr());
+            add(new TranslateFor());
         }
 
         private void add(Translate<?> handler) {

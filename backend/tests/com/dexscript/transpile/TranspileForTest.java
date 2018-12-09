@@ -6,7 +6,7 @@ import org.junit.Test;
 public class TranspileForTest {
 
     @Test
-    public void for_0_to_100() {
+    public void for_0_to_99() {
         Object result = Transpile.$("" +
                 "function Hello(): int64 {\n" +
                 "   var total: int64\n" +
@@ -15,6 +15,6 @@ public class TranspileForTest {
                 "   }" +
                 "   return total\n" +
                 "}");
-        Assert.assertEquals("hello", result);
+        Assert.assertEquals(4950L, result);
     }
 }

@@ -158,7 +158,11 @@ public class OutShim {
                 }));
                 g.__(new Line("}"));
             }
-            g.__(new Line("throw new RuntimeException();"));
+            g.__("throw new DexRuntimeException(\"no implementation of "
+            ).__(funcName
+            ).__(" accepted the invocation: \" + java.util.Arrays.asList");
+            InvokeParams.$(g, paramsCount, false);
+            g.__(new Line(");"));
         }));
         g.__(new Line("}"));
         return CLASSNAME + "." + cNewF;
