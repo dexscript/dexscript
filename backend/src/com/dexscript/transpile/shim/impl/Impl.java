@@ -13,16 +13,16 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ImplEntry {
+public abstract class Impl {
 
-    private final FunctionType functionType;
     private final String canF;
     private final String callF;
     private final String newF;
+    private final FunctionType functionType;
 
-    public ImplEntry(FunctionType functionType, String canF, String callF, String newF) {
-        functionType.attach(this);
+    public Impl(FunctionType functionType, String canF, String callF, String newF) {
         this.functionType = functionType;
+        functionType.attach(this);
         this.canF = canF;
         this.callF = callF;
         this.newF = newF;
@@ -40,14 +40,14 @@ public abstract class ImplEntry {
         return newF;
     }
 
-    public FunctionType functionType() {
-        return functionType;
-    }
-
     public final void finish(Gen g, CheckType checkType) {
         genCanF(checkType, g, functionType().params());
         genNewF(g);
         genCallF(g);
+    }
+
+    protected FunctionType functionType() {
+        return functionType;
     }
 
     protected void genCallF(Gen g) {

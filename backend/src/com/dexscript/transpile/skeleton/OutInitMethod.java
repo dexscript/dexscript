@@ -4,11 +4,16 @@ import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexStatement;
+import com.dexscript.ast.type.DexType;
+import com.dexscript.ast.type.DexVoidType;
+import com.dexscript.transpile.body.OutValue;
 import com.dexscript.transpile.body.Translate;
+import com.dexscript.transpile.body.TranslateReturn;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.TypeSystem;
 
 import java.util.List;
@@ -30,7 +35,7 @@ public class OutInitMethod implements OutMethod {
         g.__(" {"
         ).__(new Indent(() -> {
             g.__(new Line("super(scheduler);"));
-            genBody(iFunc.params(), iFunc.stmts());
+            genBody(iFunc.params(), iFunc.ret(), iFunc.stmts());
         }));
     }
 
@@ -51,11 +56,11 @@ public class OutInitMethod implements OutMethod {
             iAwaitConsumer.attach(thisTask);
             g.__(thisTask.value()
             ).__(new Line(" = this;"));
-            genBody(iAwaitConsumer.params(), iAwaitConsumer.stmts());
+            genBody(iAwaitConsumer.params(), iAwaitConsumer.ret(), iAwaitConsumer.stmts());
         }));
     }
 
-    private void genBody(List<DexParam> params, List<DexStatement> stmts) {
+    private void genBody(List<DexParam> params, DexType ret, List<DexStatement> stmts) {
         for (DexParam param : params) {
             OutField oField = oClass.allocateField(param.paramName().toString(), ts.resolveType(param.paramType()));
             param.attach(oField);
@@ -67,6 +72,10 @@ public class OutInitMethod implements OutMethod {
         }
         for (DexStatement stmt : stmts) {
             Translate.$(oClass, stmt);
+        }
+        if (ret instanceof DexVoidType) {
+            oClass.g().__("produce(null"
+            ).__(new Line(");"));
         }
     }
 

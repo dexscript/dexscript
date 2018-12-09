@@ -14,8 +14,7 @@ public class TranslateReturn implements Translate<DexReturnStmt> {
         Translate.$(oClass, iExpr);
         oClass.g().__("produce("
         ).__(OutValue.of(iExpr)
-        ).__(new Line(");")
-        ).__(new Line("return;"));
+        ).__(new Line(");"));
         // discard following statements to avoid javac compiler complaining "unreachable"
         new OutDiscardMethod(oClass);
     }

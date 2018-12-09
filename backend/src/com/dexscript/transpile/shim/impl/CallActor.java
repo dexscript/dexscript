@@ -10,11 +10,11 @@ import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 
-public class ActorEntry extends ImplEntry {
+public class CallActor extends Impl {
 
     private final DexFunction function;
 
-    public ActorEntry(FunctionType functionType, DexFunction function, String canF, String newF) {
+    public CallActor(FunctionType functionType, DexFunction function, String canF, String newF) {
         super(functionType, canF, null, newF);
         this.function = function;
     }
@@ -27,7 +27,7 @@ public class ActorEntry extends ImplEntry {
         String newF = OutShim.stripPrefix(newF());
         g.__("public static Promise "
         ).__(newF);
-        DeclareParams.$(g, function.params().size(), true);
+        DeclareParams.$(g, functionType().params().size(), true);
         g.__(" {");
         g.__(new Indent(() -> {
             String className = OutTopLevelClass.qualifiedClassNameOf(function);

@@ -24,7 +24,6 @@ public class TranslateNew implements Translate<DexNewExpr> {
 
         String funcName = iNewExpr.target().asRef().toString();
         TypeSystem ts = oClass.typeSystem();
-
         Type actorType = InferType.$(ts, iNewExpr);
 
         List<FunctionType> funcTypes = ts.resolveFunctions(funcName, InferType.inferTypes(ts, iArgs));

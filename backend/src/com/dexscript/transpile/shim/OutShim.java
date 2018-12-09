@@ -3,10 +3,7 @@ package com.dexscript.transpile.shim;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexTopLevelDecl;
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
-import com.dexscript.ast.stmt.DexAwaitStmt;
-import com.dexscript.ast.stmt.DexBlock;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.shim.impl.*;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
@@ -31,8 +28,8 @@ public class OutShim {
     private final TypeSystem ts;
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
-    private final List<ImplEntry> impls = new ArrayList<>();
-    private final Map<VirtualEntry, List<ImplEntry>> actors = new HashMap<>();
+    private final List<Impl> impls = new ArrayList<>();
+    private final Map<VirtualFunction, List<Impl>> virtualFunctions = new HashMap<>();
 
     public OutShim(TypeSystem ts) {
         this.ts = ts;
@@ -52,10 +49,10 @@ public class OutShim {
         }
         finished = true;
         CheckType checkType = new CheckType(null, null);
-        for (ImplEntry impl : impls) {
+        for (Impl impl : impls) {
             impl.finish(g, checkType);
         }
-        for (Map.Entry<VirtualEntry, List<ImplEntry>> entry : actors.entrySet()) {
+        for (Map.Entry<VirtualFunction, List<Impl>> entry : virtualFunctions.entrySet()) {
             entry.getKey().finish(g, entry.getValue());
         }
         g.indention("");
@@ -75,19 +72,50 @@ public class OutShim {
     }
 
     public void defineActor(DexFunction function) {
-        String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
-        String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
-        ActorType actorType = ts.defineActor(function);
-        ActorEntry impl = new ActorEntry(actorType.callFunc(), function, canF, newF);
-        impls.add(impl);
-        VirtualEntry virtualEntry = new VirtualEntry(function.functionName(), function.params().size());
-        actors.computeIfAbsent(virtualEntry, k -> new ArrayList<>()).add(impl);
-        new AwaitConsumerCollector(actorType).visit(function.blk());
+        ts.defineActor(function, new ActorType.ImplProvider() {
+            @Override
+            public void callFunc(FunctionType functionType, DexFunction func) {
+                String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
+                String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
+                CallActor impl = new CallActor(functionType, function, canF, newF);
+                impls.add(impl);
+                VirtualFunction virtualFunction = new VirtualFunction(function.functionName(), function.params().size());
+                virtualFunctions.computeIfAbsent(virtualFunction, k -> new ArrayList<>()).add(impl);
+            }
+
+            @Override
+            public void newFunc(FunctionType functionType, DexFunction func) {
+                String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
+                String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
+                impls.add(new NewActor(functionType, function, canF, newF));
+            }
+
+            @Override
+            public void innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+                String funcName = awaitConsumer.identifier().toString();
+                String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
+                String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
+                String outerClassName = OutTopLevelClass.qualifiedClassNameOf(func);
+                CallInnerActor innerActor = new CallInnerActor(functionType, outerClassName, awaitConsumer, canF, newF);
+                impls.add(innerActor);
+            }
+
+            @Override
+            public void innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+                String funcName = awaitConsumer.identifier().toString();
+                String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
+                String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
+                String outerClassName = OutTopLevelClass.qualifiedClassNameOf(func);
+                NewInnerActor innerActor = new NewInnerActor(functionType, outerClassName, awaitConsumer, canF, newF);
+                impls.add(innerActor);
+            }
+        });
     }
 
     private String allocateShim(String shimName) {
         int count = shims.computeIfAbsent(shimName, k -> 0);
         count += 1;
+        shims.put(shimName, count);
         return shimName + "__" + count;
     }
 
@@ -99,10 +127,10 @@ public class OutShim {
         g.__(" {");
         g.__(new Indent(() -> {
             for (FunctionType funcType : funcTypes) {
-                if (!(funcType.attachment() instanceof ImplEntry)) {
+                if (!(funcType.attachment() instanceof Impl)) {
                     throw new IllegalStateException("no implementation attached to function: " + funcType);
                 }
-                ImplEntry implEntry = (ImplEntry) funcType.attachment();
+                Impl implEntry = (Impl) funcType.attachment();
                 g.__("if ("
                 ).__(implEntry.canF());
                 InvokeParams.$(g, paramsCount, false);
@@ -144,39 +172,8 @@ public class OutShim {
         Type ret = ts.resolveType(javaFunction.getReturnType());
         FunctionType functionType = new FunctionType(funcName, params, ret);
         ts.defineFunction(functionType);
-        JavaFunctionEntry impl = new JavaFunctionEntry(functionType, javaFunction, canF, callF);
+        CallJavaFunction impl = new CallJavaFunction(functionType, javaFunction, canF, callF);
         impls.add(impl);
-    }
-
-
-    private class AwaitConsumerCollector implements DexElement.Visitor {
-
-        private final ActorType actorType;
-
-        public AwaitConsumerCollector(ActorType actorType) {
-            this.actorType = actorType;
-        }
-
-        @Override
-        public void visit(DexElement elem) {
-            if (elem instanceof DexBlock || elem instanceof DexAwaitStmt) {
-                elem.walkDown(this);
-                return;
-            }
-            if (elem instanceof DexAwaitConsumer) {
-                visitAwaitConsumer((DexAwaitConsumer) elem);
-            }
-        }
-
-        private void visitAwaitConsumer(DexAwaitConsumer awaitConsumer) {
-            String funcName = awaitConsumer.identifier().toString();
-            String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
-            String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
-            FunctionType functionType = actorType.callFuncOf(awaitConsumer);
-            String outerClassName = OutTopLevelClass.qualifiedClassNameOf(actorType.elem());
-            InnerActorEntry innerActor = new InnerActorEntry(functionType, outerClassName, awaitConsumer, canF, newF);
-            impls.add(innerActor);
-        }
     }
 
     public static String stripPrefix(String f) {

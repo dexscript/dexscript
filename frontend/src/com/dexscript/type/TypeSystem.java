@@ -36,8 +36,8 @@ public class TypeSystem {
         functionTable.define(function);
     }
 
-    public ActorType defineActor(DexFunction elem) {
-        return new ActorType(actorTable, functionTable, elem);
+    public ActorType defineActor(DexFunction elem, ActorType.ImplProvider implProvider) {
+        return new ActorType(actorTable, functionTable, elem, implProvider);
     }
 
     public InterfaceType defineInterface(DexInterface inf) {

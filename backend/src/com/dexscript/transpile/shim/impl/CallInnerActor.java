@@ -6,22 +6,18 @@ import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.type.CheckType;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
-public class InnerActorEntry extends ImplEntry {
+public class CallInnerActor extends Impl {
 
     private final DexAwaitConsumer awaitConsumer;
     private final String canF;
     private final String newF;
     private final String outerClassName;
 
-    public InnerActorEntry(FunctionType functionType, String outerClassName,
-                           DexAwaitConsumer awaitConsumer, String canF, String newF) {
+    public CallInnerActor(FunctionType functionType, String outerClassName,
+                          DexAwaitConsumer awaitConsumer, String canF, String newF) {
         super(functionType, canF, null, newF);
         this.outerClassName = outerClassName;
         awaitConsumer.attach(this);
@@ -60,7 +56,7 @@ public class InnerActorEntry extends ImplEntry {
             g.__("return obj.new "
             ).__(awaitConsumer.identifier().toString()
             ).__("(scheduler");
-            for (int i = 0; i < functionType().params().size() + 1; i++) {
+            for (int i = 1; i < functionType().params().size(); i++) {
                 g.__(", ");
                 Type paramType = functionType().params().get(i);
                 g.__("(("

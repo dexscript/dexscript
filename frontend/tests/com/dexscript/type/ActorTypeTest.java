@@ -2,6 +2,7 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.stmt.DexAwaitConsumer;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -9,6 +10,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActorTypeTest {
+
+    private ActorType.ImplProvider implProvider = new ActorType.ImplProvider() {
+        @Override
+        public void callFunc(FunctionType functionType, DexFunction func) {
+
+        }
+
+        @Override
+        public void newFunc(FunctionType functionType, DexFunction func) {
+
+        }
+
+        @Override
+        public void innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+
+        }
+
+        @Override
+        public void innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+
+        }
+    };
 
     @Test
     public void can_consume_from_actor() {
@@ -18,7 +41,7 @@ public class ActorTypeTest {
         ActorType actor = new ActorType(actorTable, functionTable, new DexFunction("" +
                 "function Hello(): string {\n" +
                 "   return 'hello'\n" +
-                "}"));
+                "}"), implProvider);
         InterfaceType inf = new InterfaceType(typeTable, functionTable, new DexInterface("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
@@ -38,7 +61,7 @@ public class ActorTypeTest {
                 "   case AA(): string{\n" +
                 "       return 'hello'\n" +
                 "   }}\n" +
-                "}"));
+                "}"), implProvider);
         InterfaceType inf = new InterfaceType(typeTable, functionTable, new DexInterface("" +
                 "interface HasAA {\n" +
                 "   AA(): string\n" +
@@ -58,7 +81,7 @@ public class ActorTypeTest {
         FunctionTable functionTable = new FunctionTable();
         new ActorType(actorTable, functionTable, new DexFunction("" +
                 "function Hello() {\n" +
-                "}"));
+                "}"), implProvider);
         List<FunctionType> functionTypes = functionTable.resolve("Hello", new ArrayList<>());
         Assert.assertEquals(1, functionTypes.size());
         Assert.assertEquals(BuiltinTypes.VOID, functionTypes.get(0).ret());

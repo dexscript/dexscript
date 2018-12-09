@@ -2,17 +2,16 @@ package com.dexscript.transpile.shim.impl;
 
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 
 import java.lang.reflect.Method;
 
-public class JavaFunctionEntry extends ImplEntry {
+public class CallJavaFunction extends Impl {
 
     private final Method javaFunction;
 
-    public JavaFunctionEntry(FunctionType functionType, Method javaFunction, String canF, String callF) {
+    public CallJavaFunction(FunctionType functionType, Method javaFunction, String canF, String callF) {
         super(functionType, canF, callF, null);
         this.javaFunction = javaFunction;
     }
