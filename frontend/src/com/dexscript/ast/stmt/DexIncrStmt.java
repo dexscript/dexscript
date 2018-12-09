@@ -3,6 +3,8 @@ package com.dexscript.ast.stmt;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.expr.DexIntegerLiteral;
+import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
@@ -48,6 +50,10 @@ public class DexIncrStmt extends DexSimpleStatement {
 
     public DexValueRef target() {
         return target;
+    }
+
+    public DexInvocation invocation() {
+        return new DexInvocation("Add__", target, new DexIntegerLiteral("1"));
     }
 
     private class Parser {

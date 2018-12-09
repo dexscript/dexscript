@@ -77,6 +77,7 @@ public interface Translate<E extends DexElement> {
             add(new TranslateAssign());
             add(new TranslateIf());
             add(new TranslateElse());
+            add(new TranslateIncr());
         }
 
         private void add(Translate<?> handler) {

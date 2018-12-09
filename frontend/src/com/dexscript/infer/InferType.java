@@ -78,12 +78,4 @@ public interface InferType<E extends DexExpr> {
         return types;
     }
 
-    static List<Type> inferTypes(TypeSystem ts, DexExpr elem1, List<DexExpr> elems) {
-        ArrayList<Type> types = new ArrayList<>();
-        types.add(InferType.$(ts, elem1));
-        for (DexExpr elem : elems) {
-            types.add(InferType.$(ts, elem));
-        }
-        return types;
-    }
 }

@@ -5,6 +5,7 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
 import com.dexscript.runtime.DexRuntimeException;
+import com.dexscript.runtime.condition.Add__Int64__Int64;
 import com.dexscript.runtime.condition.Equal__Int64__Int64;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
@@ -33,6 +34,7 @@ public class OutTown {
 
     public OutTown() {
         ts.defineFunction(Equal__Int64__Int64.FUNCTION_TYPE);
+        ts.defineFunction(Add__Int64__Int64.FUNCTION_TYPE);
     }
 
     public OutTown addFile(String fileName, String src) {

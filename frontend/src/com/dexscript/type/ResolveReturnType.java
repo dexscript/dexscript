@@ -26,4 +26,12 @@ public interface ResolveReturnType {
         }
         return ret;
     }
+
+    static Type $(List<FunctionType> functions) {
+        Type ret = functions.get(0).ret();
+        for (int i = 1; i < functions.size(); i++) {
+            ret = ret.union(functions.get(i).ret());
+        }
+        return ret;
+    }
 }

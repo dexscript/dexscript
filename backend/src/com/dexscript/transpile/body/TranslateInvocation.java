@@ -4,17 +4,16 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.infer.InferType;
+import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;
 import com.dexscript.transpile.skeleton.OutStateMethod;
-import com.dexscript.type.BuiltinTypes;
-import com.dexscript.type.FunctionType;
-import com.dexscript.type.Type;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TranslateInvocation<E extends DexExpr & DexInvocationExpr> implements Translate<E> {
@@ -22,19 +21,28 @@ public class TranslateInvocation<E extends DexExpr & DexInvocationExpr> implemen
     @Override
     public void handle(OutClass oClass, E iElem) {
         DexInvocation invocation = iElem.invocation();
-        handle(oClass, iElem, invocation.funcName(), invocation.args());
+        OutField oResultField = invoke(oClass, invocation.funcName(), invocation.args());
+        if (oResultField != null) {
+            iElem.attach(oResultField);
+        }
     }
 
-    private static void handle(OutClass oClass, DexExpr iElem, String funcName, List<DexExpr> iArgs) {
+    public static OutField invoke(OutClass oClass, String funcName, List<DexExpr> iArgs) {
         for (DexExpr iArg : iArgs) {
             Translate.$(oClass, iArg);
         }
         TypeSystem ts = oClass.typeSystem();
 
-        List<FunctionType> funcTypes = ts.resolveFunctions(funcName, InferType.inferTypes(ts, iArgs));
+        List<Type> argTypes = InferType.inferTypes(ts, iArgs);
+        List<FunctionType> funcTypes = ts.resolveFunctions(funcName, argTypes);
+        if (funcTypes.size() == 0) {
+            throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
+                    funcName, argTypes));
+        }
         String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), funcTypes);
+        Type retType = ResolveReturnType.$(funcTypes);
 
-        Type promiseType = ts.resolveType("Promise");
+        Type promiseType = ts.resolveType("Promise", Arrays.asList(retType));
         OutField oActorField = oClass.allocateField(funcName, promiseType);
         oClass.g().__(oActorField.value()
         ).__(" = "
@@ -47,24 +55,22 @@ public class TranslateInvocation<E extends DexExpr & DexInvocationExpr> implemen
             oClass.g().__(oValue.value());
         }
         oClass.g().__(new Line(");"));
-
-        consume(oClass, iElem, oActorField.value());
+        return consume(oClass, retType, oActorField.value());
     }
 
-    public static void consume(OutClass oClass, DexExpr iElem, String targetActor) {
+    public static OutField consume(OutClass oClass, Type retType, String targetActor) {
         checkFinished(oClass, targetActor);
-        Type resultType = InferType.$(oClass.typeSystem(), iElem);
-        if (BuiltinTypes.VOID.equals(resultType)) {
-            return;
+        if (BuiltinTypes.VOID.equals(retType)) {
+            return null;
         }
-        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", resultType);
+        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", retType);
         oClass.g().__(oResultField.value()
         ).__(" = (("
-        ).__(resultType.javaClassName()
+        ).__(retType.javaClassName()
         ).__(")("
         ).__(targetActor
         ).__(new Line(".value()));"));
-        iElem.attach(oResultField);
+        return oResultField;
     }
 
     private static void checkFinished(OutClass oClass, String targetActor) {
