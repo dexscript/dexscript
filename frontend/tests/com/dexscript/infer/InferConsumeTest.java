@@ -16,7 +16,7 @@ public class InferConsumeTest {
         ts.defineActor(new DexFunction("" +
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
-                "}"));
+                "}"), null);
         Type type = InferType.$(ts, DexExpr.parse("<-Hello{100}"));
         Assert.assertEquals(BuiltinTypes.STRING, type);
     }

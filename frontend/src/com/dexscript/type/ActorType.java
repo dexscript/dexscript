@@ -17,10 +17,13 @@ import java.util.Map;
 public class ActorType extends TopLevelType implements FunctionsProvider {
 
     public interface ImplProvider {
-        void callFunc(FunctionType functionType, DexFunction func);
-        void newFunc(FunctionType functionType, DexFunction func);
-        void innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer);
-        void innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer);
+        Object callFunc(FunctionType functionType, DexFunction func);
+
+        Object newFunc(FunctionType functionType, DexFunction func);
+
+        Object innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer);
+
+        Object innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer);
     }
 
     private final TopLevelTypeTable typeTable;
@@ -59,7 +62,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
             params.add(ResolveType.$(typeTable, param.paramType()));
         }
         FunctionType functionType = new FunctionType(name(), params, ret, func);
-        implProvider.callFunc(functionType, func);
+        functionType.attach((FunctionType.LazyAttachment) () -> implProvider.callFunc(functionType, func));
         return functionType;
     }
 
@@ -70,7 +73,7 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
             params.add(ResolveType.$(typeTable, param.paramType()));
         }
         FunctionType functionType = new FunctionType("New__", params, this, func);
-        implProvider.newFunc(functionType, func);
+        functionType.attach((FunctionType.LazyAttachment) () -> implProvider.newFunc(functionType, func));
         return functionType;
     }
 
@@ -139,7 +142,8 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
                 params.add(ResolveType.$(typeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType("New__", params, nestedActor);
-            implProvider.innerNewFunc(functionType, func, awaitConsumer);
+            functionType.attach((FunctionType.LazyAttachment) () -> implProvider.innerNewFunc(
+                    functionType, func, awaitConsumer));
             return functionType;
         }
 
@@ -154,7 +158,8 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
                 params.add(ResolveType.$(typeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType(funcName, params, ret, awaitConsumer);
-            implProvider.innerCallFunc(functionType, func, awaitConsumer);
+            functionType.attach((FunctionType.LazyAttachment) () -> implProvider.innerCallFunc(
+                    functionType, func, awaitConsumer));
             return functionType;
         }
     }

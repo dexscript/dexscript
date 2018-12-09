@@ -9,6 +9,10 @@ import java.util.Map;
 
 public final class FunctionType extends Type {
 
+    public interface LazyAttachment {
+        Object lazyLoad();
+    }
+
     @NotNull
     private final String name;
 
@@ -39,6 +43,9 @@ public final class FunctionType extends Type {
     }
 
     public final Object attachment() {
+        if (attachment instanceof LazyAttachment) {
+            attachment = ((LazyAttachment) attachment).lazyLoad();
+        }
         return attachment;
     }
 

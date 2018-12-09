@@ -2,13 +2,15 @@ package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
+import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
+import com.dexscript.infer.InferType;
 import com.dexscript.runtime.BasicOperators;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.*;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 import java.util.ArrayList;
@@ -47,7 +49,9 @@ public class OutTown {
         for (DexFile iFile : iFiles) {
             for (DexTopLevelDecl iTopLevelDecl : iFile.topLevelDecls()) {
                 if (iTopLevelDecl.function() != null) {
-                    OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, iTopLevelDecl.function());
+                    DexFunction function = iTopLevelDecl.function();
+                    ensureTypeLoaded(function);
+                    OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, function);
                     addSource(oClass.qualifiedClassName(), oClass.toString());
                 }
             }
@@ -57,6 +61,15 @@ public class OutTown {
             return compiler.compileAll();
         } catch (Exception e) {
             throw new DexRuntimeException(e);
+        }
+    }
+
+    private void ensureTypeLoaded(DexFunction function) {
+        String funcName = function.functionName();
+        List<Type> args = ts.resolveTypes(function.params());
+        List<FunctionType> functionTypes = ts.resolveFunctions(funcName, args);
+        for (FunctionType resolveFunction : functionTypes) {
+            resolveFunction.attachment();
         }
     }
 

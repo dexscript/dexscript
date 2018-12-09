@@ -21,6 +21,11 @@ public class CallJavaFunction extends Impl {
     }
 
     @Override
+    public boolean hasAwait() {
+        return false;
+    }
+
+    @Override
     protected void genCallF(Gen g) {
         String callF = OutShim.stripPrefix(callF());
         g.__("public static Promise "

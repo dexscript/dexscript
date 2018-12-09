@@ -13,14 +13,21 @@ import com.dexscript.type.Type;
 public class CallActor extends Impl {
 
     private final DexFunction function;
+    private final boolean hasAwait;
 
-    public CallActor(FunctionType functionType, DexFunction function, String canF, String newF) {
+    public CallActor(FunctionType functionType, DexFunction function, String canF, String newF, boolean hasAwait) {
         super(functionType, canF, null, newF);
         this.function = function;
+        this.hasAwait = hasAwait;
     }
 
     public DexFunction function() {
         return function;
+    }
+
+    @Override
+    public boolean hasAwait() {
+        return hasAwait;
     }
 
     protected void genNewF(Gen g) {

@@ -13,23 +13,23 @@ public class ActorTypeTest {
 
     private ActorType.ImplProvider implProvider = new ActorType.ImplProvider() {
         @Override
-        public void callFunc(FunctionType functionType, DexFunction func) {
-
+        public Object callFunc(FunctionType functionType, DexFunction func) {
+            return null;
         }
 
         @Override
-        public void newFunc(FunctionType functionType, DexFunction func) {
-
+        public Object newFunc(FunctionType functionType, DexFunction func) {
+            return null;
         }
 
         @Override
-        public void innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
-
+        public Object innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+            return null;
         }
 
         @Override
-        public void innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
-
+        public Object innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+            return null;
         }
     };
 

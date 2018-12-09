@@ -74,40 +74,48 @@ public class OutShim {
     public void defineActor(DexFunction function) {
         ts.defineActor(function, new ActorType.ImplProvider() {
             @Override
-            public void callFunc(FunctionType functionType, DexFunction func) {
+            public Object callFunc(FunctionType functionType, DexFunction func) {
                 String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
                 String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
-                CallActor impl = new CallActor(functionType, function, canF, newF);
+                boolean hasAwait = new HasAwait(ts, func).result();
+                CallActor impl = new CallActor(functionType, function, canF, newF, hasAwait);
                 impls.add(impl);
                 VirtualFunction virtualFunction = new VirtualFunction(function.functionName(), function.params().size());
                 virtualFunctions.computeIfAbsent(virtualFunction, k -> new ArrayList<>()).add(impl);
+                return impl;
             }
 
             @Override
-            public void newFunc(FunctionType functionType, DexFunction func) {
+            public Object newFunc(FunctionType functionType, DexFunction func) {
                 String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
                 String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
-                impls.add(new NewActor(functionType, function, canF, newF));
+                NewActor impl = new NewActor(functionType, function, canF, newF);
+                impls.add(impl);
+                return impl;
             }
 
             @Override
-            public void innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+            public Object innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
                 String funcName = awaitConsumer.identifier().toString();
                 String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
                 String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
                 String outerClassName = OutTopLevelClass.qualifiedClassNameOf(func);
-                CallInnerActor innerActor = new CallInnerActor(functionType, outerClassName, awaitConsumer, canF, newF);
-                impls.add(innerActor);
+                boolean hasAwait = new HasAwait(ts, awaitConsumer).result();
+                CallInnerActor impl = new CallInnerActor(
+                        functionType, outerClassName, awaitConsumer, canF, newF, hasAwait);
+                impls.add(impl);
+                return impl;
             }
 
             @Override
-            public void innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+            public Object innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
                 String funcName = awaitConsumer.identifier().toString();
                 String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
                 String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
                 String outerClassName = OutTopLevelClass.qualifiedClassNameOf(func);
-                NewInnerActor innerActor = new NewInnerActor(functionType, outerClassName, awaitConsumer, canF, newF);
-                impls.add(innerActor);
+                NewInnerActor impl = new NewInnerActor(functionType, outerClassName, awaitConsumer, canF, newF);
+                impls.add(impl);
+                return impl;
             }
         });
     }
@@ -174,6 +182,7 @@ public class OutShim {
         ts.defineFunction(functionType);
         CallJavaFunction impl = new CallJavaFunction(functionType, javaFunction, canF, callF);
         impls.add(impl);
+        functionType.attach(impl);
     }
 
     public static String stripPrefix(String f) {

@@ -15,11 +15,13 @@ public class CallInnerActor extends Impl {
     private final String canF;
     private final String newF;
     private final String outerClassName;
+    private final boolean hasAwait;
 
     public CallInnerActor(FunctionType functionType, String outerClassName,
-                          DexAwaitConsumer awaitConsumer, String canF, String newF) {
+                          DexAwaitConsumer awaitConsumer, String canF, String newF, boolean hasAwait) {
         super(functionType, canF, null, newF);
         this.outerClassName = outerClassName;
+        this.hasAwait = hasAwait;
         awaitConsumer.attach(this);
         this.awaitConsumer = awaitConsumer;
         this.canF = canF;
@@ -40,6 +42,11 @@ public class CallInnerActor extends Impl {
 
     public String newF() {
         return newF;
+    }
+
+    @Override
+    public boolean hasAwait() {
+        return hasAwait;
     }
 
     protected void genNewF(Gen g) {

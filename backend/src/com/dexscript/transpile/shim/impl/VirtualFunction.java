@@ -61,4 +61,12 @@ public class VirtualFunction {
     public int hashCode() {
         return Objects.hash(funcName, paramsCount);
     }
+
+    @Override
+    public String toString() {
+        return "VirtualFunction{" +
+                "funcName='" + funcName + '\'' +
+                ", paramsCount=" + paramsCount +
+                '}';
+    }
 }

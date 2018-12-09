@@ -42,6 +42,11 @@ public class NewInnerActor extends Impl {
         return newF;
     }
 
+    @Override
+    public boolean hasAwait() {
+        return true;
+    }
+
     protected void genNewF(Gen g) {
         String newF = OutShim.stripPrefix(newF());
         g.__("public static Promise "

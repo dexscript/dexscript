@@ -22,7 +22,6 @@ public abstract class Impl {
 
     public Impl(FunctionType functionType, String canF, String callF, String newF) {
         this.functionType = functionType;
-        functionType.attach(this);
         this.canF = canF;
         this.callF = callF;
         this.newF = newF;
@@ -49,6 +48,8 @@ public abstract class Impl {
     protected FunctionType functionType() {
         return functionType;
     }
+
+    public abstract boolean hasAwait();
 
     protected void genCallF(Gen g) {
 

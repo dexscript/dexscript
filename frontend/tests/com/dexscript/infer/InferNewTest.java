@@ -17,8 +17,8 @@ public class InferNewTest {
         ts.defineActor(new DexFunction("" +
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
-                "}"));
-        Type type = InferType.$(ts, DexExpr.parse("Hello{100}"));
+                "}"), null);
+        Type type = InferType.$(ts, DexExpr.parse("new Hello(100)"));
         InterfaceType promise = ts.defineInterface(new DexInterface("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +

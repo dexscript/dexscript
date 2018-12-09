@@ -7,6 +7,7 @@ import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.shim.impl.Impl;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;
@@ -55,7 +56,28 @@ public class TranslateInvocation<E extends DexExpr & DexInvocationExpr> implemen
             oClass.g().__(oValue.value());
         }
         oClass.g().__(new Line(");"));
-        return consume(oClass, retType, oActorField.value());
+        boolean needToConsume = false;
+        for (FunctionType funcType : funcTypes) {
+            Impl impl = (Impl) funcType.attachment();
+            if (impl.hasAwait()) {
+                needToConsume =  true;
+                break;
+            }
+        }
+        if (needToConsume) {
+            return consume(oClass, retType, oActorField.value());
+        }
+        if (BuiltinTypes.VOID.equals(retType)) {
+            return null;
+        }
+        OutField oResultField = oClass.allocateField(oActorField.value().substring(1) + "Result", retType);
+        oClass.g().__(oResultField.value()
+        ).__(" = (("
+        ).__(retType.javaClassName()
+        ).__(")("
+        ).__(oActorField.value()
+        ).__(new Line(".value()));"));
+        return oResultField;
     }
 
     public static OutField consume(OutClass oClass, Type retType, String targetActor) {

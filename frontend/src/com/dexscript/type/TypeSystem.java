@@ -1,9 +1,8 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.DexTopLevelDecl;
+import com.dexscript.ast.DexParam;
 import com.dexscript.ast.type.DexType;
 
 import java.util.ArrayList;
@@ -70,5 +69,13 @@ public class TypeSystem {
 
     public Type resolveType(Class<?> javaType) {
         return typeTable.resolveType(javaType);
+    }
+
+    public List<Type> resolveTypes(List<DexParam> params) {
+        ArrayList<Type> types = new ArrayList<>();
+        for (DexParam param : params) {
+            types.add(resolveType(param.paramType()));
+        }
+        return types;
     }
 }
