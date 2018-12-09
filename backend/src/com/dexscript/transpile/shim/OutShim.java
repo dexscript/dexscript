@@ -78,7 +78,7 @@ public class OutShim {
         String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
         String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
         ActorType actorType = ts.defineActor(function);
-        ActorEntry impl = new ActorEntry(actorType.newFunc(), function, canF, newF);
+        ActorEntry impl = new ActorEntry(actorType.callFunc(), function, canF, newF);
         impls.add(impl);
         VirtualEntry virtualEntry = new VirtualEntry(function.functionName(), function.params().size());
         actors.computeIfAbsent(virtualEntry, k -> new ArrayList<>()).add(impl);
@@ -172,7 +172,7 @@ public class OutShim {
             String funcName = awaitConsumer.identifier().toString();
             String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
             String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
-            FunctionType functionType = actorType.newFuncOf(awaitConsumer);
+            FunctionType functionType = actorType.callFuncOf(awaitConsumer);
             String outerClassName = OutTopLevelClass.qualifiedClassNameOf(actorType.elem());
             InnerActorEntry innerActor = new InnerActorEntry(functionType, outerClassName, awaitConsumer, canF, newF);
             impls.add(innerActor);

@@ -46,11 +46,6 @@ public class InnerActorEntry extends ImplEntry {
         return newF;
     }
 
-    @Override
-    protected void genCanF(CheckType checkType, Gen g, @NotNull List<Type> params) {
-        super.genCanF(checkType, g, params.subList(1, params.size()));
-    }
-
     protected void genNewF(Gen g) {
         String newF = OutShim.stripPrefix(newF());
         g.__("public static Promise "
@@ -65,7 +60,7 @@ public class InnerActorEntry extends ImplEntry {
             g.__("return obj.new "
             ).__(awaitConsumer.identifier().toString()
             ).__("(scheduler");
-            for (int i = 1; i < functionType().params().size() + 1; i++) {
+            for (int i = 0; i < functionType().params().size() + 1; i++) {
                 g.__(", ");
                 Type paramType = functionType().params().get(i);
                 g.__("(("

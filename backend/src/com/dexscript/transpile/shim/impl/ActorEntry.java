@@ -1,15 +1,14 @@
 package com.dexscript.transpile.shim.impl;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.transpile.gen.*;
+import com.dexscript.transpile.gen.DeclareParams;
+import com.dexscript.transpile.gen.Gen;
+import com.dexscript.transpile.gen.Indent;
+import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
-import com.dexscript.transpile.type.CheckType;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class ActorEntry extends ImplEntry {
 
@@ -24,11 +23,6 @@ public class ActorEntry extends ImplEntry {
         return function;
     }
 
-    @Override
-    protected void genCanF(CheckType checkType, Gen g, @NotNull List<Type> params) {
-        super.genCanF(checkType, g, params.subList(1, params.size()));
-    }
-
     protected void genNewF(Gen g) {
         String newF = OutShim.stripPrefix(newF());
         g.__("public static Promise "
@@ -40,7 +34,7 @@ public class ActorEntry extends ImplEntry {
             g.__("return new "
             ).__(className
             ).__("(scheduler");
-            for (int i = 1; i < functionType().params().size(); i++) {
+            for (int i = 0; i < functionType().params().size(); i++) {
                 g.__(", ");
                 Type paramType = functionType().params().get(i);
                 g.__("(("
