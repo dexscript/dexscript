@@ -15,7 +15,7 @@ public class InnerActorType extends Type implements FunctionsProvider {
     private List<FunctionType> members;
 
     public InnerActorType(TopLevelTypeTable typeTable, FunctionTable functionTable, DexAwaitConsumer awaitConsumer) {
-        super("Promise");
+        super("com.dexscript.runtime.Promise");
         functionTable.lazyDefine(this);
         this.typeTable = typeTable;
         this.awaitConsumer = awaitConsumer;

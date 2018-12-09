@@ -7,13 +7,21 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
-import com.dexscript.dispatch.*;
-import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.gen.*;
+import com.dexscript.transpile.shim.impl.*;
+import com.dexscript.transpile.skeleton.OutTopLevelClass;
+import com.dexscript.transpile.type.CheckType;
+import com.dexscript.type.ActorType;
 import com.dexscript.type.FunctionType;
+import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
-import java.util.*;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OutShim {
 
@@ -23,9 +31,8 @@ public class OutShim {
     private final TypeSystem ts;
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
-    private final List<ActorEntry> actors = new ArrayList<>();
-    private final List<InnerActorEntry> innerActors = new ArrayList<>();
-    private final DispatchTable dispatchTable = new DispatchTable();
+    private final List<ImplEntry> impls = new ArrayList<>();
+    private final Map<VirtualEntry, List<ImplEntry>> actors = new HashMap<>();
 
     public OutShim(TypeSystem ts) {
         this.ts = ts;
@@ -43,18 +50,14 @@ public class OutShim {
         if (finished) {
             throw new IllegalStateException();
         }
-        for (ActorEntry actorEntry : actors) {
-            DefineNew.$(g, ts, actorEntry);
-            DefineCan.$(g, ts, actorEntry);
-        }
-        for (InnerActorEntry innerActor : innerActors) {
-            DefineNew.$(g, ts, innerActor);
-            DefineCan.$(g, ts, innerActor);
-        }
-        for (Map.Entry<VirtualEntry, List<ImplEntry>> entry : dispatchTable.entrySet()) {
-            DefineEntry.$(g, entry.getKey(), entry.getValue());
-        }
         finished = true;
+        CheckType checkType = new CheckType(null, null);
+        for (ImplEntry impl : impls) {
+            impl.finish(g, checkType);
+        }
+        for (Map.Entry<VirtualEntry, List<ImplEntry>> entry : actors.entrySet()) {
+            entry.getKey().finish(g, entry.getValue());
+        }
         g.indention("");
         g.__(new Line());
         g.__(new Line("}")); // end of class Shim__
@@ -65,6 +68,8 @@ public class OutShim {
         for (DexTopLevelDecl topLevelDecl : file.topLevelDecls()) {
             if (topLevelDecl.function() != null) {
                 defineActor(topLevelDecl.function());
+            } else if (topLevelDecl.inf() != null) {
+                ts.defineInterface(topLevelDecl.inf());
             }
         }
     }
@@ -72,9 +77,12 @@ public class OutShim {
     public void defineActor(DexFunction function) {
         String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
         String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
-        ActorEntry actorEntry = new ActorEntry(dispatchTable, function, canF, newF);
-        actors.add(actorEntry);
-        new AwaitConsumerCollector(OutTopLevelClass.qualifiedClassNameOf(function)).visit(function.blk());
+        ActorType actorType = ts.defineActor(function);
+        ActorEntry impl = new ActorEntry(actorType.newFunc(), function, canF, newF);
+        impls.add(impl);
+        VirtualEntry virtualEntry = new VirtualEntry(function.functionName(), function.params().size());
+        actors.computeIfAbsent(virtualEntry, k -> new ArrayList<>()).add(impl);
+        new AwaitConsumerCollector(actorType).visit(function.blk());
     }
 
     private String allocateShim(String shimName) {
@@ -84,21 +92,69 @@ public class OutShim {
     }
 
     public String combineNewF(String funcName, int paramsCount, List<FunctionType> funcTypes) {
-        if (funcTypes.size() == 1) {
-            FunctionType funcType = funcTypes.get(0);
-            return funcType.impl().newF();
-        }
         String cNewF = allocateShim("cnew__" + funcName);
-        CombineNew.$(g, funcTypes, paramsCount, cNewF);
+        g.__("public static Promise "
+        ).__(cNewF);
+        DeclareParams.$(g, paramsCount, true);
+        g.__(" {");
+        g.__(new Indent(() -> {
+            for (FunctionType funcType : funcTypes) {
+                if (!(funcType.attachment() instanceof ImplEntry)) {
+                    throw new IllegalStateException("no implementation attached to function: " + funcType);
+                }
+                ImplEntry implEntry = (ImplEntry) funcType.attachment();
+                g.__("if ("
+                ).__(implEntry.canF());
+                InvokeParams.$(g, paramsCount, false);
+                g.__(new Line(") {"));
+                g.__(new Indent(() -> {
+                    if (implEntry.newF() == null) {
+                        g.__("return "
+                        ).__(implEntry.callF());
+                        InvokeParams.$(g, paramsCount, false);
+                        g.__(new Line(";"));
+                    } else {
+                        g.__("return "
+                        ).__(implEntry.newF());
+                        InvokeParams.$(g, paramsCount, true);
+                        g.__(new Line(";"));
+                    }
+                }));
+                g.__(new Line("}"));
+            }
+            g.__(new Line("throw new RuntimeException();"));
+        }));
+        g.__(new Line("}"));
         return CLASSNAME + "." + cNewF;
     }
 
+    public void importJavaClass(Class clazz) {
+        for (Method method : clazz.getMethods()) {
+            if (Modifier.isStatic(method.getModifiers())) {
+                importJavaFunction(method);
+            }
+        }
+    }
+
+    private void importJavaFunction(Method javaFunction) {
+        String funcName = javaFunction.getName();
+        String callF = CLASSNAME + "." + allocateShim("call__" + funcName);
+        String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
+        List<Type> params = ts.resolveType(javaFunction.getParameterTypes());
+        Type ret = ts.resolveType(javaFunction.getReturnType());
+        FunctionType functionType = new FunctionType(funcName, params, ret);
+        ts.defineFunction(functionType);
+        JavaFunctionEntry impl = new JavaFunctionEntry(functionType, javaFunction, canF, callF);
+        impls.add(impl);
+    }
+
+
     private class AwaitConsumerCollector implements DexElement.Visitor {
 
-        private final String outerClassName;
+        private final ActorType actorType;
 
-        public AwaitConsumerCollector(String outerClassName) {
-            this.outerClassName = outerClassName;
+        public AwaitConsumerCollector(ActorType actorType) {
+            this.actorType = actorType;
         }
 
         @Override
@@ -116,8 +172,10 @@ public class OutShim {
             String funcName = awaitConsumer.identifier().toString();
             String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
             String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
-            InnerActorEntry nestedActor = new InnerActorEntry(dispatchTable, outerClassName, awaitConsumer, canF, newF);
-            innerActors.add(nestedActor);
+            FunctionType functionType = actorType.newFuncOf(awaitConsumer);
+            String outerClassName = OutTopLevelClass.qualifiedClassNameOf(actorType.elem());
+            InnerActorEntry innerActor = new InnerActorEntry(functionType, outerClassName, awaitConsumer, canF, newF);
+            impls.add(innerActor);
         }
     }
 

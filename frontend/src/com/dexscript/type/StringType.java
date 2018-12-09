@@ -3,7 +3,7 @@ package com.dexscript.type;
 public class StringType extends TopLevelType {
 
     public StringType() {
-        super("string", "String");
+        super("string", "java.lang.String");
     }
 
     @Override

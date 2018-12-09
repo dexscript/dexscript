@@ -7,7 +7,7 @@ import com.dexscript.type.StringType;
 
 import java.util.List;
 
-public class CheckStringType implements CheckType<StringType> {
+public class CheckStringType implements CheckType.Handler<StringType> {
 
     @Override
     public String handle(Gen g, StringType type, List<Class> javaClasses, List<Class> javaInterfaces) {

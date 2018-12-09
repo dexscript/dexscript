@@ -6,15 +6,19 @@ import java.util.*;
 
 public class TopLevelTypeTable {
 
-    protected final Map<String, TopLevelType> defined = new HashMap<>();
+    private final Map<String, TopLevelType> defined = new HashMap<>();
     private final Map<Expansion, Type> expanded = new HashMap<>();
     private final List<TopLevelTypesProvider> providers = new ArrayList<>();
+    private final Map<String, Type> javaTypes = new HashMap<>();
 
     public TopLevelTypeTable() {
     }
 
     public TopLevelTypeTable(TopLevelTypeTable copiedFrom) {
         defined.putAll(copiedFrom.defined);
+        javaTypes.putAll(copiedFrom.javaTypes);
+        providers.addAll(copiedFrom.providers);
+        expanded.putAll(copiedFrom.expanded);
     }
 
     public Type resolveType(String name) {
@@ -71,10 +75,20 @@ public class TopLevelTypeTable {
 
     public void define(TopLevelType type) {
         defined.put(type.name(), type);
+        javaTypes.put(type.javaClassName(), type);
     }
 
     public void lazyDefine(TopLevelTypesProvider provider) {
         providers.add(provider);
+    }
+
+    public Type resolveType(Class<?> javaType) {
+        String javaClassName = javaType.getCanonicalName();
+        Type type = javaTypes.get(javaClassName);
+        if (type == null) {
+            throw new DexSyntaxException(javaClassName + " has not been imported");
+        }
+        return type;
     }
 
     private static class Expansion {

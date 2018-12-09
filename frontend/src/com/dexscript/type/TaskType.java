@@ -18,7 +18,7 @@ public class TaskType extends TopLevelType implements FunctionsProvider, Generic
     }
 
     public TaskType(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
-        super("Task", "Actor");
+        super("Task", "com.dexscript.runtime.Actor");
         this.typeTable = typeTable;
         this.functionTable = functionTable;
         typeTable.define(this);

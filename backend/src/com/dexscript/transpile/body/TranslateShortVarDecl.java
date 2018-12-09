@@ -3,7 +3,10 @@ package com.dexscript.transpile.body;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.stmt.DexShortVarDecl;
+import com.dexscript.infer.InferType;
+import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
+import com.dexscript.transpile.skeleton.OutField;
 
 public class TranslateShortVarDecl implements Translate<DexShortVarDecl> {
 
@@ -15,6 +18,11 @@ public class TranslateShortVarDecl implements Translate<DexShortVarDecl> {
         DexIdentifier decl = iShortVarDecl.decls().get(0);
         DexExpr expr = iShortVarDecl.expr();
         Translate.$(oClass, expr);
-        decl.attach(expr.attachmentOfType(OutValue.class));
+        OutField oField = oClass.allocateField(decl.toString(), InferType.$(oClass.typeSystem(), expr));
+        oClass.g().__(oField.value()
+        ).__(" = "
+        ).__(OutValue.of(expr)
+        ).__(new Line(";"));
+        decl.attach(oField);
     }
 }

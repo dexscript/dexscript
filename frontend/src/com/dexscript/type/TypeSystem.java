@@ -6,7 +6,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.type.DexType;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TypeSystem {
@@ -44,16 +44,6 @@ public class TypeSystem {
         return new InterfaceType(typeTable, functionTable, inf);
     }
 
-    public void defineFile(DexFile file) {
-        for (DexTopLevelDecl topLevelDecl : file.topLevelDecls()) {
-            if (topLevelDecl.function() != null) {
-                defineActor(topLevelDecl.function());
-            } else if (topLevelDecl.inf() != null) {
-                defineInterface(topLevelDecl.inf());
-            }
-        }
-    }
-
     public List<FunctionType> resolveFunctions(String funcName, List<Type> args) {
         return functionTable.resolve(funcName, args);
     }
@@ -68,5 +58,17 @@ public class TypeSystem {
 
     public Type resolveType(DexType elem) {
         return ResolveType.$(typeTable, elem);
+    }
+
+    public List<Type> resolveType(Class<?>[] javaTypes) {
+        List<Type> types = new ArrayList<>();
+        for (Class<?> javaType : javaTypes) {
+            types.add(resolveType(javaType));
+        }
+        return types;
+    }
+
+    public Type resolveType(Class<?> javaType) {
+        return typeTable.resolveType(javaType);
     }
 }

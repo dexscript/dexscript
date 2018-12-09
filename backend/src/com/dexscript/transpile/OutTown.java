@@ -4,13 +4,10 @@ import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
+import com.dexscript.runtime.BasicOperators;
 import com.dexscript.runtime.DexRuntimeException;
-import com.dexscript.runtime.condition.Add__Int64__Int64;
-import com.dexscript.runtime.condition.Equal__Int64__Int64;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
-import com.dexscript.type.BuiltinTypes;
-import com.dexscript.type.FunctionType;
 import com.dexscript.type.TypeSystem;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
@@ -33,8 +30,7 @@ public class OutTown {
     private final OutShim oShim = new OutShim(ts);
 
     public OutTown() {
-        ts.defineFunction(Equal__Int64__Int64.FUNCTION_TYPE);
-        ts.defineFunction(Add__Int64__Int64.FUNCTION_TYPE);
+        oShim.importJavaClass(BasicOperators.class);
     }
 
     public OutTown addFile(String fileName, String src) {
@@ -42,7 +38,6 @@ public class OutTown {
         if (new CheckSyntaxError(iFile).hasError()) {
             throw new DexRuntimeException();
         }
-        ts.defineFile(iFile);
         oShim.defineFile(iFile);
         iFiles.add(iFile);
         return this;

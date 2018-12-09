@@ -7,7 +7,7 @@ import com.dexscript.type.Int64Type;
 
 import java.util.List;
 
-public class CheckInt64Type implements CheckType<Int64Type> {
+public class CheckInt64Type implements CheckType.Handler<Int64Type> {
 
     @Override
     public String handle(Gen g, Int64Type type, List<Class> javaClasses, List<Class> javaInterfaces) {

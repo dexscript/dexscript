@@ -12,7 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public class CheckStringLiteralType implements CheckType<StringLiteralType> {
+public class CheckStringLiteralType implements CheckType.Handler<StringLiteralType> {
 
     @Override
     public String handle(Gen g, StringLiteralType stringLiteralType, List<Class> javaClasses, List<Class> javaInterfaces) {

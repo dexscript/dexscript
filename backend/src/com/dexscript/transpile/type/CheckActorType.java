@@ -9,7 +9,7 @@ import com.dexscript.type.ActorType;
 
 import java.util.List;
 
-public class CheckActorType implements CheckType<ActorType> {
+public class CheckActorType implements CheckType.Handler<ActorType> {
 
     @Override
     public String handle(Gen g, ActorType actorType, List<Class> javaClasses, List<Class> javaInterfaces) {

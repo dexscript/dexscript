@@ -3,7 +3,7 @@ package com.dexscript.type;
 public class BoolType extends TopLevelType {
 
     public BoolType() {
-        super("bool", "Boolean");
+        super("bool", "java.lang.Boolean");
     }
 
     @Override

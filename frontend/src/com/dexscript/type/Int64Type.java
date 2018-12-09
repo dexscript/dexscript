@@ -3,7 +3,7 @@ package com.dexscript.type;
 public class Int64Type extends TopLevelType {
 
     public Int64Type() {
-        super("int64", "Long");
+        super("int64", "java.lang.Long");
     }
 
     @Override
