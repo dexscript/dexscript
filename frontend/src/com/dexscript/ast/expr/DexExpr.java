@@ -145,4 +145,8 @@ public abstract class DexExpr extends DexElement {
     public DexMethodCallExpr asMethodCall() {
         return (DexMethodCallExpr) this;
     }
+
+    public DexAddExpr asAdd() {
+        return (DexAddExpr) this;
+    }
 }

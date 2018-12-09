@@ -119,7 +119,7 @@ public class DexIfStmt extends DexStatement {
         @Expect("block")
         private State block() {
             blk = new DexBlock(src.slice(i));
-            blk.reparent(DexIfStmt.this, DexIfStmt.this);
+            blk.reparent(DexIfStmt.this, null);
             i = blk.end();
             return this::elseSmt;
         }
@@ -127,7 +127,7 @@ public class DexIfStmt extends DexStatement {
         @Expect("else")
         private State elseSmt() {
             elseStmt = new DexElseStmt(src.slice(i));
-            elseStmt.reparent(DexIfStmt.this, DexIfStmt.this);
+            elseStmt.reparent(DexIfStmt.this, null);
             if (elseStmt.matched()) {
                 ifStmtEnd = elseStmt.end();
                 return null;

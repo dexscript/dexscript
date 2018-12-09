@@ -147,6 +147,7 @@ public class DexForStmt extends DexStatement {
                 break;
             }
             initStmt = DexSimpleStatement.parse(src.slice(i));
+            initStmt.reparent(DexForStmt.this, null);
             if (initStmt.matched()) {
                 i = initStmt.end();
                 return this::firstSemiColon;
@@ -167,6 +168,7 @@ public class DexForStmt extends DexStatement {
                 }
                 if (b == '{' && initStmt instanceof DexExprStmt) {
                     condition = ((DexExprStmt) initStmt).expr();
+                    condition.reparent(DexForStmt.this, null);
                     initStmt = null;
                     return this::block;
                 }
@@ -189,6 +191,7 @@ public class DexForStmt extends DexStatement {
                 break;
             }
             condition = DexExpr.parse(src.slice(i));
+            condition.reparent(DexForStmt.this, null);
             if (!condition.matched()) {
                 return null;
             }
@@ -225,6 +228,7 @@ public class DexForStmt extends DexStatement {
                 break;
             }
             postStmt = DexSimpleStatement.parse(src.slice(i));
+            postStmt.reparent(DexForStmt.this, null);
             if (!postStmt.matched()) {
                 return null;
             }
@@ -235,6 +239,7 @@ public class DexForStmt extends DexStatement {
         @Expect("block")
         State block() {
             blk = new DexBlock(src.slice(i));
+            blk.reparent(DexForStmt.this, null);
             return null;
         }
     }

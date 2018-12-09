@@ -1,0 +1,28 @@
+package com.dexscript.infer;
+
+import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.expr.DexValueRef;
+import com.dexscript.type.BuiltinTypes;
+import com.dexscript.type.TypeSystem;
+import org.junit.Assert;
+import org.junit.Test;
+
+public class InferForTest {
+
+    @Test
+    public void short_var_decl() {
+        DexFunction func = new DexFunction("" +
+                "function Hello(): int64 {\n" +
+                "   var total: int64\n" +
+                "   for i := 0; i < 100; i++ {" +
+                "       total = total + i" +
+                "   }" +
+                "   return total\n" +
+                "}");
+        DexValueRef ref = func.stmts().get(1).asFor()
+                .blk().stmts().get(0).asAssign()
+                .expr().asAdd().right().asRef();
+        Value val = InferValue.$(new TypeSystem(), ref);
+        Assert.assertEquals(BuiltinTypes.INT64, val.type());
+    }
+}

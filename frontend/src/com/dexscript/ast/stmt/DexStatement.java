@@ -38,6 +38,10 @@ public abstract class DexStatement extends DexElement {
         if (stmt.matched()) {
             return stmt;
         }
+        stmt = new DexForStmt(src);
+        if (stmt.matched()) {
+            return stmt;
+        }
         stmt = new DexShortVarDecl(src);
         if (stmt.matched()) {
             return stmt;
@@ -79,5 +83,13 @@ public abstract class DexStatement extends DexElement {
 
     public DexProduceStmt asProduce() {
         return (DexProduceStmt) this;
+    }
+
+    public DexForStmt asFor() {
+        return (DexForStmt) this;
+    }
+
+    public DexAssignStmt asAssign() {
+        return (DexAssignStmt) this;
     }
 }

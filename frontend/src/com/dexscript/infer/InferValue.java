@@ -53,6 +53,7 @@ public interface InferValue<E extends DexElement> {
             add(new InferShortVarDecl());
             add(new InferFunction());
             add(new InferAwaitConsumer());
+            add(new InferForStmt());
         }
 
         private void add(InferValue<?> handler) {
