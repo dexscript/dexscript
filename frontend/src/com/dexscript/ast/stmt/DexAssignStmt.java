@@ -1,20 +1,17 @@
 package com.dexscript.ast.stmt;
 
-import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.token.Blank;
-import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DexAssignStmt extends DexSimpleStatement {
 
-    private DexSyntaxError syntaxError;
     private List<DexValueRef> targets;
     private DexExpr expr;
     private int assignStmtEnd = -1;
@@ -51,11 +48,6 @@ public class DexAssignStmt extends DexSimpleStatement {
         if (expr() != null) {
             visitor.visit(expr());
         }
-    }
-
-    @Override
-    public DexSyntaxError syntaxError() {
-        return syntaxError;
     }
 
     public List<DexValueRef> targets() {
@@ -115,28 +107,9 @@ public class DexAssignStmt extends DexSimpleStatement {
             expr = DexExpr.parse(src.slice(i));
             expr.reparent(DexAssignStmt.this, DexAssignStmt.this);
             if (!expr.matched()) {
-                return this::missingExpr;
+                return null;
             }
-            return endWith(expr.end());
-        }
-
-        State endWith(int end) {
-            assignStmtEnd = end;
-            return null;
-        }
-
-        State missingExpr() {
-            if (syntaxError == null) {
-                syntaxError = new DexSyntaxError(src, i);
-            }
-            for (; i < src.end; i++) {
-                byte b = src.bytes[i];
-                if (LineEnd.$(b)) {
-                    assignStmtEnd = i;
-                    return null;
-                }
-            }
-            assignStmtEnd = i;
+            assignStmtEnd = expr.end();
             return null;
         }
     }

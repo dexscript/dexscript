@@ -9,9 +9,9 @@ import com.dexscript.ast.token.Keyword;
 
 public class DexForStmt extends DexStatement {
 
-    private DexStatement initStmt;
     private DexExpr condition;
-    private DexStatement postStmt;
+    private DexSimpleStatement initStmt;
+    private DexSimpleStatement postStmt;
     private DexBlock blk;
 
     public DexForStmt(Text src) {
@@ -30,16 +30,60 @@ public class DexForStmt extends DexStatement {
 
     @Override
     public boolean matched() {
-        return blk != null;
+        return blk != null && blk.matched();
     }
 
     @Override
     public void walkDown(Visitor visitor) {
-
+        if (initStmt() != null) {
+            visitor.visit(initStmt());
+        }
+        if (condition() != null) {
+            visitor.visit(condition());
+        }
+        if (postStmt() != null) {
+            visitor.visit(postStmt());
+        }
+        if (blk() != null) {
+            visitor.visit(blk());
+        }
     }
 
     public DexBlock blk() {
         return blk;
+    }
+
+    public boolean isForCondition() {
+        if (!matched()) {
+            return false;
+        }
+        return initStmt == null && condition != null;
+    }
+
+    public boolean isForever() {
+        if (!matched()) {
+            return false;
+        }
+        return initStmt == null && condition == null;
+    }
+
+    public boolean isForWith3Clauses() {
+        if (!matched()) {
+            return false;
+        }
+        return initStmt != null || postStmt != null;
+    }
+
+    public DexExpr condition() {
+        return condition;
+    }
+
+    public DexSimpleStatement initStmt() {
+        return initStmt;
+    }
+
+    public DexSimpleStatement postStmt() {
+        return postStmt;
     }
 
     private class Parser {
@@ -58,6 +102,7 @@ public class DexForStmt extends DexStatement {
                     continue;
                 }
                 if (Keyword.$(src, i, 'f', 'o', 'r')) {
+                    i += 3;
                     return this::blankOrLeftBrace;
                 }
                 return null;
@@ -82,66 +127,114 @@ public class DexForStmt extends DexStatement {
             if (j == 0) {
                 return null;
             }
-            return this::prelude;
+            return this::firstClause;
         }
 
-        @Expect("initStmt;condition;postStmt")
-        @Expect("var key in keyValues")
-        @Expect("var value of keyValues")
         @Expect("condition")
-        @Expect("blank")
-        State prelude() {
-            int preludeBegin = i;
-            int firstSemiColon = -1;
-            int secondSemiColon = -1;
-            int preludeEnd = -1;
+        @Expect("init statement")
+        @Expect("for in")
+        @Expect("for of")
+        State firstClause() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (b == '{') {
-                    preludeEnd = i;
-                    break;
+                if (Blank.$(b)) {
+                    continue;
                 }
                 if (b == ';') {
-                    if (firstSemiColon == -1) {
-                        firstSemiColon = i;
-                    } else if (secondSemiColon == -1) {
-                        secondSemiColon = i;
-                    }
+                    i += 1;
+                    return this::secondClause;
                 }
+                break;
             }
-            if (preludeEnd == -1) {
+            initStmt = DexSimpleStatement.parse(src.slice(i));
+            if (initStmt.matched()) {
+                i = initStmt.end();
+                return this::firstSemiColon;
+            }
+            return null;
+        }
+
+        @Expect(";")
+        State firstSemiColon() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == ';') {
+                    i += 1;
+                    return this::secondClause;
+                }
+                if (b == '{' && initStmt instanceof DexExprStmt) {
+                    condition = ((DexExprStmt) initStmt).expr();
+                    initStmt = null;
+                    return this::block;
+                }
                 return null;
             }
-            Text prelude = src.slice(preludeBegin, preludeEnd);
-            if (firstSemiColon == -1) {
-                parse3ClausePrelude(prelude, firstSemiColon, secondSemiColon);
-            } else {
-                parse1ClausePrelude(prelude);
+            return null;
+        }
+
+        @Expect("condition")
+        State secondClause() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == ';') {
+                    i += 1;
+                    return this::thirdClause;
+                }
+                break;
             }
+            condition = DexExpr.parse(src.slice(i));
+            if (!condition.matched()) {
+                return null;
+            }
+            i = condition.end();
+            return this::secondSemiColon;
+        }
+
+        @Expect(";")
+        State secondSemiColon() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == ';') {
+                    i += 1;
+                    return this::thirdClause;
+                }
+                return null;
+            }
+            return null;
+        }
+
+        @Expect("post statement")
+        State thirdClause() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '{') {
+                    return this::block;
+                }
+                break;
+            }
+            postStmt = DexSimpleStatement.parse(src.slice(i));
+            if (!postStmt.matched()) {
+                return null;
+            }
+            i = postStmt.end();
             return this::block;
-        }
-
-        void parse1ClausePrelude(Text prelude) {
-            throw new UnsupportedOperationException("not implemented");
-        }
-
-        void parse3ClausePrelude(Text prelude, int firstSemiColon, int secondSemiColon) {
-            initStmt = parseSimpleStmt(prelude.slice(prelude.begin, firstSemiColon));
-            if (secondSemiColon == -1) {
-                throw new UnsupportedOperationException("not implemented");
-            }
-            condition = DexExpr.parse(prelude.slice(firstSemiColon, secondSemiColon));
-            postStmt = parseSimpleStmt(prelude.slice(secondSemiColon));
-        }
-
-        DexStatement parseSimpleStmt(Text stmtSrc) {
-            DexStatement stmt = new DexShortVarDecl(stmtSrc);
-            return stmt;
         }
 
         @Expect("block")
         State block() {
-            blk = new DexBlock(src);
+            blk = new DexBlock(src.slice(i));
             return null;
         }
     }

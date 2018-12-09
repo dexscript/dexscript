@@ -107,19 +107,7 @@ public class DexIfStmt extends DexStatement {
 
         @Expect("condition")
         private State condition() {
-            int conditionBegin = i;
-            int conditionEnd = -1;
-            for (; i < src.end; i++) {
-                byte b = src.bytes[i];
-                if (b == '{') {
-                    conditionEnd = i;
-                    break;
-                }
-            }
-            if (conditionEnd == -1) {
-                return null;
-            }
-            condition = DexExpr.parse(src.slice(conditionBegin, conditionEnd));
+            condition = DexExpr.parse(src.slice(i));
             condition.reparent(DexIfStmt.this, DexIfStmt.this);
             if (!condition.matched()) {
                 return null;

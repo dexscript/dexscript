@@ -17,6 +17,10 @@ public abstract class DexSimpleStatement extends DexStatement {
         if (stmt.matched()) {
             return stmt;
         }
+        stmt = new DexIncrStmt(src);
+        if (stmt.matched()) {
+            return stmt;
+        }
         return new DexExprStmt(src);
     }
 }
