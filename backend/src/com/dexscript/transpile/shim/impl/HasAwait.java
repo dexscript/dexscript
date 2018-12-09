@@ -1,14 +1,20 @@
 package com.dexscript.transpile.shim.impl;
 
-import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexConsumeExpr;
+import com.dexscript.ast.expr.DexInvocation;
+import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexProduceStmt;
+import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
+import com.dexscript.type.FunctionType;
 import com.dexscript.type.InnerActorType;
+import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
+
+import java.util.List;
 
 public class HasAwait implements DexElement.Visitor {
 
@@ -38,6 +44,18 @@ public class HasAwait implements DexElement.Visitor {
             if (InferValue.$(ts, (DexValueRef) elem).type() instanceof InnerActorType) {
                 result = true;
                 return;
+            }
+        }
+        if (elem instanceof DexInvocationExpr) {
+            DexInvocation invocation = ((DexInvocationExpr) elem).invocation();
+            List<Type> args = InferType.inferTypes(ts, invocation.args());
+            List<FunctionType> functionTypes = ts.resolveFunctions(invocation.funcName(), args);
+            for (FunctionType functionType : functionTypes) {
+                Impl impl = (Impl) functionType.attachment();
+                if (impl.hasAwait()) {
+                    result = true;
+                    return;
+                }
             }
         }
         elem.walkDown(this);
