@@ -12,7 +12,7 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexFunctionCallExpr extends DexExpr {
+public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
 
     private static final int LEFT_RANK = 1;
     private static final int RIGHT_RANK = 0;
@@ -21,6 +21,7 @@ public class DexFunctionCallExpr extends DexExpr {
     private List<DexExpr> args;
     private int callExprEnd = -1;
     private DexSyntaxError syntaxError;
+    private DexInvocation invocation;
 
     public DexFunctionCallExpr(Text src, DexExpr target) {
         super(src);
@@ -84,6 +85,14 @@ public class DexFunctionCallExpr extends DexExpr {
         for (DexExpr arg : args) {
             visitor.visit(arg);
         }
+    }
+
+    @Override
+    public DexInvocation invocation() {
+        if (invocation == null) {
+            invocation = new DexInvocation(target().asRef().toString(), args());
+        }
+        return invocation;
     }
 
     private class Parser {

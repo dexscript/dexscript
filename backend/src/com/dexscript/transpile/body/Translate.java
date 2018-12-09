@@ -1,15 +1,13 @@
 package com.dexscript.transpile.body;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.expr.DexIntegerLiteral;
-import com.dexscript.ast.expr.DexParenExpr;
-import com.dexscript.ast.expr.DexStringLiteral;
-import com.dexscript.ast.expr.DexValueRef;
+import com.dexscript.ast.expr.*;
 import com.dexscript.ast.stmt.DexBlock;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
 import com.dexscript.transpile.skeleton.OutClass;
+import com.dexscript.type.JavaSuperTypeArgs;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
@@ -59,9 +57,15 @@ public interface Translate<E extends DexElement> {
                 Translate.$(oClass, iParenExpr.body());
                 iElem.attach(iParenExpr.body().attachmentOfType(OutValue.class));
             });
+            add(new TranslateInvocation<DexEqualExpr>() {
+            });
+            add(new TranslateInvocation<DexLessThanExpr>() {
+            });
+            add(new TranslateInvocation<DexFunctionCallExpr>() {
+            });
+            add(new TranslateInvocation<DexMethodCallExpr>() {
+            });
             add(new TranslateReturn());
-            add(new TranslateFunctionCall());
-            add(new TranslateMethodCall());
             add(new TranslateConsume());
             add(new TranslateProduce());
             add(new TranslateNew());
@@ -71,14 +75,12 @@ public interface Translate<E extends DexElement> {
             add(new TranslateExprStmt());
             add(new TranslateVarDecl());
             add(new TranslateAssign());
-            add(new TranslateEqual());
             add(new TranslateIf());
             add(new TranslateElse());
         }
 
         private void add(Translate<?> handler) {
-            ParameterizedType translateInf = (ParameterizedType) handler.getClass().getGenericInterfaces()[0];
-            put((Class<? extends DexElement>) translateInf.getActualTypeArguments()[0], handler);
+            put((Class<? extends DexElement>) JavaSuperTypeArgs.$(handler.getClass())[0], handler);
         }
     };
 

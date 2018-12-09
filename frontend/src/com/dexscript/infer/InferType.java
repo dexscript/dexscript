@@ -6,6 +6,7 @@ import com.dexscript.type.*;
 
 import java.util.*;
 
+
 public interface InferType<E extends DexExpr> {
 
     interface OnUnknownElem {
@@ -18,39 +19,36 @@ public interface InferType<E extends DexExpr> {
         };
     }
 
-    Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {{
-        put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(((DexStringLiteral) elem).literalValue()));
-        put(DexIntegerLiteral.class, (ts, elem) -> new IntegerLiteralType(elem.toString()));
-        put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
-        put(DexFunctionCallExpr.class, (ts, elem) -> {
-            DexFunctionCallExpr callExpr = (DexFunctionCallExpr) elem;
-            String funcName = callExpr.target().asRef().toString();
-            List<Type> args = InferType.inferTypes(ts, callExpr.args());
-            return ResolveReturnType.$(ts, funcName, args);
-        });
-        put(DexMethodCallExpr.class, (ts, elem) -> {
-            DexMethodCallExpr callExpr = (DexMethodCallExpr) elem;
-            String funcName = callExpr.method().toString();
-            List<Type> args = InferType.inferTypes(ts, callExpr.obj(), callExpr.args());
-            return ResolveReturnType.$(ts, funcName, args);
-        });
-        put(DexEqualExpr.class, (ts, elem) -> {
-            DexEqualExpr equalExpr = (DexEqualExpr) elem;
-            List<Type> args = InferType.inferTypes(ts, Arrays.asList(equalExpr.left(), equalExpr.right()));
-            return ResolveReturnType.$(ts, "Equal__", args);
-        });
-        put(DexNewExpr.class, (ts, elem) -> {
-            DexNewExpr newExpr = (DexNewExpr) elem;
-            String actorName = newExpr.target().asRef().toString();
-            StringLiteralType arg1 = new StringLiteralType(actorName);
-            List<Type> args = InferType.inferTypes(ts, arg1, newExpr.args());
-            return ResolveReturnType.$(ts, "New__", args);
-        });
-        put(DexConsumeExpr.class, (ts, elem) -> {
-            Type target = $(ts, ((DexConsumeExpr) elem).right());
-            return ResolveReturnType.$(ts, "Consume__", Arrays.asList(target));
-        });
-    }};
+    Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
+        {
+            put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(((DexStringLiteral) elem).literalValue()));
+            put(DexIntegerLiteral.class, (ts, elem) -> new IntegerLiteralType(elem.toString()));
+            put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
+            put(DexNewExpr.class, (ts, elem) -> {
+                DexNewExpr newExpr = (DexNewExpr) elem;
+                String actorName = newExpr.target().asRef().toString();
+                StringLiteralType arg1 = new StringLiteralType(actorName);
+                List<Type> args = InferType.inferTypes(ts, arg1, newExpr.args());
+                return ResolveReturnType.$(ts, "New__", args);
+            });
+            put(DexConsumeExpr.class, (ts, elem) -> {
+                Type target = $(ts, ((DexConsumeExpr) elem).right());
+                return ResolveReturnType.$(ts, "Consume__", Arrays.asList(target));
+            });
+            add(new InferInvocation<DexEqualExpr>() {
+            });
+            add(new InferInvocation<DexLessThanExpr>() {
+            });
+            add(new InferInvocation<DexMethodCallExpr>() {
+            });
+            add(new InferInvocation<DexFunctionCallExpr>() {
+            });
+        }
+
+        private void add(InferType<?> handler) {
+            put((Class<? extends DexExpr>) JavaSuperTypeArgs.$(handler.getClass())[0], handler);
+        }
+    };
 
     Type handle(TypeSystem ts, E elem);
 

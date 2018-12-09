@@ -9,7 +9,7 @@ import com.dexscript.ast.token.Blank;
 
 import java.util.List;
 
-public class DexMethodCallExpr extends DexExpr {
+public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
 
     private static final int LEFT_RANK = 1;
     private static final int RIGHT_RANK = 0;
@@ -17,6 +17,7 @@ public class DexMethodCallExpr extends DexExpr {
     private DexExpr obj;
     private DexValueRef method;
     private DexFunctionCallExpr functionCallExpr;
+    private DexInvocation invocation;
 
     public DexMethodCallExpr(Text src, DexExpr obj) {
         super(src);
@@ -81,6 +82,14 @@ public class DexMethodCallExpr extends DexExpr {
                 arg.reparent(this, stmt);
             }
         }
+    }
+
+    @Override
+    public DexInvocation invocation() {
+        if (invocation == null) {
+            invocation = new DexInvocation(method().toString(), obj(), args());
+        }
+        return invocation;
     }
 
 

@@ -54,8 +54,8 @@ public interface InferValue<E extends DexElement> {
         }
 
         private void add(InferValue<?> handler) {
-            ParameterizedType translateInf = (ParameterizedType) handler.getClass().getGenericInterfaces()[0];
-            put((Class<? extends DexElement>) translateInf.getActualTypeArguments()[0], handler);
+            ParameterizedType clazz = (ParameterizedType) handler.getClass().getGenericInterfaces()[0];
+            put((Class<? extends DexElement>) clazz.getActualTypeArguments()[0], handler);
         }
     };
 

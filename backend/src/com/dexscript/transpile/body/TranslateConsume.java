@@ -9,6 +9,6 @@ public class TranslateConsume implements Translate<DexConsumeExpr> {
     public void handle(OutClass oClass, DexConsumeExpr iConsumeExpr) {
         Translate.$(oClass, iConsumeExpr.right());
         String targetActor = iConsumeExpr.right().attachmentOfType(OutValue.class).value();
-        TranslateFunctionCall.consume(oClass, iConsumeExpr, targetActor);
+        TranslateInvocation.consume(oClass, iConsumeExpr, targetActor);
     }
 }

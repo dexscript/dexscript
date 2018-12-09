@@ -1,27 +1,31 @@
 package com.dexscript.transpile.body;
 
 import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexFunctionCallExpr;
+import com.dexscript.ast.expr.DexInvocation;
+import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.infer.InferType;
 import com.dexscript.transpile.gen.Indent;
+import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
-import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.skeleton.OutStateMachine;
 import com.dexscript.transpile.skeleton.OutStateMethod;
-import com.dexscript.type.*;
+import com.dexscript.type.BuiltinTypes;
+import com.dexscript.type.FunctionType;
+import com.dexscript.type.Type;
+import com.dexscript.type.TypeSystem;
 
 import java.util.List;
 
-public class TranslateFunctionCall implements Translate<DexFunctionCallExpr> {
+public class TranslateInvocation<E extends DexExpr & DexInvocationExpr> implements Translate<E> {
 
     @Override
-    public void handle(OutClass oClass, DexFunctionCallExpr iCallExpr) {
-        String funcName = iCallExpr.target().asRef().toString();
-        handle(oClass, iCallExpr, funcName, iCallExpr.args());
+    public void handle(OutClass oClass, E iElem) {
+        DexInvocation invocation = iElem.invocation();
+        handle(oClass, iElem, invocation.funcName(), invocation.args());
     }
 
-    public static void handle(OutClass oClass, DexExpr iElem, String funcName, List<DexExpr> iArgs) {
+    private static void handle(OutClass oClass, DexExpr iElem, String funcName, List<DexExpr> iArgs) {
         for (DexExpr iArg : iArgs) {
             Translate.$(oClass, iArg);
         }

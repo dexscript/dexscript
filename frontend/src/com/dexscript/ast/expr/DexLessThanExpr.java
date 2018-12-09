@@ -4,10 +4,11 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
-public class DexLessThanExpr extends DexBinaryOperator {
+public class DexLessThanExpr extends DexBinaryOperator implements DexInvocationExpr {
 
     private static final int LEFT_RANK = 10;
     private static final int RIGHT_RANK = 10;
+    private DexInvocation invocation;
 
     public DexLessThanExpr(Text src, DexExpr left) {
         super(src, left);
@@ -28,5 +29,13 @@ public class DexLessThanExpr extends DexBinaryOperator {
     @Override
     public int leftRank() {
         return LEFT_RANK;
+    }
+
+    @Override
+    public DexInvocation invocation() {
+        if (invocation == null) {
+            invocation = new DexInvocation("LessThan__", left(), right());
+        }
+        return invocation;
     }
 }
