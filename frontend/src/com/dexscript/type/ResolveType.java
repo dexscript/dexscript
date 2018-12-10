@@ -3,9 +3,7 @@ package com.dexscript.type;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.type.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public interface ResolveType<E extends DexType> {
 
@@ -20,12 +18,20 @@ public interface ResolveType<E extends DexType> {
     }
 
     Map<Class<? extends DexElement>, ResolveType> handlers = new HashMap<Class<? extends DexElement>, ResolveType>() {{
+        put(DexVoidType.class, (typeTable, elem) -> BuiltinTypes.VOID);
         put(DexTypeRef.class, (typeTable, elem) -> typeTable.resolveType(elem.toString()));
         put(DexStringLiteralType.class, (typeTable, elem) -> {
             String literalValue = ((DexStringLiteralType) (elem)).literalValue();
             return new StringLiteralType(literalValue);
         });
-        put(DexVoidType.class, (typeTable, elem) -> BuiltinTypes.VOID);
+        put(DexGenericExpansionType.class, (typeTable, elem) -> {
+            DexGenericExpansionType genericExpansionType = (DexGenericExpansionType) elem;
+            List<Type> typeArgs = new ArrayList<>();
+            for (DexType typeArg : genericExpansionType.typeArgs()) {
+                typeArgs.add(ResolveType.$(typeTable, typeArg));
+            }
+            return typeTable.resolveType(genericExpansionType.genericType().toString(), typeArgs);
+        });
     }};
 
     Type handle(TopLevelTypeTable typeTable, E elem);
