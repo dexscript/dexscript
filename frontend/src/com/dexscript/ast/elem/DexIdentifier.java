@@ -80,7 +80,7 @@ public final class DexIdentifier extends DexLeafElement {
                 if (A2Z.$(b) || Zero2Nine.$(b) || b == '_') {
                     continue;
                 }
-                if (Blank.$(b) || LineEnd.$(b) || b == '(' || b == '{' || b == ':' || b == ',') {
+                if (Blank.$(b) || LineEnd.$(b) || b == '(' || b == '{' || b == ':' || b == ',' || b == '>') {
                     matched = new Text(src.bytes, identifierBegin, i);
                     return null;
                 }
