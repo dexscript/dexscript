@@ -1,0 +1,12 @@
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    implementation project(':backend')
+    compile group: 'org.mdkt.compiler', name: 'InMemoryJavaCompiler', version: '1.3.0'
+    testCompileOnly(
+            'junit:junit:4.12'
+    )
+}

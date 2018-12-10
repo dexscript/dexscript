@@ -10,6 +10,7 @@ public abstract class Actor implements Promise {
     private Object ret;
     private List<Actor> consumers;
     private int state;
+    private int yieldToState = -1;
 
     public Actor(Scheduler scheduler) {
         this.scheduler = scheduler;
@@ -28,6 +29,17 @@ public abstract class Actor implements Promise {
                 scheduler.wakeUp(this, consumer);
             }
         }
+    }
+
+    protected final void yieldTo(int yieldToState) {
+        this.yieldToState = yieldToState;
+        scheduler.wakeUp(this, this);
+    }
+
+    protected final int resetYield() {
+        int state = yieldToState;
+        yieldToState = -1;
+        return state;
     }
 
     @Override

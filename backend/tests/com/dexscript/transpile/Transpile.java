@@ -24,7 +24,7 @@ public interface Transpile {
             Map<String, Class<?>> classes = oTown
                     .addFile("hello.ds", "package example\n" + src)
                     .transpile();
-            Class<?> shimClass = classes.get("com.dexscript.runtime.gen__.Shim__");
+            Class<?> shimClass = classes.get("com.dexscript.runtime.gen.Shim__");
             Method newHello = shimClass.getMethod("Hello");
             return newHello.invoke(null, args);
         } catch (RuntimeException e) {

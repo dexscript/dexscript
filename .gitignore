@@ -6,5 +6,6 @@
 /frontend/build
 /backend/out
 /backend/build
+/debug/out
+/debug/build
 *.java~
-/tmp

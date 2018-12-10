@@ -26,7 +26,7 @@ public class OutTopLevelClass implements OutClass {
         ).__(packageName()
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
-        g.__(new Line("import com.dexscript.runtime.gen__.*;"));
+        g.__(new Line("import com.dexscript.runtime.gen.*;"));
         g.__("public class "
         ).__(className()
         ).__(" extends Actor {"

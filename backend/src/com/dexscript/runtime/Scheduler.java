@@ -18,7 +18,7 @@ public class Scheduler {
     }
 
     final void wakeUp(Actor producer, Actor consumer) {
-        System.out.println("wake up: " + producer + " => " + consumer);
+//        System.out.println("wake up: " + producer + " => " + consumer);
         readyActors.add(consumer);
     }
 }

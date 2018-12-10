@@ -23,7 +23,7 @@ import java.util.Map;
 public class OutShim {
 
     public static final String CLASSNAME = "Shim__";
-    public static final String QUALIFIED_CLASSNAME = "com.dexscript.runtime.gen__." + CLASSNAME;
+    public static final String QUALIFIED_CLASSNAME = "com.dexscript.runtime.gen." + CLASSNAME;
     private boolean finished;
     private final TypeSystem ts;
     private final Gen g = new Gen();
@@ -33,7 +33,7 @@ public class OutShim {
 
     public OutShim(TypeSystem ts) {
         this.ts = ts;
-        g.__("package com.dexscript.runtime.gen__"
+        g.__("package com.dexscript.runtime.gen"
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
         g.__("public final class "
