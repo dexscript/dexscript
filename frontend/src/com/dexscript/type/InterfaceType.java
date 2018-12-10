@@ -3,14 +3,11 @@ package com.dexscript.type;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexParam;
 import com.dexscript.ast.inf.DexInfFunction;
-import com.dexscript.ast.inf.DexInfMember;
 import com.dexscript.ast.inf.DexInfMethod;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InterfaceType extends TopLevelType implements FunctionsProvider {
 
@@ -33,12 +30,11 @@ public class InterfaceType extends TopLevelType implements FunctionsProvider {
             return members;
         }
         members = new ArrayList<>();
-        for (DexInfMember member : inf.members()) {
-            if (member instanceof DexInfMethod) {
-                addInfMethod((DexInfMethod) member);
-            } else if (member instanceof DexInfFunction) {
-                addInfFunction((DexInfFunction) member);
-            }
+        for (DexInfMethod method : inf.methods()) {
+            addInfMethod(method);
+        }
+        for (DexInfFunction function : inf.functions()) {
+            addInfFunction(function);
         }
         return members;
     }

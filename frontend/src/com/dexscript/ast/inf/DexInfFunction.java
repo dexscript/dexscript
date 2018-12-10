@@ -7,7 +7,7 @@ import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
-public class DexInfFunction extends DexInfMember {
+public class DexInfFunction extends DexElement {
 
     private DexIdentifier identifier;
     private DexSig sig;

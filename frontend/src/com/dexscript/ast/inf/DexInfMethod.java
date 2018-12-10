@@ -1,10 +1,11 @@
 package com.dexscript.ast.inf;
 
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.elem.DexSig;
 
-public class DexInfMethod extends DexInfMember {
+public class DexInfMethod extends DexElement {
 
     private DexIdentifier identifier;
     private DexSig sig;

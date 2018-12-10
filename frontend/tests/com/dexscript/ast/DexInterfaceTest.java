@@ -31,12 +31,12 @@ public class DexInterfaceTest {
                 "   Quack(): string\n" +
                 "}";
         DexInterface inf = new DexInterface(src);
-        inf.members();
+        inf.methods();
         Assert.assertEquals("{\n" +
                 "   Quack(): string\n" +
                 "}", inf.body().toString());
-        Assert.assertEquals(1, inf.members().size());
-        Assert.assertEquals("Quack(): string", inf.members().get(0).toString());
+        Assert.assertEquals(1, inf.methods().size());
+        Assert.assertEquals("Quack(): string", inf.methods().get(0).toString());
     }
 
     @Test
@@ -46,12 +46,12 @@ public class DexInterfaceTest {
                 "   ::Quack(duck: Duck): string\n" +
                 "}";
         DexInterface inf = new DexInterface(src);
-        inf.members();
+        inf.functions();
         Assert.assertEquals("{\n" +
                 "   ::Quack(duck: Duck): string\n" +
                 "}", inf.body().toString());
-        Assert.assertEquals(1, inf.members().size());
-        Assert.assertEquals("Quack(duck: Duck): string", inf.members().get(0).toString());
+        Assert.assertEquals(1, inf.functions().size());
+        Assert.assertEquals("Quack(duck: Duck): string", inf.functions().get(0).toString());
     }
 
     @Test
@@ -62,13 +62,28 @@ public class DexInterfaceTest {
                 "   Quack(): string\n" +
                 "}";
         DexInterface inf = new DexInterface(src);
-        inf.members();
+        inf.methods();
         Assert.assertEquals("{\n" +
                 "   <error/>??;   Quack(): string\n" +
                 "}", inf.body().toString());
-        Assert.assertEquals(2, inf.members().size());
-        Assert.assertEquals("<unmatched>??;   Quack(): string\n" +
-                "}</unmatched>", inf.members().get(0).toString());
-        Assert.assertEquals("Quack(): string", inf.members().get(1).toString());
+        Assert.assertEquals(1, inf.methods().size());
+        Assert.assertEquals("Quack(): string", inf.methods().get(0).toString());
+    }
+
+    @Test
+    public void type_parameter() {
+        String src = "" +
+                "interface List {\n" +
+                "   <T>: string\n" +
+                "   Get__(index: int64): T\n" +
+                "}";
+        DexInterface inf = new DexInterface(src);
+        inf.methods();
+        Assert.assertEquals("{\n" +
+                "   <T>: string\n" +
+                "   Get__(index: int64): T\n" +
+                "}", inf.body().toString());
+        Assert.assertEquals(1, inf.typeParams().size());
+        Assert.assertEquals("<T>: string", inf.typeParams().get(0).toString());
     }
 }

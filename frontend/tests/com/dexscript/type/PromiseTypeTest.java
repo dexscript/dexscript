@@ -1,7 +1,6 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.core.DexSyntaxException;
 import org.junit.Assert;
 import org.junit.Test;
 

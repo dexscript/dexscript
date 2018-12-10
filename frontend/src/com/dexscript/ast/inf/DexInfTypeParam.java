@@ -1,15 +1,12 @@
 package com.dexscript.ast.inf;
 
-import com.dexscript.ast.core.DexSyntaxError;
-import com.dexscript.ast.core.Expect;
-import com.dexscript.ast.core.State;
-import com.dexscript.ast.core.Text;
+import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
 
-public class DexInfTypeParam extends DexInfMember {
+public class DexInfTypeParam extends DexElement {
 
     private DexIdentifier identifier;
     private DexType type;

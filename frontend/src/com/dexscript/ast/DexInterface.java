@@ -5,7 +5,9 @@ import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
-import com.dexscript.ast.inf.DexInfMember;
+import com.dexscript.ast.inf.DexInfFunction;
+import com.dexscript.ast.inf.DexInfMethod;
+import com.dexscript.ast.inf.DexInfTypeParam;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
@@ -62,8 +64,16 @@ public class DexInterface extends DexElement {
         return body;
     }
 
-    public List<DexInfMember> members() {
-        return body().members();
+    public List<DexInfTypeParam> typeParams() {
+        return body().typeParams();
+    }
+
+    public List<DexInfFunction> functions() {
+        return body().functions();
+    }
+
+    public List<DexInfMethod> methods() {
+        return body().methods();
     }
 
     public void reparent(DexFile parent) {
