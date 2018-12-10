@@ -192,16 +192,47 @@ public class DexNewExpr extends DexExpr {
                     continue;
                 }
                 if (b == ']') {
-                    newExprEnd = i + 1;
-                    return null;
+                    i += 1;
+                    return this::maybeLeftBracket;
                 }
                 return null;
             }
             return null;
         }
 
+        State maybeLeftBracket() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '[') {
+                    i += 1;
+                    return this::arraySize;
+                }
+                newExprEnd = i;
+                return null;
+            }
+            newExprEnd = i;
+            return null;
+        }
+
         State missingArraySize() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            // try to recover from invalid array size
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (b == ']') {
+                    i += 1;
+                    return this::maybeLeftBracket;
+                }
+                if (LineEnd.$(b)) {
+                    newExprEnd = i;
+                    return null;
+                }
+            }
+            newExprEnd = i;
+            return null;
         }
 
         @Expect("expression")

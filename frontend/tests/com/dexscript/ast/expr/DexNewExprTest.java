@@ -64,4 +64,20 @@ public class DexNewExprTest {
         Assert.assertEquals(1, newExpr.args().size());
         Assert.assertEquals("3", newExpr.args().get(0).toString());
     }
+
+    @Test
+    public void new_array_2d() {
+        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new uint8[3][4]");
+        Assert.assertEquals("new uint8[3][4]", newExpr.toString());
+        Assert.assertTrue(newExpr.isArray());
+        Assert.assertEquals(2, newExpr.args().size());
+        Assert.assertEquals("3", newExpr.args().get(0).toString());
+        Assert.assertEquals("4", newExpr.args().get(1).toString());
+    }
+
+    @Test
+    public void missing_array_size() {
+        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new uint8[][4]");
+        Assert.assertEquals("new uint8[<error/>][4]", newExpr.toString());
+    }
 }
