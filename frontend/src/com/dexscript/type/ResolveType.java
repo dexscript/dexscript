@@ -26,10 +26,6 @@ public interface ResolveType<E extends DexType> {
             return new StringLiteralType(literalValue);
         });
         put(DexVoidType.class, (typeTable, elem) -> BuiltinTypes.VOID);
-        put(DexArrayType.class, (typeTable, elem) -> {
-            Type arrayElem = ResolveType.$(typeTable, ((DexArrayType) elem).left());
-            return typeTable.resolveType("Array", Arrays.asList(arrayElem));
-        });
     }};
 
     Type handle(TopLevelTypeTable typeTable, E elem);
