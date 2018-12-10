@@ -1,22 +1,25 @@
 package com.dexscript.ast.type;
 
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexGenericType extends DexType {
+public class DexGenericExpansionType extends DexType {
 
     private static final int LEFT_RANK = 10;
     private static final int RIGHT_RANK = 10;
     private final DexType genericType;
-    private int genericTypeEnd = -1;
+    private int expansionTypeEnd = -1;
     private List<DexType> typeArgs;
+    private DexSyntaxError syntaxError;
 
-    public DexGenericType(Text src, DexType genericType) {
+    public DexGenericExpansionType(Text src, DexType genericType) {
         super(src);
         this.genericType = genericType;
         new Parser();
@@ -34,15 +37,15 @@ public class DexGenericType extends DexType {
 
     @Override
     public int end() {
-        if (genericTypeEnd == -1) {
+        if (expansionTypeEnd == -1) {
             throw new IllegalStateException();
         }
-        return genericTypeEnd;
+        return expansionTypeEnd;
     }
 
     @Override
     public boolean matched() {
-        return genericTypeEnd != -1;
+        return expansionTypeEnd != -1;
     }
 
     @Override
@@ -52,6 +55,11 @@ public class DexGenericType extends DexType {
                 visitor.visit(typeArg);
             }
         }
+    }
+
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public List<DexType> typeArgs() {
@@ -72,8 +80,8 @@ public class DexGenericType extends DexType {
 
         @Expect("<")
         State leftAngleBracket() {
-            for (;i<src.end;i++) {
-                byte b= src.bytes[i];
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
                 }
@@ -101,8 +109,8 @@ public class DexGenericType extends DexType {
         @Expect(",")
         @Expect(">")
         State commaOrRightAngleBracket() {
-            for (;i<src.end;i++) {
-                byte b= src.bytes[i];
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
                 }
@@ -111,7 +119,7 @@ public class DexGenericType extends DexType {
                     return this::moreTypeArgs;
                 }
                 if (b == '>') {
-                    genericTypeEnd = i + 1;
+                    expansionTypeEnd = i + 1;
                     return null;
                 }
                 return this::missingComma;
@@ -122,18 +130,64 @@ public class DexGenericType extends DexType {
         @Expect("type")
         State moreTypeArgs() {
             DexType typeArg = DexType.parse(src.slice(i), RIGHT_RANK);
+            typeArgs.add(typeArg);
             if (!typeArg.matched()) {
                 return this::missingTypeArg;
             }
+            i = typeArg.end();
             return this::commaOrRightAngleBracket;
         }
 
         State missingComma() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    expansionTypeEnd = i;
+                    return null;
+                }
+                if (b == '>') {
+                    expansionTypeEnd = i + 1;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::moreTypeArgs;
+                }
+            }
+            expansionTypeEnd = i;
+            return null;
         }
 
         State missingTypeArg() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    expansionTypeEnd = i;
+                    return null;
+                }
+                if (b == '>') {
+                    expansionTypeEnd = i + 1;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::commaOrRightAngleBracket;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::moreTypeArgs;
+                }
+            }
+            expansionTypeEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }

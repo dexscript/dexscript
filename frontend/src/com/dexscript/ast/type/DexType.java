@@ -50,7 +50,7 @@ public abstract class DexType extends DexElement {
 
     public static DexType parseRight(Text src, DexType left) {
         src = new Text(src.bytes, left.end(), src.end);
-        return new DexGenericType(src, left);
+        return new DexGenericExpansionType(src, left);
     }
 
     public void reparent(DexElement parent) {
