@@ -2,8 +2,6 @@ package com.dexscript.ast.type;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.expr.DexAddExpr;
-import com.dexscript.ast.expr.DexExpr;
 
 public abstract class DexType extends DexElement {
 
@@ -52,7 +50,7 @@ public abstract class DexType extends DexElement {
 
     private static DexType parseRight(Text src, DexType left) {
         src = new Text(src.bytes, left.end(), src.end);
-        return new DexTypeArray(src, left);
+        return new DexArrayType(src, left);
     }
 
     public void reparent(DexElement parent) {

@@ -29,6 +29,14 @@ public class TypeSystem {
         }
          */
         new PromiseType(typeTable, functionTable);
+        /*
+        interface Array {
+            <T>: interface{}
+            Get__(index: int64): T
+            Set__(index: int64, value: T)
+        }
+         */
+        new ArrayType(typeTable, functionTable);
     }
 
     public void defineFunction(FunctionType function) {

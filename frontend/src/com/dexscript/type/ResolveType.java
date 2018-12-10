@@ -1,11 +1,9 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.type.DexStringLiteralType;
-import com.dexscript.ast.type.DexType;
-import com.dexscript.ast.type.DexTypeRef;
-import com.dexscript.ast.type.DexVoidType;
+import com.dexscript.ast.type.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +26,10 @@ public interface ResolveType<E extends DexType> {
             return new StringLiteralType(literalValue);
         });
         put(DexVoidType.class, (typeTable, elem) -> BuiltinTypes.VOID);
+        put(DexArrayType.class, (typeTable, elem) -> {
+            Type arrayElem = ResolveType.$(typeTable, ((DexArrayType) elem).left());
+            return typeTable.resolveType("Array", Arrays.asList(arrayElem));
+        });
     }};
 
     Type handle(TopLevelTypeTable typeTable, E elem);

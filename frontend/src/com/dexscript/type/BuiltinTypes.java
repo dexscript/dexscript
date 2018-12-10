@@ -13,6 +13,7 @@ public interface BuiltinTypes {
     TopLevelType[] TYPE_ARRAY = new TopLevelType[]{
             BOOL,
             STRING,
+            UINT8,
             INT64,
             VOID
     };

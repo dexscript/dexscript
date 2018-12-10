@@ -10,6 +10,7 @@ public class TopLevelTypeTable {
     private final Map<Expansion, Type> expanded = new HashMap<>();
     private final List<TopLevelTypesProvider> providers = new ArrayList<>();
     private final Map<String, Type> javaTypes = new HashMap<>();
+    private final Map<Type, ArrayType> arrayTypes = new HashMap<>();
 
     public TopLevelTypeTable() {
     }

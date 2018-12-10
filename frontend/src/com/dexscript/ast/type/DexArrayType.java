@@ -5,14 +5,14 @@ import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 
-public class DexTypeArray extends DexType {
+public class DexArrayType extends DexType {
 
     private static final int LEFT_RANK = 10;
     private static final int RIGHT_RANK = 10;
     private final DexType left;
     private int typeArrayEnd = -1;
 
-    public DexTypeArray(Text src, DexType left) {
+    public DexArrayType(Text src, DexType left) {
         super(src);
         this.left = left;
         new Parser();
