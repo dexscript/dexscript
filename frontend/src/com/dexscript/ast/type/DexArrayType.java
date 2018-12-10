@@ -1,5 +1,6 @@
 package com.dexscript.ast.type;
 
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
@@ -16,6 +17,12 @@ public class DexArrayType extends DexType {
         super(src);
         this.left = left;
         new Parser();
+    }
+
+    @Override
+    public void reparent(DexElement parent) {
+        super.reparent(parent);
+        left.reparent(this);
     }
 
     @Override

@@ -84,6 +84,10 @@ public class TopLevelTypeTable {
     }
 
     public Type resolveType(Class<?> javaType) {
+        if (javaType.isArray()) {
+            Type arrayElem = resolveType(javaType.getComponentType());
+            return resolveType("Array", Arrays.asList(arrayElem));
+        }
         String javaClassName = javaType.getCanonicalName();
         Type type = javaTypes.get(javaClassName);
         if (type == null) {

@@ -18,7 +18,7 @@ public class ArrayType extends TopLevelType implements GenericType, FunctionsPro
     }
 
     public ArrayType(TopLevelTypeTable typeTable, FunctionTable funcTable, List<Type> typeArgs) {
-        super("Array", "Object[]");
+        super("Array", "Object");
         this.typeTable = typeTable;
         this.funcTable = funcTable;
         typeTable.define(this);
