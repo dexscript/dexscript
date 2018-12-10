@@ -6,6 +6,7 @@ public interface BuiltinTypes {
     TopLevelType BOOL = new BoolType();
     TopLevelType STRING = new StringType();
     TopLevelType INT64 = new Int64Type();
+    TopLevelType UINT8 = new UInt8Type();
     TopLevelType VOID = new VoidType();
     TopLevelType UNDEFINED = new UndefinedType();
 

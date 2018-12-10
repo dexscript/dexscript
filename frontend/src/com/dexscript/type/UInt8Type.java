@@ -1,0 +1,27 @@
+package com.dexscript.type;
+
+public class UInt8Type extends TopLevelType {
+
+    public UInt8Type() {
+        super("uint8", "com.dexscript.runtime.UInt8");
+    }
+
+    @Override
+    public String toString() {
+        return "uint8";
+    }
+
+    @Override
+    public boolean isAssignableFrom(Type that) {
+        if (super.isAssignableFrom(that)) {
+            return true;
+        }
+        if (that instanceof UInt8Type) {
+            return true;
+        }
+        if (that instanceof IntegerLiteralType) {
+            throw new UnsupportedOperationException("not implemented: test data range");
+        }
+        return false;
+    }
+}
