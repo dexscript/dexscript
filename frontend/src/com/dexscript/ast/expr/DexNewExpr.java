@@ -18,6 +18,7 @@ public class DexNewExpr extends DexExpr {
     private List<DexExpr> args;
     private int newExprEnd = -1;
     private DexSyntaxError syntaxError;
+    private boolean isArray;
 
     public DexNewExpr(Text src) {
         super(src);
@@ -31,6 +32,8 @@ public class DexNewExpr extends DexExpr {
     public List<DexExpr> args() {
         return args;
     }
+
+    public boolean isArray() { return isArray; }
 
     @Override
     public void reparent(DexElement parent, DexStatement stmt) {
@@ -127,10 +130,10 @@ public class DexNewExpr extends DexExpr {
                 return this::missingTarget;
             }
             i = target.end();
-            return this::leftParen;
+            return this::leftParenOrLeftBracket;
         }
 
-        private State missingTarget() {
+        State missingTarget() {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
@@ -139,7 +142,7 @@ public class DexNewExpr extends DexExpr {
                     return null;
                 }
                 if (b == '(') {
-                    return this::leftParen;
+                    return this::leftParenOrLeftBracket;
                 }
             }
             newExprEnd = i;
@@ -148,7 +151,7 @@ public class DexNewExpr extends DexExpr {
 
 
         @Expect("(")
-        State leftParen() {
+        State leftParenOrLeftBracket() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
@@ -159,9 +162,46 @@ public class DexNewExpr extends DexExpr {
                     args = new ArrayList<>();
                     return this::argumentOrRightParen;
                 }
-                break;
+                if (b == '[') {
+                    isArray = true;
+                    i +=1;
+                    args = new ArrayList<>();
+                    return this::arraySize;
+                }
+                return null;
             }
             return null;
+        }
+
+        @Expect("expression")
+        State arraySize() {
+            DexExpr arg = DexExpr.parse(new Text(src.bytes, i, src.end), RIGHT_RANK);
+            args.add(arg);
+            if (!arg.matched()) {
+                return this::missingArraySize;
+            }
+            i = arg.end();
+            return this::rightBracket;
+        }
+
+        @Expect("]")
+        State rightBracket() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == ']') {
+                    newExprEnd = i + 1;
+                    return null;
+                }
+                return null;
+            }
+            return null;
+        }
+
+        State missingArraySize() {
+            throw new UnsupportedOperationException("not implemented");
         }
 
         @Expect("expression")

@@ -55,4 +55,13 @@ public class DexNewExprTest {
         Assert.assertEquals(1, newExpr.args().size());
         Assert.assertEquals("a", newExpr.args().get(0).toString());
     }
+
+    @Test
+    public void new_array_1d() {
+        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new uint8[3]");
+        Assert.assertEquals("new uint8[3]", newExpr.toString());
+        Assert.assertTrue(newExpr.isArray());
+        Assert.assertEquals(1, newExpr.args().size());
+        Assert.assertEquals("3", newExpr.args().get(0).toString());
+    }
 }
