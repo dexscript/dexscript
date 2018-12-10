@@ -2,6 +2,8 @@ package com.dexscript.ast.type;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.expr.DexAddExpr;
+import com.dexscript.ast.expr.DexExpr;
 
 public abstract class DexType extends DexElement {
 
@@ -11,7 +13,32 @@ public abstract class DexType extends DexElement {
 
     public abstract int leftRank();
 
+    public static DexType parse(String src) {
+        return parse(new Text(src));
+    }
+
     public static DexType parse(Text src) {
+        return parse(src, 0);
+    }
+
+    public static DexType parse(Text src, int rightRank) {
+        DexType left = parseLeft(src);
+        if (!left.matched()) {
+            return left;
+        }
+        while (true) {
+            DexType expr = parseRight(src, left);
+            if (!expr.matched()) {
+                return left;
+            }
+            if (rightRank >= expr.leftRank()) {
+                return left;
+            }
+            left = expr;
+        }
+    }
+
+    public static DexType parseLeft(Text src) {
         DexType type = new DexStringLiteralType(src);
         if (type.matched()) {
             return type;
@@ -21,6 +48,11 @@ public abstract class DexType extends DexElement {
             return type;
         }
         return new DexTypeRef(src);
+    }
+
+    private static DexType parseRight(Text src, DexType left) {
+        src = new Text(src.bytes, left.end(), src.end);
+        return new DexTypeArray(src, left);
     }
 
     public void reparent(DexElement parent) {
