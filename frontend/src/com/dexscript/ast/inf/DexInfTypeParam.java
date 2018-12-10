@@ -1,17 +1,20 @@
 package com.dexscript.ast.inf;
 
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
 
 public class DexInfTypeParam extends DexInfMember {
 
     private DexIdentifier identifier;
     private DexType type;
-    private int typeArgEnd = -1;
+    private int typeParamEnd = -1;
+    private DexSyntaxError syntaxError;
 
     public DexInfTypeParam(Text src) {
         super(src);
@@ -24,15 +27,15 @@ public class DexInfTypeParam extends DexInfMember {
 
     @Override
     public int end() {
-        if (typeArgEnd == -1) {
+        if (typeParamEnd == -1) {
             throw new IllegalStateException();
         }
-        return typeArgEnd;
+        return typeParamEnd;
     }
 
     @Override
     public boolean matched() {
-        return typeArgEnd != -1;
+        return typeParamEnd != -1;
     }
 
     @Override
@@ -43,6 +46,11 @@ public class DexInfTypeParam extends DexInfMember {
         if (type() != null) {
             visitor.visit(type());
         }
+    }
+
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public DexIdentifier identifier() {
@@ -125,24 +133,86 @@ public class DexInfTypeParam extends DexInfMember {
             if (!type.matched()) {
                 return this::missingType;
             }
-            typeArgEnd = type.end();
+            typeParamEnd = type.end();
             return null;
         }
 
         State missingType() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    typeParamEnd = i;
+                    return null;
+                }
+            }
+            typeParamEnd = i;
             return null;
         }
 
         State missingColon() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    typeParamEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::type;
+                }
+            }
+            typeParamEnd = i;
+            return null;
         }
 
         State missingRightAngleBracket() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    typeParamEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::colon;
+                }
+                if (b == ':') {
+                    i += 1;
+                    return this::type;
+                }
+            }
+            typeParamEnd = i;
+            return null;
         }
 
         State missingIdentifier() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    typeParamEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::rightAngleBracket;
+                }
+                if (b == '>') {
+                    i += 1;
+                    return this::colon;
+                }
+            }
+            typeParamEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }
