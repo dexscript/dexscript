@@ -9,7 +9,6 @@ import com.dexscript.infer.Value;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.type.JavaSuperTypeArgs;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
 

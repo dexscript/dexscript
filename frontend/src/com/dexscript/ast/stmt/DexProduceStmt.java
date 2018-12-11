@@ -5,17 +5,22 @@ import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexInvocation;
+import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
 
-public class DexProduceStmt extends DexStatement {
+import java.util.Arrays;
+
+public class DexProduceStmt extends DexStatement implements DexInvocationExpr  {
 
     private DexExpr produced;
     private DexValueRef target;
     private int produceStmtEnd = -1;
     private DexSyntaxError syntaxError;
+    private DexInvocation invocation;
 
     public DexProduceStmt(Text src) {
         super(src);
@@ -60,6 +65,18 @@ public class DexProduceStmt extends DexStatement {
 
     public DexExpr produced() {
         return produced;
+    }
+
+    @Override
+    public DexInvocation invocation() {
+        if (invocation == null) {
+            if (produced == null) {
+                invocation = new DexInvocation("Resolve__", Arrays.asList(target));
+            } else {
+                invocation = new DexInvocation("Resolve__", target, produced);
+            }
+        }
+        return invocation;
     }
 
     private class Parser {

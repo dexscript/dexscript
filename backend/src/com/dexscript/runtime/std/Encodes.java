@@ -1,4 +1,6 @@
-package com.dexscript.runtime;
+package com.dexscript.runtime.std;
+
+import com.dexscript.runtime.UInt8;
 
 public class Encodes {
 

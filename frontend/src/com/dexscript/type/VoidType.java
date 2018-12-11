@@ -3,7 +3,7 @@ package com.dexscript.type;
 public class VoidType extends NamedType {
 
     public VoidType() {
-        super("void", "Object");
+        super("void", void.class.getCanonicalName());
     }
 
     @Override

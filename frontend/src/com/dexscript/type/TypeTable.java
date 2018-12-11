@@ -134,6 +134,9 @@ public class TypeTable {
             Type arrayElem = resolveType(javaType.getComponentType());
             return resolveType("Array", Arrays.asList(arrayElem));
         }
+        if (javaType.equals(Object.class)) {
+            return BuiltinTypes.ANY;
+        }
         String javaClassName = javaType.getCanonicalName();
         Type type = javaTypes.get(javaClassName);
         if (type == null) {

@@ -5,9 +5,8 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
-import com.dexscript.runtime.BasicOperators;
+import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.runtime.DexRuntimeException;
-import com.dexscript.runtime.Encodes;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.*;
@@ -33,7 +32,7 @@ public class OutTown {
 
     public OutTown() {
         oShim.importJavaClass(BasicOperators.class);
-        oShim.importJavaClass(Encodes.class);
+//        oShim.importJavaClass(Encodes.class);
     }
 
     public OutTown addFile(String fileName, String src) {

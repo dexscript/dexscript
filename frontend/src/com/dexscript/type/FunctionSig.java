@@ -17,7 +17,7 @@ class FunctionSig {
         this.ret = ret;
     }
 
-    Type invoke(List<Type> args) {
+    Type invoke(List<Type> typeArgs, List<Type> args, Type retHint) {
         if (params.size() != args.size()) {
             return BuiltinTypes.UNDEFINED;
         }

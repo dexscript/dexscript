@@ -1,4 +1,4 @@
-package com.dexscript.runtime;
+package com.dexscript.runtime.std;
 
 public class BasicOperators {
 

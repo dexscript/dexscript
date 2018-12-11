@@ -41,6 +41,10 @@ public class TypeSystem {
         return actorType;
     }
 
+    public void defineType(NamedType type) {
+        typeTable.define(type);
+    }
+
     public InterfaceType defineInterface(DexInterface inf) {
         return new InterfaceType(typeTable, functionTable, inf);
     }

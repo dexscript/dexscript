@@ -3,7 +3,7 @@ package com.dexscript.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Actor implements Promise {
+public abstract class Actor implements Promise, Task {
 
     protected final Scheduler scheduler;
     private boolean finished;

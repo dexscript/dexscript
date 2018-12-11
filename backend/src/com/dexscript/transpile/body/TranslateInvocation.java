@@ -1,5 +1,6 @@
 package com.dexscript.transpile.body;
 
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
@@ -17,7 +18,7 @@ import com.dexscript.type.*;
 import java.util.Arrays;
 import java.util.List;
 
-public class TranslateInvocation<E extends DexExpr & DexInvocationExpr> implements Translate<E> {
+public class TranslateInvocation<E extends DexElement & DexInvocationExpr> implements Translate<E> {
 
     @Override
     public void handle(OutClass oClass, E iElem) {
