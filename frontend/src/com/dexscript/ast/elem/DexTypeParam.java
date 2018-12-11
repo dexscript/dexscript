@@ -15,6 +15,7 @@ public class DexTypeParam extends DexElement {
 
     public DexTypeParam(Text src) {
         super(src);
+        new Parser();
     }
 
     public DexIdentifier paramName() {
@@ -67,23 +68,51 @@ public class DexTypeParam extends DexElement {
             State.Play(this::leftAngleBracket);
         }
 
+        @Expect("<")
         State leftAngleBracket() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '<') {
+                    i += 1;
+                    return this::paramName;
+                }
+                return null;
+            }
             return null;
         }
 
         @Expect("paramName")
         State paramName() {
             paramName = new DexIdentifier(new Text(src.bytes, i, src.end));
-            if (paramName.matched()) {
-                i = paramName.end();
-                return this::colon;
+            if (!paramName.matched()) {
+                return this::missingParamName;
             }
-            return null;
+            i = paramName.end();
+            return this::rightAngleBracket;
+        }
+
+        @Expect(">")
+        State rightAngleBracket() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '>') {
+                    i += 1;
+                    return this::colon;
+                }
+                return this::missingRightAngleBracket;
+            }
+            return this::missingRightAngleBracket;
         }
 
         @Expect(":")
         State colon() {
-            for (;i < src.end; i++) {
+            for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
@@ -92,18 +121,35 @@ public class DexTypeParam extends DexElement {
                     i += 1;
                     return this::paramType;
                 }
-                return null;
+                return this::missingColon;
             }
-            return null;
+            return this::missingColon;
         }
 
         @Expect("reference")
         State paramType() {
             paramType = DexType.parse(src.slice(i));
-            if (paramType.matched()) {
-                return null;
+            if (!paramType.matched()) {
+                return this::missingParamType;
             }
+            typeParamEnd = paramType.end();
             return null;
+        }
+
+        State missingParamType() {
+            throw new UnsupportedOperationException("not implemented");
+        }
+
+        State missingRightAngleBracket() {
+            throw new UnsupportedOperationException("not implemented");
+        }
+
+        State missingParamName() {
+            throw new UnsupportedOperationException("not implemented");
+        }
+
+        State missingColon() {
+            throw new UnsupportedOperationException("not implemented");
         }
     }
 }
