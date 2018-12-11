@@ -12,8 +12,8 @@ public class UInt8Type extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Type that) {
-        if (super.isAssignableFrom(that)) {
+    public boolean isAssignableFrom(Subs subs, Type that) {
+        if (super.isAssignableFrom(subs, that)) {
             return true;
         }
         if (that instanceof UInt8Type) {

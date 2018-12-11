@@ -15,9 +15,9 @@ public class IntersectionType extends Type {
     }
 
     @Override
-    public boolean isAssignableFrom(Type that) {
+    public boolean isAssignableFrom(Subs subs, Type that) {
         for (Type type : types) {
-            if (!type.isAssignableFrom(that)) {
+            if (!type.isAssignableFrom(subs, that)) {
                 return false;
             }
         }

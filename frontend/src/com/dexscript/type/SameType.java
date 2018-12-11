@@ -10,7 +10,7 @@ public final class SameType extends Type {
     }
 
     @Override
-    public boolean isAssignableFrom(Type that) {
+    public boolean isAssignableFrom(Subs subs, Type that) {
         return sameType.equals(that);
     }
 

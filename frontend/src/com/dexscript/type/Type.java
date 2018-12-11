@@ -15,6 +15,12 @@ public abstract class Type {
     }
 
     public boolean isAssignableFrom(Type that) {
+        Subs subs = new Subs();
+        boolean result = isAssignableFrom(subs, that);
+        return result;
+    }
+
+    public boolean isAssignableFrom(Subs subs, Type that) {
         if (this.equals(that)) {
             return true;
         }
@@ -23,7 +29,7 @@ public abstract class Type {
         }
         if (that instanceof IntersectionType) {
             for (Type elem : ((IntersectionType) that).types()) {
-                if (this.isAssignableFrom(elem)) {
+                if (this.isAssignableFrom(subs, elem)) {
                     return true;
                 }
             }
@@ -31,7 +37,7 @@ public abstract class Type {
         }
         if (that instanceof UnionType) {
             for (Type elem : ((UnionType) that).types()) {
-                if (!this.isAssignableFrom(elem)) {
+                if (!this.isAssignableFrom(subs, elem)) {
                     return false;
                 }
             }

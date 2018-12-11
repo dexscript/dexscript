@@ -59,8 +59,8 @@ public final class FunctionType extends Type {
     }
 
     @Override
-    public boolean isAssignableFrom(Type thatObj) {
-        if (super.isAssignableFrom(thatObj)) {
+    public boolean isAssignableFrom(Subs subs, Type thatObj) {
+        if (super.isAssignableFrom(subs, thatObj)) {
             return true;
         }
         if (!(thatObj instanceof FunctionType)) {
@@ -76,11 +76,11 @@ public final class FunctionType extends Type {
         for (int i = 0; i < params.size(); i++) {
             Type thisParam = this.params.get(i);
             Type thatParam = that.params.get(i);
-            if (!thatParam.isAssignableFrom(thisParam)) {
+            if (!thatParam.isAssignableFrom(subs, thisParam)) {
                 return false;
             }
         }
-        return this.ret.isAssignableFrom(that.ret);
+        return this.ret.isAssignableFrom(subs, that.ret);
     }
 
     @Override

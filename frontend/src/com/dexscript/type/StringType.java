@@ -7,8 +7,8 @@ public class StringType extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Type that) {
-        if (super.isAssignableFrom(that)) {
+    public boolean isAssignableFrom(Subs subs, Type that) {
+        if (super.isAssignableFrom(subs, that)) {
             return true;
         }
         return that instanceof StringType || that instanceof StringLiteralType;

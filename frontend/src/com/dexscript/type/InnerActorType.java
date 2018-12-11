@@ -40,8 +40,8 @@ public class InnerActorType extends Type implements FunctionsProvider {
     }
 
     @Override
-    public boolean isAssignableFrom(Type thatObj) {
-        if (super.isAssignableFrom(thatObj)) {
+    public boolean isAssignableFrom(Subs subs, Type thatObj) {
+        if (super.isAssignableFrom(subs, thatObj)) {
             return true;
         }
         if (thatObj instanceof SameType) {
@@ -51,7 +51,7 @@ public class InnerActorType extends Type implements FunctionsProvider {
         lookup.put(this, new SameType(thatObj));
         for (FunctionType member : functions()) {
             FunctionType expandedMember = (FunctionType) member.expand(lookup);
-            if (!functionTable.isDefined(expandedMember)) {
+            if (!functionTable.isDefined(subs, expandedMember)) {
                 return false;
             }
         }

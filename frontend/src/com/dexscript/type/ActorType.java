@@ -5,7 +5,6 @@ import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
-import com.dexscript.ast.inf.DexInfTypeParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
@@ -122,8 +121,8 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
     }
 
     @Override
-    public boolean isAssignableFrom(Type thatObj) {
-        if (super.isAssignableFrom(thatObj)) {
+    public boolean isAssignableFrom(Subs subs, Type thatObj) {
+        if (super.isAssignableFrom(subs, thatObj)) {
             return true;
         }
         if (thatObj instanceof SameType) {
@@ -134,7 +133,7 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
         functions();
         for (FunctionType member : members) {
             FunctionType expandedMember = (FunctionType) member.expand(lookup);
-            if (!functionTable.isDefined(expandedMember)) {
+            if (!functionTable.isDefined(subs, expandedMember)) {
                 return false;
             }
         }

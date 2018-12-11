@@ -79,11 +79,11 @@ public class InterfaceType extends NamedType implements GenericType, FunctionsPr
     }
 
     @Override
-    public boolean isAssignableFrom(Type that) {
-        if (super.isAssignableFrom(that)) {
+    public boolean isAssignableFrom(Subs subs, Type that) {
+        if (super.isAssignableFrom(subs, that)) {
             return true;
         }
-        return functionTable.isAssignableFrom(this, that);
+        return functionTable.isAssignableFrom(subs, this, that);
     }
 
     @Override
@@ -105,5 +105,9 @@ public class InterfaceType extends NamedType implements GenericType, FunctionsPr
             }
         }
         return typeParams;
+    }
+
+    public List<Type> typeArgs() {
+        return typeArgs;
     }
 }
