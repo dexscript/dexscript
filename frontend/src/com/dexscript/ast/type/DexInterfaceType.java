@@ -1,5 +1,6 @@
 package com.dexscript.ast.type;
 
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
@@ -7,12 +8,14 @@ import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
+import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DexInterfaceType extends DexType {
 
+    private DexSyntaxError syntaxError;
     private List<DexInfMethod> methods;
     private List<DexInfFunction> functions;
     private int interfaceTypeEnd = -1;
@@ -46,7 +49,29 @@ public class DexInterfaceType extends DexType {
 
     @Override
     public void walkDown(Visitor visitor) {
+        if (methods() != null) {
+            for (DexInfMethod method : methods()) {
+                visitor.visit(method);
+            }
+        }
+        if (functions() != null) {
+            for (DexInfFunction function : functions()) {
+                visitor.visit(function);
+            }
+        }
+    }
 
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
+    }
+
+    public List<DexInfMethod> methods() {
+        return methods;
+    }
+
+    public List<DexInfFunction> functions() {
+        return functions;
     }
 
     private class Parser {
@@ -122,7 +147,26 @@ public class DexInterfaceType extends DexType {
         }
 
         State missingMethodOrFunction() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    interfaceTypeEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::methodOrFunctionOrRightBrace;
+                }
+            }
+            interfaceTypeEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }
