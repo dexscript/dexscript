@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-public class VoidType extends TopLevelType {
+public class VoidType extends NamedType {
 
     public VoidType() {
         super("void", "Object");

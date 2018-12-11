@@ -6,18 +6,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TaskType extends TopLevelType implements FunctionsProvider, GenericType {
+public class TaskType extends NamedType implements FunctionsProvider, GenericType {
 
     private final static List<Type> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
     private final @NotNull FunctionType resolveFunc;
-    private final TopLevelTypeTable typeTable;
+    private final TypeTable typeTable;
     private final FunctionTable functionTable;
 
-    public TaskType(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable) {
+    public TaskType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable) {
         this(typeTable, functionTable, TYPE_PARAMETERS);
     }
 
-    public TaskType(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
+    public TaskType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
         super("Task", "com.dexscript.runtime.Actor");
         this.typeTable = typeTable;
         this.functionTable = functionTable;

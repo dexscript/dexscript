@@ -1,6 +1,6 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.TypeSystem;
@@ -11,7 +11,7 @@ public class InferForTest {
 
     @Test
     public void short_var_decl() {
-        DexFunction func = new DexFunction("" +
+        DexActor func = new DexActor("" +
                 "function Hello(): int64 {\n" +
                 "   var total: int64\n" +
                 "   for i := 0; i < 100; i++ {" +

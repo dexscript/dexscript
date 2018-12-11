@@ -9,12 +9,12 @@ import java.util.Map;
 
 public class InnerActorType extends Type implements FunctionsProvider {
 
-    private final TopLevelTypeTable typeTable;
+    private final TypeTable typeTable;
     private final DexAwaitConsumer awaitConsumer;
     private final FunctionTable functionTable;
     private List<FunctionType> members;
 
-    public InnerActorType(TopLevelTypeTable typeTable, FunctionTable functionTable, DexAwaitConsumer awaitConsumer) {
+    public InnerActorType(TypeTable typeTable, FunctionTable functionTable, DexAwaitConsumer awaitConsumer) {
         super("com.dexscript.runtime.Promise");
         functionTable.lazyDefine(this);
         this.typeTable = typeTable;

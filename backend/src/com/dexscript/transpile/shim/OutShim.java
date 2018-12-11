@@ -1,7 +1,7 @@
 package com.dexscript.transpile.shim;
 
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.transpile.gen.*;
@@ -71,10 +71,10 @@ public class OutShim {
         }
     }
 
-    public void defineActor(DexFunction function) {
+    public void defineActor(DexActor function) {
         ts.defineActor(function, new ActorType.ImplProvider() {
             @Override
-            public Object callFunc(FunctionType functionType, DexFunction func) {
+            public Object callFunc(FunctionType functionType, DexActor func) {
                 String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
                 String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
                 boolean hasAwait = new HasAwait(ts, func).result();
@@ -86,7 +86,7 @@ public class OutShim {
             }
 
             @Override
-            public Object newFunc(FunctionType functionType, DexFunction func) {
+            public Object newFunc(FunctionType functionType, DexActor func) {
                 String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
                 String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
                 NewActor impl = new NewActor(functionType, function, canF, newF);
@@ -95,7 +95,7 @@ public class OutShim {
             }
 
             @Override
-            public Object innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+            public Object innerCallFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer) {
                 String funcName = awaitConsumer.identifier().toString();
                 String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
                 String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
@@ -108,7 +108,7 @@ public class OutShim {
             }
 
             @Override
-            public Object innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer) {
+            public Object innerNewFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer) {
                 String funcName = awaitConsumer.identifier().toString();
                 String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
                 String canF = CLASSNAME + "." + allocateShim("can__" + funcName);

@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import org.junit.Assert;
@@ -10,7 +10,7 @@ public class InnerActorTypeTest {
 
     @Test
     public void can_consume_from_actor() {
-        DexFunction function = new DexFunction("" +
+        DexActor function = new DexActor("" +
                 "function Hello() {\n" +
                 "   await {\n" +
                 "   case AA(): string{\n" +
@@ -18,7 +18,7 @@ public class InnerActorTypeTest {
                 "   }}\n" +
                 "}");
         DexAwaitConsumer awaitConsumer = (DexAwaitConsumer) function.stmts().get(0).asAwait().cases().get(0);
-        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
         FunctionTable functionTable = new FunctionTable();
         InnerActorType innerActorType = new InnerActorType(typeTable, functionTable, awaitConsumer);
         InterfaceType inf = new InterfaceType(typeTable, functionTable, new DexInterface("" +

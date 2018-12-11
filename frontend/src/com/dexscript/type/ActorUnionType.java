@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ActorUnionType extends TopLevelType {
+public class ActorUnionType extends NamedType {
 
     private final UnionType unionType;
 

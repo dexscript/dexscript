@@ -43,9 +43,9 @@ public class DexTopLevelDecl extends DexElement {
         return syntaxError;
     }
 
-    public DexFunction function() {
-        if (matched instanceof DexFunction) {
-            return (DexFunction) matched;
+    public DexActor function() {
+        if (matched instanceof DexActor) {
+            return (DexActor) matched;
         }
         return null;
     }
@@ -81,7 +81,7 @@ public class DexTopLevelDecl extends DexElement {
                     continue;
                 }
                 if (Keyword.$(src, i, 'f', 'u', 'n', 'c', 't', 'i', 'o', 'n')) {
-                    matched = new DexFunction(src.slice(i));
+                    matched = new DexActor(src.slice(i));
                     if (matched.matched()) {
                         return null;
                     } else {

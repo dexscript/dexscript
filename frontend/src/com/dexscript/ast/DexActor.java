@@ -4,6 +4,7 @@ import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.stmt.DexBlock;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
@@ -16,7 +17,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-public final class DexFunction extends DexElement {
+public final class DexActor extends DexElement {
 
     private int functionBegin = -1;
     private int signatureBegin = -1;
@@ -24,11 +25,11 @@ public final class DexFunction extends DexElement {
     private DexFunctionBody body;
     private String actorName;
 
-    public DexFunction(String src) {
+    public DexActor(String src) {
         this(new Text(src));
     }
 
-    public DexFunction(Text src) {
+    public DexActor(Text src) {
         super(src);
         new Parser();
     }
@@ -59,6 +60,10 @@ public final class DexFunction extends DexElement {
 
     public DexSig sig() {
         return body().sig();
+    }
+
+    public List<DexTypeParam> typeParams() {
+        return sig().typeParams();
     }
 
     public List<DexParam> params() {

@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-public class BoolType extends TopLevelType {
+public class BoolType extends NamedType {
 
     public BoolType() {
         super("bool", "java.lang.Boolean");

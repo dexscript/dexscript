@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-public class Int64Type extends TopLevelType {
+public class Int64Type extends NamedType {
 
     public Int64Type() {
         super("int64", "java.lang.Long");

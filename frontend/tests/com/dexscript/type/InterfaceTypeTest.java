@@ -11,7 +11,7 @@ public class InterfaceTypeTest {
     @Test
     public void assignable_to_same_structure() {
         FunctionTable functionTable = new FunctionTable();
-        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
         InterfaceType inf1 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
                 "interface Hello {\n" +
                 "   Action1(): string\n" +
@@ -29,7 +29,7 @@ public class InterfaceTypeTest {
     @Test
     public void sub_type_has_more_member() {
         FunctionTable functionTable = new FunctionTable();
-        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
         InterfaceType inf1 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
                 "interface Hello {\n" +
                 "   Action1(): string\n" +
@@ -46,7 +46,7 @@ public class InterfaceTypeTest {
     @Test
     public void argument_takes_sub_type() {
         FunctionTable functionTable = new FunctionTable();
-        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
         new InterfaceType(typeTable, functionTable, new DexInterface("" +
                 "interface SuperType {\n" +
                 "   Action1(): string\n" +
@@ -71,7 +71,7 @@ public class InterfaceTypeTest {
     @Test
     public void ret_takes_sub_type() {
         FunctionTable functionTable = new FunctionTable();
-        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
         new InterfaceType(typeTable, functionTable, new DexInterface("" +
                 "interface SuperType {\n" +
                 "   Action1(): string\n" +
@@ -96,7 +96,7 @@ public class InterfaceTypeTest {
     @Test
     public void implement_interface_by_define_function() {
         FunctionTable functionTable = new FunctionTable();
-        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
         InterfaceType someInf = new InterfaceType(typeTable, functionTable, new DexInterface("" +
                 "interface SomeInf {\n" +
                 "   SomeAction(): string\n" +
@@ -111,7 +111,7 @@ public class InterfaceTypeTest {
     @Test
     public void argument_is_sub_type_can_still_implement() {
         FunctionTable functionTable = new FunctionTable();
-        TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
         InterfaceType quackable = new InterfaceType(typeTable, functionTable, new DexInterface(
                 "interface Quackable{ Quack(): string }"));
         InterfaceType swimable = new InterfaceType(typeTable, functionTable, new DexInterface(

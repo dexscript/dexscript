@@ -34,9 +34,9 @@ public interface ResolveType<E extends DexType> {
         });
     }};
 
-    Type handle(TopLevelTypeTable typeTable, E elem);
+    Type handle(TypeTable typeTable, E elem);
 
-    static Type $(TopLevelTypeTable typeTable, DexType elem) {
+    static Type $(TypeTable typeTable, DexType elem) {
         ResolveType resolveType = handlers.get(elem.getClass());
         if (resolveType == null) {
             Events.ON_UNKNOWN_ELEM.handle(elem);

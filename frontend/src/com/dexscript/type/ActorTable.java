@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ActorTable implements TopLevelTypesProvider {
+public class ActorTable implements NamedTypesProvider {
 
     private final Map<String, List<ActorType>> defined = new HashMap<>();
-    private final TopLevelTypeTable typeTable;
+    private final TypeTable typeTable;
 
-    public ActorTable(TopLevelTypeTable typeTable) {
+    public ActorTable(TypeTable typeTable) {
         this.typeTable = typeTable;
         typeTable.lazyDefine(this);
     }
@@ -21,8 +21,8 @@ public class ActorTable implements TopLevelTypesProvider {
     }
 
     @Override
-    public List<TopLevelType> topLevelTypes() {
-        List<TopLevelType> types = new ArrayList<TopLevelType>();
+    public List<NamedType> namedTypes() {
+        List<NamedType> types = new ArrayList<NamedType>();
         for (Map.Entry<String, List<ActorType>> entry : defined.entrySet()) {
             if (entry.getValue().size() == 1) {
                 types.add(entry.getValue().get(0));
@@ -31,9 +31,5 @@ public class ActorTable implements TopLevelTypesProvider {
             }
         }
         return types;
-    }
-
-    public TopLevelTypeTable typeTable() {
-        return typeTable;
     }
 }

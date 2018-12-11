@@ -1,6 +1,6 @@
 package com.dexscript.transpile.skeleton;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexStatement;
@@ -21,7 +21,7 @@ public class OutInitMethod implements OutMethod {
     private final Gen g;
     private final TypeSystem ts;
 
-    public OutInitMethod(OutClass oClass, DexFunction iFunc) {
+    public OutInitMethod(OutClass oClass, DexActor iFunc) {
         this.oClass = oClass;
         ts = oClass.typeSystem();
         oClass.changeMethod(this);

@@ -1,6 +1,6 @@
 package com.dexscript.transpile.shim.impl;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
@@ -12,16 +12,16 @@ import com.dexscript.type.Type;
 
 public class CallActor extends Impl {
 
-    private final DexFunction function;
+    private final DexActor function;
     private final boolean hasAwait;
 
-    public CallActor(FunctionType functionType, DexFunction function, String canF, String newF, boolean hasAwait) {
+    public CallActor(FunctionType functionType, DexActor function, String canF, String newF, boolean hasAwait) {
         super(functionType, canF, null, newF);
         this.function = function;
         this.hasAwait = hasAwait;
     }
 
-    public DexFunction function() {
+    public DexActor function() {
         return function;
     }
 

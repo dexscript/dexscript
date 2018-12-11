@@ -1,6 +1,6 @@
 package com.dexscript.transpile.shim.impl;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
@@ -12,14 +12,14 @@ import com.dexscript.type.Type;
 
 public class NewActor extends Impl {
 
-    private final DexFunction function;
+    private final DexActor function;
 
-    public NewActor(FunctionType functionType, DexFunction function, String canF, String newF) {
+    public NewActor(FunctionType functionType, DexActor function, String canF, String newF) {
         super(functionType, canF, null, newF);
         this.function = function;
     }
 
-    public DexFunction function() {
+    public DexActor function() {
         return function;
     }
 

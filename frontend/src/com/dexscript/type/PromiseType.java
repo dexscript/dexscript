@@ -5,18 +5,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class PromiseType extends TopLevelType implements FunctionsProvider, GenericType {
+public class PromiseType extends NamedType implements FunctionsProvider, GenericType {
 
     private final static List<Type> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
     private final @NotNull FunctionType consumeFunc;
-    private final TopLevelTypeTable typeTable;
+    private final TypeTable typeTable;
     private final FunctionTable functionTable;
 
-    public PromiseType(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable) {
+    public PromiseType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable) {
         this(typeTable, functionTable, TYPE_PARAMETERS);
     }
 
-    public PromiseType(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
+    public PromiseType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
         super("Promise", "Promise");
         this.typeTable = typeTable;
         this.functionTable = functionTable;

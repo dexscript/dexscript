@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.type.DexType;
@@ -10,7 +10,7 @@ import java.util.List;
 
 public class TypeSystem {
 
-    private final TopLevelTypeTable typeTable = new TopLevelTypeTable(BuiltinTypes.TYPE_TABLE);
+    private final TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
     private final ActorTable actorTable = new ActorTable(typeTable);
     private final FunctionTable functionTable = new FunctionTable();
 
@@ -35,8 +35,10 @@ public class TypeSystem {
         functionTable.define(function);
     }
 
-    public ActorType defineActor(DexFunction elem, ActorType.ImplProvider implProvider) {
-        return new ActorType(actorTable, functionTable, elem, implProvider);
+    public ActorType defineActor(DexActor elem, ActorType.ImplProvider implProvider) {
+        ActorType actorType = new ActorType(typeTable, functionTable, elem, implProvider);
+        actorTable.define(actorType);
+        return actorType;
     }
 
     public InterfaceType defineInterface(DexInterface inf) {

@@ -1,6 +1,6 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.type.InterfaceType;
@@ -14,7 +14,7 @@ public class InferNewTest {
     @Test
     public void match_one() {
         TypeSystem ts = new TypeSystem();
-        ts.defineActor(new DexFunction("" +
+        ts.defineActor(new DexActor("" +
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
                 "}"), null);

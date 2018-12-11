@@ -3,14 +3,14 @@ package com.dexscript.type;
 public interface BuiltinTypes {
 
     Type ANY = new AnyType();
-    TopLevelType BOOL = new BoolType();
-    TopLevelType STRING = new StringType();
-    TopLevelType INT64 = new Int64Type();
-    TopLevelType UINT8 = new UInt8Type();
-    TopLevelType VOID = new VoidType();
-    TopLevelType UNDEFINED = new UndefinedType();
+    NamedType BOOL = new BoolType();
+    NamedType STRING = new StringType();
+    NamedType INT64 = new Int64Type();
+    NamedType UINT8 = new UInt8Type();
+    NamedType VOID = new VoidType();
+    NamedType UNDEFINED = new UndefinedType();
 
-    TopLevelType[] TYPE_ARRAY = new TopLevelType[]{
+    NamedType[] TYPE_ARRAY = new NamedType[]{
             BOOL,
             STRING,
             UINT8,
@@ -18,9 +18,9 @@ public interface BuiltinTypes {
             VOID
     };
 
-    TopLevelTypeTable TYPE_TABLE = new TopLevelTypeTable() {
+    TypeTable TYPE_TABLE = new TypeTable() {
         {
-            for (TopLevelType type : BuiltinTypes.TYPE_ARRAY) {
+            for (NamedType type : BuiltinTypes.TYPE_ARRAY) {
                 define(type);
             }
         }

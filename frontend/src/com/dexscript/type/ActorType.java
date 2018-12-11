@@ -1,9 +1,11 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.elem.DexTypeParam;
+import com.dexscript.ast.inf.DexInfTypeParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
@@ -14,74 +16,109 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ActorType extends TopLevelType implements FunctionsProvider {
+public class ActorType extends NamedType implements GenericType, FunctionsProvider {
+
 
     public interface ImplProvider {
-        Object callFunc(FunctionType functionType, DexFunction func);
+        Object callFunc(FunctionType functionType, DexActor func);
 
-        Object newFunc(FunctionType functionType, DexFunction func);
+        Object newFunc(FunctionType functionType, DexActor func);
 
-        Object innerCallFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer);
+        Object innerCallFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer);
 
-        Object innerNewFunc(FunctionType functionType, DexFunction func, DexAwaitConsumer awaitConsumer);
+        Object innerNewFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer);
     }
 
-    private final TopLevelTypeTable typeTable;
+    private final TypeTable typeTable;
     private final FunctionTable functionTable;
-    private final DexFunction func;
+    private final DexActor actor;
+    private List<Type> typeArgs;
     private List<FunctionType> members;
+    private List<FunctionType> functions;
+    private List<Type> typeParams;
     private ImplProvider implProvider;
 
-    public ActorType(ActorTable actorTable, FunctionTable functionTable, DexFunction func, ImplProvider implProvider) {
-        super(func.identifier().toString(), "com.dexscript.runtime.Promise");
-        actorTable.define(this);
+    public ActorType(TypeTable typeTable, FunctionTable functionTable, DexActor actor, ImplProvider implProvider) {
+        this(typeTable, functionTable, actor, implProvider, null);
+    }
+
+    public ActorType(TypeTable typeTable, FunctionTable functionTable, DexActor actor,
+                     ImplProvider implProvider, List<Type> typeArgs) {
+        super(actor.identifier().toString(), "com.dexscript.runtime.Promise");
         functionTable.lazyDefine(this);
+        this.typeArgs = typeArgs;
         this.implProvider = implProvider;
-        this.func = func;
-        this.typeTable = actorTable.typeTable();
+        this.actor = actor;
+        this.typeTable = typeTable;
         this.functionTable = functionTable;
     }
 
     @Override
-    public List<FunctionType> functions() {
-        if (members == null) {
-            members = new ArrayList<>();
-            members.add(consumeFunc());
-            new AwaitConsumerCollector().visit(func.blk());
+    public Type generateType(List<Type> typeArgs) {
+        return new ActorType(typeTable, functionTable, actor, implProvider, typeArgs);
+    }
+
+    @Override
+    public List<Type> typeParameters() {
+        if (typeParams == null) {
+            typeParams = new ArrayList<>();
+            for (DexTypeParam typeParam : actor.typeParams()) {
+                typeParams.add(ResolveType.$(typeTable, typeParam.paramType()));
+            }
         }
-        List<FunctionType> functions = new ArrayList<>(members);
-        functions.add(callFunc());
-        functions.add(newFunc());
+        return typeParams;
+    }
+
+    @Override
+    public List<FunctionType> functions() {
+        if (functions != null) {
+            return functions;
+        }
+        if (typeArgs == null) {
+            typeArgs = typeParameters();
+        }
+        TypeTable localTypeTable = new TypeTable(typeTable);
+        for (int i = 0; i < actor.typeParams().size(); i++) {
+            DexTypeParam typeParam = actor.typeParams().get(i);
+            String typeParamName = typeParam.paramName().toString();
+            localTypeTable.define(typeParamName, typeArgs.get(i));
+        }
+        members = new ArrayList<>();
+        members.add(consumeFunc(localTypeTable));
+        new AwaitConsumerCollector(localTypeTable).visit(actor.blk());
+        functions = new ArrayList<>(members);
+        functions.add(callFunc(localTypeTable));
+        functions.add(newFunc(localTypeTable));
         return functions;
     }
 
-    public FunctionType callFunc() {
-        Type ret = ResolveType.$(typeTable, func.sig().ret());
+    public FunctionType callFunc(TypeTable localTypeTable) {
+        Type ret = ResolveType.$(localTypeTable, actor.sig().ret());
         ArrayList<Type> params = new ArrayList<>();
-        for (DexParam param : func.sig().params()) {
-            params.add(ResolveType.$(typeTable, param.paramType()));
+        for (DexParam param : actor.sig().params()) {
+            params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        FunctionType functionType = new FunctionType(name(), params, ret, func);
-        functionType.attach((FunctionType.LazyAttachment) () -> implProvider.callFunc(functionType, func));
+        FunctionType functionType = new FunctionType(name(), params, ret, actor);
+        functionType.attach((FunctionType.LazyAttachment) () -> implProvider.callFunc(functionType, actor));
         return functionType;
     }
 
-    public FunctionType newFunc() {
+    public FunctionType newFunc(TypeTable localTypeTable) {
         ArrayList<Type> params = new ArrayList<>();
         params.add(new StringLiteralType(name()));
-        for (DexParam param : func.sig().params()) {
-            params.add(ResolveType.$(typeTable, param.paramType()));
+        for (DexParam param : actor.sig().params()) {
+            params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        FunctionType functionType = new FunctionType("New__", params, this, func);
-        functionType.attach((FunctionType.LazyAttachment) () -> implProvider.newFunc(functionType, func));
+        FunctionType functionType = new FunctionType("New__", params, this, actor);
+        functionType.attach((FunctionType.LazyAttachment) () -> implProvider.newFunc(functionType, actor));
         return functionType;
     }
 
-    private FunctionType consumeFunc() {
-        Type ret = ResolveType.$(typeTable, func.sig().ret());
+    private FunctionType consumeFunc(TypeTable localTypeTable) {
+        Type ret = ResolveType.$(localTypeTable, actor.sig().ret());
         ArrayList<Type> params = new ArrayList<>();
         params.add(this);
-        return new FunctionType("Consume__", params, ret, func);
+        return new FunctionType("Consume__", params, ret, actor);
     }
 
     @Override
@@ -94,7 +131,8 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         }
         Map<Type, Type> lookup = new HashMap<>();
         lookup.put(this, new SameType(thatObj));
-        for (FunctionType member : functions()) {
+        functions();
+        for (FunctionType member : members) {
             FunctionType expandedMember = (FunctionType) member.expand(lookup);
             if (!functionTable.isDefined(expandedMember)) {
                 return false;
@@ -108,11 +146,17 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         return name();
     }
 
-    public DexFunction elem() {
-        return func;
+    public DexActor elem() {
+        return actor;
     }
 
     private class AwaitConsumerCollector implements DexElement.Visitor {
+
+        private final TypeTable localTypeTable;
+
+        public AwaitConsumerCollector(TypeTable localTypeTable) {
+            this.localTypeTable = localTypeTable;
+        }
 
         @Override
         public void visit(DexElement elem) {
@@ -139,11 +183,11 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
             params.add(ActorType.this);
             DexSig sig = awaitConsumer.produceSig();
             for (DexParam param : sig.params()) {
-                params.add(ResolveType.$(typeTable, param.paramType()));
+                params.add(ResolveType.$(localTypeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType("New__", params, nestedActor);
             functionType.attach((FunctionType.LazyAttachment) () -> implProvider.innerNewFunc(
-                    functionType, func, awaitConsumer));
+                    functionType, actor, awaitConsumer));
             return functionType;
         }
 
@@ -151,15 +195,15 @@ public class ActorType extends TopLevelType implements FunctionsProvider {
         private FunctionType callFunc(DexAwaitConsumer awaitConsumer) {
             DexSig sig = awaitConsumer.produceSig();
             String funcName = awaitConsumer.identifier().toString();
-            Type ret = ResolveType.$(typeTable, sig.ret());
+            Type ret = ResolveType.$(localTypeTable, sig.ret());
             ArrayList<Type> params = new ArrayList<>();
             params.add(ActorType.this);
             for (DexParam param : sig.params()) {
-                params.add(ResolveType.$(typeTable, param.paramType()));
+                params.add(ResolveType.$(localTypeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType(funcName, params, ret, awaitConsumer);
             functionType.attach((FunctionType.LazyAttachment) () -> implProvider.innerCallFunc(
-                    functionType, func, awaitConsumer));
+                    functionType, actor, awaitConsumer));
             return functionType;
         }
     }

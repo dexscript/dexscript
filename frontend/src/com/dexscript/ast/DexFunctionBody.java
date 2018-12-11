@@ -42,7 +42,7 @@ public class DexFunctionBody extends DexElement {
         return syntaxError;
     }
 
-    public void reparent(DexFunction parent) {
+    public void reparent(DexActor parent) {
         this.parent = parent;
     }
 

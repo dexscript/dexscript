@@ -2,10 +2,9 @@ package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
-import com.dexscript.infer.InferType;
 import com.dexscript.runtime.BasicOperators;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.Encodes;
@@ -51,7 +50,7 @@ public class OutTown {
         for (DexFile iFile : iFiles) {
             for (DexTopLevelDecl iTopLevelDecl : iFile.topLevelDecls()) {
                 if (iTopLevelDecl.function() != null) {
-                    DexFunction function = iTopLevelDecl.function();
+                    DexActor function = iTopLevelDecl.function();
                     ensureTypeLoaded(function);
                     OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, function);
                     addSource(oClass.qualifiedClassName(), oClass.toString());
@@ -66,7 +65,7 @@ public class OutTown {
         }
     }
 
-    private void ensureTypeLoaded(DexFunction function) {
+    private void ensureTypeLoaded(DexActor function) {
         String funcName = function.functionName();
         List<Type> args = ts.resolveTypes(function.params());
         List<FunctionType> functionTypes = ts.resolveFunctions(funcName, args);

@@ -1,6 +1,6 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.Type;
@@ -13,7 +13,7 @@ public class InferConsumeTest {
     @Test
     public void consume_string() {
         TypeSystem ts = new TypeSystem();
-        ts.defineActor(new DexFunction("" +
+        ts.defineActor(new DexActor("" +
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
                 "}"), null);

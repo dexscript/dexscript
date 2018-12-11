@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-public class StringType extends TopLevelType {
+public class StringType extends NamedType {
 
     public StringType() {
         super("string", "java.lang.String");

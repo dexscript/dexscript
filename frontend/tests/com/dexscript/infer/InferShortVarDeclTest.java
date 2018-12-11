@@ -1,6 +1,6 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.TypeSystem;
@@ -11,7 +11,7 @@ public class InferShortVarDeclTest {
 
     @Test
     public void local_variable_can_be_referenced() {
-        DexFunction func = new DexFunction("" +
+        DexActor func = new DexActor("" +
                 "function Hello(arg: string): string {\n" +
                 "   local := arg\n" +
                 "   return local\n" +
@@ -24,7 +24,7 @@ public class InferShortVarDeclTest {
 
     @Test
     public void local_variable_does_not_leak_out_block() {
-        DexFunction func = new DexFunction("" +
+        DexActor func = new DexActor("" +
                 "function Hello(arg: string): string {\n" +
                 "   {\n" +
                 "       local := arg\n" +

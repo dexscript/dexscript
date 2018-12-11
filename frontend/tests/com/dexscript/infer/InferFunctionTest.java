@@ -1,6 +1,6 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.TypeSystem;
@@ -11,7 +11,7 @@ public class InferFunctionTest {
 
     @Test
     public void argument_can_be_referenced() {
-        DexFunction func = new DexFunction("" +
+        DexActor func = new DexActor("" +
                 "function Hello(arg: string): string {\n" +
                 "   return arg\n" +
                 "}");

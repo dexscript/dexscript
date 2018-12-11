@@ -1,6 +1,6 @@
 package com.dexscript.transpile.skeleton;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
@@ -11,14 +11,14 @@ import com.dexscript.type.TypeSystem;
 public class OutTopLevelClass implements OutClass {
 
     private final TypeSystem ts;
-    private final DexFunction iFunc;
+    private final DexActor iFunc;
     private final Gen g = new Gen();
     private final OutFields oFields = new OutFields();
     private final OutShim oShim;
     private final OutStateMachine stateMachine = new OutStateMachine();
     private OutMethod oMethod;
 
-    public OutTopLevelClass(TypeSystem ts, OutShim oShim, DexFunction iFunc) {
+    public OutTopLevelClass(TypeSystem ts, OutShim oShim, DexActor iFunc) {
         this.ts = ts;
         this.oShim = oShim;
         this.iFunc = iFunc;
@@ -39,7 +39,7 @@ public class OutTopLevelClass implements OutClass {
         g.__(new Line("}"));
     }
 
-    public static String qualifiedClassNameOf(DexFunction iFunction) {
+    public static String qualifiedClassNameOf(DexActor iFunction) {
         String packageName = iFunction.file().packageClause().identifier().toString();
         return packageName + "." + iFunction.actorName();
     }
@@ -83,7 +83,7 @@ public class OutTopLevelClass implements OutClass {
         return ts;
     }
 
-    public DexFunction iFunc() {
+    public DexActor iFunc() {
         return iFunc;
     }
 

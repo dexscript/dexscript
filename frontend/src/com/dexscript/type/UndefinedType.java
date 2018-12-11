@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-public class UndefinedType extends TopLevelType {
+public class UndefinedType extends NamedType {
 
     public UndefinedType() {
         super("undefined", null);

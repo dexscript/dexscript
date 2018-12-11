@@ -3,14 +3,14 @@ package com.dexscript.ast;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DexFunctionTest {
+public class DexActorTest {
 
     @Test
     public void empty() {
         String src = "" +
                 " function hello() {\n" +
                 "}\n";
-        DexFunction function = new DexFunction(src);
+        DexActor function = new DexActor(src);
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
         Assert.assertEquals("()", function.sig().toString());
@@ -20,7 +20,7 @@ public class DexFunctionTest {
 
     @Test
     public void no_space_between_function_keyword_and_identifier() {
-        Assert.assertEquals("<unmatched>functionhello() {}</unmatched>", new DexFunction("functionhello() {}").toString());
+        Assert.assertEquals("<unmatched>functionhello() {}</unmatched>", new DexActor("functionhello() {}").toString());
     }
 
     @Test
@@ -28,7 +28,7 @@ public class DexFunctionTest {
         String src = "" +
                 " function hello(msg:string) {\n" +
                 "}\n";
-        DexFunction function = new DexFunction(src);
+        DexActor function = new DexActor(src);
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
         Assert.assertEquals("(msg:string)", function.sig().toString());
@@ -44,7 +44,7 @@ public class DexFunctionTest {
         Assert.assertEquals("" +
                 "<unmatched>function hello ) {\n" +
                 "}\n" +
-                "</unmatched>", new DexFunction(src).toString());
+                "</unmatched>", new DexActor(src).toString());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class DexFunctionTest {
         Assert.assertEquals("" +
                 "<unmatched> example function hello () {\n" +
                 "}\n" +
-                "</unmatched>", new DexFunction(src).toString());
+                "</unmatched>", new DexActor(src).toString());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class DexFunctionTest {
         String src = "" +
                 "function hello () \n" +
                 "}\n";
-        DexFunction function = new DexFunction(src);
+        DexActor function = new DexActor(src);
         function.body().blk();
         Assert.assertEquals("()<error/> \n" +
                 "}\n", function.body().toString());

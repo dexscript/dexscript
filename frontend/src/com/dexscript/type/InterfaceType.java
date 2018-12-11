@@ -10,20 +10,20 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InterfaceType extends TopLevelType implements GenericType, FunctionsProvider {
+public class InterfaceType extends NamedType implements GenericType, FunctionsProvider {
 
-    private final TopLevelTypeTable typeTable;
+    private final TypeTable typeTable;
     private final FunctionTable functionTable;
     private final DexInterface inf;
     private List<Type> typeArgs;
     private List<FunctionType> members;
     private List<Type> typeParams;
 
-    public InterfaceType(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable, @NotNull DexInterface inf) {
+    public InterfaceType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, @NotNull DexInterface inf) {
         this(typeTable, functionTable, inf, null);
     }
 
-    public InterfaceType(@NotNull TopLevelTypeTable typeTable, @NotNull FunctionTable functionTable,
+    public InterfaceType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable,
                          @NotNull DexInterface inf, List<Type> typeArgs) {
         super(inf.identifier().toString(), "Object");
         this.typeArgs = typeArgs;
@@ -42,7 +42,7 @@ public class InterfaceType extends TopLevelType implements GenericType, Function
             typeArgs = typeParameters();
         }
         members = new ArrayList<>();
-        TopLevelTypeTable localTypeTable = new TopLevelTypeTable(typeTable);
+        TypeTable localTypeTable = new TypeTable(typeTable);
         for (int i = 0; i < inf.typeParams().size(); i++) {
             DexInfTypeParam typeParam = inf.typeParams().get(i);
             String typeParamName = typeParam.paramName().toString();
@@ -57,7 +57,7 @@ public class InterfaceType extends TopLevelType implements GenericType, Function
         return members;
     }
 
-    private void addInfFunction(TopLevelTypeTable localTypeTable, DexInfFunction infFunction) {
+    private void addInfFunction(TypeTable localTypeTable, DexInfFunction infFunction) {
         String name = infFunction.identifier().toString();
         List<Type> params = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
@@ -67,7 +67,7 @@ public class InterfaceType extends TopLevelType implements GenericType, Function
         members.add(new FunctionType(name, params, ret));
     }
 
-    private void addInfMethod(TopLevelTypeTable localTypeTable, DexInfMethod infMethod) {
+    private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
         String name = infMethod.identifier().toString();
         List<Type> params = new ArrayList<>();
         params.add(this);

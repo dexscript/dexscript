@@ -1,6 +1,6 @@
 package com.dexscript.transpile.type;
 
-import com.dexscript.ast.DexFunction;
+import com.dexscript.ast.DexActor;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
@@ -13,7 +13,7 @@ public class CheckActorType implements CheckType.Handler<ActorType> {
 
     @Override
     public String handle(Gen g, ActorType actorType, List<Class> javaClasses, List<Class> javaInterfaces) {
-        DexFunction elem = actorType.elem();
+        DexActor elem = actorType.elem();
         String typeCheck = "is__" + elem.actorName();
         g.__("public static boolean "
         ).__(typeCheck

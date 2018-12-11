@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-public class UInt8Type extends TopLevelType {
+public class UInt8Type extends NamedType {
 
     public UInt8Type() {
         super("uint8", "com.dexscript.runtime.UInt8");

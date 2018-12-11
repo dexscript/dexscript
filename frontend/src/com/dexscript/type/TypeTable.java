@@ -4,7 +4,7 @@ import com.dexscript.ast.core.DexSyntaxException;
 
 import java.util.*;
 
-public class TopLevelTypeTable {
+public class TypeTable {
 
     public interface OnNotGenericType {
         void handle(String name, List<Type> typeArgs, Type actualType);
@@ -46,13 +46,13 @@ public class TopLevelTypeTable {
 
     private final Map<String, Type> defined = new HashMap<>();
     private final Map<Expansion, Type> expanded = new HashMap<>();
-    private final List<TopLevelTypesProvider> providers = new ArrayList<>();
+    private final List<NamedTypesProvider> providers = new ArrayList<>();
     private final Map<String, Type> javaTypes = new HashMap<>();
 
-    public TopLevelTypeTable() {
+    public TypeTable() {
     }
 
-    public TopLevelTypeTable(TopLevelTypeTable copiedFrom) {
+    public TypeTable(TypeTable copiedFrom) {
         defined.putAll(copiedFrom.defined);
         javaTypes.putAll(copiedFrom.javaTypes);
         providers.addAll(copiedFrom.providers);
@@ -107,15 +107,15 @@ public class TopLevelTypeTable {
         if (providers.isEmpty()) {
             return;
         }
-        for (TopLevelTypesProvider provider : providers) {
-            for (TopLevelType type : provider.topLevelTypes()) {
+        for (NamedTypesProvider provider : providers) {
+            for (NamedType type : provider.namedTypes()) {
                 define(type);
             }
         }
         providers.clear();
     }
 
-    public void define(TopLevelType type) {
+    public void define(NamedType type) {
         defined.put(type.name(), type);
         javaTypes.put(type.javaClassName(), type);
     }
@@ -125,7 +125,7 @@ public class TopLevelTypeTable {
         javaTypes.put(type.javaClassName(), type);
     }
 
-    public void lazyDefine(TopLevelTypesProvider provider) {
+    public void lazyDefine(NamedTypesProvider provider) {
         providers.add(provider);
     }
 
