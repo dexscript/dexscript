@@ -26,9 +26,7 @@ public class DexVoidType extends DexType {
             }
             return;
         }
-        if (Blank.$(src.bytes[i])) {
-            matched = true;
-        }
+        matched = true;
     }
 
     public DexVoidType(String src) {

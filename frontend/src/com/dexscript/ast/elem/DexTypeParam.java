@@ -1,14 +1,13 @@
 package com.dexscript.ast.elem;
 
-import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.Expect;
-import com.dexscript.ast.core.State;
-import com.dexscript.ast.core.Text;
+import com.dexscript.ast.core.*;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
 
 public class DexTypeParam extends DexElement {
 
+    private DexSyntaxError syntaxError;
     private DexIdentifier paramName;
     private DexType paramType;
     private int typeParamEnd = -1;
@@ -16,6 +15,10 @@ public class DexTypeParam extends DexElement {
     public DexTypeParam(Text src) {
         super(src);
         new Parser();
+    }
+
+    public DexTypeParam(String src) {
+        this(new Text(src));
     }
 
     public DexIdentifier paramName() {
@@ -37,6 +40,11 @@ public class DexTypeParam extends DexElement {
     @Override
     public boolean matched() {
         return typeParamEnd != -1;
+    }
+
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public void reparent(DexElement parent) {
@@ -137,19 +145,81 @@ public class DexTypeParam extends DexElement {
         }
 
         State missingParamType() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (;i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b) || LineEnd.$(b) || b == ',' || b == ')') {
+                    typeParamEnd = i;
+                    return null;
+                }
+            }
+            typeParamEnd = i;
+            return null;
         }
 
         State missingRightAngleBracket() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    typeParamEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::colon;
+                }
+                if (b == ':') {
+                    i += 1;
+                    return this::paramType;
+                }
+            }
+            typeParamEnd = i;
+            return null;
         }
 
         State missingParamName() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    typeParamEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::rightAngleBracket;
+                }
+                if (b == '>') {
+                    i += 1;
+                    return this::colon;
+                }
+            }
+            typeParamEnd = i;
+            return null;
         }
 
         State missingColon() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    typeParamEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::paramType;
+                }
+            }
+            typeParamEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }

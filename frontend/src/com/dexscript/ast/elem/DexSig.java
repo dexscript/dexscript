@@ -122,11 +122,32 @@ public class DexSig extends DexElement {
         State typeParam() {
             DexTypeParam typeParam = new DexTypeParam(src.slice(i));
             typeParams.add(typeParam);
-            if (!typeParam.matched()) {
-                return this::missingTypeParam;
-            }
             i = typeParam.end();
-            return this::leftAngleBracketOrParameter;
+            return this::moreTypeParam;
+        }
+
+        @Expect(",")
+        @Expect(")")
+        State moreTypeParam() {
+            int origCursor = i;
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::leftAngleBracketOrParameter;
+                }
+                if (b == ')') {
+                    i += 1;
+                    return this::colon;
+                }
+                i = origCursor;
+                return this::missingRightParen;
+            }
+            i = origCursor;
+            return this::missingRightParen;
         }
 
         @Expect("parameter")
@@ -150,13 +171,13 @@ public class DexSig extends DexElement {
                 return this::missingParam;
             }
             i = param.end();
-            return this::commaOrRightParen;
+            return this::moreParam;
         }
 
         @Expect(",")
         @Expect(")")
-        State commaOrRightParen() {
-            int originalCursor = i;
+        State moreParam() {
+            int origCursor = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
@@ -170,8 +191,10 @@ public class DexSig extends DexElement {
                     i += 1;
                     return this::colon;
                 }
+                i = origCursor;
+                return this::missingRightParen;
             }
-            i = originalCursor;
+            i = origCursor;
             return this::missingRightParen;
         }
 
@@ -209,10 +232,6 @@ public class DexSig extends DexElement {
                 sigEnd = i;
             }
             return null;
-        }
-
-        State missingTypeParam() {
-            throw new UnsupportedOperationException("not implemented");
         }
 
         State missingParam() {

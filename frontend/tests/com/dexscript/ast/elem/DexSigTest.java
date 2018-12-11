@@ -116,5 +116,13 @@ public class DexSigTest {
     public void one_type_param() {
         DexSig sig = new DexSig("(<T>: string): T");
         Assert.assertEquals("(<T>: string): T", sig.toString());
+        Assert.assertEquals(1, sig.typeParams().size());
+        Assert.assertEquals("<T>: string", sig.typeParams().get(0).toString());
+    }
+
+    @Test
+    public void two_type_params() {
+        DexSig sig = new DexSig("(<T>: string, <T2>: string): T");
+        Assert.assertEquals("(<T>: string, <T2>: string): T", sig.toString());
     }
 }
