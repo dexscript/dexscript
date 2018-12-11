@@ -121,7 +121,7 @@ public class DexInterface extends DexElement {
             return null;
         }
 
-        @Expect("identifier")
+        @Expect("paramName")
         private State identifier() {
             identifier = new DexIdentifier(src.slice(i));
             if (identifier.matched()) {

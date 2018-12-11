@@ -1,6 +1,6 @@
 package com.dexscript.ast.stmt;
 
-import com.dexscript.ast.DexParam;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
@@ -124,7 +124,7 @@ public class DexAwaitConsumer extends DexAwaitCase {
             return null;
         }
 
-        @Expect("identifier")
+        @Expect("paramName")
         State identifier() {
             identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
             if (identifier.matched()) {

@@ -1,16 +1,14 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.DexParam;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.ast.inf.DexInfTypeParam;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InterfaceType extends TopLevelType implements GenericType, FunctionsProvider {
 
@@ -47,7 +45,7 @@ public class InterfaceType extends TopLevelType implements GenericType, Function
         TopLevelTypeTable localTypeTable = new TopLevelTypeTable(typeTable);
         for (int i = 0; i < inf.typeParams().size(); i++) {
             DexInfTypeParam typeParam = inf.typeParams().get(i);
-            String typeParamName = typeParam.identifier().toString();
+            String typeParamName = typeParam.paramName().toString();
             localTypeTable.define(typeParamName, typeArgs.get(i));
         }
         for (DexInfMethod method : inf.methods()) {
@@ -103,7 +101,7 @@ public class InterfaceType extends TopLevelType implements GenericType, Function
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexInfTypeParam typeParam : inf.typeParams()) {
-                typeParams.add(ResolveType.$(typeTable, typeParam.type()));
+                typeParams.add(ResolveType.$(typeTable, typeParam.paramType()));
             }
         }
         return typeParams;

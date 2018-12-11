@@ -2,7 +2,7 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexFunction;
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.DexParam;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.type.DexType;
 
 import java.util.ArrayList;

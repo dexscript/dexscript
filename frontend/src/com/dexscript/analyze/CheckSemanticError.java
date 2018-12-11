@@ -99,16 +99,16 @@ public class CheckSemanticError implements DexElement.Visitor {
 //        if (sig.ret() == null) {
 //            return BuiltinTypes.UNDEFINED_TYPE;
 //        }
-//        Denotation type = handle.resolveType(sig.ret());
-//        if (type instanceof Type) {
-//            return (Type) type;
+//        Denotation paramType = handle.resolveType(sig.ret());
+//        if (paramType instanceof Type) {
+//            return (Type) paramType;
 //        }
 //        return BuiltinTypes.UNDEFINED_TYPE;
 //    }
 //
-//    private boolean notError(Denotation type) {
-//        if (type instanceof Denotation.Error) {
-//            Denotation.Error err = (Denotation.Error) type;
+//    private boolean notError(Denotation paramType) {
+//        if (paramType instanceof Denotation.Error) {
+//            Denotation.Error err = (Denotation.Error) paramType;
 //            System.out.println(err.toString());
 //            hasError = true;
 //            return false;

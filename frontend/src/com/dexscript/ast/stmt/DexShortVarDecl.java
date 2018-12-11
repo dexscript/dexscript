@@ -72,7 +72,7 @@ public class DexShortVarDecl extends DexSimpleStatement {
             State.Play(this::identifier);
         }
 
-        @Expect("identifier")
+        @Expect("paramName")
         State identifier() {
             DexIdentifier identifier = new DexIdentifier(src.slice(i));
             identifier.reparent(DexShortVarDecl.this);

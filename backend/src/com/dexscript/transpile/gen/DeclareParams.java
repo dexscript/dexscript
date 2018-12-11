@@ -1,6 +1,6 @@
 package com.dexscript.transpile.gen;
 
-import com.dexscript.ast.DexParam;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;

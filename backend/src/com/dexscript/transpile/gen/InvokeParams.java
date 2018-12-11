@@ -1,9 +1,7 @@
 package com.dexscript.transpile.gen;
 
-import com.dexscript.ast.DexParam;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.infer.InferType;
-import com.dexscript.type.Type;
 
 public interface InvokeParams {
 

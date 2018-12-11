@@ -101,7 +101,7 @@ public class DexVarDecl extends DexStatement {
             return this::identifier;
         }
 
-        @Expect("identifier")
+        @Expect("paramName")
         State identifier() {
             identifier = new DexIdentifier(src.slice(i));
             identifier.reparent(DexVarDecl.this);

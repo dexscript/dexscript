@@ -1,8 +1,6 @@
 package com.dexscript.ast.elem;
 
-import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.*;
-import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
@@ -13,11 +11,11 @@ import java.util.List;
 
 public class DexSig extends DexElement {
 
+    private List<DexTypeParam> typeParams;
     private List<DexParam> params;
-    private int sigBegin = -1;
-    private int sigEnd = -1;
     private DexSyntaxError syntaxError;
     private DexType ret;
+    private int sigEnd = -1;
 
     public DexSig(Text src) {
         super(src);
@@ -28,20 +26,16 @@ public class DexSig extends DexElement {
         this(new Text(src));
     }
 
+    public List<DexTypeParam> typeParams() {
+        return typeParams;
+    }
+
     public List<DexParam> params() {
         return params;
     }
 
     public DexType ret() {
         return ret;
-    }
-
-    @Override
-    public int begin() {
-        if (sigBegin == -1) {
-            throw new IllegalStateException();
-        }
-        return sigBegin;
     }
 
     @Override
@@ -73,6 +67,11 @@ public class DexSig extends DexElement {
                 visitor.visit(param);
             }
         }
+        if (typeParams() != null) {
+            for (DexTypeParam typeParam : typeParams()) {
+                visitor.visit(typeParam);
+            }
+        }
         if (ret() != null) {
             visitor.visit(ret());
         }
@@ -94,17 +93,45 @@ public class DexSig extends DexElement {
                     continue;
                 }
                 if (b == '(') {
-                    sigBegin = i;
+                    typeParams = new ArrayList<>();
                     params = new ArrayList<>();
                     i += 1;
-                    return this::parameter;
+                    return this::leftAngleBracketOrParameter;
                 }
             }
             return null;
         }
 
+        @Expect("<")
         @Expect("parameter")
-        State parameter() {
+        State leftAngleBracketOrParameter() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '<') {
+                    return this::typeParam;
+                }
+                break;
+            }
+            return this::paramOrRightParen;
+        }
+
+        @Expect("paramType parameter")
+        State typeParam() {
+            DexTypeParam typeParam = new DexTypeParam(src.slice(i));
+            typeParams.add(typeParam);
+            if (!typeParam.matched()) {
+                return this::missingTypeParam;
+            }
+            i = typeParam.end();
+            return this::leftAngleBracketOrParameter;
+        }
+
+        @Expect("parameter")
+        @Expect(")")
+        State paramOrRightParen() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
@@ -116,32 +143,14 @@ public class DexSig extends DexElement {
                 }
                 break;
             }
-            DexParam param = new DexParam(new Text(src.bytes, i, src.end));
+            DexParam param = new DexParam(src.slice(i));
+            param.reparent(DexSig.this);
             params.add(param);
-            if (param.matched()) {
-                param.reparent(DexSig.this);
-                i = param.end();
-                return this::commaOrRightParen;
+            if (!param.matched()) {
+                return this::missingParam;
             }
-            reportError();
-            // try to recover from invalid argument
-            for (; i < src.end; i++) {
-                byte b = src.bytes[i];
-                if (b == ',') {
-                    i += 1;
-                    return this::parameter;
-                }
-                if (b == ')') {
-                    i += 1;
-                    return this::colon;
-                }
-                if (LineEnd.$(b)) {
-                    sigEnd = i;
-                    return null;
-                }
-            }
-            sigEnd = i;
-            return null;
+            i = param.end();
+            return this::commaOrRightParen;
         }
 
         @Expect(",")
@@ -155,7 +164,7 @@ public class DexSig extends DexElement {
                 }
                 if (b == ',') {
                     i += 1;
-                    return this::parameter;
+                    return this::paramOrRightParen;
                 }
                 if (b == ')') {
                     i += 1;
@@ -164,19 +173,6 @@ public class DexSig extends DexElement {
             }
             i = originalCursor;
             return this::missingRightParen;
-        }
-
-        State missingRightParen() {
-            reportError();
-            for (; i < src.end; i++) {
-                byte b = src.bytes[i];
-                if (LineEnd.$(b)) {
-                    sigEnd = i;
-                    return null;
-                }
-            }
-            sigEnd = i;
-            return null;
         }
 
         @Expect(":")
@@ -212,6 +208,44 @@ public class DexSig extends DexElement {
                 reportError();
                 sigEnd = i;
             }
+            return null;
+        }
+
+        State missingTypeParam() {
+            throw new UnsupportedOperationException("not implemented");
+        }
+
+        State missingParam() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (b == ',') {
+                    i += 1;
+                    return this::paramOrRightParen;
+                }
+                if (b == ')') {
+                    i += 1;
+                    return this::colon;
+                }
+                if (LineEnd.$(b)) {
+                    sigEnd = i;
+                    return null;
+                }
+            }
+            sigEnd = i;
+            return null;
+        }
+
+        State missingRightParen() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    sigEnd = i;
+                    return null;
+                }
+            }
+            sigEnd = i;
             return null;
         }
 

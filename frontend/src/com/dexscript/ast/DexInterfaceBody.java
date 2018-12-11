@@ -112,7 +112,7 @@ public class DexInterfaceBody extends DexElement {
             return null;
         }
 
-        @Expect("type parameter")
+        @Expect("paramType parameter")
         @Expect("method")
         @Expect("function")
         @Expect("}")

@@ -1,7 +1,7 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.DexParam;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 

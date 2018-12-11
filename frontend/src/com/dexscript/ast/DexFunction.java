@@ -2,6 +2,7 @@ package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexIdentifier;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.stmt.DexBlock;
 import com.dexscript.ast.stmt.DexStatement;
@@ -155,7 +156,7 @@ public final class DexFunction extends DexElement {
             return null;
         }
 
-        @Expect("identifier")
+        @Expect("paramName")
         State identifier() {
             identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
             if (identifier.matched()) {

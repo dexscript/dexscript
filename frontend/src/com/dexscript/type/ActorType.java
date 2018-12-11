@@ -1,7 +1,7 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexFunction;
-import com.dexscript.ast.DexParam;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.stmt.DexAwaitConsumer;

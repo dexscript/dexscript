@@ -1,6 +1,5 @@
 package com.dexscript.ast.elem;
 
-import com.dexscript.ast.elem.DexSig;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -83,9 +82,9 @@ public class DexSigTest {
     @Test
     public void param_name_missing_type() {
         DexSig sig = new DexSig("(msg:, msg2:string)");
-        Assert.assertEquals("(<error/>msg:, msg2:string)", sig.toString());
+        Assert.assertEquals("(msg:, msg2:string)", sig.toString());
         Assert.assertEquals(2, sig.params().size());
-        Assert.assertEquals("<unmatched>msg:, msg2:string)</unmatched>", sig.params().get(0).toString());
+        Assert.assertEquals("msg:<error/>", sig.params().get(0).toString());
         Assert.assertEquals("msg2:string", sig.params().get(1).toString());
     }
 
@@ -111,5 +110,11 @@ public class DexSigTest {
         Assert.assertEquals("():<error/>", sig.toString());
         Assert.assertEquals(0, sig.params().size());
         Assert.assertEquals("<unmatched>?</unmatched>", sig.ret().toString());
+    }
+
+    @Test
+    public void one_type_param() {
+        DexSig sig = new DexSig("(<T>: string): T");
+        Assert.assertEquals("(<T>: string): T", sig.toString());
     }
 }

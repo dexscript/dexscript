@@ -1,6 +1,5 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexParam;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
 import com.dexscript.type.*;

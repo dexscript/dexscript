@@ -8,8 +8,8 @@ import com.dexscript.ast.type.DexType;
 
 public class DexInfTypeParam extends DexElement {
 
-    private DexIdentifier identifier;
-    private DexType type;
+    private DexIdentifier paramName;
+    private DexType paramType;
     private int typeParamEnd = -1;
     private DexSyntaxError syntaxError;
 
@@ -37,11 +37,11 @@ public class DexInfTypeParam extends DexElement {
 
     @Override
     public void walkDown(Visitor visitor) {
-        if (identifier() != null) {
-            visitor.visit(identifier());
+        if (paramName() != null) {
+            visitor.visit(paramName());
         }
-        if (type() != null) {
-            visitor.visit(type());
+        if (paramType() != null) {
+            visitor.visit(paramType());
         }
     }
 
@@ -50,12 +50,12 @@ public class DexInfTypeParam extends DexElement {
         return syntaxError;
     }
 
-    public DexIdentifier identifier() {
-        return identifier;
+    public DexIdentifier paramName() {
+        return paramName;
     }
 
-    public DexType type() {
-        return type;
+    public DexType paramType() {
+        return paramType;
     }
 
     private class Parser {
@@ -82,13 +82,13 @@ public class DexInfTypeParam extends DexElement {
             return null;
         }
 
-        @Expect("identifier")
+        @Expect("paramName")
         State identifier() {
-            identifier = new DexIdentifier(src.slice(i));
-            if (!identifier.matched()) {
+            paramName = new DexIdentifier(src.slice(i));
+            if (!paramName.matched()) {
                 return this::missingIdentifier;
             }
-            i = identifier.end();
+            i = paramName.end();
             return this::rightAngleBracket;
         }
 
@@ -126,11 +126,11 @@ public class DexInfTypeParam extends DexElement {
 
         @Expect("type")
         State type() {
-            type = DexType.parse(src.slice(i));
-            if (!type.matched()) {
+            paramType = DexType.parse(src.slice(i));
+            if (!paramType.matched()) {
                 return this::missingType;
             }
-            typeParamEnd = type.end();
+            typeParamEnd = paramType.end();
             return null;
         }
 

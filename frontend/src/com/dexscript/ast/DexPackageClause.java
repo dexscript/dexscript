@@ -109,7 +109,7 @@ public final class DexPackageClause extends DexElement {
             return reportError();
         }
 
-        @Expect("identifier")
+        @Expect("paramName")
         State identifier() {
             identifier = new DexIdentifier(new Text(src.bytes, i, src.end));
             if (identifier.matched()) {
