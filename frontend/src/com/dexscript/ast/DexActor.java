@@ -22,7 +22,7 @@ public final class DexActor extends DexElement {
     private int functionBegin = -1;
     private int signatureBegin = -1;
     private DexIdentifier identifier;
-    private DexFunctionBody body;
+    private DexActorBody body;
     private String actorName;
 
     public DexActor(String src) {
@@ -78,11 +78,11 @@ public final class DexActor extends DexElement {
         return body().blk();
     }
 
-    public DexFunctionBody body() {
+    public DexActorBody body() {
         if (body != null) {
             return body;
         }
-        body = new DexFunctionBody(new Text(src.bytes, signatureBegin, src.end));
+        body = new DexActorBody(new Text(src.bytes, signatureBegin, src.end));
         body.reparent(this);
         return body;
     }

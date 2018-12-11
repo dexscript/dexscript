@@ -85,10 +85,24 @@ public class ActorTypeTest {
     public void generic_type_substitution() {
         TypeSystem ts = new TypeSystem();
         ts.defineActor(new DexActor("" +
-                "function Hello(<T>: string, msg: T)"), implProvider);
+                "function Hello(<T>: string, msg: T) {\n" +
+                "}"), implProvider);
         List<FunctionType> functionTypes = ts.resolveFunctions("Hello", Arrays.asList(BuiltinTypes.STRING));
         Assert.assertEquals(1, functionTypes.size());
         Type type = ts.resolveType("Hello", Arrays.asList(BuiltinTypes.STRING));
         Assert.assertNotNull(type);
+    }
+
+    @Test
+    public void generic_function_need_expansion() {
+        TypeSystem ts = new TypeSystem();
+        ts.defineActor(new DexActor("" +
+                "function Equals(<T>: interface{}, left: T, right: T): bool {\n" +
+                "   return true\n" +
+                "}"), implProvider);
+        StringLiteralType a = new StringLiteralType("a");
+        StringLiteralType b = new StringLiteralType("b");
+        List<FunctionType> functionTypes = ts.resolveFunctions("Equals", Arrays.asList(a, b));
+        Assert.assertEquals(0, functionTypes.size());
     }
 }

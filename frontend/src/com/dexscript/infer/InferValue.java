@@ -1,7 +1,7 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexFunctionBody;
+import com.dexscript.ast.DexActorBody;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexLessThanExpr;
 import com.dexscript.ast.expr.DexValueRef;
@@ -28,7 +28,7 @@ public interface InferValue<E extends DexElement> {
 
     Map<Class<? extends DexElement>, InferValue> handlers = new HashMap<Class<? extends DexElement>, InferValue>() {
         {
-            put(DexFunctionBody.class, (ts, elem, table) -> {
+            put(DexActorBody.class, (ts, elem, table) -> {
             });
             put(DexBlock.class, (ts, elem, table) -> {
             });

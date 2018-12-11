@@ -22,17 +22,10 @@ public final class FunctionType extends Type {
     @NotNull
     private final Type ret;
 
-    private final DexElement definedBy;
-
     private Object attachment;
 
     public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
-        this(name, params, ret, null);
-    }
-
-    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret, DexElement definedBy) {
         super("Object");
-        this.definedBy = definedBy;
         this.name = name;
         this.params = params;
         this.ret = ret;
@@ -113,9 +106,5 @@ public final class FunctionType extends Type {
         msg.append(") => ");
         msg.append(ret.toString());
         return msg.toString();
-    }
-
-    public DexElement definedBy() {
-        return definedBy;
     }
 }

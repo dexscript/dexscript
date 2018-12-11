@@ -98,7 +98,7 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
         for (DexParam param : actor.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        FunctionType functionType = new FunctionType(name(), params, ret, actor);
+        FunctionType functionType = new FunctionType(name(), params, ret);
         functionType.attach((FunctionType.LazyAttachment) () -> implProvider.callFunc(functionType, actor));
         return functionType;
     }
@@ -109,7 +109,7 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
         for (DexParam param : actor.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        FunctionType functionType = new FunctionType("New__", params, this, actor);
+        FunctionType functionType = new FunctionType("New__", params, this);
         functionType.attach((FunctionType.LazyAttachment) () -> implProvider.newFunc(functionType, actor));
         return functionType;
     }
@@ -118,7 +118,7 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
         Type ret = ResolveType.$(localTypeTable, actor.sig().ret());
         ArrayList<Type> params = new ArrayList<>();
         params.add(this);
-        return new FunctionType("Consume__", params, ret, actor);
+        return new FunctionType("Consume__", params, ret);
     }
 
     @Override
@@ -201,7 +201,7 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
             for (DexParam param : sig.params()) {
                 params.add(ResolveType.$(localTypeTable, param.paramType()));
             }
-            FunctionType functionType = new FunctionType(funcName, params, ret, awaitConsumer);
+            FunctionType functionType = new FunctionType(funcName, params, ret);
             functionType.attach((FunctionType.LazyAttachment) () -> implProvider.innerCallFunc(
                     functionType, actor, awaitConsumer));
             return functionType;

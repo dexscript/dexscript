@@ -6,14 +6,14 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.stmt.DexBlock;
 
-public class DexFunctionBody extends DexElement {
+public class DexActorBody extends DexElement {
 
     private final Text matched;
     private DexSig sig;
     private DexBlock blk;
     private DexSyntaxError syntaxError;
 
-    public DexFunctionBody(Text src) {
+    public DexActorBody(Text src) {
         super(src);
         DexTopLevelDecl nextRootDecl = new DexTopLevelDecl(src);
         if (nextRootDecl.matched()) {
