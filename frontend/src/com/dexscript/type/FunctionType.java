@@ -1,12 +1,13 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.core.DexElement;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+// Function Type: test type compatibility, more permissive than signature
+// Function Signature: generic type constraint & where condition
 public final class FunctionType extends Type {
 
     public interface LazyAttachment {
