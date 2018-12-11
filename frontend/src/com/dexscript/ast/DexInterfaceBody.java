@@ -105,18 +105,15 @@ public class DexInterfaceBody extends DexElement {
                 }
                 if (b == '{') {
                     i += 1;
-                    return this::typeParameterOrMethodOrFunctionOrRightBrace;
+                    return this::maybeTypeParameter;
                 }
                 return null;
             }
             return null;
         }
 
-        @Expect("paramType parameter")
-        @Expect("method")
-        @Expect("function")
-        @Expect("}")
-        State typeParameterOrMethodOrFunctionOrRightBrace() {
+        @Expect("[type parameter]")
+        State maybeTypeParameter() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
@@ -125,27 +122,15 @@ public class DexInterfaceBody extends DexElement {
                 if (b == '}') {
                     return null;
                 }
+                if (b == '<') {
+                    DexInfTypeParam typeParam = new DexInfTypeParam(src.slice(i));
+                    typeParams.add(typeParam);
+                    i = typeParam.end();
+                    return this::maybeTypeParameter;
+                }
                 break;
             }
-            DexInfTypeParam typeParam = new DexInfTypeParam(src.slice(i));
-            if (typeParam.matched()) {
-                typeParams.add(typeParam);
-                i = typeParam.end();
-                return this::typeParameterOrMethodOrFunctionOrRightBrace;
-            }
-            DexInfMethod method = new DexInfMethod(src.slice(i));
-            if (method.matched()) {
-                methods.add(method);
-                i = method.end();
-                return this::methodOrFunctionOrRightBrace;
-            }
-            DexInfFunction func = new DexInfFunction(src.slice(i));
-            if (func.matched()) {
-                functions.add(func);
-                i = func.end();
-                return this::methodOrFunctionOrRightBrace;
-            }
-            return this::missingTypeParameter;
+            return this::methodOrFunctionOrRightBrace;
         }
 
         @Expect("method")
@@ -175,21 +160,6 @@ public class DexInterfaceBody extends DexElement {
                 return this::methodOrFunctionOrRightBrace;
             }
             return this::missingMethodOrFunction;
-        }
-
-        State missingTypeParameter() {
-            reportError();
-            for (; i < src.end; i++) {
-                byte b = src.bytes[i];
-                if (LineEnd.$(b)) {
-                    i += 1;
-                    return this::typeParameterOrMethodOrFunctionOrRightBrace;
-                }
-                if ('}' == b) {
-                    return null;
-                }
-            }
-            return null;
         }
 
         State missingMethodOrFunction() {
