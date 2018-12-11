@@ -45,6 +45,10 @@ public abstract class DexType extends DexElement {
         if (type.matched()) {
             return type;
         }
+        type = new DexInterfaceType(src);
+        if (type.matched()) {
+            return type;
+        }
         return new DexTypeRef(src);
     }
 

@@ -32,6 +32,13 @@ public interface ResolveType<E extends DexType> {
             }
             return typeTable.resolveType(genericExpansionType.genericType().toString(), typeArgs);
         });
+        put(DexInterfaceType.class, (typeTable, elem) -> {
+            DexInterfaceType infType = (DexInterfaceType) elem;
+            if (infType.functions().isEmpty() && infType.methods().isEmpty()) {
+                return BuiltinTypes.ANY;
+            }
+            throw new UnsupportedOperationException("not implemented");
+        });
     }};
 
     Type handle(TypeTable typeTable, E elem);
