@@ -8,6 +8,7 @@ import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DexNewExpr extends DexExpr {
@@ -29,11 +30,25 @@ public class DexNewExpr extends DexExpr {
     }
 
     public List<DexExpr> args() {
-        return functionCallExpr.args();
+        if (functionCallExpr == null) {
+            return Collections.emptyList();
+        }
+        List<DexExpr> args = functionCallExpr.args();
+        if (args == null) {
+            return Collections.emptyList();
+        }
+        return args;
     }
 
     public List<DexType> typeArgs() {
-        return functionCallExpr.typeArgs();
+        if (functionCallExpr == null) {
+            return Collections.emptyList();
+        }
+        List<DexType> typeArgs = functionCallExpr.typeArgs();
+        if (typeArgs == null) {
+            return Collections.emptyList();
+        }
+        return typeArgs;
     }
 
     @Override
@@ -43,8 +58,15 @@ public class DexNewExpr extends DexExpr {
         if (target() != null) {
             target().reparent(this, stmt);
         }
-        if (functionCallExpr != null) {
-            functionCallExpr.reparent(this, stmt);
+        if (typeArgs() != null) {
+            for (DexType typeArg : typeArgs()) {
+                typeArg.reparent(this);
+            }
+        }
+        if (args() != null) {
+            for (DexExpr arg : args()) {
+                arg.reparent(this, stmt);
+            }
         }
     }
 
@@ -74,11 +96,15 @@ public class DexNewExpr extends DexExpr {
     @Override
     public void walkDown(DexElement.Visitor visitor) {
         visitor.visit(target);
-        for (DexType typeArg : typeArgs()) {
-            visitor.visit(typeArg);
+        if (typeArgs() != null) {
+            for (DexType typeArg : typeArgs()) {
+                visitor.visit(typeArg);
+            }
         }
-        for (DexExpr arg : args()) {
-            visitor.visit(arg);
+        if (args() != null) {
+            for (DexExpr arg : args()) {
+                visitor.visit(arg);
+            }
         }
     }
 

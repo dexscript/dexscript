@@ -11,6 +11,7 @@ import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
@@ -36,10 +37,16 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
     }
 
     public List<DexExpr> args() {
+        if (args == null) {
+            return Collections.emptyList();
+        }
         return args;
     }
 
     public List<DexType> typeArgs() {
+        if (typeArgs == null) {
+            return Collections.emptyList();
+        }
         return typeArgs;
     }
 

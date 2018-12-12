@@ -7,21 +7,27 @@ import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.type.DexType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 // part of FunctionType
 class FunctionSig {
 
+    public interface OnIncompatibleArgument {
+        void handle(FunctionSig sig, List<Type> typeArgs, List<Type> args, Type retHint,
+                    int index, Type arg, Type param, Map<Type, Type> sub);
+    }
+
+    public static OnIncompatibleArgument ON_INCOMPATIBLE_ARGUMENT =
+            (sig, typeArgs, args, retHint, index, arg, param, sub) -> {
+
+            };
     private final List<PlaceholderType> typeParams;
     private final List<Type> params;
     private final Type ret;
     private final DexType retElem;
 
     public FunctionSig(List<Type> params, Type ret) {
-        this.typeParams = null;
+        this.typeParams = Collections.emptyList();
         this.params = params;
         this.ret = ret;
         this.retElem = null;
@@ -67,6 +73,7 @@ class FunctionSig {
                 argMatched = param.isAssignableFrom(subCtx, arg);
             }
             if (!argMatched) {
+                ON_INCOMPATIBLE_ARGUMENT.handle(this, typeArgs, args, retHint, i, arg, param, sub);
                 return BuiltinTypes.UNDEFINED;
             }
             subCtx.commit();
@@ -93,16 +100,20 @@ class FunctionSig {
     @NotNull
     private Map<Type, Type> initSub(List<Type> typeArgs) {
         Map<Type, Type> collector = new HashMap<>();
-        if (typeArgs != null) {
-            if (typeParams.size() != typeArgs.size()) {
-                throw new DexSyntaxException("invoke function with wrong type arguments: " +
-                        typeArgs + ", expect: " + typeParams);
-            }
-            for (int i = 0; i < typeParams.size(); i++) {
-                PlaceholderType typeParam = typeParams.get(i);
-                Type typeArg = typeArgs.get(i);
-                collector.put(typeParam, typeArg);
-            }
+        if (typeArgs == null) {
+            return collector;
+        }
+        if (typeArgs.isEmpty()) {
+            return collector;
+        }
+        if (typeParams.size() != typeArgs.size()) {
+            throw new DexSyntaxException("invoke function with wrong type arguments: " +
+                    typeArgs + ", expect: " + typeParams);
+        }
+        for (int i = 0; i < typeParams.size(); i++) {
+            PlaceholderType typeParam = typeParams.get(i);
+            Type typeArg = typeArgs.get(i);
+            collector.put(typeParam, typeArg);
         }
         return collector;
     }

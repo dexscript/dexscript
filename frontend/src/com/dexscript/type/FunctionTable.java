@@ -1,13 +1,18 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FunctionTable {
+
+    public interface OnInvocationFilteredFunction {
+        void handle(String funcName, FunctionType func, List<Type> typeArgs, List<Type> args);
+    }
+
+    public static final OnInvocationFilteredFunction ON_INVOCATION_FILTERED_FUNCTION = (funcName, func, typeArgs, args) -> {
+    };
 
     private final Map<String, List<FunctionType>> defined = new HashMap<>();
     private final List<FunctionsProvider> providers = new ArrayList<>();
@@ -27,8 +32,9 @@ public class FunctionTable {
         }
         List<FunctionType.Invoked> invokeds = new ArrayList<>();
         for (FunctionType function : functions) {
-            Type ret = function.sig().invoke(typeTable, null, args, null);
+            Type ret = function.sig().invoke(typeTable, typeArgs, args, retHint);
             if (BuiltinTypes.UNDEFINED.equals(ret)) {
+                ON_INVOCATION_FILTERED_FUNCTION.handle(funcName, function, typeArgs, args);
                 continue;
             }
             FunctionType.Invoked invoked = new FunctionType.Invoked(function, ret);

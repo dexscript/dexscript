@@ -103,7 +103,8 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         for (DexParam param : actor.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        FunctionType functionType = new FunctionType(name(), params, ret);
+        FunctionSig sig = new FunctionSig(typeTable, actor.sig());
+        FunctionType functionType = new FunctionType(name(), params, ret, sig);
         functionType.attach((FunctionType.LazyAttachment) () -> implProvider.callFunc(functionType, actor));
         return functionType;
     }

@@ -23,6 +23,10 @@ public interface Type {
         Type sub = ctx.getSubstituted(this);
         if (sub != null) {
             boolean assignable = sub.equals(that);
+            // widen string literal to string
+            if (that instanceof StringLiteralType) {
+                assignable |= sub.isAssignableFrom(that);
+            }
             if (ctx.shouldLog()) {
                 ctx.log(assignable, this, that, this + " sub to " + sub);
             }

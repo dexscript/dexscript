@@ -22,7 +22,7 @@ public class GenericDispatchTest {
     public void call_generic_function_with_type_arg() {
         Object result = Transpile.$("" +
                 "function Hello() {\n" +
-                "   return World<int64>('hello')\n" +
+                "   return World<string>('hello')\n" +
                 "}\n" +
                 "function World(<T>: string, msg: T): T {\n" +
                 "   return msg\n" +
