@@ -29,10 +29,11 @@ public interface InferType<E extends DexExpr> {
                 String actorName = newExpr.target().asRef().toString();
                 StringLiteralType arg1 = new StringLiteralType(actorName);
                 List<Type> args = InferType.inferTypes(ts, arg1, newExpr.args());
-                return ResolveReturnType.$(ts, "New__", null, args, null);
+                List<Type> typeArgs = ts.resolveTypes(newExpr.typeArgs());
+                return ResolveReturnType.$(ts, "New__", typeArgs, args, null);
             });
             put(DexConsumeExpr.class, (ts, elem) -> {
-                Type target = $(ts, ((DexConsumeExpr) elem).right());
+                Type target = InferType.$(ts, ((DexConsumeExpr) elem).right());
                 return ResolveReturnType.$(ts, "Consume__", null, Arrays.asList(target), null);
             });
             add(new InferInvocation<DexEqualExpr>() {

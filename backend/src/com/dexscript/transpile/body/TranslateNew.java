@@ -8,6 +8,7 @@ import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.type.FunctionType;
+import com.dexscript.type.ResolveType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
@@ -27,7 +28,8 @@ public class TranslateNew implements Translate<DexNewExpr> {
         Type actorType = InferType.$(ts, iNewExpr);
 
         List<Type> args = InferType.inferTypes(ts, iArgs);
-        List<FunctionType.Invoked> invokeds = ts.invoke(funcName, null, args, null);
+        List<Type> typeArgs = ts.resolveTypes(iNewExpr.typeArgs());
+        List<FunctionType.Invoked> invokeds = ts.invoke(funcName, typeArgs, args, null);
         String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), invokeds);
         OutField oActorField = oClass.allocateField(funcName, actorType);
         Gen g = oClass.g();

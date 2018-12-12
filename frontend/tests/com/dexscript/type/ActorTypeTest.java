@@ -63,10 +63,10 @@ public class ActorTypeTest {
                 "   AA(): string\n" +
                 "}"));
         Assert.assertTrue(inf.isAssignableFrom(actor));
-        List<FunctionType> newNestedActor = ts.invoke("New__", new ArrayList<Type>() {{
+        List<FunctionType.Invoked> newNestedActor = ts.invoke("New__", null, new ArrayList<Type>() {{
             add(new StringLiteralType("AA"));
             add(actor);
-        }});
+        }}, null);
         Assert.assertEquals(1, newNestedActor.size());
     }
 
@@ -76,7 +76,8 @@ public class ActorTypeTest {
         ts.defineActor(new DexActor("" +
                 "function Hello() {\n" +
                 "}"), implProvider);
-        List<FunctionType> functionTypes = ts.invoke("Hello", new ArrayList<>());
+        List<FunctionType.Invoked> functionTypes = ts.invoke("Hello",
+                null, new ArrayList<>(), null);
         Assert.assertEquals(1, functionTypes.size());
         Assert.assertEquals(BuiltinTypes.VOID, functionTypes.get(0).ret());
     }
@@ -87,7 +88,8 @@ public class ActorTypeTest {
         ts.defineActor(new DexActor("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"), implProvider);
-        List<FunctionType> functionTypes = ts.invoke("Hello", Arrays.asList(BuiltinTypes.STRING));
+        List<FunctionType.Invoked> functionTypes = ts.invoke("Hello",
+                null, Arrays.asList(BuiltinTypes.STRING), null);
         Assert.assertEquals(1, functionTypes.size());
         Type type = ts.resolveType("Hello", Arrays.asList(BuiltinTypes.STRING));
         Assert.assertNotNull(type);
@@ -102,7 +104,8 @@ public class ActorTypeTest {
                 "}"), implProvider);
         StringLiteralType a = new StringLiteralType("a");
         StringLiteralType b = new StringLiteralType("b");
-        List<FunctionType> functionTypes = ts.invoke("Equals", Arrays.asList(a, b));
+        List<FunctionType.Invoked> functionTypes = ts.invoke("Equals",
+                null, Arrays.asList(a, b), null);
         Assert.assertEquals(0, functionTypes.size());
     }
 }

@@ -14,12 +14,6 @@ public class DexNewExprTest {
     }
 
     @Test
-    public void new_target_with_paren() {
-        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new (world)()");
-        Assert.assertEquals("new (world)()", newExpr.toString());
-    }
-
-    @Test
     public void missing_target() {
         DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new ?()");
         Assert.assertEquals("new <error/>?()", newExpr.toString());
@@ -37,47 +31,8 @@ public class DexNewExprTest {
     }
 
     @Test
-    public void missing_argument() {
-        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new print(?,?,c1)");
-        Assert.assertEquals("new print(<error/>?,?,c1)", newExpr.toString());
-        Assert.assertEquals("print", newExpr.target().toString());
-        Assert.assertEquals(3, newExpr.args().size());
-        Assert.assertEquals("<error/>", newExpr.args().get(0).toString());
-        Assert.assertEquals("<error/>", newExpr.args().get(1).toString());
-        Assert.assertEquals("c1", newExpr.args().get(2).toString());
-    }
-
-    @Test
-    public void one_argument() {
-        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new print(a)");
-        Assert.assertEquals("new print(a)", newExpr.toString());
-        Assert.assertEquals("print", newExpr.target().toString());
-        Assert.assertEquals(1, newExpr.args().size());
-        Assert.assertEquals("a", newExpr.args().get(0).toString());
-    }
-
-    @Test
-    public void new_array_1d() {
-        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new uint8[3]");
-        Assert.assertEquals("new uint8[3]", newExpr.toString());
-        Assert.assertTrue(newExpr.isArray());
-        Assert.assertEquals(1, newExpr.args().size());
-        Assert.assertEquals("3", newExpr.args().get(0).toString());
-    }
-
-    @Test
-    public void new_array_2d() {
-        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new uint8[3][4]");
-        Assert.assertEquals("new uint8[3][4]", newExpr.toString());
-        Assert.assertTrue(newExpr.isArray());
-        Assert.assertEquals(2, newExpr.args().size());
-        Assert.assertEquals("3", newExpr.args().get(0).toString());
-        Assert.assertEquals("4", newExpr.args().get(1).toString());
-    }
-
-    @Test
-    public void missing_array_size() {
-        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new uint8[][4]");
-        Assert.assertEquals("new uint8[<error/>][4]", newExpr.toString());
+    public void missing_function_call() {
+        DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new print a1,b1,c1)");
+        Assert.assertEquals("new print<error/> a1,b1,c1)", newExpr.toString());
     }
 }
