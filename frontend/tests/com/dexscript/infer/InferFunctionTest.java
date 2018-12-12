@@ -20,4 +20,16 @@ public class InferFunctionTest {
         Assert.assertEquals("arg: string", val.definedBy().toString());
         Assert.assertEquals(BuiltinTypes.STRING, val.type());
     }
+
+    @Test
+    public void generic_argument_can_be_referenced() {
+        DexActor func = new DexActor("" +
+                "function Hello(<T>: string, arg: T): T {\n" +
+                "   return arg\n" +
+                "}");
+        DexValueRef ref = func.stmts().get(0).asReturn().expr().asRef();
+        Value val = InferValue.$(new TypeSystem(), ref);
+        Assert.assertEquals("arg: T", val.definedBy().toString());
+        Assert.assertEquals(BuiltinTypes.STRING, val.type());
+    }
 }

@@ -121,6 +121,7 @@ public class DexSig extends DexElement {
         @Expect("paramType parameter")
         State typeParam() {
             DexTypeParam typeParam = new DexTypeParam(src.slice(i));
+            typeParam.reparent(DexSig.this);
             typeParams.add(typeParam);
             i = typeParam.end();
             return this::moreTypeParam;

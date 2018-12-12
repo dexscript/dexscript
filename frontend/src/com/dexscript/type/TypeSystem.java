@@ -7,6 +7,7 @@ import com.dexscript.ast.type.DexType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TypeSystem {
 
@@ -41,9 +42,7 @@ public class TypeSystem {
         return actorType;
     }
 
-    public void defineType(NamedType type) {
-        typeTable.define(type);
-    }
+    public TypeTable typeTable() { return typeTable; }
 
     public InterfaceType defineInterface(DexInterface inf) {
         return new InterfaceType(typeTable, functionTable, inf);
