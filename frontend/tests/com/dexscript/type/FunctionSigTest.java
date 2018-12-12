@@ -50,6 +50,26 @@ public class FunctionSigTest {
     }
 
     @Test
+    public void infer_deep_nested_type_params() {
+        defineInterface("" +
+                "interface SomeInf {" +
+                "   <T>: interface{}\n" +
+                "   Get__(arg: T)\n" +
+                "}");
+        defineInterface("" +
+                "interface AnotherInf {" +
+                "   <E1>: interface{};\n" +
+                "   <E2>: interface{};\n" +
+                "   Get__(index: '0', arg: E1)\n" +
+                "   Get__(index: '1', arg: E2)\n" +
+                "}");
+        FunctionSig sig = sig("(<E1>: string, <E2>: string, arg0: AnotherInf<SomeInf<E1>, SomeInf<E2>>): E2");
+        Type ret = sig.invoke(null,
+                resolve("AnotherInf<SomeInf<'a'>, SomeInf<'b'>>"), null);
+        Assert.assertEquals("'b'", ret.toString());
+    }
+
+    @Test
     public void type_parameter_constraint_function() {
         FunctionSig sig = sig("(<T>: interface{}, left: T, right: T): bool");
         Type ret = sig.invoke(null, resolve("string", "int64"), null);
@@ -57,11 +77,7 @@ public class FunctionSigTest {
     }
 
     private void defineInterface(String src) {
-        new InterfaceType(typeTable, functionTable, new DexInterface("" +
-                "interface SomeInf {" +
-                "   <T>: interface{}\n" +
-                "   Get__(arg: T)\n" +
-                "}"));
+        new InterfaceType(typeTable, functionTable, new DexInterface(src));
     }
 
     private FunctionSig sig(String sig) {

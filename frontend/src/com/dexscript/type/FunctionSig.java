@@ -19,14 +19,6 @@ class FunctionSig {
     private final Type ret;
     private final DexType retElem;
 
-    FunctionSig(TypeTable typeTable, List<PlaceholderType> typeParams, List<Type> params, Type ret, DexType retElem) {
-        this.typeTable = typeTable;
-        this.typeParams = typeParams;
-        this.params = params;
-        this.ret = ret;
-        this.retElem = retElem;
-    }
-
     public FunctionSig(TypeTable typeTable, DexSig sig) {
         this.typeTable = typeTable;
         this.typeParams = new ArrayList<>();
@@ -54,7 +46,11 @@ class FunctionSig {
         for (int i = 0; i < params.size(); i++) {
             Type param = params.get(i);
             Type arg = args.get(i);
-            boolean argMatched = arg.isAssignableFrom(ctx, param) || param.isAssignableFrom(ctx, arg);
+            boolean argMatched = arg.isAssignableFrom(ctx, param);
+            if (!argMatched) {
+                ctx.rollback();
+                argMatched = param.isAssignableFrom(ctx, arg);
+            }
             if (!argMatched) {
                 return BuiltinTypes.UNDEFINED;
             }

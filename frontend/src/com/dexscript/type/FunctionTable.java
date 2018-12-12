@@ -57,17 +57,26 @@ public class FunctionTable {
         if (functions == null) {
             return false;
         }
+        if (ctx.shouldLog()) {
+            ctx.log(">>> check if " + that + " defined or not");
+        }
         TypeComparisonContext staging = new TypeComparisonContext(ctx);
         for (FunctionType function : functions) {
-            if (staging.isUndefined(function)) {
+            if (ctx.isUndefined(function)) {
                 continue;
             }
             if (that.isAssignableFrom(staging, function)) {
                 staging.commit();
+                if (ctx.shouldLog()) {
+                    ctx.log("<<< " + that + " is defined");
+                }
                 return true;
             } else {
                 staging.rollback();
             }
+        }
+        if (ctx.shouldLog()) {
+            ctx.log("<<< " + that + " is not defined");
         }
         return false;
     }

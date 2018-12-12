@@ -25,6 +25,13 @@ public class DexGenericExpansionTypeTest {
     }
 
     @Test
+    public void nested_expansion() {
+        DexGenericExpansionType type = (DexGenericExpansionType) DexType.parse("Array<Array<uint8>>");
+        Assert.assertEquals("Array<Array<uint8>>", type.toString());
+        Assert.assertEquals("Array<uint8>", type.typeArgs().get(0).toString());
+    }
+
+    @Test
     public void missing_type_arg_recover_by_comma() {
         DexGenericExpansionType type = (DexGenericExpansionType) DexType.parse("Array<, uint16>");
         Assert.assertEquals("Array<<error/>, uint16>", type.toString());

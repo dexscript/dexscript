@@ -116,7 +116,7 @@ public class DexInterfaceBody extends DexElement {
         State maybeTypeParameter() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.$(b)) {
+                if (Blank.$(b) || b == ';') {
                     continue;
                 }
                 if (b == '}') {
@@ -139,7 +139,7 @@ public class DexInterfaceBody extends DexElement {
         State methodOrFunctionOrRightBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
-                if (Blank.$(b)) {
+                if (Blank.$(b) || b == ';') {
                     continue;
                 }
                 if (b == '}') {

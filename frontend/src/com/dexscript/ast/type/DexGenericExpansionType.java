@@ -13,7 +13,6 @@ import java.util.List;
 public class DexGenericExpansionType extends DexType {
 
     private static final int LEFT_RANK = 10;
-    private static final int RIGHT_RANK = 10;
     private final DexType genericType;
     private int expansionTypeEnd = -1;
     private List<DexType> typeArgs;
@@ -97,7 +96,7 @@ public class DexGenericExpansionType extends DexType {
         @Expect("type")
         State firstTypeArg() {
             typeArgs = new ArrayList<>();
-            DexType typeArg = DexType.parse(src.slice(i), RIGHT_RANK);
+            DexType typeArg = DexType.parse(src.slice(i), 0);
             typeArgs.add(typeArg);
             if (!typeArg.matched()) {
                 return this::missingTypeArg;
@@ -129,7 +128,7 @@ public class DexGenericExpansionType extends DexType {
 
         @Expect("type")
         State moreTypeArgs() {
-            DexType typeArg = DexType.parse(src.slice(i), RIGHT_RANK);
+            DexType typeArg = DexType.parse(src.slice(i), 0);
             typeArgs.add(typeArg);
             if (!typeArg.matched()) {
                 return this::missingTypeArg;

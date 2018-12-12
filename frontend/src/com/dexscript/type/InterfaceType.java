@@ -8,7 +8,9 @@ import com.dexscript.ast.inf.DexInfTypeParam;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InterfaceType implements NamedType, GenericType, FunctionsProvider {
 
@@ -29,7 +31,9 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         this.typeTable = typeTable;
         this.functionTable = functionTable;
         this.inf = inf;
-        typeTable.define(this);
+        if (typeArgs == null) {
+            typeTable.define(this);
+        }
         functionTable.lazyDefine(this);
     }
 
@@ -47,6 +51,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         if (members != null) {
             return members;
         }
+        List<Type> typeArgs = this.typeArgs;
         if (typeArgs == null) {
             typeArgs = typeParameters();
         }
@@ -89,7 +94,10 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
-        ctx.putSubstituted(this, that);
+        if (ctx.getSubstituted(that) != null) {
+            return false;
+        }
+        ctx.putSubstituted(that, this);
         TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
         for (FunctionType member : functions()) {
             subCtx.undefine(member);
@@ -104,7 +112,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     }
 
     @Override
-    public String toString() {
+    public String description() {
         if (typeArgs != null && typeArgs.size() > 0) {
             StringBuilder desc = new StringBuilder(name());
             desc.append('<');
@@ -119,6 +127,14 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
             return desc.toString();
         }
         return name();
+    }
+
+    @Override
+    public String toString() {
+        if (typeArgs == null) {
+            return name();
+        }
+        return name() + "@" + System.identityHashCode(this);
     }
 
     @Override

@@ -36,7 +36,7 @@ public abstract class DexType extends DexElement {
         }
     }
 
-    public static DexType parseLeft(Text src) {
+    private static DexType parseLeft(Text src) {
         DexType type = new DexStringLiteralType(src);
         if (type.matched()) {
             return type;
@@ -52,7 +52,7 @@ public abstract class DexType extends DexElement {
         return new DexTypeRef(src);
     }
 
-    public static DexType parseRight(Text src, DexType left) {
+    private static DexType parseRight(Text src, DexType left) {
         src = new Text(src.bytes, left.end(), src.end);
         return new DexGenericExpansionType(src, left);
     }

@@ -1,10 +1,12 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.type.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface ResolveType<E extends DexType> {
 
@@ -53,13 +55,10 @@ public interface ResolveType<E extends DexType> {
         return resolveType.handle(typeTable, elem);
     }
 
-    static List<Type> $(TypeTable typeTable, String ...typeDefs) {
+    static List<Type> $(TypeTable typeTable, String... typeDefs) {
         List<Type> types = new ArrayList<>();
         for (String typeDef : typeDefs) {
             DexType dexType = DexType.parse(typeDef);
-            if (!dexType.matched()) {
-                throw new DexSyntaxException("invalid type definition: " + typeDef);
-            }
             types.add(ResolveType.$(typeTable, dexType));
         }
         return types;

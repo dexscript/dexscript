@@ -13,15 +13,17 @@ public class PromiseType implements NamedType, FunctionsProvider, GenericType {
     private final FunctionTable functionTable;
 
     public PromiseType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable) {
-        this(typeTable, functionTable, TYPE_PARAMETERS);
+        this(typeTable, functionTable, null);
     }
 
     public PromiseType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
         this.typeTable = typeTable;
         this.functionTable = functionTable;
-        typeTable.define(this);
+        if (typeArgs == null) {
+            typeTable.define(this);
+        }
         functionTable.lazyDefine(this);
-        consumeFunc = consumeFunc(typeArgs);
+        consumeFunc = consumeFunc(typeArgs == null ? TYPE_PARAMETERS : typeArgs);
     }
 
     @Override

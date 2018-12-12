@@ -86,4 +86,27 @@ public class DexInterfaceTest {
         Assert.assertEquals(1, inf.typeParams().size());
         Assert.assertEquals("<T>: string", inf.typeParams().get(0).toString());
     }
+
+    @Test
+    public void two_type_parameters() {
+        String src = "" +
+                "interface AnotherInf {\n" +
+                "   <E1>: interface{};\n" +
+                "   <E2>: interface{};\n" +
+                "   Get__(index: '0', arg: E1)\n" +
+                "   Get__(index: '1', arg: E2)\n" +
+                "}";
+
+        DexInterface inf = new DexInterface(src);
+        inf.methods();
+        Assert.assertEquals("{\n" +
+                "   <E1>: interface{};\n" +
+                "   <E2>: interface{};\n" +
+                "   Get__(index: '0', arg: E1)\n" +
+                "   Get__(index: '1', arg: E2)\n" +
+                "}", inf.body().toString());
+        Assert.assertEquals("<E1>: interface{}", inf.typeParams().get(0).toString());
+        Assert.assertEquals("<E2>: interface{}", inf.typeParams().get(1).toString());
+        Assert.assertEquals("Get__(index: '0', arg: E1)", inf.methods().get(0).toString());
+    }
 }

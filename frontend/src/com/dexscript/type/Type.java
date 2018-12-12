@@ -7,7 +7,8 @@ public interface Type {
     String javaClassName();
 
     default boolean isAssignableFrom(Type that) {
-        TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>());
+        HashMap<Type, Type> collector = new HashMap<>();
+        TypeComparisonContext ctx = new TypeComparisonContext(collector);
         boolean result = isAssignableFrom(ctx, that);
         return result;
     }
@@ -20,12 +21,11 @@ public interface Type {
             return true;
         }
         Type sub = ctx.getSubstituted(this);
-        if (sub != null) {
-            boolean assignable = sub.equals(that);
+        if (sub != null && sub.equals(that)) {
             if (ctx.shouldLog()) {
-                ctx.log(assignable, this, that, this + " sub to " + sub);
+                ctx.log(true, this, that, this + " sub to " + sub);
             }
-            return assignable;
+            return true;
         }
         if (that instanceof IntersectionType) {
             for (Type elem : ((IntersectionType) that).types()) {
@@ -58,5 +58,9 @@ public interface Type {
 
     default String initValue() {
         return null;
+    }
+
+    default String description() {
+        return toString();
     }
 }

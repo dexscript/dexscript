@@ -10,23 +10,22 @@ public final class TypeComparisonContext {
     private final TypeComparisonContext parent;
     private final Map<Type, Type> substituted;
     private final Set<FunctionType> undefined = new HashSet<>();
+    private final String logPrefix;
 
     public TypeComparisonContext(TypeComparisonContext parent) {
         this.parent = parent;
         substituted = new HashMap<>();
+        logPrefix = parent.logPrefix + "  ";
     }
 
     public TypeComparisonContext(Map<Type, Type> collector) {
         this.parent = null;
         substituted = collector;
+        logPrefix = "";
     }
 
     public void putSubstituted(Type key, Type value) {
-        if (getSubstituted(key) != null) {
-            throw new IllegalStateException();
-        }
         substituted.put(key, value);
-        substituted.put(value, key);
     }
 
     public Type getSubstituted(Type key) {
@@ -43,7 +42,14 @@ public final class TypeComparisonContext {
         if (parent == null) {
             throw new IllegalStateException();
         }
-        parent.substituted.putAll(substituted);
+        for (Map.Entry<Type, Type> entry : substituted.entrySet()) {
+            if (entry.getKey() instanceof PlaceholderType) {
+                if (shouldLog()) {
+                    log("commit " + entry.getKey() + " => " + entry.getValue());
+                }
+                parent.substituted.put(entry.getKey(), entry.getValue());
+            }
+        }
         substituted.clear();
     }
 
@@ -56,7 +62,11 @@ public final class TypeComparisonContext {
     }
 
     public void log(boolean assignable, Type to, Type from, String reason) {
-        System.out.println("[" + (assignable ? "assignable" : "not assignable") + "]" + " " + to + " | " + from + " | " + reason);
+        System.out.println(logPrefix + "[" + (assignable ? "assignable" : "not assignable") + "]" + " " + to + " | " + from + " | " + reason);
+    }
+
+    public void log(String msg) {
+        System.out.println(logPrefix + msg);
     }
 
     public void undefine(FunctionType type) {
@@ -64,9 +74,13 @@ public final class TypeComparisonContext {
     }
 
     public boolean isUndefined(FunctionType type) {
-        if (parent != null && parent.isUndefined(type)) {
-            return true;
-        }
         return undefined.contains(type);
+    }
+
+    public int levels() {
+        if (parent == null) {
+            return 0;
+        }
+        return parent.levels() + 1;
     }
 }

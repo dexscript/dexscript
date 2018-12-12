@@ -27,8 +27,13 @@ public final class PlaceholderType implements NamedType {
     }
 
     @Override
-    public String toString() {
+    public String description() {
         return "<" + name() + ">: " + constraint;
+    }
+
+    @Override
+    public String toString() {
+        return name();
     }
 
     @Override
