@@ -8,9 +8,7 @@ import com.dexscript.ast.inf.DexInfTypeParam;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InterfaceType implements NamedType, GenericType, FunctionsProvider {
 
@@ -94,8 +92,8 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
-        if (ctx.getSubstituted(that) != null) {
-            return false;
+        if (ctx.shouldLog()) {
+            ctx.log(">>> check " + this + " is assignable from " + that);
         }
         ctx.putSubstituted(that, this);
         TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
@@ -104,10 +102,16 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         }
         for (FunctionType member : functions()) {
             if (!functionTable.isDefined(subCtx, member)) {
+                if (ctx.shouldLog()) {
+                    ctx.log("<<< " + this + " is not assignable from " + that + " because missing " + member);
+                }
                 return false;
             }
         }
         subCtx.commit();
+        if (ctx.shouldLog()) {
+            ctx.log("<<< " + this + " is assignable from " + that);
+        }
         return true;
     }
 

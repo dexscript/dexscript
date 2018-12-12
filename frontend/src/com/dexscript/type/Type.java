@@ -21,11 +21,12 @@ public interface Type {
             return true;
         }
         Type sub = ctx.getSubstituted(this);
-        if (sub != null && sub.equals(that)) {
+        if (sub != null) {
+            boolean assignable = sub.equals(that);
             if (ctx.shouldLog()) {
-                ctx.log(true, this, that, this + " sub to " + sub);
+                ctx.log(assignable, this, that, this + " sub to " + sub);
             }
-            return true;
+            return assignable;
         }
         if (that instanceof IntersectionType) {
             for (Type elem : ((IntersectionType) that).types()) {

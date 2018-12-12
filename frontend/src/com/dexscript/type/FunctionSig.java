@@ -46,14 +46,16 @@ class FunctionSig {
         for (int i = 0; i < params.size(); i++) {
             Type param = params.get(i);
             Type arg = args.get(i);
-            boolean argMatched = arg.isAssignableFrom(ctx, param);
+            TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
+            boolean argMatched = arg.isAssignableFrom(subCtx, param);
             if (!argMatched) {
-                ctx.rollback();
-                argMatched = param.isAssignableFrom(ctx, arg);
+                subCtx.rollback();
+                argMatched = param.isAssignableFrom(subCtx, arg);
             }
             if (!argMatched) {
                 return BuiltinTypes.UNDEFINED;
             }
+            subCtx.commit();
         }
         TypeTable localTypeTable = new TypeTable(this.typeTable);
         for (Map.Entry<Type, Type> entry : collector.entrySet()) {
