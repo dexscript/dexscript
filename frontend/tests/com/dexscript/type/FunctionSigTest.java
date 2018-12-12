@@ -76,6 +76,20 @@ public class FunctionSigTest {
         Assert.assertEquals(BuiltinTypes.UNDEFINED, ret);
     }
 
+    @Test
+    public void infer_with_return_value_hint() {
+        FunctionSig sig = sig("(<T>: interface{}): T");
+        Type ret = sig.invoke(null, resolve(), BuiltinTypes.STRING);
+        Assert.assertEquals(BuiltinTypes.STRING, ret);
+    }
+
+    @Test
+    public void specify_type_args() {
+        FunctionSig sig = sig("(<T>: interface{}, left: T, right: T): bool");
+        Type ret = sig.invoke(resolve("int64"), resolve("string", "string"), null);
+        Assert.assertEquals(BuiltinTypes.UNDEFINED, ret);
+    }
+
     private void defineInterface(String src) {
         new InterfaceType(typeTable, functionTable, new DexInterface(src));
     }

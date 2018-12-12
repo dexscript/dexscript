@@ -58,7 +58,7 @@ public final class TypeComparisonContext {
     }
 
     public boolean shouldLog() {
-        return true;
+        return false;
     }
 
     public void log(boolean assignable, Type to, Type from, String reason) {
