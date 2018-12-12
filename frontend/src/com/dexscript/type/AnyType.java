@@ -7,7 +7,7 @@ public class AnyType extends Type {
     }
 
     @Override
-    public boolean isAssignableFrom(Subs subs, Type that) {
+    public boolean isAssignableFrom(Substituted substituted, Type that) {
         return true;
     }
 }

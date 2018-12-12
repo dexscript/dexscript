@@ -1,7 +1,6 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.type.DexGenericExpansionType;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.ast.type.DexTypeRef;
 import org.junit.Assert;

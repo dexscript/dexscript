@@ -14,7 +14,7 @@ public class ActorUnionType extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Subs subs, Type that) {
-        return unionType.isAssignableFrom(subs, that);
+    public boolean isAssignableFrom(Substituted substituted, Type that) {
+        return unionType.isAssignableFrom(substituted, that);
     }
 }

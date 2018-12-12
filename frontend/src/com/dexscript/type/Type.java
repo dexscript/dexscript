@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Type {
@@ -15,21 +16,18 @@ public abstract class Type {
     }
 
     public boolean isAssignableFrom(Type that) {
-        Subs subs = new Subs();
-        boolean result = isAssignableFrom(subs, that);
+        Substituted substituted = new Substituted(new HashMap<>());
+        boolean result = isAssignableFrom(substituted, that);
         return result;
     }
 
-    public boolean isAssignableFrom(Subs subs, Type that) {
-        if (this.equals(that)) {
-            return true;
-        }
-        if (that instanceof SameType) {
-            return this.equals(((SameType)that).sameType());
-        }
+    public boolean isAssignableFrom(Substituted substituted, Type that) {
+//        if (this.equals(that)) {
+//            return true;
+//        }
         if (that instanceof IntersectionType) {
             for (Type elem : ((IntersectionType) that).types()) {
-                if (this.isAssignableFrom(subs, elem)) {
+                if (this.isAssignableFrom(substituted, elem)) {
                     return true;
                 }
             }
@@ -37,21 +35,13 @@ public abstract class Type {
         }
         if (that instanceof UnionType) {
             for (Type elem : ((UnionType) that).types()) {
-                if (!this.isAssignableFrom(subs, elem)) {
+                if (!this.isAssignableFrom(substituted, elem)) {
                     return false;
                 }
             }
             return true;
         }
         return false;
-    }
-
-    protected Type expand(Map<Type, Type> lookup) {
-        Type expanded = lookup.get(this);
-        if (expanded != null) {
-            return expanded;
-        }
-        return this;
     }
 
     public Type union(Type that) {

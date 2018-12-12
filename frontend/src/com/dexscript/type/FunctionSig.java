@@ -1,9 +1,8 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.type.DexGenericExpansionType;
 import com.dexscript.ast.type.DexType;
-import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,18 +27,18 @@ class FunctionSig {
         if (params.size() != args.size()) {
             return BuiltinTypes.UNDEFINED;
         }
-        Subs subs = new Subs();
+        HashMap<NamedType, Type> collector = new HashMap<>();
+        Substituted substituted = new Substituted(collector);
         for (int i = 0; i < params.size(); i++) {
             Type param = params.get(i);
             Type arg = args.get(i);
-            boolean argMatched = arg.isAssignableFrom(subs, param) || param.isAssignableFrom(subs, arg);
+            boolean argMatched = arg.isAssignableFrom(substituted, param) || param.isAssignableFrom(substituted, arg);
             if (!argMatched) {
                 return BuiltinTypes.UNDEFINED;
             }
         }
-        Map<PlaceholderType, Type> deduced = subs.deduce();
         TypeTable localTypeTable = new TypeTable(this.typeTable);
-        for (Map.Entry<PlaceholderType, Type> entry : deduced.entrySet()) {
+        for (Map.Entry<NamedType, Type> entry : collector.entrySet()) {
             localTypeTable.define(entry.getKey().name(), entry.getValue());
         }
         return ResolveType.$(localTypeTable, retElem);

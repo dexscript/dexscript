@@ -1,6 +1,6 @@
 package com.dexscript.type;
 
-class PlaceholderType extends NamedType {
+public final class PlaceholderType extends NamedType {
 
     private final Type constraint;
 
@@ -10,12 +10,15 @@ class PlaceholderType extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Subs subs, Type that) {
-        if (constraint.isAssignableFrom(subs, that)) {
-            subs.addSub(this, that);
+    public boolean isAssignableFrom(Substituted substituted, Type that) {
+        if (substituted.get(this) != null) {
+            return substituted.get(this).equals(that);
+        }
+        if (constraint.isAssignableFrom(substituted, that)) {
+            substituted.put(this, that);
             return true;
         }
-        return super.isAssignableFrom(subs, that);
+        return false;
     }
 
     @Override

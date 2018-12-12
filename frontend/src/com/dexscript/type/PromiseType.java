@@ -48,10 +48,10 @@ public class PromiseType extends NamedType implements FunctionsProvider, Generic
     }
 
     @Override
-    public boolean isAssignableFrom(Subs subs, Type that) {
-        if (super.isAssignableFrom(subs, that)) {
+    public boolean isAssignableFrom(Substituted substituted, Type that) {
+        if (super.isAssignableFrom(substituted, that)) {
             return true;
         }
-        return functionTable.isAssignableFrom(subs, this, that);
+        return functionTable.isAssignableFrom(substituted, this, that);
     }
 }

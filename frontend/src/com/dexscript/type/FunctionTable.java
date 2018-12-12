@@ -51,17 +51,19 @@ public class FunctionTable {
         providers.add(provider);
     }
 
-    public boolean isDefined(Subs subs, FunctionType that) {
+    public boolean isDefined(Substituted substituted, FunctionType that) {
         pullFromProviders();
         List<FunctionType> functions = defined.get(that.name());
         if (functions == null) {
             return false;
         }
+        Substituted staging = new Substituted(substituted);
         for (FunctionType function : functions) {
-            Subs staging = new Subs();
             if (that.isAssignableFrom(staging, function)) {
-                subs.merge(staging);
+                staging.commit();
                 return true;
+            } else {
+                staging.rollback();
             }
         }
         return false;
@@ -79,15 +81,14 @@ public class FunctionTable {
         }
     }
 
-    public boolean isAssignableFrom(Subs subs, FunctionsProvider superType, Type subType) {
-        if (subType instanceof SameType) {
-            return false;
+    public boolean isAssignableFrom(Substituted substituted, FunctionsProvider superType, Type subType) {
+        if (substituted.get((NamedType) superType) != null) {
+            boolean result = substituted.get((NamedType) superType).equals(subType);
+            return result;
         }
-        Map<Type, Type> lookup = new HashMap<>();
-        lookup.put((Type) superType, new SameType(subType));
+        substituted.put((NamedType) superType, subType);
         for (FunctionType member : superType.functions()) {
-            FunctionType expandedMember = (FunctionType) member.expand(lookup);
-            if (!isDefined(subs, expandedMember)) {
+            if (!isDefined(substituted, member)) {
                 return false;
             }
         }

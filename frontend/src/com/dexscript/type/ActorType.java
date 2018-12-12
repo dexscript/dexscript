@@ -121,19 +121,13 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
     }
 
     @Override
-    public boolean isAssignableFrom(Subs subs, Type thatObj) {
-        if (super.isAssignableFrom(subs, thatObj)) {
+    public boolean isAssignableFrom(Substituted substituted, Type thatObj) {
+        if (super.isAssignableFrom(substituted, thatObj)) {
             return true;
         }
-        if (thatObj instanceof SameType) {
-            return false;
-        }
-        Map<Type, Type> lookup = new HashMap<>();
-        lookup.put(this, new SameType(thatObj));
         functions();
         for (FunctionType member : members) {
-            FunctionType expandedMember = (FunctionType) member.expand(lookup);
-            if (!functionTable.isDefined(subs, expandedMember)) {
+            if (!functionTable.isDefined(substituted, member)) {
                 return false;
             }
         }
