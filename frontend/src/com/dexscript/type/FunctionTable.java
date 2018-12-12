@@ -17,34 +17,24 @@ public class FunctionTable {
         functions.add(func);
     }
 
-    public List<FunctionType> resolve(String funcName, List<Type> args) {
+    public List<FunctionType.Invoked> invoke(
+            TypeTable typeTable, String funcName,
+            List<Type> typeArgs, List<Type> args, Type retHint) {
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
             return new ArrayList<>();
         }
-        List<FunctionType> resolved = new ArrayList<>();
+        List<FunctionType.Invoked> invokeds = new ArrayList<>();
         for (FunctionType function : functions) {
-            if (function.params().size() != args.size()) {
+            Type ret = function.sig().invoke(typeTable, null, args, null);
+            if (BuiltinTypes.UNDEFINED.equals(ret)) {
                 continue;
             }
-            if (matchSig(args, function.params())) {
-                resolved.add(function);
-            }
+            FunctionType.Invoked invoked = new FunctionType.Invoked(function, ret);
+            invokeds.add(invoked);
         }
-        return resolved;
-    }
-
-    private boolean matchSig(@NotNull List<Type> args, @NotNull List<Type> params) {
-        for (int i = 0; i < params.size(); i++) {
-            Type param = params.get(i);
-            Type arg = args.get(i);
-            boolean argMatched = arg.isAssignableFrom(param) || param.isAssignableFrom(arg);
-            if (!argMatched) {
-                return false;
-            }
-        }
-        return true;
+        return invokeds;
     }
 
     public void lazyDefine(FunctionsProvider provider) {

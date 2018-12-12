@@ -127,14 +127,15 @@ public class OutShim {
         return shimName + "__" + count;
     }
 
-    public String combineNewF(String funcName, int paramsCount, List<FunctionType> funcTypes) {
+    public String combineNewF(String funcName, int paramsCount, List<FunctionType.Invoked> invokeds) {
         String cNewF = allocateShim("cnew__" + funcName);
         g.__("public static Promise "
         ).__(cNewF);
         DeclareParams.$(g, paramsCount, true);
         g.__(" {");
         g.__(new Indent(() -> {
-            for (FunctionType funcType : funcTypes) {
+            for (FunctionType.Invoked invoked : invokeds) {
+                FunctionType funcType = invoked.function();
                 if (!(funcType.attachment() instanceof Impl)) {
                     throw new IllegalStateException("no implementation attached to function: " + funcType);
                 }

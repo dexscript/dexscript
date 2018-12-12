@@ -12,7 +12,6 @@ import java.util.List;
 public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
 
     private static final int LEFT_RANK = 1;
-    private static final int RIGHT_RANK = 0;
 
     private DexExpr obj;
     private DexValueRef method;

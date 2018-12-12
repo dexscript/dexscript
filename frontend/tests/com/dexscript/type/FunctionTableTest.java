@@ -19,11 +19,13 @@ public class FunctionTableTest {
             add(BuiltinTypes.INT64);
         }}, BuiltinTypes.VOID);
         functionTable.define(int64Func);
-        List<FunctionType> resolved = functionTable.resolve("Hello", new ArrayList<Type>() {{
-            add(BuiltinTypes.STRING);
-        }});
-        Assert.assertEquals(1, resolved.size());
-        Assert.assertEquals(stringFunc, resolved.get(0));
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
+        List<FunctionType.Invoked> invokeds = functionTable.invoke(typeTable, "Hello",
+                null, new ArrayList<Type>() {{
+                    add(BuiltinTypes.STRING);
+                }}, null);
+        Assert.assertEquals(1, invokeds.size());
+        Assert.assertEquals(stringFunc, invokeds.get(0));
     }
 
     @Test
@@ -37,9 +39,11 @@ public class FunctionTableTest {
             add(new StringLiteralType("a"));
         }}, BuiltinTypes.VOID);
         functionTable.define(aFunc);
-        List<FunctionType> resolved = functionTable.resolve("Hello", new ArrayList<Type>() {{
-            add(BuiltinTypes.STRING);
-        }});
+        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
+        List<FunctionType.Invoked> resolved = functionTable.invoke(typeTable, "Hello",
+                null, new ArrayList<Type>() {{
+                    add(BuiltinTypes.STRING);
+                }}, null);
         Assert.assertEquals(2, resolved.size());
     }
 }

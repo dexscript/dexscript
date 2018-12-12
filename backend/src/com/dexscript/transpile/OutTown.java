@@ -5,7 +5,6 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.shim.OutShim;
@@ -70,9 +69,9 @@ public class OutTown {
         TypeTable localTypeTable = new TypeTable(ts.typeTable());
         localTypeTable.define(function.typeParams());
         List<Type> args = ResolveType.$(localTypeTable, function.params());
-        List<FunctionType> functionTypes = ts.resolveFunctions(funcName, args);
-        for (FunctionType resolveFunction : functionTypes) {
-            resolveFunction.attachment();
+        List<FunctionType.Invoked> invokeds = ts.invoke(funcName, null, args, null);
+        for (FunctionType.Invoked invoked : invokeds) {
+            invoked.function().attachment();
         }
     }
 

@@ -26,8 +26,9 @@ public class TranslateNew implements Translate<DexNewExpr> {
         TypeSystem ts = oClass.typeSystem();
         Type actorType = InferType.$(ts, iNewExpr);
 
-        List<FunctionType> funcTypes = ts.resolveFunctions(funcName, InferType.inferTypes(ts, iArgs));
-        String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), funcTypes);
+        List<Type> args = InferType.inferTypes(ts, iArgs);
+        List<FunctionType.Invoked> invokeds = ts.invoke(funcName, null, args, null);
+        String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), invokeds);
         OutField oActorField = oClass.allocateField(funcName, actorType);
         Gen g = oClass.g();
         g.__(oActorField.value()

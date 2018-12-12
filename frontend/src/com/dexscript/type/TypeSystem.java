@@ -7,7 +7,6 @@ import com.dexscript.ast.type.DexType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TypeSystem {
 
@@ -48,8 +47,8 @@ public class TypeSystem {
         return new InterfaceType(typeTable, functionTable, inf);
     }
 
-    public List<FunctionType> resolveFunctions(String funcName, List<Type> args) {
-        return functionTable.resolve(funcName, args);
+    public List<FunctionType.Invoked> invoke(String funcName, List<Type> typeArgs, List<Type> args, Type retHint) {
+        return functionTable.invoke(typeTable, funcName, typeArgs, args, retHint);
     }
 
     public Type resolveType(String typeName) {
@@ -64,6 +63,14 @@ public class TypeSystem {
         return ResolveType.$(typeTable, elem);
     }
 
+    public List<Type> resolveTypes(List<DexType> dexTypes) {
+        List<Type> types = new ArrayList<>();
+        for (DexType dexType : dexTypes) {
+            types.add(resolveType(dexType));
+        }
+        return types;
+    }
+
     public List<Type> resolveType(Class<?>[] javaTypes) {
         List<Type> types = new ArrayList<>();
         for (Class<?> javaType : javaTypes) {
@@ -74,13 +81,5 @@ public class TypeSystem {
 
     public Type resolveType(Class<?> javaType) {
         return typeTable.resolveType(javaType);
-    }
-
-    public List<Type> resolveTypes(List<DexParam> params) {
-        ArrayList<Type> types = new ArrayList<>();
-        for (DexParam param : params) {
-            types.add(resolveType(param.paramType()));
-        }
-        return types;
     }
 }

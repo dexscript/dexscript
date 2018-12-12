@@ -72,6 +72,9 @@ class FunctionSig {
             subCtx.commit();
         }
         inferRetHint(retHint, ctx);
+        if (retElem == null || typeParams == null) {
+            return ret;
+        }
         for (PlaceholderType typeParam : typeParams) {
             if (!sub.containsKey(typeParam)) {
                 throw new DexSyntaxException("can not infer type parameter: " + typeParam);

@@ -9,7 +9,6 @@ import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,7 +105,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation(target().asRef().toString(), args());
+            invocation = new DexInvocation(target().asRef().toString(), typeArgs(), args());
         }
         return invocation;
     }
@@ -184,6 +183,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 }
                 if (b == '(') {
                     i += 1;
+                    args = new ArrayList<>();
                     return this::argument;
                 }
                 return this::missingLeftParen;

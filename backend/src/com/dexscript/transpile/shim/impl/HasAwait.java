@@ -49,9 +49,9 @@ public class HasAwait implements DexElement.Visitor {
         if (elem instanceof DexInvocationExpr) {
             DexInvocation invocation = ((DexInvocationExpr) elem).invocation();
             List<Type> args = InferType.inferTypes(ts, invocation.args());
-            List<FunctionType> functionTypes = ts.resolveFunctions(invocation.funcName(), args);
-            for (FunctionType functionType : functionTypes) {
-                Impl impl = (Impl) functionType.attachment();
+            List<FunctionType.Invoked> invokeds = ts.invoke(invocation.funcName(), null, args, null);
+            for (FunctionType.Invoked invoked : invokeds) {
+                Impl impl = (Impl) invoked.function().attachment();
                 if (impl.hasAwait()) {
                     result = true;
                     return;

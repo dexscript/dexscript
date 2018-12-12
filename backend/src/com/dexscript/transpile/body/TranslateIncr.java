@@ -13,7 +13,8 @@ public class TranslateIncr implements Translate<DexIncrStmt> {
     @Override
     public void handle(OutClass oClass, DexIncrStmt iIncrStmt) {
         DexInvocation invocation = iIncrStmt.invocation();
-        OutField oResultField = TranslateInvocation.invoke(oClass, invocation.funcName(), invocation.args());
+        OutField oResultField = TranslateInvocation.invoke(
+                oClass, invocation.funcName(), null, invocation.args());
         Value ref = InferValue.$(oClass.typeSystem(), iIncrStmt.target());
         oClass.g().__(OutValue.of(ref.definedBy())
         ).__(" = "

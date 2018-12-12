@@ -4,6 +4,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
+import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Indent;
@@ -23,26 +24,27 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
     @Override
     public void handle(OutClass oClass, E iElem) {
         DexInvocation invocation = iElem.invocation();
-        OutField oResultField = invoke(oClass, invocation.funcName(), invocation.args());
+        OutField oResultField = invoke(oClass, invocation.funcName(), invocation.typeArgs(), invocation.args());
         if (oResultField != null) {
             iElem.attach(oResultField);
         }
     }
 
-    public static OutField invoke(OutClass oClass, String funcName, List<DexExpr> iArgs) {
+    public static OutField invoke(OutClass oClass, String funcName, List<DexType> iTypeArgs, List<DexExpr> iArgs) {
         for (DexExpr iArg : iArgs) {
             Translate.$(oClass, iArg);
         }
         TypeSystem ts = oClass.typeSystem();
 
-        List<Type> argTypes = InferType.inferTypes(ts, iArgs);
-        List<FunctionType> funcTypes = ts.resolveFunctions(funcName, argTypes);
-        if (funcTypes.size() == 0) {
+        List<Type> args = InferType.inferTypes(ts, iArgs);
+        List<Type> typeArgs = ts.resolveTypes(iTypeArgs);
+        List<FunctionType.Invoked> invokeds = ts.invoke(funcName, typeArgs, args, null);
+        if (invokeds.size() == 0) {
             throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
-                    funcName, argTypes));
+                    funcName, args));
         }
-        String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), funcTypes);
-        Type retType = ResolveReturnType.$(funcTypes);
+        String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), invokeds);
+        Type retType = ResolveReturnType.$(invokeds);
 
         Type promiseType = ts.resolveType("Promise", Arrays.asList(retType));
         OutField oActorField = oClass.allocateField(funcName, promiseType);
@@ -58,8 +60,8 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         }
         oClass.g().__(new Line(");"));
         boolean needToConsume = false;
-        for (FunctionType funcType : funcTypes) {
-            Impl impl = (Impl) funcType.attachment();
+        for (FunctionType.Invoked invoked : invokeds) {
+            Impl impl = (Impl) invoked.function().attachment();
             if (impl.hasAwait()) {
                 needToConsume =  true;
                 break;
