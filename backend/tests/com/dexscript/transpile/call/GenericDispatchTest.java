@@ -9,7 +9,7 @@ public class GenericDispatchTest {
     @Test
     public void call_generic_function() {
         Object result = Transpile.$("" +
-                "function Hello() {\n" +
+                "function Hello(): string {\n" +
                 "   return World('hello')\n" +
                 "}\n" +
                 "function World(<T>: string, msg: T): T {\n" +
@@ -21,7 +21,7 @@ public class GenericDispatchTest {
     @Test
     public void call_generic_function_with_type_arg() {
         Object result = Transpile.$("" +
-                "function Hello() {\n" +
+                "function Hello(): string {\n" +
                 "   return World<string>('hello')\n" +
                 "}\n" +
                 "function World(<T>: string, msg: T): T {\n" +
