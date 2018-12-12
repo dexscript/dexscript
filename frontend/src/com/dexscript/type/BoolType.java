@@ -1,18 +1,26 @@
 package com.dexscript.type;
 
-public class BoolType extends NamedType {
+import org.jetbrains.annotations.NotNull;
 
-    public BoolType() {
-        super("bool", "java.lang.Boolean");
-    }
+public class BoolType implements NamedType {
 
     @Override
     public String toString() {
-        return "bool";
+        return name();
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public String javaClassName() {
+        return Boolean.class.getCanonicalName();
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return that instanceof BoolType;
+    }
+
+    @Override
+    public @NotNull String name() {
+        return "bool";
     }
 }

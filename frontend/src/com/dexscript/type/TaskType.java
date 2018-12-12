@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TaskType extends NamedType implements FunctionsProvider, GenericType {
+public class TaskType implements NamedType, FunctionsProvider, GenericType {
 
     private final static List<Type> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
     private final @NotNull FunctionType resolveFunc;
@@ -18,7 +18,6 @@ public class TaskType extends NamedType implements FunctionsProvider, GenericTyp
     }
 
     public TaskType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
-        super("Task", "com.dexscript.runtime.Actor");
         this.typeTable = typeTable;
         this.functionTable = functionTable;
         typeTable.define(this);
@@ -32,6 +31,16 @@ public class TaskType extends NamedType implements FunctionsProvider, GenericTyp
         params.add(this);
         params.add(typeArgs.get(0));
         return new FunctionType("Resolve__", params, BuiltinTypes.VOID);
+    }
+
+    @Override
+    public @NotNull String name() {
+        return "Task";
+    }
+
+    @Override
+    public String javaClassName() {
+        return "Actor";
     }
 
     @Override
@@ -50,7 +59,7 @@ public class TaskType extends NamedType implements FunctionsProvider, GenericTyp
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         ctx.putSubstituted(this, that);
         for (FunctionType member : functions()) {
             if (!functionTable.isDefined(ctx, member)) {

@@ -4,17 +4,29 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ActorUnionType extends NamedType {
+public class ActorUnionType implements NamedType {
 
+    private final String name;
     private final UnionType unionType;
 
     public ActorUnionType(@NotNull String name, List<ActorType> types) {
-        super(name, "Object");
+        this.name = name;
         unionType = new UnionType((List) types);
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public String javaClassName() {
+        return Object.class.getCanonicalName();
+    }
+
+    @Override
+    public @NotNull String name() {
+        return name;
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return unionType.isAssignableFrom(ctx, that);
     }
+
 }

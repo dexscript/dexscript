@@ -1,18 +1,26 @@
 package com.dexscript.type;
 
-public class UndefinedType extends NamedType {
+import org.jetbrains.annotations.NotNull;
 
-    public UndefinedType() {
-        super("undefined", null);
+public class UndefinedType implements NamedType {
+
+    @Override
+    public String javaClassName() {
+        return null;
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return false;
     }
 
     @Override
     public String toString() {
+        return "undefined";
+    }
+
+    @Override
+    public @NotNull String name() {
         return "undefined";
     }
 }

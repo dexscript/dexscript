@@ -13,8 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActorType extends NamedType implements GenericType, FunctionsProvider {
-
+public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
     public interface ImplProvider {
         Object callFunc(FunctionType functionType, DexActor func);
@@ -41,13 +40,22 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
 
     public ActorType(TypeTable typeTable, FunctionTable functionTable, DexActor actor,
                      ImplProvider implProvider, List<Type> typeArgs) {
-        super(actor.identifier().toString(), "com.dexscript.runtime.Promise");
         functionTable.lazyDefine(this);
         this.typeArgs = typeArgs;
         this.implProvider = implProvider;
         this.actor = actor;
         this.typeTable = typeTable;
         this.functionTable = functionTable;
+    }
+
+    @Override
+    public @NotNull String name() {
+        return actor.identifier().toString();
+    }
+
+    @Override
+    public String javaClassName() {
+        return "com.dexscript.runtime.Promise";
     }
 
     @Override
@@ -119,7 +127,7 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type thatObj) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
         functions();
         for (FunctionType member : members) {
             if (!functionTable.isDefined(ctx, member)) {

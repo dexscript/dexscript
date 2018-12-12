@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InterfaceType extends NamedType implements GenericType, FunctionsProvider {
+public class InterfaceType implements NamedType, GenericType, FunctionsProvider {
 
     private final TypeTable typeTable;
     private final FunctionTable functionTable;
@@ -25,13 +25,22 @@ public class InterfaceType extends NamedType implements GenericType, FunctionsPr
 
     public InterfaceType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable,
                          @NotNull DexInterface inf, List<Type> typeArgs) {
-        super(inf.identifier().toString(), "Object");
         this.typeArgs = typeArgs;
-        typeTable.define(this);
-        functionTable.lazyDefine(this);
         this.typeTable = typeTable;
         this.functionTable = functionTable;
         this.inf = inf;
+        typeTable.define(this);
+        functionTable.lazyDefine(this);
+    }
+
+    @Override
+    public @NotNull String name() {
+        return inf.identifier().toString();
+    }
+
+    @Override
+    public String javaClassName() {
+        return Object.class.getCanonicalName();
     }
 
     public List<FunctionType> functions() {
@@ -79,7 +88,7 @@ public class InterfaceType extends NamedType implements GenericType, FunctionsPr
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         ctx.putSubstituted(this, that);
         TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
         for (FunctionType member : functions()) {

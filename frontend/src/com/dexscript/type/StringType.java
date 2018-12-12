@@ -1,18 +1,26 @@
 package com.dexscript.type;
 
-public class StringType extends NamedType {
+import org.jetbrains.annotations.NotNull;
 
-    public StringType() {
-        super("string", "java.lang.String");
+public class StringType implements NamedType {
+
+    @Override
+    public String javaClassName() {
+        return String.class.getCanonicalName();
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return that instanceof StringType || that instanceof StringLiteralType;
     }
 
     @Override
     public String toString() {
+        return name();
+    }
+
+    @Override
+    public @NotNull String name() {
         return "string";
     }
 }

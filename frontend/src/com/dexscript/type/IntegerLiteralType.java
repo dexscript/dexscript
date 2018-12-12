@@ -2,17 +2,21 @@ package com.dexscript.type;
 
 import java.util.Objects;
 
-public class IntegerLiteralType extends Type {
+public class IntegerLiteralType implements Type {
 
     private final String literalValue;
 
     public IntegerLiteralType(String literalValue) {
-        super("Object");
         this.literalValue = literalValue;
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public String javaClassName() {
+        return Long.class.getCanonicalName();
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return that.equals(this);
     }
 

@@ -1,13 +1,14 @@
 package com.dexscript.type;
 
-public class AnyType extends Type {
+public class AnyType implements Type {
 
-    public AnyType() {
-        super("Object");
+    @Override
+    public String javaClassName() {
+        return Object.class.getCanonicalName();
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return true;
     }
 

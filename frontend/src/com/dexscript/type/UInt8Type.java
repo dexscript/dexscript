@@ -1,21 +1,29 @@
 package com.dexscript.type;
 
-public class UInt8Type extends NamedType {
+import org.jetbrains.annotations.NotNull;
 
-    public UInt8Type() {
-        super("uint8", "com.dexscript.runtime.UInt8");
-    }
+public class UInt8Type implements NamedType {
 
     @Override
     public String toString() {
-        return "uint8";
+        return name();
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public String javaClassName() {
+        return "com.dexscript.runtime.UInt8";
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         if (that instanceof UInt8Type) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public @NotNull String name() {
+        return "uint8";
     }
 }

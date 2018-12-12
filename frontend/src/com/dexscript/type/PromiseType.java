@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class PromiseType extends NamedType implements FunctionsProvider, GenericType {
+public class PromiseType implements NamedType, FunctionsProvider, GenericType {
 
     private final static List<Type> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
     private final @NotNull FunctionType consumeFunc;
@@ -17,12 +17,21 @@ public class PromiseType extends NamedType implements FunctionsProvider, Generic
     }
 
     public PromiseType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
-        super("Promise", "Promise");
         this.typeTable = typeTable;
         this.functionTable = functionTable;
         typeTable.define(this);
         functionTable.lazyDefine(this);
         consumeFunc = consumeFunc(typeArgs);
+    }
+
+    @Override
+    public String javaClassName() {
+        return "Promise";
+    }
+
+    @Override
+    public @NotNull String name() {
+        return "Promise";
     }
 
     @NotNull
@@ -48,7 +57,7 @@ public class PromiseType extends NamedType implements FunctionsProvider, Generic
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         ctx.putSubstituted(this, that);
         for (FunctionType member : functions()) {
             if (!functionTable.isDefined(ctx, member)) {

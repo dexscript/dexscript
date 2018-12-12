@@ -1,16 +1,24 @@
 package com.dexscript.type;
 
-public final class PlaceholderType extends NamedType {
+import org.jetbrains.annotations.NotNull;
 
+public final class PlaceholderType implements NamedType {
+
+    private final String name;
     private final Type constraint;
 
     public PlaceholderType(String name, Type constraint) {
-        super(name, "Object");
+        this.name = name;
         this.constraint = constraint;
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public String javaClassName() {
+        return Object.class.getCanonicalName();
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         if (constraint.isAssignableFrom(ctx, that)) {
             ctx.putSubstituted(this, that);
             return true;
@@ -21,5 +29,10 @@ public final class PlaceholderType extends NamedType {
     @Override
     public String toString() {
         return "<" + name() + ">: " + constraint;
+    }
+
+    @Override
+    public @NotNull String name() {
+        return name;
     }
 }

@@ -4,18 +4,22 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public final class StringLiteralType extends Type {
+public final class StringLiteralType implements Type {
 
     @NotNull
     private final String literalValue;
 
     public StringLiteralType(@NotNull String literalValue) {
-        super("String");
         this.literalValue = literalValue;
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public String javaClassName() {
+        return String.class.getCanonicalName();
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return that.equals(this);
     }
 

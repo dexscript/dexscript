@@ -3,19 +3,17 @@ package com.dexscript.type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnionType extends Type {
+public class UnionType implements Type {
 
     private final List<Type> types;
 
     public UnionType(Type type1, Type type2) {
-        super(inferJavaClassName(type1, type2));
         types = new ArrayList<>();
         types.add(type1);
         types.add(type2);
     }
 
     public UnionType(List<Type> types) {
-        super(inferJavaClassName(types));
         this.types = types;
     }
 
@@ -42,24 +40,22 @@ public class UnionType extends Type {
             }
             return new UnionType(union);
         }
-        return super.intersect(that);
+        return new IntersectionType(this, that);
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public String javaClassName() {
+        return inferJavaClassName(types);
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         for (Type type : types) {
             if (type.isAssignableFrom(ctx, that)) {
                 return true;
             }
         }
         return false;
-    }
-
-    private static String inferJavaClassName(Type type1, Type type2) {
-        if (type1.javaClassName().equals(type2.javaClassName())) {
-            return type1.javaClassName();
-        }
-        return "Object";
     }
 
     private static String inferJavaClassName(List<Type> types) {

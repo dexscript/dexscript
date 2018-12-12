@@ -1,18 +1,26 @@
 package com.dexscript.type;
 
-public class Int64Type extends NamedType {
+import org.jetbrains.annotations.NotNull;
 
-    public Int64Type() {
-        super("int64", "java.lang.Long");
-    }
+public class Int64Type implements NamedType {
 
     @Override
     public String toString() {
+        return name();
+    }
+
+    @Override
+    public @NotNull String name() {
         return "int64";
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public String javaClassName() {
+        return Long.class.getCanonicalName();
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         if (that instanceof Int64Type) {
             return true;
         }

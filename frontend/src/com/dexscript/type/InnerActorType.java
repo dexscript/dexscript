@@ -5,7 +5,7 @@ import com.dexscript.ast.stmt.DexAwaitConsumer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InnerActorType extends Type implements FunctionsProvider {
+public class InnerActorType implements Type, FunctionsProvider {
 
     private final TypeTable typeTable;
     private final DexAwaitConsumer awaitConsumer;
@@ -13,11 +13,15 @@ public class InnerActorType extends Type implements FunctionsProvider {
     private List<FunctionType> members;
 
     public InnerActorType(TypeTable typeTable, FunctionTable functionTable, DexAwaitConsumer awaitConsumer) {
-        super("com.dexscript.runtime.Promise");
         functionTable.lazyDefine(this);
         this.typeTable = typeTable;
         this.awaitConsumer = awaitConsumer;
         this.functionTable = functionTable;
+    }
+
+    @Override
+    public String javaClassName() {
+        return "Promise";
     }
 
     @Override
@@ -38,7 +42,7 @@ public class InnerActorType extends Type implements FunctionsProvider {
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type thatObj) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
         for (FunctionType member : functions()) {
             if (!functionTable.isDefined(ctx, member)) {
                 return false;

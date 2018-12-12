@@ -1,18 +1,26 @@
 package com.dexscript.type;
 
-public class VoidType extends NamedType {
+import org.jetbrains.annotations.NotNull;
 
-    public VoidType() {
-        super("void", void.class.getCanonicalName());
+public class VoidType implements NamedType {
+
+    @Override
+    public String javaClassName() {
+        return void.class.getCanonicalName();
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return that instanceof VoidType;
     }
 
     @Override
     public String toString() {
+        return name();
+    }
+
+    @Override
+    public @NotNull String name() {
         return "void";
     }
 }

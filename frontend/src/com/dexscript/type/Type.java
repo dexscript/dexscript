@@ -2,25 +2,17 @@ package com.dexscript.type;
 
 import java.util.HashMap;
 
-public abstract class Type {
+public interface Type {
 
-    private final String javaClassName;
+    String javaClassName();
 
-    public Type(String javaClassName) {
-        this.javaClassName = javaClassName;
-    }
-
-    public final String javaClassName() {
-        return javaClassName;
-    }
-
-    public final boolean isAssignableFrom(Type that) {
+    default boolean isAssignableFrom(Type that) {
         TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>());
         boolean result = isAssignableFrom(ctx, that);
         return result;
     }
 
-    public final boolean isAssignableFrom(TypeComparisonContext ctx, Type that) {
+    default boolean isAssignableFrom(TypeComparisonContext ctx, Type that) {
         if (this.equals(that)) {
             if (ctx.shouldLog()) {
                 ctx.log(true, this, that, "they are equal");
@@ -51,20 +43,20 @@ public abstract class Type {
             }
             return true;
         }
-        return isSubType(ctx, that);
+        return _isSubType(ctx, that);
     }
 
-    protected abstract boolean isSubType(TypeComparisonContext ctx, Type that);
+    boolean _isSubType(TypeComparisonContext ctx, Type that);
 
-    public Type union(Type that) {
+    default Type union(Type that) {
         return new UnionType(this, that);
     }
 
-    public Type intersect(Type that) {
+    default Type intersect(Type that) {
         return new IntersectionType(this, that);
     }
 
-    public String initValue() {
+    default String initValue() {
         return null;
     }
 }

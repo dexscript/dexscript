@@ -6,7 +6,7 @@ import java.util.List;
 
 // Function Type: test type compatibility, more permissive than signature
 // Function Signature: generic type constraint & where condition
-public final class FunctionType extends Type {
+public final class FunctionType implements Type {
 
     public interface LazyAttachment {
         Object lazyLoad();
@@ -24,7 +24,6 @@ public final class FunctionType extends Type {
     private Object attachment;
 
     public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
-        super("Object");
         this.name = name;
         this.params = params;
         this.ret = ret;
@@ -57,7 +56,12 @@ public final class FunctionType extends Type {
     }
 
     @Override
-    protected boolean isSubType(TypeComparisonContext ctx, Type thatObj) {
+    public String javaClassName() {
+        return Object.class.getCanonicalName();
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
         if (!(thatObj instanceof FunctionType)) {
             return false;
         }
