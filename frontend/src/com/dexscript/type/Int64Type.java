@@ -12,10 +12,7 @@ public class Int64Type extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (super.isAssignableFrom(substituted, that)) {
-            return true;
-        }
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
         if (that instanceof Int64Type) {
             return true;
         }

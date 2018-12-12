@@ -14,6 +14,11 @@ public final class StringLiteralType extends Type {
         this.literalValue = literalValue;
     }
 
+    @Override
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+        return that.equals(this);
+    }
+
     @NotNull
     public String literalValue() {
         return literalValue;

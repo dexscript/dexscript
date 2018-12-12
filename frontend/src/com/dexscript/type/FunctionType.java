@@ -2,9 +2,7 @@ package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 // Function Type: test type compatibility, more permissive than signature
 // Function Signature: generic type constraint & where condition
@@ -59,10 +57,7 @@ public final class FunctionType extends Type {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type thatObj) {
-        if (super.isAssignableFrom(substituted, thatObj)) {
-            return true;
-        }
+    protected boolean isSubType(TypeComparisonContext ctx, Type thatObj) {
         if (!(thatObj instanceof FunctionType)) {
             return false;
         }
@@ -76,11 +71,19 @@ public final class FunctionType extends Type {
         for (int i = 0; i < params.size(); i++) {
             Type thisParam = this.params.get(i);
             Type thatParam = that.params.get(i);
-            if (!thatParam.isAssignableFrom(substituted, thisParam)) {
+            if (!thatParam.isAssignableFrom(ctx, thisParam)) {
+                if (ctx.shouldLog()) {
+                    String reason = String.format("param %s not assignable from %s", thatParam, thisParam);
+                    ctx.log(false, this, that, reason);
+                }
                 return false;
             }
         }
-        return this.ret.isAssignableFrom(substituted, that.ret);
+        boolean assignable = this.ret.isAssignableFrom(ctx, that.ret);
+        if (ctx.shouldLog()) {
+            ctx.log(assignable, this, that, assignable ? "" : String.format("ret %s not assignable from %s", ret, that.ret));
+        }
+        return assignable;
     }
 
     @Override

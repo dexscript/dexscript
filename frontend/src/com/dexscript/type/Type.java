@@ -1,7 +1,6 @@
 package com.dexscript.type;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public abstract class Type {
 
@@ -15,19 +14,30 @@ public abstract class Type {
         return javaClassName;
     }
 
-    public boolean isAssignableFrom(Type that) {
-        Substituted substituted = new Substituted(new HashMap<>());
-        boolean result = isAssignableFrom(substituted, that);
+    public final boolean isAssignableFrom(Type that) {
+        TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>());
+        boolean result = isAssignableFrom(ctx, that);
         return result;
     }
 
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-//        if (this.equals(that)) {
-//            return true;
-//        }
+    public final boolean isAssignableFrom(TypeComparisonContext ctx, Type that) {
+        if (this.equals(that)) {
+            if (ctx.shouldLog()) {
+                ctx.log(true, this, that, "they are equal");
+            }
+            return true;
+        }
+        Type sub = ctx.getSubstituted(this);
+        if (sub != null) {
+            boolean assignable = sub.equals(that);
+            if (ctx.shouldLog()) {
+                ctx.log(assignable, this, that, this + " sub to " + sub);
+            }
+            return assignable;
+        }
         if (that instanceof IntersectionType) {
             for (Type elem : ((IntersectionType) that).types()) {
-                if (this.isAssignableFrom(substituted, elem)) {
+                if (this.isAssignableFrom(ctx, elem)) {
                     return true;
                 }
             }
@@ -35,14 +45,16 @@ public abstract class Type {
         }
         if (that instanceof UnionType) {
             for (Type elem : ((UnionType) that).types()) {
-                if (!this.isAssignableFrom(substituted, elem)) {
+                if (!this.isAssignableFrom(ctx, elem)) {
                     return false;
                 }
             }
             return true;
         }
-        return false;
+        return isSubType(ctx, that);
     }
+
+    protected abstract boolean isSubType(TypeComparisonContext ctx, Type that);
 
     public Type union(Type that) {
         return new UnionType(this, that);

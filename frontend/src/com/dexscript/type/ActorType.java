@@ -11,9 +11,7 @@ import com.dexscript.ast.stmt.DexBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ActorType extends NamedType implements GenericType, FunctionsProvider {
 
@@ -121,13 +119,10 @@ public class ActorType extends NamedType implements GenericType, FunctionsProvid
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type thatObj) {
-        if (super.isAssignableFrom(substituted, thatObj)) {
-            return true;
-        }
+    protected boolean isSubType(TypeComparisonContext ctx, Type thatObj) {
         functions();
         for (FunctionType member : members) {
-            if (!functionTable.isDefined(substituted, member)) {
+            if (!functionTable.isDefined(ctx, member)) {
                 return false;
             }
         }

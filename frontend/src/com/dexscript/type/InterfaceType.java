@@ -79,15 +79,36 @@ public class InterfaceType extends NamedType implements GenericType, FunctionsPr
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (super.isAssignableFrom(substituted, that)) {
-            return true;
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+        ctx.putSubstituted(this, that);
+        TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
+        for (FunctionType member : functions()) {
+            subCtx.undefine(member);
         }
-        return functionTable.isAssignableFrom(substituted, this, that);
+        for (FunctionType member : functions()) {
+            if (!functionTable.isDefined(subCtx, member)) {
+                return false;
+            }
+        }
+        subCtx.commit();
+        return true;
     }
 
     @Override
     public String toString() {
+        if (typeArgs != null && typeArgs.size() > 0) {
+            StringBuilder desc = new StringBuilder(name());
+            desc.append('<');
+            for (int i = 0; i < typeArgs.size(); i++) {
+                if (i > 0) {
+                    desc.append(", ");
+                }
+                Type typeArg = typeArgs.get(i);
+                desc.append(typeArg.toString());
+            }
+            desc.append('>');
+            return desc.toString();
+        }
         return name();
     }
 

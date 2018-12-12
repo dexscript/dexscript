@@ -12,15 +12,9 @@ public class UInt8Type extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (super.isAssignableFrom(substituted, that)) {
-            return true;
-        }
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
         if (that instanceof UInt8Type) {
             return true;
-        }
-        if (that instanceof IntegerLiteralType) {
-            throw new UnsupportedOperationException("not implemented: test data range");
         }
         return false;
     }

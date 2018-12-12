@@ -51,14 +51,17 @@ public class FunctionTable {
         providers.add(provider);
     }
 
-    public boolean isDefined(Substituted substituted, FunctionType that) {
+    public boolean isDefined(TypeComparisonContext ctx, FunctionType that) {
         pullFromProviders();
         List<FunctionType> functions = defined.get(that.name());
         if (functions == null) {
             return false;
         }
-        Substituted staging = new Substituted(substituted);
+        TypeComparisonContext staging = new TypeComparisonContext(ctx);
         for (FunctionType function : functions) {
+            if (staging.isUndefined(function)) {
+                continue;
+            }
             if (that.isAssignableFrom(staging, function)) {
                 staging.commit();
                 return true;
@@ -81,17 +84,4 @@ public class FunctionTable {
         }
     }
 
-    public boolean isAssignableFrom(Substituted substituted, FunctionsProvider superType, Type subType) {
-        if (substituted.get((NamedType) superType) != null) {
-            boolean result = substituted.get((NamedType) superType).equals(subType);
-            return result;
-        }
-        substituted.put((NamedType) superType, subType);
-        for (FunctionType member : superType.functions()) {
-            if (!isDefined(substituted, member)) {
-                return false;
-            }
-        }
-        return true;
-    }
 }

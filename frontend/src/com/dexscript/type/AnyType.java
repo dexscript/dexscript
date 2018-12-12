@@ -7,7 +7,12 @@ public class AnyType extends Type {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "interface{}";
     }
 }

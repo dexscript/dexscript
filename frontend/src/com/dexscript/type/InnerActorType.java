@@ -3,9 +3,7 @@ package com.dexscript.type;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class InnerActorType extends Type implements FunctionsProvider {
 
@@ -40,12 +38,9 @@ public class InnerActorType extends Type implements FunctionsProvider {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type thatObj) {
-        if (super.isAssignableFrom(substituted, thatObj)) {
-            return true;
-        }
+    protected boolean isSubType(TypeComparisonContext ctx, Type thatObj) {
         for (FunctionType member : functions()) {
-            if (!functionTable.isDefined(substituted, member)) {
+            if (!functionTable.isDefined(ctx, member)) {
                 return false;
             }
         }

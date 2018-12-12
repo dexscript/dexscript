@@ -50,10 +50,13 @@ public class TaskType extends NamedType implements FunctionsProvider, GenericTyp
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (super.isAssignableFrom(substituted, that)) {
-            return true;
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+        ctx.putSubstituted(this, that);
+        for (FunctionType member : functions()) {
+            if (!functionTable.isDefined(ctx, member)) {
+                return false;
+            }
         }
-        return functionTable.isAssignableFrom(substituted, this, that);
+        return true;
     }
 }

@@ -12,13 +12,7 @@ public class BoolType extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (super.isAssignableFrom(substituted, that)) {
-            return true;
-        }
-        if (that instanceof BoolType) {
-            return true;
-        }
-        return false;
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+        return that instanceof BoolType;
     }
 }

@@ -48,10 +48,13 @@ public class PromiseType extends NamedType implements FunctionsProvider, Generic
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (super.isAssignableFrom(substituted, that)) {
-            return true;
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+        ctx.putSubstituted(this, that);
+        for (FunctionType member : functions()) {
+            if (!functionTable.isDefined(ctx, member)) {
+                return false;
+            }
         }
-        return functionTable.isAssignableFrom(substituted, this, that);
+        return true;
     }
 }

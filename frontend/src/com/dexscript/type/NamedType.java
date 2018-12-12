@@ -16,12 +16,4 @@ public abstract class NamedType extends Type {
     public final String name() {
         return name;
     }
-
-    @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (substituted.get(this) != null) {
-            return substituted.get(this).equals(that);
-        }
-        return super.isAssignableFrom(substituted, that);
-    }
 }

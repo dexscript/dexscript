@@ -7,7 +7,7 @@ public class VoidType extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
         return that instanceof VoidType;
     }
 

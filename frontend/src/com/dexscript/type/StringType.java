@@ -7,10 +7,7 @@ public class StringType extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (super.isAssignableFrom(substituted, that)) {
-            return true;
-        }
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
         return that instanceof StringType || that instanceof StringLiteralType;
     }
 

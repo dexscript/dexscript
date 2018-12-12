@@ -10,12 +10,9 @@ public final class PlaceholderType extends NamedType {
     }
 
     @Override
-    public boolean isAssignableFrom(Substituted substituted, Type that) {
-        if (substituted.get(this) != null) {
-            return substituted.get(this).equals(that);
-        }
-        if (constraint.isAssignableFrom(substituted, that)) {
-            substituted.put(this, that);
+    protected boolean isSubType(TypeComparisonContext ctx, Type that) {
+        if (constraint.isAssignableFrom(ctx, that)) {
+            ctx.putSubstituted(this, that);
             return true;
         }
         return false;
