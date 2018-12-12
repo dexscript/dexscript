@@ -1,7 +1,11 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.elem.DexParam;
+import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.type.DexType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +25,24 @@ class FunctionSig {
         this.params = params;
         this.ret = ret;
         this.retElem = retElem;
+    }
+
+    public FunctionSig(TypeTable typeTable, DexSig sig) {
+        this.typeTable = typeTable;
+        this.typeParams = new ArrayList<>();
+        TypeTable localTypeTable = new TypeTable(typeTable);
+        for (DexTypeParam typeParam : sig.typeParams()) {
+            Type constraint = ResolveType.$(typeTable, typeParam.paramType());
+            PlaceholderType placeholder = new PlaceholderType(typeParam.paramName().toString(), constraint);
+            localTypeTable.define(placeholder);
+            typeParams.add(placeholder);
+        }
+        this.params = new ArrayList<>();
+        for (DexParam param : sig.params()) {
+            params.add(ResolveType.$(localTypeTable, param.paramType()));
+        }
+        this.ret = ResolveType.$(localTypeTable, sig.ret());
+        this.retElem = sig.ret();
     }
 
     Type invoke(List<Type> typeArgs, List<Type> args, Type retHint) {
