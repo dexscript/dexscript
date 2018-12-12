@@ -1,6 +1,7 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.type.*;
 
 import java.util.ArrayList;
@@ -60,6 +61,14 @@ public interface ResolveType<E extends DexType> {
         for (String typeDef : typeDefs) {
             DexType dexType = DexType.parse(typeDef);
             types.add(ResolveType.$(typeTable, dexType));
+        }
+        return types;
+    }
+
+    static List<Type> $(TypeTable typeTable, List<DexParam> params) {
+        List<Type> types = new ArrayList<>();
+        for (DexParam param : params) {
+            types.add(ResolveType.$(typeTable, param.paramType()));
         }
         return types;
     }

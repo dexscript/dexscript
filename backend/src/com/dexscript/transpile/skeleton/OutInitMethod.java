@@ -2,6 +2,7 @@ package com.dexscript.transpile.skeleton;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.elem.DexParam;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.type.DexType;
@@ -11,7 +12,9 @@ import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.type.ResolveType;
 import com.dexscript.type.TypeSystem;
+import com.dexscript.type.TypeTable;
 
 import java.util.List;
 
@@ -32,7 +35,7 @@ public class OutInitMethod implements OutMethod {
         g.__(" {"
         ).__(new Indent(() -> {
             g.__(new Line("super(scheduler);"));
-            genBody(iFunc.params(), iFunc.ret(), iFunc.stmts());
+            genBody(iFunc.sig(), iFunc.stmts());
         }));
     }
 
@@ -53,13 +56,19 @@ public class OutInitMethod implements OutMethod {
             iAwaitConsumer.attach(thisTask);
             g.__(thisTask.value()
             ).__(new Line(" = this;"));
-            genBody(iAwaitConsumer.params(), iAwaitConsumer.ret(), iAwaitConsumer.stmts());
+            genBody(iAwaitConsumer.produceSig(), iAwaitConsumer.stmts());
         }));
     }
 
-    private void genBody(List<DexParam> params, DexType ret, List<DexStatement> stmts) {
+    private void genBody(DexSig sig, List<DexStatement> stmts) {
+        TypeTable localTypeTable = new TypeTable(ts.typeTable());
+        localTypeTable.define(sig.typeParams());
+        List<DexParam> params = sig.params();
+        DexType ret = sig.ret();
         for (DexParam param : params) {
-            OutField oField = oClass.allocateField(param.paramName().toString(), ts.resolveType(param.paramType()));
+            OutField oField = oClass.allocateField(
+                    param.paramName().toString(),
+                    ResolveType.$(localTypeTable, param.paramType()));
             param.attach(oField);
             g.__("this."
             ).__(oField.value()

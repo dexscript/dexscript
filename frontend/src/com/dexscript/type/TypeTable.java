@@ -1,6 +1,7 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.core.DexSyntaxException;
+import com.dexscript.ast.elem.DexTypeParam;
 
 import java.util.*;
 
@@ -123,6 +124,12 @@ public class TypeTable {
     public void define(String typeName, Type type) {
         defined.put(typeName, type);
         javaTypes.put(type.javaClassName(), type);
+    }
+
+    public void define(List<DexTypeParam> typeParams) {
+        for (DexTypeParam typeParam : typeParams) {
+            define(typeParam.paramName().toString(), ResolveType.$(this, typeParam.paramType()));
+        }
     }
 
     public void lazyDefine(NamedTypesProvider provider) {
