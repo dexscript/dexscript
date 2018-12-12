@@ -15,15 +15,24 @@ import java.util.Map;
 // part of FunctionType
 class FunctionSig {
 
-    private final TypeTable typeTable;
     private final List<PlaceholderType> typeParams;
     private final List<Type> params;
     private final Type ret;
     private final DexType retElem;
 
+    public FunctionSig(List<Type> params, Type ret) {
+        this.typeParams = null;
+        this.params = params;
+        this.ret = ret;
+        this.retElem = null;
+    }
+
     public FunctionSig(TypeTable typeTable, DexSig sig) {
-        this.typeTable = typeTable;
-        this.typeParams = new ArrayList<>();
+        this(typeTable, null, sig);
+    }
+
+    public FunctionSig(TypeTable typeTable, Type objectType, DexSig sig) {
+        typeParams = new ArrayList<>();
         TypeTable localTypeTable = new TypeTable(typeTable);
         for (DexTypeParam typeParam : sig.typeParams()) {
             Type constraint = ResolveType.$(typeTable, typeParam.paramType());
@@ -31,15 +40,18 @@ class FunctionSig {
             localTypeTable.define(placeholder);
             typeParams.add(placeholder);
         }
-        this.params = new ArrayList<>();
+        params = new ArrayList<>();
+        if (objectType != null) {
+            params.add(objectType);
+        }
         for (DexParam param : sig.params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        this.ret = ResolveType.$(localTypeTable, sig.ret());
-        this.retElem = sig.ret();
+        ret = ResolveType.$(localTypeTable, sig.ret());
+        retElem = sig.ret();
     }
 
-    Type invoke(List<Type> typeArgs, List<Type> args, Type retHint) {
+    Type invoke(TypeTable typeTable, List<Type> typeArgs, List<Type> args, Type retHint) {
         if (params.size() != args.size()) {
             return BuiltinTypes.UNDEFINED;
         }
@@ -65,7 +77,7 @@ class FunctionSig {
                 throw new DexSyntaxException("can not infer type parameter: " + typeParam);
             }
         }
-        TypeTable localTypeTable = new TypeTable(this.typeTable);
+        TypeTable localTypeTable = new TypeTable(typeTable);
         for (Map.Entry<Type, Type> entry : sub.entrySet()) {
             Type key = entry.getKey();
             if (key instanceof NamedType) {

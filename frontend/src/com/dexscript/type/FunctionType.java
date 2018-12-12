@@ -21,12 +21,23 @@ public final class FunctionType implements Type {
     @NotNull
     private final Type ret;
 
+    @NotNull
+    private final FunctionSig sig;
+
     private Object attachment;
 
     public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
+        this(name, params, ret, null);
+    }
+
+    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret, FunctionSig sig) {
         this.name = name;
         this.params = params;
         this.ret = ret;
+        if (sig == null) {
+            sig = new FunctionSig(params, ret);
+        }
+        this.sig = sig;
     }
 
     public void attach(Object attachment) {
@@ -53,6 +64,11 @@ public final class FunctionType implements Type {
     @NotNull
     public Type ret() {
         return ret;
+    }
+
+    @NotNull
+    public FunctionSig sig() {
+        return sig;
     }
 
     @Override
