@@ -48,7 +48,6 @@ public class DexFunctionCallExprTest {
         Assert.assertEquals("print(<error/>?)", call.toString());
         Assert.assertEquals("print", call.target().toString());
         Assert.assertEquals(1, call.args().size());
-        Assert.assertEquals("<unmatched>?)a</unmatched>", call.args().get(0).toString());
     }
 
     @Test
@@ -57,7 +56,7 @@ public class DexFunctionCallExprTest {
         Assert.assertEquals("print(<error/>?,)", call.toString());
         Assert.assertEquals("print", call.target().toString());
         Assert.assertEquals(1, call.args().size());
-        Assert.assertEquals("<unmatched>?,)a</unmatched>", call.args().get(0).toString());
+        Assert.assertEquals("<error/>", call.args().get(0).toString());
     }
 
     @Test
@@ -66,7 +65,7 @@ public class DexFunctionCallExprTest {
         Assert.assertEquals("print(<error/>?", call.toString());
         Assert.assertEquals("print", call.target().toString());
         Assert.assertEquals(1, call.args().size());
-        Assert.assertEquals("<unmatched>?\na</unmatched>", call.args().get(0).toString());
+        Assert.assertEquals("<error/>", call.args().get(0).toString());
     }
 
     @Test
@@ -75,7 +74,6 @@ public class DexFunctionCallExprTest {
         Assert.assertEquals("print(<error/>?", call.toString());
         Assert.assertEquals("print", call.target().toString());
         Assert.assertEquals(1, call.args().size());
-        Assert.assertEquals("<unmatched>?</unmatched>", call.args().get(0).toString());
     }
 
     @Test
@@ -84,7 +82,6 @@ public class DexFunctionCallExprTest {
         Assert.assertEquals("print(<error/>?,a)", call.toString());
         Assert.assertEquals("print", call.target().toString());
         Assert.assertEquals(2, call.args().size());
-        Assert.assertEquals("<unmatched>?,a)</unmatched>", call.args().get(0).toString());
         Assert.assertEquals("a", call.args().get(1).toString());
     }
 
@@ -108,7 +105,35 @@ public class DexFunctionCallExprTest {
 
     @Test
     public void two_call_separated_by_new_line() {
-        DexExpr parse = DexExpr.parse("hello()\nworld()");
-        Assert.assertEquals("hello()", parse.toString());
+        DexExpr expr = DexExpr.parse("hello()\nworld()");
+        Assert.assertEquals("hello()", expr.toString());
+    }
+
+    @Test
+    public void call_with_type_args() {
+        DexExpr expr = DexExpr.parse("Hello<uint8>()");
+        Assert.assertEquals("Hello<uint8>()", expr.toString());
+    }
+
+    @Test
+    public void missing_type_arg() {
+        DexExpr expr = DexExpr.parse("Hello<??>()");
+        Assert.assertEquals("Hello<<error/>??>()", expr.toString());
+        expr = DexExpr.parse("Hello<?? >()");
+        Assert.assertEquals("Hello<<error/>?? >()", expr.toString());
+    }
+
+    @Test
+    public void missing_right_angle_bracket() {
+        DexExpr expr = DexExpr.parse("Hello<uint8()");
+        Assert.assertEquals("Hello<uint8<error/>()", expr.toString());
+        expr = DexExpr.parse("Hello<uint8 ()");
+        Assert.assertEquals("Hello<uint8 <error/>()", expr.toString());
+    }
+
+    @Test
+    public void missing_left_paren() {
+        DexExpr expr = DexExpr.parse("Hello<uint8>)");
+        Assert.assertEquals("Hello<uint8><error/>)", expr.toString());
     }
 }

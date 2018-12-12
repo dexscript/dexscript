@@ -8,6 +8,8 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
+import com.dexscript.ast.type.DexType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
 
     private final DexExpr target;
     private List<DexExpr> args;
+    private List<DexType> typeArgs;
     private int callExprEnd = -1;
     private DexSyntaxError syntaxError;
     private DexInvocation invocation;
@@ -35,6 +38,10 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
 
     public List<DexExpr> args() {
         return args;
+    }
+
+    public List<DexType> typeArgs() {
+        return typeArgs;
     }
 
     @Override
@@ -81,9 +88,18 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
 
     @Override
     public void walkDown(Visitor visitor) {
-        visitor.visit(target);
-        for (DexExpr arg : args) {
-            visitor.visit(arg);
+        if (target() != null) {
+            visitor.visit(target());
+        }
+        if (args() != null) {
+            for (DexExpr arg : args()) {
+                visitor.visit(arg);
+            }
+        }
+        if (typeArgs() != null) {
+            for (DexType typeArg : typeArgs()) {
+                visitor.visit(typeArg);
+            }
         }
     }
 
@@ -100,7 +116,63 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
         int i = src.begin;
 
         Parser() {
-            State.Play(this::leftParen);
+            State.Play(this::leftAngleBracketOrLeftParen);
+        }
+
+        @Expect("<")
+        @Expect("(")
+        State leftAngleBracketOrLeftParen() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '(') {
+                    i += 1;
+                    args = new ArrayList<>();
+                    return this::argument;
+                }
+                if (b == '<') {
+                    i += 1;
+                    typeArgs = new ArrayList<>();
+                    return this::typeArgument;
+                }
+                return null;
+            }
+            return null;
+        }
+
+        @Expect("type reference")
+        State typeArgument() {
+            DexType typeArg = DexType.parse(src.slice(i));
+            typeArg.reparent(DexFunctionCallExpr.this);
+            if (!typeArg.matched()) {
+                return this::missingTypeArgument;
+            }
+            typeArgs.add(typeArg);
+            i = typeArg.end();
+            return this::moreTypeArgument;
+        }
+
+        @Expect(",")
+        @Expect(">")
+        State moreTypeArgument() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::typeArgument;
+                }
+                if (b == '>') {
+                    i += 1;
+                    return this::leftParen;
+                }
+                return this::missingRightAngleBracket;
+            }
+            return this::missingRightAngleBracket;
         }
 
         @Expect("(")
@@ -112,12 +184,11 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 }
                 if (b == '(') {
                     i += 1;
-                    args = new ArrayList<>();
                     return this::argument;
                 }
-                break;
+                return this::missingLeftParen;
             }
-            return null;
+            return this::missingLeftParen;
         }
 
         @Expect("expression")
@@ -135,29 +206,11 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
             }
             DexExpr arg = DexExpr.parse(new Text(src.bytes, i, src.end), RIGHT_RANK);
             args.add(arg);
-            if (arg.matched()) {
-                i = arg.end();
-                return this::commaOrRightParen;
+            if (!arg.matched()) {
+                return this::missingArgument;
             }
-            reportError();
-            // try to recover from invalid argument
-            for (; i < src.end; i++) {
-                byte b = src.bytes[i];
-                if (b == ',') {
-                    i += 1;
-                    return this::argument;
-                }
-                if (b == ')') {
-                    callExprEnd = i + 1;
-                    return null;
-                }
-                if (LineEnd.$(b)) {
-                    callExprEnd = i;
-                    return null;
-                }
-            }
-            callExprEnd = i;
-            return null;
+            i = arg.end();
+            return this::commaOrRightParen;
         }
 
         @Expect(",")
@@ -181,6 +234,90 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
             }
             i = originalCursor;
             return this::missingRightParen;
+        }
+
+        State missingTypeArgument() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    callExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::typeArgument;
+                }
+                if (b == '>') {
+                    i += 1;
+                    return this::leftParen;
+                }
+            }
+            callExprEnd = i;
+            return null;
+        }
+
+        State missingArgument() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (b == ',') {
+                    i += 1;
+                    return this::argument;
+                }
+                if (b == ')') {
+                    callExprEnd = i + 1;
+                    return null;
+                }
+                if (LineEnd.$(b)) {
+                    callExprEnd = i;
+                    return null;
+                }
+            }
+            callExprEnd = i;
+            return null;
+        }
+
+        State missingRightAngleBracket() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    callExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::leftParen;
+                }
+                if (b == '(') {
+                    i += 1;
+                    return this::argument;
+                }
+            }
+            callExprEnd = i;
+            return null;
+        }
+
+        State missingLeftParen() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    callExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::argument;
+                }
+                if (b == ')') {
+                    callExprEnd = i + 1;
+                    return null;
+                }
+            }
+            callExprEnd = i;
+            return null;
         }
 
         private State missingRightParen() {

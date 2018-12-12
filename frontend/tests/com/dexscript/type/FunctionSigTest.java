@@ -60,8 +60,8 @@ public class FunctionSigTest {
                 "}");
         defineInterface("" +
                 "interface AnotherInf {" +
-                "   <E1>: interface{};\n" +
-                "   <E2>: interface{};\n" +
+                "   <E1>: interface{}\n" +
+                "   <E2>: interface{}\n" +
                 "   Get__(index: '0', arg: E1)\n" +
                 "   Get__(index: '1', arg: E2)\n" +
                 "}");

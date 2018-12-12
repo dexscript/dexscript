@@ -81,6 +81,10 @@ public class DexGenericExpansionType extends DexType {
         State leftAngleBracket() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
+                // prevent match <> on the next line
+                if (LineEnd.$(b)) {
+                    return null;
+                }
                 if (Blank.$(b)) {
                     continue;
                 }
