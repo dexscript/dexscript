@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 public interface Type {
 
-    String javaClassName();
-
     default boolean isAssignableFrom(Type that) {
         HashMap<Type, Type> collector = new HashMap<>();
         TypeComparisonContext ctx = new TypeComparisonContext(collector);

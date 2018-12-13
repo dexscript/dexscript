@@ -22,26 +22,22 @@ class NewJavaClass extends FunctionImpl {
     protected String genCallF() {
         Gen g = oShim.g();
         String callF = oShim.allocateShim("new__" + clazz.getSimpleName());
-        g.__("public static Promise "
+        g.__("public static Object "
         ).__(callF);
         DeclareParams.$(g, functionType.params().size() + 1, false);
         g.__(" {");
         g.__(new Indent(() -> {
-            g.__("return new ImmediateResult(new "
+            g.__("return new "
             ).__(clazz.getCanonicalName()
             ).__('(');
             for (int i = 0; i < functionType.params().size(); i++) {
                 if (i > 0) {
                     g.__(", ");
                 }
-                Type paramType = functionType.params().get(i);
-                g.__("(("
-                ).__(paramType.javaClassName()
-                ).__(")arg"
-                ).__(i + 1
-                ).__(')');
+                g.__("arg"
+                ).__(i + 1);
             }
-            g.__("));");
+            g.__(");");
         }));
         g.__(new Line("}"));
         return callF;

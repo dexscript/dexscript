@@ -10,11 +10,6 @@ public class BoolType implements NamedType {
     }
 
     @Override
-    public String javaClassName() {
-        return Boolean.class.getCanonicalName();
-    }
-
-    @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return that instanceof BoolType;
     }

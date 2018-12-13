@@ -5,10 +5,9 @@ import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.transpile.shim.OutShim;
+import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.type.FunctionType;
-import com.dexscript.type.Type;
 
 class NewInnerActor extends FunctionImpl {
 
@@ -45,12 +44,8 @@ class NewInnerActor extends FunctionImpl {
             ).__("(scheduler");
             for (int i = 2; i < functionType.params().size(); i++) {
                 g.__(", ");
-                Type paramType = functionType.params().get(i);
-                g.__("(("
-                ).__(paramType.javaClassName()
-                ).__(")arg"
-                ).__(i
-                ).__(')');
+                g.__("arg"
+                ).__(i);
             }
             g.__(");");
         }));

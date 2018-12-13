@@ -2,8 +2,7 @@ package com.dexscript.transpile.shim;
 
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.type.FunctionImpl;
-import com.dexscript.transpile.type.TypeCandidate;
-import com.dexscript.transpile.type.TypeCandidates;
+import com.dexscript.transpile.type.JavaTypes;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,9 +17,9 @@ public class FunctionEntry {
         this.paramsCount = paramsCount;
     }
 
-    public void gen(Gen g, List<FunctionImpl> impls, TypeCandidates typeCandidates) {
+    public void gen(Gen g, List<FunctionImpl> impls, JavaTypes javaTypes) {
         for (FunctionImpl impl : impls) {
-            impl.canF(typeCandidates);
+            impl.canF(javaTypes);
             impl.callF();
         }
         g.__("public static Object "
@@ -31,7 +30,7 @@ public class FunctionEntry {
             g.__(new Line("Scheduler scheduler = new Scheduler();"));
             for (FunctionImpl impl : impls) {
                 g.__("if ("
-                ).__(impl.canF(typeCandidates));
+                ).__(impl.canF(javaTypes));
                 InvokeParams.$(g, paramsCount, false);
                 g.__(") {");
                 g.__(new Indent(() -> {

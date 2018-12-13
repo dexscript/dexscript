@@ -13,11 +13,6 @@ public final class PlaceholderType implements NamedType {
     }
 
     @Override
-    public String javaClassName() {
-        return Object.class.getCanonicalName();
-    }
-
-    @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         if (constraint.isAssignableFrom(ctx, that)) {
             if (that instanceof StringLiteralType) {

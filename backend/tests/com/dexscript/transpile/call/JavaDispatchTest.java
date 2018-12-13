@@ -12,8 +12,6 @@ public class JavaDispatchTest {
     @Test
     public void new_java_class() {
         Promise result = (Promise) Transpile.$("" +
-                "import java.io.File\n" +
-                "" +
                 "function Hello(): interface{} {" +
                 "   return new File()\n" +
                 "}");

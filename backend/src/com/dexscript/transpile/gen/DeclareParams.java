@@ -2,8 +2,6 @@ package com.dexscript.transpile.gen;
 
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 import com.dexscript.type.TypeTable;
 
@@ -34,9 +32,7 @@ public interface DeclareParams {
         for (int i = 0; i < sig.params().size(); i++) {
             g.__(", ");
             DexParam param = sig.params().get(i);
-            Type type = ResolveType.$(localTypeTable, param.paramType());
-            g.__(type.javaClassName());
-            g.__(' '
+            g.__("Object "
             ).__(param.paramName());
         }
         g.__(')');

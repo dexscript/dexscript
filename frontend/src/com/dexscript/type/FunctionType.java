@@ -91,11 +91,6 @@ public final class FunctionType implements Type {
     }
 
     @Override
-    public String javaClassName() {
-        return Object.class.getCanonicalName();
-    }
-
-    @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
         if (!(thatObj instanceof FunctionType)) {
             return false;

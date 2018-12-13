@@ -11,11 +11,6 @@ public class IntegerLiteralType implements Type {
     }
 
     @Override
-    public String javaClassName() {
-        return Long.class.getCanonicalName();
-    }
-
-    @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return that.equals(this);
     }

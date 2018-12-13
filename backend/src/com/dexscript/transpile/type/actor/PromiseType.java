@@ -28,11 +28,6 @@ public class PromiseType implements NamedType, FunctionsProvider, GenericType {
     }
 
     @Override
-    public String javaClassName() {
-        return "Promise";
-    }
-
-    @Override
     public @NotNull String name() {
         return "Promise";
     }

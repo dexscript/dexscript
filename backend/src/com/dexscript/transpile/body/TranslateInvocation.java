@@ -75,9 +75,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         }
         OutField oResultField = oClass.allocateField(oActorField.value().substring(1) + "Result", retType);
         oClass.g().__(oResultField.value()
-        ).__(" = (("
-        ).__(retType.javaClassName()
-        ).__(")("
+        ).__(" = ("
         ).__(oActorField.value()
         ).__(new Line(".value()));"));
         return oResultField;
@@ -90,11 +88,9 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         }
         OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", retType);
         oClass.g().__(oResultField.value()
-        ).__(" = (("
-        ).__(retType.javaClassName()
-        ).__(")("
+        ).__(" = "
         ).__(targetActor
-        ).__(new Line(".value()));"));
+        ).__(new Line(".value();"));
         return oResultField;
     }
 

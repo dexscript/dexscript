@@ -19,11 +19,6 @@ public class InnerActorType implements Type, FunctionsProvider {
     }
 
     @Override
-    public String javaClassName() {
-        return "Promise";
-    }
-
-    @Override
     public List<FunctionType> functions() {
         if (members != null) {
             return members;

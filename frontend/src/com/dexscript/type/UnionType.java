@@ -44,11 +44,6 @@ public class UnionType implements Type {
     }
 
     @Override
-    public String javaClassName() {
-        return inferJavaClassName(types);
-    }
-
-    @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         for (Type type : types) {
             if (type.isAssignableFrom(ctx, that)) {
@@ -56,15 +51,5 @@ public class UnionType implements Type {
             }
         }
         return false;
-    }
-
-    private static String inferJavaClassName(List<Type> types) {
-        String javaClassName = types.get(0).javaClassName();
-        for (Type type : types) {
-            if (!type.javaClassName().equals(javaClassName)) {
-                return "Object";
-            }
-        }
-        return javaClassName;
     }
 }

@@ -2,8 +2,7 @@ package com.dexscript.transpile.shim;
 
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.type.FunctionImpl;
-import com.dexscript.transpile.type.TypeCandidate;
-import com.dexscript.transpile.type.TypeCandidates;
+import com.dexscript.transpile.type.JavaTypes;
 import com.dexscript.type.FunctionType;
 
 import java.util.ArrayList;
@@ -25,16 +24,16 @@ public class FunctionChain {
         }
     }
 
-    public void gen(Gen g, String chainF, TypeCandidates typeCandidates) {
+    public void gen(Gen g, String chainF, JavaTypes javaTypes) {
         for (FunctionType funcType : functions) {
             if (!(funcType.attachment() instanceof FunctionImpl)) {
                 throw new IllegalStateException("no implementation attached to function: " + funcType);
             }
             FunctionImpl impl = (FunctionImpl) funcType.attachment();
-            impl.canF(typeCandidates);
+            impl.canF(javaTypes);
             impl.callF();
         }
-        g.__("public static Promise "
+        g.__("public static Object "
         ).__(chainF);
         DeclareParams.$(g, paramsCount, true);
         g.__(" {");
@@ -42,7 +41,7 @@ public class FunctionChain {
             for (FunctionType funcType : functions) {
                 FunctionImpl impl = (FunctionImpl) funcType.attachment();
                 g.__("if ("
-                ).__(impl.canF(typeCandidates));
+                ).__(impl.canF(javaTypes));
                 InvokeParams.$(g, paramsCount, false);
                 g.__(new Line(") {"));
                 g.__(new Indent(() -> {

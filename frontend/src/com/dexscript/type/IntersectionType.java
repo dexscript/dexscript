@@ -14,11 +14,6 @@ public class IntersectionType implements Type {
     }
 
     @Override
-    public String javaClassName() {
-        return Object.class.getCanonicalName();
-    }
-
-    @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         for (Type type : types) {
             if (!type.isAssignableFrom(ctx, that)) {

@@ -48,14 +48,12 @@ public class TypeTable {
     private final Map<String, Type> defined = new HashMap<>();
     private final Map<Expansion, Type> expanded = new HashMap<>();
     private final List<NamedTypesProvider> providers = new ArrayList<>();
-    private final Map<String, Type> javaTypes = new HashMap<>();
 
     public TypeTable() {
     }
 
     public TypeTable(TypeTable copiedFrom) {
         defined.putAll(copiedFrom.defined);
-        javaTypes.putAll(copiedFrom.javaTypes);
         providers.addAll(copiedFrom.providers);
         expanded.putAll(copiedFrom.expanded);
     }
@@ -118,12 +116,10 @@ public class TypeTable {
 
     public void define(NamedType type) {
         defined.put(type.name(), type);
-        javaTypes.put(type.javaClassName(), type);
     }
 
     public void define(String typeName, Type type) {
         defined.put(typeName, type);
-        javaTypes.put(type.javaClassName(), type);
     }
 
     public void define(List<DexTypeParam> typeParams) {
@@ -134,22 +130,6 @@ public class TypeTable {
 
     public void lazyDefine(NamedTypesProvider provider) {
         providers.add(provider);
-    }
-
-    public Type resolveType(Class<?> javaType) {
-        if (javaType.isArray()) {
-            Type arrayElem = resolveType(javaType.getComponentType());
-            return resolveType("Array", Arrays.asList(arrayElem));
-        }
-        if (javaType.equals(Object.class)) {
-            return BuiltinTypes.ANY;
-        }
-        String javaClassName = javaType.getCanonicalName();
-        Type type = javaTypes.get(javaClassName);
-        if (type == null) {
-            throw new DexSyntaxException(javaClassName + " has not been imported");
-        }
-        return type;
     }
 
     private static class Expansion {

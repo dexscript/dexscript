@@ -7,7 +7,7 @@ import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.transpile.type.TypeCandidate;
-import com.dexscript.transpile.type.TypeCandidates;
+import com.dexscript.transpile.type.JavaTypes;
 import com.dexscript.transpile.type.actor.ActorTable;
 import com.dexscript.transpile.type.actor.ActorType;
 import com.dexscript.transpile.type.actor.PromiseType;
@@ -35,7 +35,7 @@ public class OutShim {
     private final Map<String, Integer> shims = new HashMap<>();
     private final Map<FunctionEntry, List<FunctionImpl>> entries = new HashMap<>();
     private final Map<FunctionChain, String> chains = new HashMap<>();
-    private final TypeCandidates typeCandidates = new TypeCandidates(this);
+    private final JavaTypes javaTypes = new JavaTypes(this);
     private final ActorTable actorTable;
 
     public OutShim(TypeSystem ts) {
@@ -71,10 +71,10 @@ public class OutShim {
         }
         finished = true;
         for (Map.Entry<FunctionEntry, List<FunctionImpl>> entry : entries.entrySet()) {
-            entry.getKey().gen(g, entry.getValue(), typeCandidates);
+            entry.getKey().gen(g, entry.getValue(), javaTypes);
         }
         for (Map.Entry<FunctionChain, String> entry : chains.entrySet()) {
-            entry.getKey().gen(g, entry.getValue(), typeCandidates);
+            entry.getKey().gen(g, entry.getValue(), javaTypes);
         }
         g.indention("");
         g.__(new Line());
@@ -124,8 +124,8 @@ public class OutShim {
 
     private void importJavaFunction(Method javaFunction) {
         String funcName = javaFunction.getName();
-        List<Type> params = ts.resolveType(javaFunction.getParameterTypes());
-        Type ret = ts.resolveType(javaFunction.getReturnType());
+        List<Type> params = javaTypes.resolve(javaFunction.getParameterTypes());
+        Type ret = javaTypes.resolve(javaFunction.getReturnType());
         FunctionType functionType = new FunctionType(funcName, params, ret);
         ts.defineFunction(functionType);
         CallJavaFunction impl = new CallJavaFunction(this, functionType, javaFunction);
@@ -150,7 +150,7 @@ public class OutShim {
         entries.computeIfAbsent(entry, k -> new ArrayList<>()).add(impl);
     }
 
-    public void addTypeCandidate(TypeCandidate typeCandidate) {
-        typeCandidates.add(typeCandidate);
+    public void addJavaType(String className, Type type) {
+        javaTypes.add(className, type);
     }
 }

@@ -41,9 +41,7 @@ public class OutTopLevelClass implements OutClass {
 
     private void genFields() {
         for (OutField oField : oFields) {
-            g.__("private "
-            ).__(oField.type().javaClassName()
-            ).__(' '
+            g.__("private Object "
             ).__(oField.value()
             ).__(new Line(";"));
         }

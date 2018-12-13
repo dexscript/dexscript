@@ -40,11 +40,6 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
     }
 
     @Override
-    public String javaClassName() {
-        return "Actor";
-    }
-
-    @Override
     public List<FunctionType> functions() {
         return Arrays.asList(resolveFunc);
     }

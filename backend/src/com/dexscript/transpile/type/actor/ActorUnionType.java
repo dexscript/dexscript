@@ -19,11 +19,6 @@ public class ActorUnionType implements NamedType {
     }
 
     @Override
-    public String javaClassName() {
-        return Object.class.getCanonicalName();
-    }
-
-    @Override
     public @NotNull String name() {
         return name;
     }

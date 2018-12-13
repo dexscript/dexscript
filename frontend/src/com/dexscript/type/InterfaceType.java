@@ -40,11 +40,6 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         return inf.identifier().toString();
     }
 
-    @Override
-    public String javaClassName() {
-        return Object.class.getCanonicalName();
-    }
-
     public List<FunctionType> functions() {
         if (members != null) {
             return members;

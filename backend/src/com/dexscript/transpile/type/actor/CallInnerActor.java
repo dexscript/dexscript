@@ -8,7 +8,6 @@ import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.type.FunctionType;
-import com.dexscript.type.Type;
 
 class CallInnerActor extends FunctionImpl {
 
@@ -49,12 +48,8 @@ class CallInnerActor extends FunctionImpl {
             ).__("(scheduler");
             for (int i = 1; i < functionType.params().size(); i++) {
                 g.__(", ");
-                Type paramType = functionType.params().get(i);
-                g.__("(("
-                ).__(paramType.javaClassName()
-                ).__(")arg"
-                ).__(i
-                ).__(')');
+                g.__("arg"
+                ).__(i);
             }
             g.__(");");
         }));

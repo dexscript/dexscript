@@ -1,16 +1,14 @@
 package com.dexscript.transpile.type.actor;
 
 import com.dexscript.ast.DexActor;
-import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
-import com.dexscript.runtime.Promise;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.type.TypeCandidate;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +24,6 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     private List<FunctionType> members;
     private List<FunctionType> functions;
     private List<Type> typeParams;
-    private String className;
 
     public ActorType(OutShim oShim, DexActor actor) {
         this(oShim, actor, null);
@@ -38,8 +35,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         this.oShim = oShim;
         this.ts = oShim.typeSystem();
         ts.lazyDefineFunctions(this);
-        className = qualifiedClassNameOf(actor);
-        oShim.addTypeCandidate(new TypeCandidate(className, false, this));
+        oShim.addJavaType(qualifiedClassNameOf(actor), this);
     }
 
     public static String qualifiedClassNameOf(DexActor actor) {
@@ -50,11 +46,6 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     @Override
     public @NotNull String name() {
         return actor.identifier().toString();
-    }
-
-    @Override
-    public String javaClassName() {
-        return Promise.class.getCanonicalName();
     }
 
     @Override

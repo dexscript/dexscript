@@ -37,20 +37,20 @@ public abstract class FunctionImpl {
 
     protected abstract String genCallF();
 
-    public String canF(TypeCandidates typeCandidates) {
+    public String canF(JavaTypes javaTypes) {
         if (canF == null) {
-            canF = OutShim.CLASSNAME + "." + genCanF(typeCandidates);
+            canF = OutShim.CLASSNAME + "." + genCanF(javaTypes);
         }
         return canF;
     }
 
-    protected String genCanF(TypeCandidates typeCandidates) {
+    protected String genCanF(JavaTypes javaTypes) {
         String canF = oShim.allocateShim("can__" + functionType.name());
         Gen g = oShim.g();
         List<Type> params = functionType.params();
         List<String> typeChecks = new ArrayList<>();
         for (Type param : params) {
-            String typeCheck = typeCandidates.genTypeCheck(param);
+            String typeCheck = javaTypes.genTypeCheck(param);
             typeChecks.add(typeCheck);
         }
         g.__("public static boolean "

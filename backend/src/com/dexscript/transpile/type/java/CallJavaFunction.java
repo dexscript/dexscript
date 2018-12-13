@@ -31,13 +31,14 @@ public class CallJavaFunction extends FunctionImpl {
             ).__('.'
             ).__(javaFunction.getName()
             ).__('(');
-            for (int i = 0; i < functionType.params().size(); i++) {
+            Class<?>[] paramTypes = javaFunction.getParameterTypes();
+            for (int i = 0; i < paramTypes.length; i++) {
                 if (i > 0) {
                     g.__(", ");
                 }
-                Type paramType = functionType.params().get(i);
+                Class<?> paramType = paramTypes[i];
                 g.__("(("
-                ).__(paramType.javaClassName()
+                ).__(paramType.getCanonicalName()
                 ).__(")arg"
                 ).__(i + 1
                 ).__(')');

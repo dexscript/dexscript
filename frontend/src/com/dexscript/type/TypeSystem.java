@@ -45,18 +45,6 @@ public class TypeSystem {
         return types;
     }
 
-    public List<Type> resolveType(Class<?>[] javaTypes) {
-        List<Type> types = new ArrayList<>();
-        for (Class<?> javaType : javaTypes) {
-            types.add(resolveType(javaType));
-        }
-        return types;
-    }
-
-    public Type resolveType(Class<?> javaType) {
-        return typeTable.resolveType(javaType);
-    }
-
     public void defineType(NamedType type) {
         typeTable.define(type);
     }

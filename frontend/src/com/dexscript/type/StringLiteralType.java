@@ -14,11 +14,6 @@ public final class StringLiteralType implements Type {
     }
 
     @Override
-    public String javaClassName() {
-        return String.class.getCanonicalName();
-    }
-
-    @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return that.equals(this);
     }

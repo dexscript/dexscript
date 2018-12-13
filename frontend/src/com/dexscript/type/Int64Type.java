@@ -15,11 +15,6 @@ public class Int64Type implements NamedType {
     }
 
     @Override
-    public String javaClassName() {
-        return Long.class.getCanonicalName();
-    }
-
-    @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         if (that instanceof Int64Type) {
             return true;

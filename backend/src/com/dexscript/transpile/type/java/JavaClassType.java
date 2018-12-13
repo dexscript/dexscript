@@ -26,11 +26,6 @@ public class JavaClassType implements NamedType, FunctionsProvider {
     }
 
     @Override
-    public String javaClassName() {
-        return clazz.getCanonicalName();
-    }
-
-    @Override
     public String toString() {
         return name();
     }
