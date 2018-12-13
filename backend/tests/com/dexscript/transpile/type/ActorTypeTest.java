@@ -1,8 +1,9 @@
-package com.dexscript.type;
+package com.dexscript.transpile.type;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
+import com.dexscript.type.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ public class ActorTypeTest {
     @Test
     public void can_consume_from_actor() {
         TypeSystem ts = new TypeSystem();
-        ActorType actor = ts.defineActor(new DexActor("" +
+        ActorType actor = new ActorType(ts, new DexActor("" +
                 "function Hello(): string {\n" +
                 "   return 'hello'\n" +
                 "}"), implProvider);
@@ -51,7 +52,7 @@ public class ActorTypeTest {
     @Test
     public void await_consumer() {
         TypeSystem ts = new TypeSystem();
-        ActorType actor = ts.defineActor(new DexActor("" +
+        ActorType actor = new ActorType(ts, new DexActor("" +
                 "function Hello() {\n" +
                 "   await {\n" +
                 "   case AA(): string{\n" +
@@ -73,7 +74,7 @@ public class ActorTypeTest {
     @Test
     public void return_void() {
         TypeSystem ts = new TypeSystem();
-        ts.defineActor(new DexActor("" +
+        new ActorType(ts, new DexActor("" +
                 "function Hello() {\n" +
                 "}"), implProvider);
         List<FunctionType.Invoked> functionTypes = ts.invoke("Hello",
@@ -85,7 +86,7 @@ public class ActorTypeTest {
     @Test
     public void generic_type_substitution() {
         TypeSystem ts = new TypeSystem();
-        ts.defineActor(new DexActor("" +
+        new ActorType(ts, new DexActor("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"), implProvider);
         List<FunctionType.Invoked> functionTypes = ts.invoke("Hello",
@@ -98,7 +99,7 @@ public class ActorTypeTest {
     @Test
     public void generic_function_need_expansion() {
         TypeSystem ts = new TypeSystem();
-        ts.defineActor(new DexActor("" +
+        new ActorType(ts, new DexActor("" +
                 "function Equals(<T>: interface{}, left: T, right: T): bool {\n" +
                 "   return true\n" +
                 "}"), implProvider);

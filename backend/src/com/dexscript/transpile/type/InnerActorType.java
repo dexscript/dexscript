@@ -1,22 +1,21 @@
-package com.dexscript.type;
+package com.dexscript.transpile.type;
 
 import com.dexscript.ast.stmt.DexAwaitConsumer;
+import com.dexscript.type.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class InnerActorType implements Type, FunctionsProvider {
 
-    private final TypeTable typeTable;
     private final DexAwaitConsumer awaitConsumer;
-    private final FunctionTable functionTable;
+    private final TypeSystem ts;
     private List<FunctionType> members;
 
-    public InnerActorType(TypeTable typeTable, FunctionTable functionTable, DexAwaitConsumer awaitConsumer) {
-        functionTable.lazyDefine(this);
-        this.typeTable = typeTable;
+    public InnerActorType(TypeSystem ts, DexAwaitConsumer awaitConsumer) {
+        ts.lazyDefineFunctions(this);
+        this.ts = ts;
         this.awaitConsumer = awaitConsumer;
-        this.functionTable = functionTable;
     }
 
     @Override
@@ -35,7 +34,7 @@ public class InnerActorType implements Type, FunctionsProvider {
     }
 
     private FunctionType consumeFunc() {
-        Type ret = ResolveType.$(typeTable, awaitConsumer.produceSig().ret());
+        Type ret = ts.resolveType(awaitConsumer.produceSig().ret());
         ArrayList<Type> params = new ArrayList<>();
         params.add(this);
         return new FunctionType("Consume__", params, ret);
@@ -44,7 +43,7 @@ public class InnerActorType implements Type, FunctionsProvider {
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
         for (FunctionType member : functions()) {
-            if (!functionTable.isDefined(ctx, member)) {
+            if (!ts.isFunctionDefined(ctx, member)) {
                 return false;
             }
         }

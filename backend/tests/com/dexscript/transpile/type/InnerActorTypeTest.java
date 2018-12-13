@@ -1,8 +1,9 @@
-package com.dexscript.type;
+package com.dexscript.transpile.type;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
+import com.dexscript.type.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -18,10 +19,9 @@ public class InnerActorTypeTest {
                 "   }}\n" +
                 "}");
         DexAwaitConsumer awaitConsumer = (DexAwaitConsumer) function.stmts().get(0).asAwait().cases().get(0);
-        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        FunctionTable functionTable = new FunctionTable();
-        InnerActorType innerActorType = new InnerActorType(typeTable, functionTable, awaitConsumer);
-        InterfaceType inf = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        TypeSystem ts = new TypeSystem();
+        InnerActorType innerActorType = new InnerActorType(ts, awaitConsumer);
+        InterfaceType inf = ts.defineInterface(new DexInterface("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));

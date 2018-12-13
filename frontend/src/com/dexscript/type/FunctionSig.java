@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 // part of FunctionType
-class FunctionSig {
+public class FunctionSig {
 
     public interface OnIncompatibleArgument {
         void handle(FunctionSig sig, List<Type> typeArgs, List<Type> args, Type retHint,

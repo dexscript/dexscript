@@ -1,6 +1,5 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.type.DexType;
 
@@ -10,17 +9,10 @@ import java.util.List;
 public class TypeSystem {
 
     private final TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-    private final ActorTable actorTable = new ActorTable(typeTable);
     private final FunctionTable functionTable = new FunctionTable();
 
     public void defineFunction(FunctionType function) {
         functionTable.define(function);
-    }
-
-    public ActorType defineActor(DexActor elem, ActorType.ImplProvider implProvider) {
-        ActorType actorType = new ActorType(typeTable, functionTable, elem, implProvider);
-        actorTable.define(actorType);
-        return actorType;
     }
 
     public TypeTable typeTable() { return typeTable; }
@@ -75,5 +67,9 @@ public class TypeSystem {
 
     public boolean isFunctionDefined(TypeComparisonContext ctx, FunctionType functionType) {
         return functionTable.isDefined(ctx, functionType);
+    }
+
+    public void lazyDefineTypes(NamedTypesProvider typesProvider) {
+        typeTable.lazyDefine(typesProvider);
     }
 }

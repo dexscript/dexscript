@@ -7,11 +7,7 @@ import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.shim.impl.*;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
-import com.dexscript.transpile.type.CheckType;
-import com.dexscript.transpile.type.JavaClassType;
-import com.dexscript.transpile.type.PromiseType;
-import com.dexscript.transpile.type.TaskType;
-import com.dexscript.type.ActorType;
+import com.dexscript.transpile.type.*;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
@@ -33,9 +29,11 @@ public class OutShim {
     private final Map<String, Integer> shims = new HashMap<>();
     private final List<FunctionImpl> impls = new ArrayList<>();
     private final Map<VirtualFunction, List<FunctionImpl>> virtualFunctions = new HashMap<>();
+    private final ActorTable actorTable;
 
     public OutShim(TypeSystem ts) {
         this.ts = ts;
+        actorTable = new ActorTable(ts);
         /*
         interface Task {
             <T>: interface{}
@@ -88,25 +86,25 @@ public class OutShim {
         }
     }
 
-    public void defineActor(DexActor function) {
-        ts.defineActor(function, new ActorType.ImplProvider() {
+    public void defineActor(DexActor actor) {
+        ActorType actorType = new ActorType(ts, actor, new ActorType.ImplProvider() {
             @Override
             public Object callFunc(FunctionType functionType, DexActor func) {
-                String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
-                String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
+                String newF = CLASSNAME + "." + allocateShim("new__" + actor.actorName());
+                String canF = CLASSNAME + "." + allocateShim("can__" + actor.actorName());
                 boolean hasAwait = new HasAwait(ts, func).result();
-                CallActor impl = new CallActor(functionType, function, canF, newF, hasAwait);
+                CallActor impl = new CallActor(functionType, actor, canF, newF, hasAwait);
                 impls.add(impl);
-                VirtualFunction virtualFunction = new VirtualFunction(function.functionName(), function.params().size());
+                VirtualFunction virtualFunction = new VirtualFunction(actor.functionName(), actor.params().size());
                 virtualFunctions.computeIfAbsent(virtualFunction, k -> new ArrayList<>()).add(impl);
                 return impl;
             }
 
             @Override
             public Object newFunc(FunctionType functionType, DexActor func) {
-                String newF = CLASSNAME + "." + allocateShim("new__" + function.actorName());
-                String canF = CLASSNAME + "." + allocateShim("can__" + function.actorName());
-                NewActor impl = new NewActor(functionType, function, canF, newF);
+                String newF = CLASSNAME + "." + allocateShim("new__" + actor.actorName());
+                String canF = CLASSNAME + "." + allocateShim("can__" + actor.actorName());
+                NewActor impl = new NewActor(functionType, actor, canF, newF);
                 impls.add(impl);
                 return impl;
             }
@@ -135,6 +133,7 @@ public class OutShim {
                 return impl;
             }
         });
+        actorTable.define(actorType);
     }
 
     public String allocateShim(String shimName) {

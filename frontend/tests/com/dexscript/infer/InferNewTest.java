@@ -1,28 +1,20 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexActor;
-import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.type.InterfaceType;
-import com.dexscript.type.Type;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.*;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.List;
 
 public class InferNewTest {
 
     @Test
     public void match_one() {
         TypeSystem ts = new TypeSystem();
-        ts.defineActor(new DexActor("" +
-                "function Hello(arg: int64): string {\n" +
-                "   return 'hello'\n" +
-                "}"), null);
+        List<Type> params = ResolveType.$(ts.typeTable(), "'Hello'", "int64");
+        ts.defineFunction(new FunctionType("New__", params, BuiltinTypes.STRING));
         Type type = InferType.$(ts, DexExpr.parse("new Hello(100)"));
-        InterfaceType promise = ts.defineInterface(new DexInterface("" +
-                "interface PromiseString {\n" +
-                "   Consume__(): string\n" +
-                "}"));
-        Assert.assertTrue(promise.isAssignableFrom(type));
+        Assert.assertEquals(BuiltinTypes.STRING, type);
     }
 }

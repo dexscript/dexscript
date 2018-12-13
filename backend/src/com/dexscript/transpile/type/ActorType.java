@@ -1,4 +1,4 @@
-package com.dexscript.type;
+package com.dexscript.transpile.type;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.elem.DexParam;
@@ -8,6 +8,7 @@ import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -25,8 +26,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         Object innerNewFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer);
     }
 
-    private final TypeTable typeTable;
-    private final FunctionTable functionTable;
+    private final TypeSystem ts;
     private final DexActor actor;
     private List<Type> typeArgs;
     private List<FunctionType> members;
@@ -34,18 +34,17 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     private List<Type> typeParams;
     private ImplProvider implProvider;
 
-    public ActorType(TypeTable typeTable, FunctionTable functionTable, DexActor actor, ImplProvider implProvider) {
-        this(typeTable, functionTable, actor, implProvider, null);
+    public ActorType(TypeSystem ts, DexActor actor, ImplProvider implProvider) {
+        this(ts, actor, implProvider, null);
     }
 
-    public ActorType(TypeTable typeTable, FunctionTable functionTable, DexActor actor,
+    public ActorType(TypeSystem ts, DexActor actor,
                      ImplProvider implProvider, List<Type> typeArgs) {
-        functionTable.lazyDefine(this);
+        ts.lazyDefineFunctions(this);
         this.typeArgs = typeArgs;
         this.implProvider = implProvider;
         this.actor = actor;
-        this.typeTable = typeTable;
-        this.functionTable = functionTable;
+        this.ts = ts;
     }
 
     @Override
@@ -60,7 +59,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
     @Override
     public Type generateType(List<Type> typeArgs) {
-        return new ActorType(typeTable, functionTable, actor, implProvider, typeArgs);
+        return new ActorType(ts, actor, implProvider, typeArgs);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexTypeParam typeParam : actor.typeParams()) {
-                typeParams.add(ResolveType.$(typeTable, typeParam.paramType()));
+                typeParams.add(ts.resolveType(typeParam.paramType()));
             }
         }
         return typeParams;
@@ -82,7 +81,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         if (typeArgs == null) {
             typeArgs = typeParameters();
         }
-        TypeTable localTypeTable = new TypeTable(typeTable);
+        TypeTable localTypeTable = new TypeTable(ts.typeTable());
         for (int i = 0; i < actor.typeParams().size(); i++) {
             DexTypeParam typeParam = actor.typeParams().get(i);
             String typeParamName = typeParam.paramName().toString();
@@ -103,7 +102,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         for (DexParam param : actor.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        FunctionSig sig = new FunctionSig(typeTable, actor.sig());
+        FunctionSig sig = new FunctionSig(ts.typeTable(), actor.sig());
         FunctionType functionType = new FunctionType(name(), params, ret, sig);
         functionType.attach((FunctionType.LazyAttachment) () -> implProvider.callFunc(functionType, actor));
         return functionType;
@@ -131,7 +130,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
         functions();
         for (FunctionType member : members) {
-            if (!functionTable.isDefined(ctx, member)) {
+            if (!ts.isFunctionDefined(ctx, member)) {
                 return false;
             }
         }
@@ -173,7 +172,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
         @NotNull
         private FunctionType newFunc(DexAwaitConsumer awaitConsumer) {
-            InnerActorType nestedActor = new InnerActorType(typeTable, functionTable, awaitConsumer);
+            InnerActorType nestedActor = new InnerActorType(ts, awaitConsumer);
             ArrayList<Type> params = new ArrayList<>();
             String funcName = awaitConsumer.identifier().toString();
             params.add(new StringLiteralType(funcName));

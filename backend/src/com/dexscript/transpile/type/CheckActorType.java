@@ -5,7 +5,6 @@ import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.type.ActorType;
 
 import java.util.List;
 

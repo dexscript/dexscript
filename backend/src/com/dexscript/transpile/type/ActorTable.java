@@ -1,4 +1,8 @@
-package com.dexscript.type;
+package com.dexscript.transpile.type;
+
+import com.dexscript.type.NamedType;
+import com.dexscript.type.NamedTypesProvider;
+import com.dexscript.type.TypeSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,11 +12,9 @@ import java.util.Map;
 public class ActorTable implements NamedTypesProvider {
 
     private final Map<String, List<ActorType>> defined = new HashMap<>();
-    private final TypeTable typeTable;
 
-    public ActorTable(TypeTable typeTable) {
-        this.typeTable = typeTable;
-        typeTable.lazyDefine(this);
+    public ActorTable(TypeSystem ts) {
+        ts.lazyDefineTypes(this);
     }
 
     public void define(ActorType actor) {

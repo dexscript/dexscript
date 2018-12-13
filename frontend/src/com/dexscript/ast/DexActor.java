@@ -135,10 +135,18 @@ public final class DexActor extends DexElement {
                 if (Blank.$(b)) {
                     continue;
                 }
+                // function
                 if (Keyword.$(src, i,
                         'f', 'u', 'n', 'c', 't', 'i', 'o', 'n')) {
                     functionBegin = i;
                     i = i + 8;
+                    return this::blank;
+                }
+                // actor
+                if (Keyword.$(src, i,
+                        'a', 'c', 't', 'o', 'r')) {
+                    functionBegin = i;
+                    i = i + 5;
                     return this::blank;
                 }
                 return null;

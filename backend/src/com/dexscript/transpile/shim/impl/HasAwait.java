@@ -10,7 +10,7 @@ import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
 import com.dexscript.type.FunctionType;
-import com.dexscript.type.InnerActorType;
+import com.dexscript.transpile.type.InnerActorType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 

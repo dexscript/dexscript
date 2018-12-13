@@ -1,5 +1,9 @@
-package com.dexscript.type;
+package com.dexscript.transpile.type;
 
+import com.dexscript.type.NamedType;
+import com.dexscript.type.Type;
+import com.dexscript.type.TypeComparisonContext;
+import com.dexscript.type.UnionType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

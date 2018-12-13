@@ -1,9 +1,10 @@
-package com.dexscript.infer;
+package com.dexscript.transpile.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
+import com.dexscript.infer.InferType;
 import com.dexscript.type.InterfaceType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;

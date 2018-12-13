@@ -1,7 +1,8 @@
-package com.dexscript.infer;
+package com.dexscript.transpile.type;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.infer.InferType;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
@@ -13,7 +14,7 @@ public class InferConsumeTest {
     @Test
     public void consume_string() {
         TypeSystem ts = new TypeSystem();
-        ts.defineActor(new DexActor("" +
+        new ActorType(ts, new DexActor("" +
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
                 "}"), null);
