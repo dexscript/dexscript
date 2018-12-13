@@ -5,6 +5,7 @@ import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.shim.FunctionImpl;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;

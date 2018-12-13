@@ -1,4 +1,4 @@
-package com.dexscript.transpile.shim.impl;
+package com.dexscript.transpile.shim;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexConsumeExpr;
@@ -9,6 +9,7 @@ import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
+import com.dexscript.transpile.shim.FunctionImpl;
 import com.dexscript.type.FunctionType;
 import com.dexscript.transpile.type.InnerActorType;
 import com.dexscript.type.Type;

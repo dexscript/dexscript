@@ -28,7 +28,7 @@ public class OutShim {
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
     private final List<FunctionImpl> impls = new ArrayList<>();
-    private final Map<VirtualFunction, List<FunctionImpl>> virtualFunctions = new HashMap<>();
+    private final Map<FunctionEntry, List<FunctionImpl>> entries = new HashMap<>();
     private final ActorTable actorTable;
 
     public OutShim(TypeSystem ts) {
@@ -67,7 +67,7 @@ public class OutShim {
         for (FunctionImpl impl : impls) {
             impl.finish(g, checkType);
         }
-        for (Map.Entry<VirtualFunction, List<FunctionImpl>> entry : virtualFunctions.entrySet()) {
+        for (Map.Entry<FunctionEntry, List<FunctionImpl>> entry : entries.entrySet()) {
             entry.getKey().finish(g, entry.getValue());
         }
         g.indention("");
@@ -95,8 +95,8 @@ public class OutShim {
                 boolean hasAwait = new HasAwait(ts, func).result();
                 CallActor impl = new CallActor(functionType, actor, canF, newF, hasAwait);
                 impls.add(impl);
-                VirtualFunction virtualFunction = new VirtualFunction(actor.functionName(), actor.params().size());
-                virtualFunctions.computeIfAbsent(virtualFunction, k -> new ArrayList<>()).add(impl);
+                FunctionEntry functionEntry = new FunctionEntry(actor.functionName(), actor.params().size());
+                entries.computeIfAbsent(functionEntry, k -> new ArrayList<>()).add(impl);
                 return impl;
             }
 

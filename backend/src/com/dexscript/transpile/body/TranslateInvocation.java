@@ -9,7 +9,7 @@ import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.shim.impl.FunctionImpl;
+import com.dexscript.transpile.shim.FunctionImpl;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;

@@ -4,7 +4,7 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.stmt.DexForStmt;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.shim.impl.HasAwait;
+import com.dexscript.transpile.shim.HasAwait;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutStateMachine;
 import com.dexscript.transpile.skeleton.OutStateMethod;

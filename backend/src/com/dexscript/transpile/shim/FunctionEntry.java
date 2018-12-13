@@ -1,16 +1,16 @@
-package com.dexscript.transpile.shim.impl;
+package com.dexscript.transpile.shim;
 
 import com.dexscript.transpile.gen.*;
 
 import java.util.List;
 import java.util.Objects;
 
-public class VirtualFunction {
+public class FunctionEntry {
 
     private final String funcName;
     private final int paramsCount;
 
-    public VirtualFunction(String funcName, int paramsCount) {
+    public FunctionEntry(String funcName, int paramsCount) {
         this.funcName = funcName;
         this.paramsCount = paramsCount;
     }
@@ -52,7 +52,7 @@ public class VirtualFunction {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        VirtualFunction that = (VirtualFunction) o;
+        FunctionEntry that = (FunctionEntry) o;
         return paramsCount == that.paramsCount &&
                 Objects.equals(funcName, that.funcName);
     }
@@ -64,7 +64,7 @@ public class VirtualFunction {
 
     @Override
     public String toString() {
-        return "VirtualFunction{" +
+        return "FunctionEntry{" +
                 "funcName='" + funcName + '\'' +
                 ", paramsCount=" + paramsCount +
                 '}';

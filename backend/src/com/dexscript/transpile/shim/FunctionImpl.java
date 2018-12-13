@@ -1,4 +1,4 @@
-package com.dexscript.transpile.shim.impl;
+package com.dexscript.transpile.shim;
 
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
