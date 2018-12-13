@@ -11,7 +11,7 @@ import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 
-public class CallInnerActor extends FunctionImpl {
+class CallInnerActor extends FunctionImpl {
 
     private final DexAwaitConsumer awaitConsumer;
     private final String outerClassName;

@@ -8,8 +8,9 @@ import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.runtime.Promise;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.skeleton.OutTopLevelClass;
+import com.dexscript.transpile.type.TypeCandidate;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +26,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     private List<FunctionType> members;
     private List<FunctionType> functions;
     private List<Type> typeParams;
+    private String className;
 
     public ActorType(OutShim oShim, DexActor actor) {
         this(oShim, actor, null);
@@ -36,6 +38,13 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         this.oShim = oShim;
         this.ts = oShim.typeSystem();
         ts.lazyDefineFunctions(this);
+        className = qualifiedClassNameOf(actor);
+        oShim.addTypeCandidate(new TypeCandidate(className, false, this));
+    }
+
+    public static String qualifiedClassNameOf(DexActor actor) {
+        String packageName = actor.file().packageClause().identifier().toString();
+        return packageName + "." + actor.actorName();
     }
 
     @Override
@@ -45,7 +54,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
     @Override
     public String javaClassName() {
-        return "com.dexscript.runtime.Promise";
+        return Promise.class.getCanonicalName();
     }
 
     @Override
@@ -144,7 +153,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
         public AwaitConsumerCollector(TypeTable localTypeTable) {
             this.localTypeTable = localTypeTable;
-            outerClassName = OutTopLevelClass.qualifiedClassNameOf(actor);
+            outerClassName = qualifiedClassNameOf(actor);
         }
 
         @Override

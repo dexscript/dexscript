@@ -39,11 +39,6 @@ public class OutTopLevelClass implements OutClass {
         g.__(new Line("}"));
     }
 
-    public static String qualifiedClassNameOf(DexActor iFunction) {
-        String packageName = iFunction.file().packageClause().identifier().toString();
-        return packageName + "." + iFunction.actorName();
-    }
-
     private void genFields() {
         for (OutField oField : oFields) {
             g.__("private "

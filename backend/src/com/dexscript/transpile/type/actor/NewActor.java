@@ -7,11 +7,10 @@ import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 
-public class NewActor extends FunctionImpl {
+class NewActor extends FunctionImpl {
 
     private final DexActor actor;
 
@@ -34,7 +33,7 @@ public class NewActor extends FunctionImpl {
         DeclareParams.$(g, functionType.params().size(), true);
         g.__(" {");
         g.__(new Indent(() -> {
-            String className = OutTopLevelClass.qualifiedClassNameOf(actor);
+            String className = ActorType.qualifiedClassNameOf(actor);
             g.__("return new "
             ).__(className
             ).__("(scheduler");

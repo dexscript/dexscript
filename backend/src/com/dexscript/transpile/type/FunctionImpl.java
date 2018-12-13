@@ -50,7 +50,7 @@ public abstract class FunctionImpl {
         List<Type> params = functionType.params();
         List<String> typeChecks = new ArrayList<>();
         for (Type param : params) {
-            String typeCheck = typeCandidates.genIsF(param);
+            String typeCheck = typeCandidates.genTypeCheck(param);
             typeChecks.add(typeCheck);
         }
         g.__("public static boolean "

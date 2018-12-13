@@ -19,6 +19,10 @@ public class FunctionEntry {
     }
 
     public void gen(Gen g, List<FunctionImpl> impls, TypeCandidates typeCandidates) {
+        for (FunctionImpl impl : impls) {
+            impl.canF(typeCandidates);
+            impl.callF();
+        }
         g.__("public static Object "
         ).__(funcName);
         DeclareParams.$(g, paramsCount, false);

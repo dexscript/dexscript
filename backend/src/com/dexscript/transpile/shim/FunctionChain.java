@@ -26,24 +26,29 @@ public class FunctionChain {
     }
 
     public void gen(Gen g, String chainF, TypeCandidates typeCandidates) {
+        for (FunctionType funcType : functions) {
+            if (!(funcType.attachment() instanceof FunctionImpl)) {
+                throw new IllegalStateException("no implementation attached to function: " + funcType);
+            }
+            FunctionImpl impl = (FunctionImpl) funcType.attachment();
+            impl.canF(typeCandidates);
+            impl.callF();
+        }
         g.__("public static Promise "
         ).__(chainF);
         DeclareParams.$(g, paramsCount, true);
         g.__(" {");
         g.__(new Indent(() -> {
             for (FunctionType funcType : functions) {
-                if (!(funcType.attachment() instanceof FunctionImpl)) {
-                    throw new IllegalStateException("no implementation attached to function: " + funcType);
-                }
-                FunctionImpl implEntry = (FunctionImpl) funcType.attachment();
+                FunctionImpl impl = (FunctionImpl) funcType.attachment();
                 g.__("if ("
-                ).__(implEntry.canF(typeCandidates));
+                ).__(impl.canF(typeCandidates));
                 InvokeParams.$(g, paramsCount, false);
                 g.__(new Line(") {"));
                 g.__(new Indent(() -> {
                         g.__("return "
-                        ).__(implEntry.callF());
-                        InvokeParams.$(g, paramsCount, false);
+                        ).__(impl.callF());
+                        InvokeParams.$(g, paramsCount, true);
                         g.__(new Line(";"));
                 }));
                 g.__(new Line("}"));

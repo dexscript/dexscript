@@ -105,7 +105,7 @@ public class OutShim {
         if (chainF != null) {
             return chainF;
         }
-        chainF = allocateShim("cnew__" + funcName);
+        chainF = allocateShim("chain__" + funcName);
         chains.put(chain, chainF);
         return CLASSNAME + "." + chainF;
     }
@@ -144,5 +144,9 @@ public class OutShim {
         FunctionType functionType = impl.functionType();
         FunctionEntry entry = new FunctionEntry(functionType.name(), functionType.params().size());
         entries.computeIfAbsent(entry, k -> new ArrayList<>()).add(impl);
+    }
+
+    public void addTypeCandidate(TypeCandidate typeCandidate) {
+        typeCandidates.add(typeCandidate);
     }
 }

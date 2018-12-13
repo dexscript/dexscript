@@ -23,7 +23,7 @@ public class CallJavaFunction extends FunctionImpl {
         String callF = oShim.allocateShim("call__" + javaFunction.getName());
         g.__("public static Promise "
         ).__(callF);
-        DeclareParams.$(g, functionType.params().size(), false);
+        DeclareParams.$(g, functionType.params().size() + 1, false);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__("return new ImmediateResult("
@@ -39,7 +39,7 @@ public class CallJavaFunction extends FunctionImpl {
                 g.__("(("
                 ).__(paramType.javaClassName()
                 ).__(")arg"
-                ).__(i
+                ).__(i + 1
                 ).__(')');
             }
             g.__("));");
