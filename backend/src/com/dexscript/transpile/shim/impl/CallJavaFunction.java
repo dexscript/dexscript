@@ -1,7 +1,7 @@
 package com.dexscript.transpile.shim.impl;
 
 import com.dexscript.transpile.gen.*;
-import com.dexscript.transpile.shim.FunctionImpl;
+import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;

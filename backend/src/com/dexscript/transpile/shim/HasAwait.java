@@ -9,9 +9,9 @@ import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
-import com.dexscript.transpile.shim.FunctionImpl;
+import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.type.FunctionType;
-import com.dexscript.transpile.type.InnerActorType;
+import com.dexscript.transpile.type.actor.InnerActorType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 

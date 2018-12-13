@@ -3,6 +3,7 @@ package com.dexscript.transpile.type;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.infer.InferType;
+import com.dexscript.transpile.type.actor.ActorType;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;

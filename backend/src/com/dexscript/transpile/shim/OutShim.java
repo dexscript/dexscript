@@ -8,6 +8,10 @@ import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.shim.impl.*;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.type.*;
+import com.dexscript.transpile.type.actor.ActorTable;
+import com.dexscript.transpile.type.actor.ActorType;
+import com.dexscript.transpile.type.actor.PromiseType;
+import com.dexscript.transpile.type.actor.TaskType;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
@@ -29,6 +33,7 @@ public class OutShim {
     private final Map<String, Integer> shims = new HashMap<>();
     private final List<FunctionImpl> impls = new ArrayList<>();
     private final Map<FunctionEntry, List<FunctionImpl>> entries = new HashMap<>();
+    private final Map<FunctionChain, String> chains = new HashMap<>();
     private final ActorTable actorTable;
 
     public OutShim(TypeSystem ts) {
@@ -68,7 +73,10 @@ public class OutShim {
             impl.finish(g, checkType);
         }
         for (Map.Entry<FunctionEntry, List<FunctionImpl>> entry : entries.entrySet()) {
-            entry.getKey().finish(g, entry.getValue());
+            entry.getKey().gen(g, entry.getValue());
+        }
+        for (Map.Entry<FunctionChain, String> entry : chains.entrySet()) {
+            entry.getKey().gen(g, entry.getValue());
         }
         g.indention("");
         g.__(new Line());
@@ -143,46 +151,15 @@ public class OutShim {
         return shimName + "__" + count;
     }
 
-    public String combineNewF(String funcName, int paramsCount, List<FunctionType.Invoked> invokeds) {
-        String cNewF = allocateShim("cnew__" + funcName);
-        g.__("public static Promise "
-        ).__(cNewF);
-        DeclareParams.$(g, paramsCount, true);
-        g.__(" {");
-        g.__(new Indent(() -> {
-            for (FunctionType.Invoked invoked : invokeds) {
-                FunctionType funcType = invoked.function();
-                if (!(funcType.attachment() instanceof FunctionImpl)) {
-                    throw new IllegalStateException("no implementation attached to function: " + funcType);
-                }
-                FunctionImpl implEntry = (FunctionImpl) funcType.attachment();
-                g.__("if ("
-                ).__(implEntry.canF());
-                InvokeParams.$(g, paramsCount, false);
-                g.__(new Line(") {"));
-                g.__(new Indent(() -> {
-                    if (implEntry.newF() == null) {
-                        g.__("return "
-                        ).__(implEntry.callF());
-                        InvokeParams.$(g, paramsCount, false);
-                        g.__(new Line(";"));
-                    } else {
-                        g.__("return "
-                        ).__(implEntry.newF());
-                        InvokeParams.$(g, paramsCount, true);
-                        g.__(new Line(";"));
-                    }
-                }));
-                g.__(new Line("}"));
-            }
-            g.__("throw new DexRuntimeException(\"no implementation of "
-            ).__(funcName
-            ).__(" accepted the invocation: \" + java.util.Arrays.asList");
-            InvokeParams.$(g, paramsCount, false);
-            g.__(new Line(");"));
-        }));
-        g.__(new Line("}"));
-        return CLASSNAME + "." + cNewF;
+    public String dispatch(String funcName, int paramsCount, List<FunctionType.Invoked> invokeds) {
+        FunctionChain chain = new FunctionChain(funcName, paramsCount, invokeds);
+        String chainF = chains.get(chain);
+        if (chainF != null) {
+            return chainF;
+        }
+        chainF = allocateShim("cnew__" + funcName);
+        chains.put(chain, chainF);
+        return CLASSNAME + "." + chainF;
     }
 
     public void importJavaFunctions(Class clazz) {

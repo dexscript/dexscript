@@ -1,4 +1,4 @@
-package com.dexscript.transpile.type;
+package com.dexscript.transpile.type.actor;
 
 import com.dexscript.type.NamedType;
 import com.dexscript.type.Type;

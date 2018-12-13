@@ -29,7 +29,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
         List<Type> args = InferType.inferTypes(ts, invocation.args());
         List<Type> typeArgs = ts.resolveTypes(invocation.typeArgs());
         List<FunctionType.Invoked> invokeds = ts.invoke("New__", typeArgs, args, null);
-        String newF = oClass.oShim().combineNewF(funcName , args.size(), invokeds);
+        String newF = oClass.oShim().dispatch(funcName , args.size(), invokeds);
         Type retType = ResolveReturnType.$(invokeds);
 
         Type promiseType = ts.resolveType("Promise", Arrays.asList(retType));

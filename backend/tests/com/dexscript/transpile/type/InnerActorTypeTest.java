@@ -3,6 +3,7 @@ package com.dexscript.transpile.type;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
+import com.dexscript.transpile.type.actor.InnerActorType;
 import com.dexscript.type.*;
 import org.junit.Assert;
 import org.junit.Test;

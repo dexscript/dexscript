@@ -1,11 +1,10 @@
-package com.dexscript.transpile.shim;
+package com.dexscript.transpile.type;
 
 import com.dexscript.transpile.gen.DeclareParams;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.type.CheckType;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 import org.jetbrains.annotations.NotNull;

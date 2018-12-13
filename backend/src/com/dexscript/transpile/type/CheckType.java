@@ -1,6 +1,7 @@
 package com.dexscript.transpile.type;
 
 import com.dexscript.transpile.gen.Gen;
+import com.dexscript.transpile.type.actor.CheckActorType;
 import com.dexscript.type.JavaSuperTypeArgs;
 import com.dexscript.type.Type;
 
@@ -33,11 +34,11 @@ public class CheckType {
     }
 
 
-    interface Handler<E extends Type> {
+    public interface Handler<E extends Type> {
         String handle(Gen g, E type, List<Class> javaClasses, List<Class> javaInterfaces);
     }
 
-    interface OnUnknownType {
+    public interface OnUnknownType {
         void handle(Type type);
     }
 

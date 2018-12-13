@@ -1,4 +1,4 @@
-package com.dexscript.transpile.type;
+package com.dexscript.transpile.type.actor;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.elem.DexParam;
@@ -17,6 +17,7 @@ import java.util.List;
 public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
     public interface ImplProvider {
+
         Object callFunc(FunctionType functionType, DexActor func);
 
         Object newFunc(FunctionType functionType, DexActor func);

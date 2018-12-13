@@ -9,7 +9,7 @@ import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.shim.FunctionImpl;
+import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;
@@ -43,7 +43,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
             throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
                     funcName, args));
         }
-        String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), invokeds);
+        String newF = oClass.oShim().dispatch(funcName, iArgs.size(), invokeds);
         Type retType = ResolveReturnType.$(invokeds);
 
         Type promiseType = ts.resolveType("Promise", Arrays.asList(retType));

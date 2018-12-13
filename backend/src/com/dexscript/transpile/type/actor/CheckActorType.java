@@ -1,10 +1,11 @@
-package com.dexscript.transpile.type;
+package com.dexscript.transpile.type.actor;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.type.CheckType;
 
 import java.util.List;
 

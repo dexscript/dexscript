@@ -1,4 +1,5 @@
-package com.dexscript.transpile.type;
+package com.dexscript.transpile.type.actor;
+
 
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
@@ -7,51 +8,50 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TaskType implements NamedType, FunctionsProvider, GenericType {
+public class PromiseType implements NamedType, FunctionsProvider, GenericType {
 
     private final static List<Type> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
-    private final @NotNull FunctionType resolveFunc;
+    private final @NotNull FunctionType consumeFunc;
     private final TypeSystem ts;
 
-    public TaskType(TypeSystem ts) {
+    public PromiseType(TypeSystem ts) {
         this(ts, null);
     }
 
-    public TaskType(TypeSystem ts, List<Type> typeArgs) {
+    public PromiseType(TypeSystem ts, List<Type> typeArgs) {
         this.ts = ts;
         if (typeArgs == null) {
             ts.defineType(this);
         }
         ts.lazyDefineFunctions(this);
-        resolveFunc = resolveFunc(typeArgs == null ? TYPE_PARAMETERS : typeArgs);
-    }
-
-    @NotNull
-    private FunctionType resolveFunc(List<Type> typeArgs) {
-        ArrayList<Type> params = new ArrayList<>();
-        params.add(this);
-        params.add(typeArgs.get(0));
-        return new FunctionType("Resolve__", params, BuiltinTypes.VOID);
-    }
-
-    @Override
-    public @NotNull String name() {
-        return "Task";
+        consumeFunc = consumeFunc(typeArgs == null ? TYPE_PARAMETERS : typeArgs);
     }
 
     @Override
     public String javaClassName() {
-        return "Actor";
+        return "Promise";
+    }
+
+    @Override
+    public @NotNull String name() {
+        return "Promise";
+    }
+
+    @NotNull
+    private FunctionType consumeFunc(List<Type> typeArgs) {
+        ArrayList<Type> params = new ArrayList<>();
+        params.add(this);
+        return new FunctionType("Consume__", params, typeArgs.get(0));
     }
 
     @Override
     public List<FunctionType> functions() {
-        return Arrays.asList(resolveFunc);
+        return Arrays.asList(consumeFunc);
     }
 
     @Override
     public Type generateType(List<Type> typeArgs) {
-        return new TaskType(ts, typeArgs);
+        return new PromiseType(ts, typeArgs);
     }
 
     @Override

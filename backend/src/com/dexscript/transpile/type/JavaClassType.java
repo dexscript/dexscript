@@ -1,7 +1,6 @@
 package com.dexscript.transpile.type;
 
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.shim.FunctionImpl;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 

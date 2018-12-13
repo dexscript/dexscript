@@ -1,6 +1,7 @@
 package com.dexscript.transpile.shim;
 
 import com.dexscript.transpile.gen.*;
+import com.dexscript.transpile.type.FunctionImpl;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,7 +16,7 @@ public class FunctionEntry {
         this.paramsCount = paramsCount;
     }
 
-    public void finish(Gen g, List<FunctionImpl> impls) {
+    public void gen(Gen g, List<FunctionImpl> impls) {
         g.__("public static Object "
         ).__(funcName);
         DeclareParams.$(g, paramsCount, false);
