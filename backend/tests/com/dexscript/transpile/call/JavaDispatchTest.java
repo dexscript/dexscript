@@ -1,5 +1,6 @@
 package com.dexscript.transpile.call;
 
+import com.dexscript.runtime.Promise;
 import com.dexscript.transpile.Transpile;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,10 +11,12 @@ public class JavaDispatchTest {
 
     @Test
     public void new_java_class() {
-        Object result = Transpile.$("" +
+        Promise result = (Promise) Transpile.$("" +
+                "import java.io.File\n" +
+                "" +
                 "function Hello(): interface{} {" +
                 "   return new File()\n" +
                 "}");
-        Assert.assertTrue(result instanceof File);
+        Assert.assertTrue(result.value() instanceof File);
     }
 }

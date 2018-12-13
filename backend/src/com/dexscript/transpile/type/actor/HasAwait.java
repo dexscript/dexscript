@@ -1,4 +1,4 @@
-package com.dexscript.transpile.shim;
+package com.dexscript.transpile.type.actor;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexConsumeExpr;

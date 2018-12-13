@@ -3,11 +3,15 @@ package com.dexscript.transpile.shim;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
-import com.dexscript.ast.stmt.DexAwaitConsumer;
-import com.dexscript.transpile.gen.*;
-import com.dexscript.transpile.skeleton.OutTopLevelClass;
-import com.dexscript.transpile.type.*;
-import com.dexscript.transpile.type.actor.*;
+import com.dexscript.transpile.gen.Gen;
+import com.dexscript.transpile.gen.Line;
+import com.dexscript.transpile.type.FunctionImpl;
+import com.dexscript.transpile.type.TypeCandidate;
+import com.dexscript.transpile.type.TypeCandidates;
+import com.dexscript.transpile.type.actor.ActorTable;
+import com.dexscript.transpile.type.actor.ActorType;
+import com.dexscript.transpile.type.actor.PromiseType;
+import com.dexscript.transpile.type.actor.TaskType;
 import com.dexscript.transpile.type.java.CallJavaFunction;
 import com.dexscript.transpile.type.java.JavaClassType;
 import com.dexscript.type.FunctionType;
@@ -129,7 +133,7 @@ public class OutShim {
     }
 
     public void importJavaClass(Class clazz) {
-        new JavaClassType(ts, this, clazz);
+        new JavaClassType(this, clazz);
     }
 
     public Gen g() {

@@ -13,11 +13,11 @@ public class JavaClassType implements NamedType, FunctionsProvider {
     private final Class clazz;
     private List<FunctionType> functions;
 
-    public JavaClassType(TypeSystem ts, OutShim oShim, Class clazz) {
+    public JavaClassType(OutShim oShim, Class clazz) {
         this.oShim = oShim;
         this.clazz = clazz;
-        ts.defineType(this);
-        ts.lazyDefineFunctions(this);
+        oShim.typeSystem().defineType(this);
+        oShim.typeSystem().lazyDefineFunctions(this);
     }
 
     @Override
@@ -55,11 +55,7 @@ public class JavaClassType implements NamedType, FunctionsProvider {
         String funcName = clazz.getSimpleName();
         params.add(new StringLiteralType(funcName));
         FunctionType function = new FunctionType("New__", params, this);
-//        function.attach((FunctionType.LazyAttachment) () -> {
-//            String callF = OutShim.CLASSNAME + "." + oShim.allocateShim("call__" + funcName);
-//            String canF = OutShim.CLASSNAME + "." + oShim.allocateShim("can__" + funcName);
-//            return new Impl(function, canF, callF, null);
-//        });
+        function.attach((FunctionType.LazyAttachment) () -> new NewJavaClass(oShim, function, clazz));
         functions.add(function);
     }
 }
