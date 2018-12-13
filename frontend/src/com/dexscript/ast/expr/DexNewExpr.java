@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DexNewExpr extends DexExpr {
+public class DexNewExpr extends DexExpr implements DexInvocationExpr {
 
     private static final int LEFT_RANK = 0;
 
@@ -19,6 +19,7 @@ public class DexNewExpr extends DexExpr {
     private int newExprEnd = -1;
     private DexSyntaxError syntaxError;
     private DexFunctionCallExpr functionCallExpr;
+    private DexInvocation invocation;
 
     public DexNewExpr(Text src) {
         super(src);
@@ -106,6 +107,15 @@ public class DexNewExpr extends DexExpr {
                 visitor.visit(arg);
             }
         }
+    }
+
+    @Override
+    public DexInvocation invocation() {
+        if (invocation == null) {
+            DexStringLiteral targetAsStr = new DexStringLiteral("'" + target.toString() + "'");
+            invocation = new DexInvocation("New__", targetAsStr, typeArgs(), args());
+        }
+        return invocation;
     }
 
     private class Parser {

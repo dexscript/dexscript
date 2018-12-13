@@ -15,14 +15,14 @@ public class VirtualFunction {
         this.paramsCount = paramsCount;
     }
 
-    public void finish(Gen g, List<Impl> impls) {
+    public void finish(Gen g, List<FunctionImpl> impls) {
         g.__("public static Object "
         ).__(funcName);
         DeclareParams.$(g, paramsCount, false);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__(new Line("Scheduler scheduler = new Scheduler();"));
-            for (Impl impl : impls) {
+            for (FunctionImpl impl : impls) {
                 if (impl.newF() == null) {
                     continue;
                 }

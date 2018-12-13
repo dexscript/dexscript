@@ -10,7 +10,7 @@ import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 
-public class NewActor extends Impl {
+public class NewActor extends FunctionImpl {
 
     private final DexActor function;
 

@@ -9,7 +9,7 @@ import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.shim.impl.Impl;
+import com.dexscript.transpile.shim.impl.FunctionImpl;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;
@@ -61,7 +61,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         oClass.g().__(new Line(");"));
         boolean needToConsume = false;
         for (FunctionType.Invoked invoked : invokeds) {
-            Impl impl = (Impl) invoked.function().attachment();
+            FunctionImpl impl = (FunctionImpl) invoked.function().attachment();
             if (impl.hasAwait()) {
                 needToConsume =  true;
                 break;

@@ -6,7 +6,9 @@ import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.type.DexType;
 
+import java.util.Collections;
 import java.util.List;
 
 public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
@@ -33,7 +35,25 @@ public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
     }
 
     public List<DexExpr> args() {
-        return functionCallExpr.args();
+        if (functionCallExpr == null) {
+            return Collections.emptyList();
+        }
+        List<DexExpr> args = functionCallExpr.args();
+        if (args == null) {
+            return Collections.emptyList();
+        }
+        return args;
+    }
+
+    public List<DexType> typeArgs() {
+        if (functionCallExpr == null) {
+            return Collections.emptyList();
+        }
+        List<DexType> typeArgs = functionCallExpr.typeArgs();
+        if (typeArgs == null) {
+            return Collections.emptyList();
+        }
+        return typeArgs;
     }
 
     @Override
@@ -86,7 +106,7 @@ public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation(method().toString(), obj(), args());
+            invocation = new DexInvocation(method().toString(), obj(), typeArgs(), args());
         }
         return invocation;
     }

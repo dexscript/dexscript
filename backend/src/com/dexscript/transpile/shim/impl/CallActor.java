@@ -10,7 +10,7 @@ import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 
-public class CallActor extends Impl {
+public class CallActor extends FunctionImpl {
 
     private final DexActor function;
     private final boolean hasAwait;

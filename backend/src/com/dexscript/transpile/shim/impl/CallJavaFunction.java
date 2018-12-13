@@ -7,7 +7,7 @@ import com.dexscript.type.Type;
 
 import java.lang.reflect.Method;
 
-public class CallJavaFunction extends Impl {
+public class CallJavaFunction extends FunctionImpl {
 
     private final Method javaFunction;
 

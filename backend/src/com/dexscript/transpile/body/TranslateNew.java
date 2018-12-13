@@ -1,17 +1,16 @@
 package com.dexscript.transpile.body;
 
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexNewExpr;
 import com.dexscript.infer.InferType;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.type.FunctionType;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.Type;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TranslateNew implements Translate<DexNewExpr> {
@@ -25,18 +24,23 @@ public class TranslateNew implements Translate<DexNewExpr> {
 
         String funcName = iNewExpr.target().asRef().toString();
         TypeSystem ts = oClass.typeSystem();
-        Type actorType = InferType.$(ts, iNewExpr);
 
-        List<Type> args = InferType.inferTypes(ts, iArgs);
-        List<Type> typeArgs = ts.resolveTypes(iNewExpr.typeArgs());
-        List<FunctionType.Invoked> invokeds = ts.invoke(funcName, typeArgs, args, null);
-        String newF = oClass.oShim().combineNewF(funcName, iArgs.size(), invokeds);
-        OutField oActorField = oClass.allocateField(funcName, actorType);
+        DexInvocation invocation = iNewExpr.invocation();
+        List<Type> args = InferType.inferTypes(ts, invocation.args());
+        List<Type> typeArgs = ts.resolveTypes(invocation.typeArgs());
+        List<FunctionType.Invoked> invokeds = ts.invoke("New__", typeArgs, args, null);
+        String newF = oClass.oShim().combineNewF(funcName , args.size(), invokeds);
+        Type retType = ResolveReturnType.$(invokeds);
+
+        Type promiseType = ts.resolveType("Promise", Arrays.asList(retType));
+        OutField oActorField = oClass.allocateField(funcName, promiseType);
         Gen g = oClass.g();
         g.__(oActorField.value()
         ).__(" = "
         ).__(newF
-        ).__("(scheduler");
+        ).__("(scheduler, \""
+        ).__(funcName
+        ).__("\"");
         for (int i = 0; i < iArgs.size(); i++) {
             g.__(", ");
             DexExpr iArg = iArgs.get(i);

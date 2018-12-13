@@ -30,9 +30,9 @@ public class DexInvocation {
         this.args = Arrays.asList(arg0, arg1);
     }
 
-    public DexInvocation(String funcName, DexExpr arg0, List<DexExpr> args) {
+    public DexInvocation(String funcName, DexExpr arg0, List<DexType> typeArgs, List<DexExpr> args) {
         this.funcName = funcName;
-        this.typeArgs = Collections.emptyList();
+        this.typeArgs = typeArgs;
         this.args = new ArrayList<>();
         this.args.add(arg0);
         this.args.addAll(args);

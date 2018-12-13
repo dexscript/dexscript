@@ -82,4 +82,12 @@ public class TypeSystem {
     public Type resolveType(Class<?> javaType) {
         return typeTable.resolveType(javaType);
     }
+
+    public void defineType(NamedType type) {
+        typeTable.define(type);
+    }
+
+    public void lazyDefineFunctions(FunctionsProvider functionsProvider) {
+        functionTable.lazyDefine(functionsProvider);
+    }
 }

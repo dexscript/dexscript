@@ -1,13 +1,14 @@
 package com.dexscript.transpile.shim;
 
-import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.shim.impl.*;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.type.CheckType;
+import com.dexscript.transpile.type.JavaClassType;
 import com.dexscript.type.ActorType;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
@@ -28,8 +29,8 @@ public class OutShim {
     private final TypeSystem ts;
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
-    private final List<Impl> impls = new ArrayList<>();
-    private final Map<VirtualFunction, List<Impl>> virtualFunctions = new HashMap<>();
+    private final List<FunctionImpl> impls = new ArrayList<>();
+    private final Map<VirtualFunction, List<FunctionImpl>> virtualFunctions = new HashMap<>();
 
     public OutShim(TypeSystem ts) {
         this.ts = ts;
@@ -49,10 +50,10 @@ public class OutShim {
         }
         finished = true;
         CheckType checkType = new CheckType(null, null);
-        for (Impl impl : impls) {
+        for (FunctionImpl impl : impls) {
             impl.finish(g, checkType);
         }
-        for (Map.Entry<VirtualFunction, List<Impl>> entry : virtualFunctions.entrySet()) {
+        for (Map.Entry<VirtualFunction, List<FunctionImpl>> entry : virtualFunctions.entrySet()) {
             entry.getKey().finish(g, entry.getValue());
         }
         g.indention("");
@@ -120,7 +121,7 @@ public class OutShim {
         });
     }
 
-    private String allocateShim(String shimName) {
+    public String allocateShim(String shimName) {
         int count = shims.computeIfAbsent(shimName, k -> 0);
         count += 1;
         shims.put(shimName, count);
@@ -136,10 +137,10 @@ public class OutShim {
         g.__(new Indent(() -> {
             for (FunctionType.Invoked invoked : invokeds) {
                 FunctionType funcType = invoked.function();
-                if (!(funcType.attachment() instanceof Impl)) {
+                if (!(funcType.attachment() instanceof FunctionImpl)) {
                     throw new IllegalStateException("no implementation attached to function: " + funcType);
                 }
-                Impl implEntry = (Impl) funcType.attachment();
+                FunctionImpl implEntry = (FunctionImpl) funcType.attachment();
                 g.__("if ("
                 ).__(implEntry.canF());
                 InvokeParams.$(g, paramsCount, false);
@@ -169,7 +170,7 @@ public class OutShim {
         return CLASSNAME + "." + cNewF;
     }
 
-    public void importJavaClass(Class clazz) {
+    public void importJavaFunctions(Class clazz) {
         for (Method method : clazz.getMethods()) {
             if (Modifier.isStatic(method.getModifiers())) {
                 importJavaFunction(method);
@@ -195,5 +196,9 @@ public class OutShim {
             throw new IllegalArgumentException();
         }
         return f.substring(OutShim.CLASSNAME.length() + 1);
+    }
+
+    public void importJavaClass(Class clazz) {
+        new JavaClassType(ts, this, clazz);
     }
 }

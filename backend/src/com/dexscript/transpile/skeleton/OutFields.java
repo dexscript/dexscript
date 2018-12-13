@@ -14,7 +14,7 @@ public final class OutFields implements Iterable<OutField> {
     public OutField allocate(String suggestedName, Type type) {
         suggestedName = "f" + suggestedName;
         if (!IsStorableType.$(type)) {
-            throw new IllegalArgumentException("paramType is not storable: " + type);
+            throw new IllegalArgumentException("type is not storable: " + type);
         }
         OutField oField = tryAllocate(suggestedName, type);
         if (oField != null) {

@@ -9,7 +9,7 @@ import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 
-public class NewInnerActor extends Impl {
+public class NewInnerActor extends FunctionImpl {
 
     private final DexAwaitConsumer awaitConsumer;
     private final String canF;

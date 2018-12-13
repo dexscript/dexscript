@@ -13,14 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Impl {
+public abstract class FunctionImpl {
 
     private final String canF;
     private final String callF;
     private final String newF;
     private final FunctionType functionType;
 
-    public Impl(FunctionType functionType, String canF, String callF, String newF) {
+    public FunctionImpl(FunctionType functionType, String canF, String callF, String newF) {
         this.functionType = functionType;
         this.canF = canF;
         this.callF = callF;
