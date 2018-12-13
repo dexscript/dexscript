@@ -9,6 +9,8 @@ import com.dexscript.transpile.shim.impl.*;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.type.CheckType;
 import com.dexscript.transpile.type.JavaClassType;
+import com.dexscript.transpile.type.PromiseType;
+import com.dexscript.transpile.type.TaskType;
 import com.dexscript.type.ActorType;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
@@ -34,6 +36,20 @@ public class OutShim {
 
     public OutShim(TypeSystem ts) {
         this.ts = ts;
+        /*
+        interface Task {
+            <T>: interface{}
+            Resolve__(value: T)
+        }
+         */
+        new TaskType(ts);
+        /*
+        interface Promise {
+            <T>: interface{}
+            Consume__(): T
+        }
+         */
+        new PromiseType(ts);
         g.__("package com.dexscript.runtime.gen"
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));

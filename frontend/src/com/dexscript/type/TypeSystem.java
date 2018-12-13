@@ -2,7 +2,6 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.type.DexType;
 
 import java.util.ArrayList;
@@ -13,23 +12,6 @@ public class TypeSystem {
     private final TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
     private final ActorTable actorTable = new ActorTable(typeTable);
     private final FunctionTable functionTable = new FunctionTable();
-
-    public TypeSystem() {
-        /*
-        interface Task {
-            <T>: interface{}
-            Resolve__(value: T)
-        }
-         */
-        new TaskType(typeTable, functionTable);
-        /*
-        interface Promise {
-            <T>: interface{}
-            Consume__(): T
-        }
-         */
-        new PromiseType(typeTable, functionTable);
-    }
 
     public void defineFunction(FunctionType function) {
         functionTable.define(function);
@@ -89,5 +71,9 @@ public class TypeSystem {
 
     public void lazyDefineFunctions(FunctionsProvider functionsProvider) {
         functionTable.lazyDefine(functionsProvider);
+    }
+
+    public boolean isFunctionDefined(TypeComparisonContext ctx, FunctionType functionType) {
+        return functionTable.isDefined(ctx, functionType);
     }
 }

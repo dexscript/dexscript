@@ -1,5 +1,6 @@
-package com.dexscript.type;
+package com.dexscript.transpile.type;
 
+import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -10,20 +11,18 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
 
     private final static List<Type> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
     private final @NotNull FunctionType resolveFunc;
-    private final TypeTable typeTable;
-    private final FunctionTable functionTable;
+    private final TypeSystem ts;
 
-    public TaskType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable) {
-        this(typeTable, functionTable, null);
+    public TaskType(TypeSystem ts) {
+        this(ts, null);
     }
 
-    public TaskType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, List<Type> typeArgs) {
-        this.typeTable = typeTable;
-        this.functionTable = functionTable;
+    public TaskType(TypeSystem ts, List<Type> typeArgs) {
+        this.ts = ts;
         if (typeArgs == null) {
-            typeTable.define(this);
+            ts.defineType(this);
         }
-        functionTable.lazyDefine(this);
+        ts.lazyDefineFunctions(this);
         resolveFunc = resolveFunc(typeArgs == null ? TYPE_PARAMETERS : typeArgs);
     }
 
@@ -52,7 +51,7 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
 
     @Override
     public Type generateType(List<Type> typeArgs) {
-        return new TaskType(typeTable, functionTable, typeArgs);
+        return new TaskType(ts, typeArgs);
     }
 
     @Override
@@ -64,7 +63,7 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         ctx.putSubstituted(this, that);
         for (FunctionType member : functions()) {
-            if (!functionTable.isDefined(ctx, member)) {
+            if (!ts.isFunctionDefined(ctx, member)) {
                 return false;
             }
         }
