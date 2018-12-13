@@ -1,4 +1,4 @@
-package com.dexscript.transpile.shim.impl;
+package com.dexscript.transpile.type.java;
 
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.type.FunctionImpl;
@@ -12,26 +12,18 @@ public class CallJavaFunction extends FunctionImpl {
 
     private final Method javaFunction;
 
-    public CallJavaFunction(FunctionType functionType, Method javaFunction, String canF, String callF) {
-        super(functionType, canF, callF, null);
+    public CallJavaFunction(OutShim oShim, FunctionType functionType, Method javaFunction) {
+        super(oShim, functionType);
         this.javaFunction = javaFunction;
     }
 
-    public final Method javaFunction() {
-        return javaFunction;
-    }
-
     @Override
-    public boolean hasAwait() {
-        return false;
-    }
-
-    @Override
-    protected void genCallF(Gen g) {
-        String callF = OutShim.stripPrefix(callF());
+    protected String genCallF() {
+        Gen g = oShim.g();
+        String callF = oShim.allocateShim("call__" + javaFunction.getName());
         g.__("public static Promise "
         ).__(callF);
-        DeclareParams.$(g, functionType().params().size(), false);
+        DeclareParams.$(g, functionType.params().size(), false);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__("return new ImmediateResult("
@@ -39,11 +31,11 @@ public class CallJavaFunction extends FunctionImpl {
             ).__('.'
             ).__(javaFunction.getName()
             ).__('(');
-            for (int i = 0; i < functionType().params().size(); i++) {
+            for (int i = 0; i < functionType.params().size(); i++) {
                 if (i > 0) {
                     g.__(", ");
                 }
-                Type paramType = functionType().params().get(i);
+                Type paramType = functionType.params().get(i);
                 g.__("(("
                 ).__(paramType.javaClassName()
                 ).__(")arg"
@@ -53,5 +45,6 @@ public class CallJavaFunction extends FunctionImpl {
             g.__("));");
         }));
         g.__(new Line("}"));
+        return callF;
     }
 }

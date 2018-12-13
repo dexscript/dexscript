@@ -1,4 +1,4 @@
-package com.dexscript.transpile.shim.impl;
+package com.dexscript.transpile.type.actor;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.transpile.gen.DeclareParams;
@@ -13,15 +13,11 @@ import com.dexscript.type.Type;
 
 public class NewActor extends FunctionImpl {
 
-    private final DexActor function;
+    private final DexActor actor;
 
-    public NewActor(FunctionType functionType, DexActor function, String canF, String newF) {
-        super(functionType, canF, null, newF);
-        this.function = function;
-    }
-
-    public DexActor function() {
-        return function;
+    public NewActor(OutShim oShim, FunctionType functionType, DexActor actor) {
+        super(oShim, functionType);
+        this.actor = actor;
     }
 
     @Override
@@ -29,20 +25,22 @@ public class NewActor extends FunctionImpl {
         return true;
     }
 
-    protected void genNewF(Gen g) {
-        String newF = OutShim.stripPrefix(newF());
+    @Override
+    protected String genCallF() {
+        Gen g = oShim.g();
+        String newF = oShim.allocateShim("new__" + actor.actorName());
         g.__("public static Promise "
         ).__(newF);
-        DeclareParams.$(g, functionType().params().size(), true);
+        DeclareParams.$(g, functionType.params().size(), true);
         g.__(" {");
         g.__(new Indent(() -> {
-            String className = OutTopLevelClass.qualifiedClassNameOf(function);
+            String className = OutTopLevelClass.qualifiedClassNameOf(actor);
             g.__("return new "
             ).__(className
             ).__("(scheduler");
-            for (int i = 1; i < functionType().params().size(); i++) {
+            for (int i = 1; i < functionType.params().size(); i++) {
                 g.__(", ");
-                Type paramType = functionType().params().get(i);
+                Type paramType = functionType.params().get(i);
                 g.__("(("
                 ).__(paramType.javaClassName()
                 ).__(")arg"
@@ -52,5 +50,6 @@ public class NewActor extends FunctionImpl {
             g.__(");");
         }));
         g.__(new Line("}"));
+        return newF;
     }
 }

@@ -2,6 +2,8 @@ package com.dexscript.transpile.shim;
 
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.type.FunctionImpl;
+import com.dexscript.transpile.type.TypeCandidate;
+import com.dexscript.transpile.type.TypeCandidates;
 import com.dexscript.type.FunctionType;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class FunctionChain {
         }
     }
 
-    public void gen(Gen g, String chainF) {
+    public void gen(Gen g, String chainF, TypeCandidates typeCandidates) {
         g.__("public static Promise "
         ).__(chainF);
         DeclareParams.$(g, paramsCount, true);
@@ -35,21 +37,14 @@ public class FunctionChain {
                 }
                 FunctionImpl implEntry = (FunctionImpl) funcType.attachment();
                 g.__("if ("
-                ).__(implEntry.canF());
+                ).__(implEntry.canF(typeCandidates));
                 InvokeParams.$(g, paramsCount, false);
                 g.__(new Line(") {"));
                 g.__(new Indent(() -> {
-                    if (implEntry.newF() == null) {
                         g.__("return "
                         ).__(implEntry.callF());
                         InvokeParams.$(g, paramsCount, false);
                         g.__(new Line(";"));
-                    } else {
-                        g.__("return "
-                        ).__(implEntry.newF());
-                        InvokeParams.$(g, paramsCount, true);
-                        g.__(new Line(";"));
-                    }
                 }));
                 g.__(new Line("}"));
             }

@@ -5,13 +5,11 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.transpile.gen.*;
-import com.dexscript.transpile.shim.impl.*;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.transpile.type.*;
-import com.dexscript.transpile.type.actor.ActorTable;
-import com.dexscript.transpile.type.actor.ActorType;
-import com.dexscript.transpile.type.actor.PromiseType;
-import com.dexscript.transpile.type.actor.TaskType;
+import com.dexscript.transpile.type.actor.*;
+import com.dexscript.transpile.type.java.CallJavaFunction;
+import com.dexscript.transpile.type.java.JavaClassType;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
@@ -31,9 +29,9 @@ public class OutShim {
     private final TypeSystem ts;
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
-    private final List<FunctionImpl> impls = new ArrayList<>();
     private final Map<FunctionEntry, List<FunctionImpl>> entries = new HashMap<>();
     private final Map<FunctionChain, String> chains = new HashMap<>();
+    private final TypeCandidates typeCandidates = new TypeCandidates(this);
     private final ActorTable actorTable;
 
     public OutShim(TypeSystem ts) {
@@ -68,15 +66,11 @@ public class OutShim {
             throw new IllegalStateException();
         }
         finished = true;
-        CheckType checkType = new CheckType(null, null);
-        for (FunctionImpl impl : impls) {
-            impl.finish(g, checkType);
-        }
         for (Map.Entry<FunctionEntry, List<FunctionImpl>> entry : entries.entrySet()) {
-            entry.getKey().gen(g, entry.getValue());
+            entry.getKey().gen(g, entry.getValue(), typeCandidates);
         }
         for (Map.Entry<FunctionChain, String> entry : chains.entrySet()) {
-            entry.getKey().gen(g, entry.getValue());
+            entry.getKey().gen(g, entry.getValue(), typeCandidates);
         }
         g.indention("");
         g.__(new Line());
@@ -95,53 +89,7 @@ public class OutShim {
     }
 
     public void defineActor(DexActor actor) {
-        ActorType actorType = new ActorType(ts, actor, new ActorType.ImplProvider() {
-            @Override
-            public Object callFunc(FunctionType functionType, DexActor func) {
-                String newF = CLASSNAME + "." + allocateShim("new__" + actor.actorName());
-                String canF = CLASSNAME + "." + allocateShim("can__" + actor.actorName());
-                boolean hasAwait = new HasAwait(ts, func).result();
-                CallActor impl = new CallActor(functionType, actor, canF, newF, hasAwait);
-                impls.add(impl);
-                FunctionEntry functionEntry = new FunctionEntry(actor.functionName(), actor.params().size());
-                entries.computeIfAbsent(functionEntry, k -> new ArrayList<>()).add(impl);
-                return impl;
-            }
-
-            @Override
-            public Object newFunc(FunctionType functionType, DexActor func) {
-                String newF = CLASSNAME + "." + allocateShim("new__" + actor.actorName());
-                String canF = CLASSNAME + "." + allocateShim("can__" + actor.actorName());
-                NewActor impl = new NewActor(functionType, actor, canF, newF);
-                impls.add(impl);
-                return impl;
-            }
-
-            @Override
-            public Object innerCallFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer) {
-                String funcName = awaitConsumer.identifier().toString();
-                String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
-                String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
-                String outerClassName = OutTopLevelClass.qualifiedClassNameOf(func);
-                boolean hasAwait = new HasAwait(ts, awaitConsumer).result();
-                CallInnerActor impl = new CallInnerActor(
-                        functionType, outerClassName, awaitConsumer, canF, newF, hasAwait);
-                impls.add(impl);
-                return impl;
-            }
-
-            @Override
-            public Object innerNewFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer) {
-                String funcName = awaitConsumer.identifier().toString();
-                String newF = CLASSNAME + "." + allocateShim("new__" + funcName);
-                String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
-                String outerClassName = OutTopLevelClass.qualifiedClassNameOf(func);
-                NewInnerActor impl = new NewInnerActor(functionType, outerClassName, awaitConsumer, canF, newF);
-                impls.add(impl);
-                return impl;
-            }
-        });
-        actorTable.define(actorType);
+        actorTable.define(new ActorType(this, actor));
     }
 
     public String allocateShim(String shimName) {
@@ -172,25 +120,29 @@ public class OutShim {
 
     private void importJavaFunction(Method javaFunction) {
         String funcName = javaFunction.getName();
-        String callF = CLASSNAME + "." + allocateShim("call__" + funcName);
-        String canF = CLASSNAME + "." + allocateShim("can__" + funcName);
         List<Type> params = ts.resolveType(javaFunction.getParameterTypes());
         Type ret = ts.resolveType(javaFunction.getReturnType());
         FunctionType functionType = new FunctionType(funcName, params, ret);
         ts.defineFunction(functionType);
-        CallJavaFunction impl = new CallJavaFunction(functionType, javaFunction, canF, callF);
-        impls.add(impl);
+        CallJavaFunction impl = new CallJavaFunction(this, functionType, javaFunction);
         functionType.attach(impl);
-    }
-
-    public static String stripPrefix(String f) {
-        if (!f.startsWith(OutShim.CLASSNAME)) {
-            throw new IllegalArgumentException();
-        }
-        return f.substring(OutShim.CLASSNAME.length() + 1);
     }
 
     public void importJavaClass(Class clazz) {
         new JavaClassType(ts, this, clazz);
+    }
+
+    public Gen g() {
+        return g;
+    }
+
+    public TypeSystem typeSystem() {
+        return ts;
+    }
+
+    public void registerImpl(FunctionImpl impl) {
+        FunctionType functionType = impl.functionType();
+        FunctionEntry entry = new FunctionEntry(functionType.name(), functionType.params().size());
+        entries.computeIfAbsent(entry, k -> new ArrayList<>()).add(impl);
     }
 }

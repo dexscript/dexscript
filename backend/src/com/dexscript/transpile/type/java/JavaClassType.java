@@ -1,4 +1,4 @@
-package com.dexscript.transpile.type;
+package com.dexscript.transpile.type.java;
 
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.*;
@@ -55,23 +55,11 @@ public class JavaClassType implements NamedType, FunctionsProvider {
         String funcName = clazz.getSimpleName();
         params.add(new StringLiteralType(funcName));
         FunctionType function = new FunctionType("New__", params, this);
-        function.attach((FunctionType.LazyAttachment) () -> {
-            String callF = OutShim.CLASSNAME + "." + oShim.allocateShim("call__" + funcName);
-            String canF = OutShim.CLASSNAME + "." + oShim.allocateShim("can__" + funcName);
-            return new Impl(function, canF, callF, null);
-        });
+//        function.attach((FunctionType.LazyAttachment) () -> {
+//            String callF = OutShim.CLASSNAME + "." + oShim.allocateShim("call__" + funcName);
+//            String canF = OutShim.CLASSNAME + "." + oShim.allocateShim("can__" + funcName);
+//            return new Impl(function, canF, callF, null);
+//        });
         functions.add(function);
-    }
-
-    private class Impl extends FunctionImpl {
-
-        public Impl(FunctionType functionType, String canF, String callF, String newF) {
-            super(functionType, canF, callF, newF);
-        }
-
-        @Override
-        public boolean hasAwait() {
-            return false;
-        }
     }
 }

@@ -2,6 +2,8 @@ package com.dexscript.transpile.shim;
 
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.type.FunctionImpl;
+import com.dexscript.transpile.type.TypeCandidate;
+import com.dexscript.transpile.type.TypeCandidates;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,7 +18,7 @@ public class FunctionEntry {
         this.paramsCount = paramsCount;
     }
 
-    public void gen(Gen g, List<FunctionImpl> impls) {
+    public void gen(Gen g, List<FunctionImpl> impls, TypeCandidates typeCandidates) {
         g.__("public static Object "
         ).__(funcName);
         DeclareParams.$(g, paramsCount, false);
@@ -24,16 +26,13 @@ public class FunctionEntry {
         g.__(new Indent(() -> {
             g.__(new Line("Scheduler scheduler = new Scheduler();"));
             for (FunctionImpl impl : impls) {
-                if (impl.newF() == null) {
-                    continue;
-                }
                 g.__("if ("
-                ).__(impl.canF());
+                ).__(impl.canF(typeCandidates));
                 InvokeParams.$(g, paramsCount, false);
                 g.__(") {");
                 g.__(new Indent(() -> {
                     g.__("Promise result = "
-                    ).__(impl.newF());
+                    ).__(impl.callF());
                     InvokeParams.$(g, paramsCount, true);
                     g.__(new Line(";"));
                     g.__(new Line("scheduler.schedule();"));

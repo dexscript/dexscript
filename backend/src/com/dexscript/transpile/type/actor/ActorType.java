@@ -8,6 +8,8 @@ import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.transpile.shim.OutShim;
+import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,36 +18,24 @@ import java.util.List;
 
 public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
-    public interface ImplProvider {
-
-        Object callFunc(FunctionType functionType, DexActor func);
-
-        Object newFunc(FunctionType functionType, DexActor func);
-
-        Object innerCallFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer);
-
-        Object innerNewFunc(FunctionType functionType, DexActor func, DexAwaitConsumer awaitConsumer);
-    }
-
     private final TypeSystem ts;
+    private final OutShim oShim;
     private final DexActor actor;
     private List<Type> typeArgs;
     private List<FunctionType> members;
     private List<FunctionType> functions;
     private List<Type> typeParams;
-    private ImplProvider implProvider;
 
-    public ActorType(TypeSystem ts, DexActor actor, ImplProvider implProvider) {
-        this(ts, actor, implProvider, null);
+    public ActorType(OutShim oShim, DexActor actor) {
+        this(oShim, actor, null);
     }
 
-    public ActorType(TypeSystem ts, DexActor actor,
-                     ImplProvider implProvider, List<Type> typeArgs) {
-        ts.lazyDefineFunctions(this);
+    public ActorType(OutShim oShim, DexActor actor, List<Type> typeArgs) {
         this.typeArgs = typeArgs;
-        this.implProvider = implProvider;
         this.actor = actor;
-        this.ts = ts;
+        this.oShim = oShim;
+        this.ts = oShim.typeSystem();
+        ts.lazyDefineFunctions(this);
     }
 
     @Override
@@ -60,7 +50,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
     @Override
     public Type generateType(List<Type> typeArgs) {
-        return new ActorType(ts, actor, implProvider, typeArgs);
+        return new ActorType(oShim, actor, typeArgs);
     }
 
     @Override
@@ -105,7 +95,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         }
         FunctionSig sig = new FunctionSig(ts.typeTable(), actor.sig());
         FunctionType functionType = new FunctionType(name(), params, ret, sig);
-        functionType.attach((FunctionType.LazyAttachment) () -> implProvider.callFunc(functionType, actor));
+        functionType.attach((FunctionType.LazyAttachment) () -> new CallActor(oShim, functionType, actor));
         return functionType;
     }
 
@@ -116,7 +106,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
         FunctionType functionType = new FunctionType("New__", params, this);
-        functionType.attach((FunctionType.LazyAttachment) () -> implProvider.newFunc(functionType, actor));
+        functionType.attach((FunctionType.LazyAttachment) () -> new NewActor(oShim, functionType, actor));
         return functionType;
     }
 
@@ -150,9 +140,11 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     private class AwaitConsumerCollector implements DexElement.Visitor {
 
         private final TypeTable localTypeTable;
+        private final String outerClassName;
 
         public AwaitConsumerCollector(TypeTable localTypeTable) {
             this.localTypeTable = localTypeTable;
+            outerClassName = OutTopLevelClass.qualifiedClassNameOf(actor);
         }
 
         @Override
@@ -183,8 +175,8 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
                 params.add(ResolveType.$(localTypeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType("New__", params, nestedActor);
-            functionType.attach((FunctionType.LazyAttachment) () -> implProvider.innerNewFunc(
-                    functionType, actor, awaitConsumer));
+            functionType.attach((FunctionType.LazyAttachment) () -> new NewInnerActor(
+                    oShim, functionType, outerClassName, awaitConsumer));
             return functionType;
         }
 
@@ -199,8 +191,8 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
                 params.add(ResolveType.$(localTypeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType(funcName, params, ret);
-            functionType.attach((FunctionType.LazyAttachment) () -> implProvider.innerCallFunc(
-                    functionType, actor, awaitConsumer));
+            functionType.attach((FunctionType.LazyAttachment) () -> new CallInnerActor(
+                    oShim, functionType, outerClassName, awaitConsumer));
             return functionType;
         }
     }

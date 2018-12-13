@@ -7,62 +7,50 @@ import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class FunctionImpl {
 
-    private final String canF;
-    private final String callF;
-    private final String newF;
-    private final FunctionType functionType;
+    protected final OutShim oShim;
+    protected final FunctionType functionType;
+    private String callF;
+    private String canF;
 
-    public FunctionImpl(FunctionType functionType, String canF, String callF, String newF) {
+    public FunctionImpl(OutShim oShim, FunctionType functionType) {
+        this.oShim = oShim;
         this.functionType = functionType;
-        this.canF = canF;
-        this.callF = callF;
-        this.newF = newF;
+        oShim.registerImpl(this);
     }
 
-    public String canF() {
-        return canF;
+    public boolean hasAwait() {
+        return false;
     }
 
     public String callF() {
+        if (callF == null) {
+            callF = OutShim.CLASSNAME + "." + genCallF();
+        }
         return callF;
     }
 
-    public String newF() {
-        return newF;
+    protected abstract String genCallF();
+
+    public String canF(TypeCandidates typeCandidates) {
+        if (canF == null) {
+            canF = OutShim.CLASSNAME + "." + genCanF(typeCandidates);
+        }
+        return canF;
     }
 
-    public final void finish(Gen g, CheckType checkType) {
-        genCanF(checkType, g, functionType().params());
-        genNewF(g);
-        genCallF(g);
-    }
-
-    protected FunctionType functionType() {
-        return functionType;
-    }
-
-    public abstract boolean hasAwait();
-
-    protected void genCallF(Gen g) {
-
-    }
-
-    protected void genNewF(Gen g) {
-
-    }
-
-    protected void genCanF(CheckType checkType, Gen g, @NotNull List<Type> params) {
-        String canF = OutShim.stripPrefix(canF());
+    protected String genCanF(TypeCandidates typeCandidates) {
+        String canF = oShim.allocateShim("can__" + functionType.name());
+        Gen g = oShim.g();
+        List<Type> params = functionType.params();
         List<String> typeChecks = new ArrayList<>();
         for (Type param : params) {
-            String typeCheck = checkType.$(g, param);
+            String typeCheck = typeCandidates.genIsF(param);
             typeChecks.add(typeCheck);
         }
         g.__("public static boolean "
@@ -81,5 +69,10 @@ public abstract class FunctionImpl {
             g.__("return true;");
         }));
         g.__(new Line("}"));
+        return canF;
+    }
+
+    public FunctionType functionType() {
+        return functionType;
     }
 }
