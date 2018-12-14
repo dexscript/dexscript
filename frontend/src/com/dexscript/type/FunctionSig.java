@@ -12,15 +12,22 @@ import java.util.*;
 // part of FunctionType
 public class FunctionSig {
 
-    public interface OnIncompatibleArgument {
+    public interface OnArgumentTypeMismatch {
         void handle(FunctionSig sig, List<Type> typeArgs, List<Type> args, Type retHint,
                     int index, Type arg, Type param, Map<Type, Type> sub);
     }
 
-    public static OnIncompatibleArgument ON_INCOMPATIBLE_ARGUMENT =
+    public static OnArgumentTypeMismatch ON_ARGUMENT_TYPE_MISMATCH =
             (sig, typeArgs, args, retHint, index, arg, param, sub) -> {
-
             };
+
+    public interface OnArgumentsCountMismatch {
+        void handle(FunctionSig sig, List<Type> args);
+    }
+
+    public static OnArgumentsCountMismatch ON_ARGUMENTS_COUNT_MISMATCH = (sig, args) -> {
+    };
+
     private final List<PlaceholderType> typeParams;
     private final List<Type> params;
     private final Type ret;
@@ -31,6 +38,13 @@ public class FunctionSig {
         this.params = params;
         this.ret = ret;
         this.retElem = null;
+    }
+
+    public FunctionSig(List<PlaceholderType> typeParams, List<Type> params, Type ret, DexType retElem) {
+        this.typeParams = typeParams;
+        this.params = params;
+        this.ret = ret;
+        this.retElem = retElem;
     }
 
     public FunctionSig(TypeTable typeTable, DexSig sig) {
@@ -57,8 +71,13 @@ public class FunctionSig {
         retElem = sig.ret();
     }
 
+    public List<Type> params() {
+        return params;
+    }
+
     Type invoke(TypeTable typeTable, List<Type> typeArgs, List<Type> args, Type retHint) {
         if (params.size() != args.size()) {
+            ON_ARGUMENTS_COUNT_MISMATCH.handle(this, args);
             return BuiltinTypes.UNDEFINED;
         }
         Map<Type, Type> sub = initSub(typeArgs);
@@ -73,7 +92,7 @@ public class FunctionSig {
                 argMatched = param.isAssignableFrom(subCtx, arg);
             }
             if (!argMatched) {
-                ON_INCOMPATIBLE_ARGUMENT.handle(this, typeArgs, args, retHint, i, arg, param, sub);
+                ON_ARGUMENT_TYPE_MISMATCH.handle(this, typeArgs, args, retHint, i, arg, param, sub);
                 return BuiltinTypes.UNDEFINED;
             }
             subCtx.commit();
@@ -106,9 +125,11 @@ public class FunctionSig {
         if (typeArgs.isEmpty()) {
             return collector;
         }
+        if (typeParams == null) {
+            return collector;
+        }
         if (typeParams.size() != typeArgs.size()) {
-            throw new DexSyntaxException("invoke function with wrong type arguments: " +
-                    typeArgs + ", expect: " + typeParams);
+            return collector;
         }
         for (int i = 0; i < typeParams.size(); i++) {
             PlaceholderType typeParam = typeParams.get(i);

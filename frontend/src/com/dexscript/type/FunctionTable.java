@@ -14,12 +14,20 @@ public class FunctionTable {
     public static final OnInvocationFilteredFunction ON_INVOCATION_FILTERED_FUNCTION = (funcName, func, typeArgs, args) -> {
     };
 
+    public interface OnFunctionDefined {
+        void handle(FunctionType func);
+    }
+
+    public static OnFunctionDefined ON_FUNCTION_DEFINED = func -> {
+    };
+
     private final Map<String, List<FunctionType>> defined = new HashMap<>();
     private final List<FunctionsProvider> providers = new ArrayList<>();
 
     public void define(FunctionType func) {
         List<FunctionType> functions = defined.computeIfAbsent(func.name(), k -> new ArrayList<>());
         functions.add(func);
+        ON_FUNCTION_DEFINED.handle(func);
     }
 
     public List<FunctionType.Invoked> invoke(

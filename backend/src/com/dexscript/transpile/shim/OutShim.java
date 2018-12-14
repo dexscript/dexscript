@@ -150,7 +150,7 @@ public class OutShim {
         entries.computeIfAbsent(entry, k -> new ArrayList<>()).add(impl);
     }
 
-    public void addJavaType(String className, Type type) {
-        javaTypes.add(className, type);
+    public JavaTypes javaTypes() {
+        return javaTypes;
     }
 }

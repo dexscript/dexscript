@@ -4,16 +4,28 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexNewExpr;
 import com.dexscript.infer.InferType;
-import com.dexscript.transpile.skeleton.OutClass;
-import com.dexscript.transpile.skeleton.OutField;
+import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.type.*;
+import com.dexscript.transpile.skeleton.OutClass;
+import com.dexscript.transpile.skeleton.OutField;
+import com.dexscript.type.FunctionType;
+import com.dexscript.type.ResolveReturnType;
+import com.dexscript.type.Type;
+import com.dexscript.type.TypeSystem;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class TranslateNew implements Translate<DexNewExpr> {
+
+    public interface OnFunctionMissing {
+        void handle(DexNewExpr iNewExpr);
+    }
+
+    public static OnFunctionMissing ON_FUNCTION_MISSING = iNewExpr -> {
+        throw new DexRuntimeException("function not found: " + iNewExpr);
+    };
 
     @Override
     public void handle(OutClass oClass, DexNewExpr iNewExpr) {
@@ -29,7 +41,10 @@ public class TranslateNew implements Translate<DexNewExpr> {
         List<Type> args = InferType.inferTypes(ts, invocation.args());
         List<Type> typeArgs = ts.resolveTypes(invocation.typeArgs());
         List<FunctionType.Invoked> invokeds = ts.invoke("New__", typeArgs, args, null);
-        String newF = oClass.oShim().dispatch(funcName , args.size(), invokeds);
+        if (invokeds.isEmpty()) {
+            ON_FUNCTION_MISSING.handle(iNewExpr);
+        }
+        String newF = oClass.oShim().dispatch(funcName, args.size(), invokeds);
         Type retType = ResolveReturnType.$(invokeds);
 
         Type promiseType = ts.resolveType("Promise", Arrays.asList(retType));

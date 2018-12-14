@@ -1,12 +1,12 @@
 package com.dexscript.transpile;
 
 import com.dexscript.analyze.CheckSyntaxError;
-import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
-import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.runtime.DexRuntimeException;
+import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.*;
@@ -35,6 +35,7 @@ public class OutTown {
         oShim.importJavaFunctions(BasicOperators.class);
 //        oShim.importJavaFunctions(Encodes.class);
         oShim.importJavaClass(File.class);
+        oShim.importJavaClass(ArrayList.class);
     }
 
     public OutTown addFile(String fileName, String src) {

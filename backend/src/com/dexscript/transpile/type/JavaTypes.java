@@ -124,4 +124,8 @@ public class JavaTypes {
         }
         return type;
     }
+
+    public Type tryResolve(Class clazz) {
+        return types.get(clazz.getCanonicalName());
+    }
 }

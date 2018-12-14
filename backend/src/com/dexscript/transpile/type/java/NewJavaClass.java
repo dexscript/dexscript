@@ -7,34 +7,37 @@ import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.type.FunctionType;
-import com.dexscript.type.Type;
+
+import java.lang.reflect.Constructor;
 
 class NewJavaClass extends FunctionImpl {
 
-    private final Class clazz;
+    private final Constructor ctor;
 
-    public NewJavaClass(OutShim oShim, FunctionType functionType, Class clazz) {
+    public NewJavaClass(OutShim oShim, FunctionType functionType, Constructor ctor) {
         super(oShim, functionType);
-        this.clazz = clazz;
+        this.ctor = ctor;
     }
 
     @Override
     protected String genCallF() {
         Gen g = oShim.g();
-        String callF = oShim.allocateShim("new__" + clazz.getSimpleName());
+        String callF = oShim.allocateShim("new__" + ctor.getDeclaringClass().getSimpleName());
         g.__("public static Object "
         ).__(callF);
-        DeclareParams.$(g, functionType.params().size() + 1, false);
+        DeclareParams.$(g, functionType.params().size(), true);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__("return new "
-            ).__(clazz.getCanonicalName()
+            ).__(ctor.getDeclaringClass().getCanonicalName()
             ).__('(');
-            for (int i = 0; i < functionType.params().size(); i++) {
+            for (int i = 0; i < ctor.getParameterCount(); i++) {
                 if (i > 0) {
                     g.__(", ");
                 }
-                g.__("arg"
+                g.__('('
+                ).__(ctor.getParameterTypes()[i].getCanonicalName()
+                ).__(")arg"
                 ).__(i + 1);
             }
             g.__(");");

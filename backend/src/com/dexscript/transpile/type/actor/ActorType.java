@@ -35,7 +35,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         this.oShim = oShim;
         this.ts = oShim.typeSystem();
         ts.lazyDefineFunctions(this);
-        oShim.addJavaType(qualifiedClassNameOf(actor), this);
+        oShim.javaTypes().add(qualifiedClassNameOf(actor), this);
     }
 
     public static String qualifiedClassNameOf(DexActor actor) {

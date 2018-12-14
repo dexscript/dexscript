@@ -64,4 +64,9 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Task";
+    }
 }

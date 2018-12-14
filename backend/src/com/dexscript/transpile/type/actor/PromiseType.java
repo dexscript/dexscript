@@ -64,4 +64,9 @@ public class PromiseType implements NamedType, FunctionsProvider, GenericType {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Promise";
+    }
 }
