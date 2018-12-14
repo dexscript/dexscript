@@ -3,6 +3,7 @@ package com.dexscript.transpile.body;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
 import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;

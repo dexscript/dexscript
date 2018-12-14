@@ -14,8 +14,9 @@ public class TranslateProduce implements Translate<DexProduceStmt> {
         }
         Translate.$(oClass, iProduceStmt.target());
         String target = OutValue.of(iProduceStmt.target());
-        oClass.g().__(target
-        ).__(".produce("
+        oClass.g().__("((Actor)"
+        ).__(target
+        ).__(").produce("
         ).__(produced
         ).__(new Line(");"));
     }

@@ -54,9 +54,9 @@ public class OutStateMachine {
         ).__("() {"
         ).__(new Indent(() -> {
             for (Map.Entry<String, Integer> entry : toStates.entrySet()) {
-                g.__("if ("
+                g.__("if (((Promise)"
                 ).__(entry.getKey()
-                ).__(".finished()) {"
+                ).__(").finished()) {"
                 ).__(new Indent(() -> {
                     Integer toState = entry.getValue();
                     g.__("State"

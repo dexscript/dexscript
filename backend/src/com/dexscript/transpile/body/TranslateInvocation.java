@@ -46,8 +46,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         String newF = oClass.oShim().dispatch(funcName, iArgs.size(), invokeds);
         Type retType = ResolveReturnType.$(invokeds);
 
-        Type promiseType = ts.resolveType("Promise", Arrays.asList(retType));
-        OutField oActorField = oClass.allocateField(funcName, promiseType);
+        OutField oActorField = oClass.allocateField(funcName, retType);
         oClass.g().__(oActorField.value()
         ).__(" = "
         ).__(newF
@@ -63,7 +62,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         for (FunctionType.Invoked invoked : invokeds) {
             FunctionImpl impl = (FunctionImpl) invoked.function().attachment();
             if (impl.hasAwait()) {
-                needToConsume =  true;
+                needToConsume = true;
                 break;
             }
         }
@@ -75,9 +74,9 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         }
         OutField oResultField = oClass.allocateField(oActorField.value().substring(1) + "Result", retType);
         oClass.g().__(oResultField.value()
-        ).__(" = ("
+        ).__(" = ((Promise)"
         ).__(oActorField.value()
-        ).__(new Line(".value()));"));
+        ).__(new Line(").value();"));
         return oResultField;
     }
 
@@ -88,9 +87,9 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         }
         OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", retType);
         oClass.g().__(oResultField.value()
-        ).__(" = "
+        ).__(" = ((Promise)"
         ).__(targetActor
-        ).__(new Line(".value();"));
+        ).__(new Line(").value();"));
         return oResultField;
     }
 
@@ -100,19 +99,17 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         int toState = oStateMachine.nextState();
         oStateMachine.addTransition(fromState, targetActor, toState);
         String stateMethodName = OutStateMethod.methodName(toState);
-        oClass.g().__("if ("
+        oClass.g().__("if (((Promise)"
         ).__(targetActor
-        ).__(".finished()) {"
+        ).__(").finished()) {"
         ).__(new Indent(() -> {
             oClass.g().__(stateMethodName).__("();");
-        })
-        ).__("} else {"
+        })).__("} else {"
         ).__(new Indent(() -> {
             oClass.g().__("((Actor)"
             ).__(targetActor
             ).__(").addConsumer(this);");
-        })
-        ).__(new Line("}"));
+        })).__(new Line("}"));
         new OutStateMethod(oClass, toState);
     }
 }
