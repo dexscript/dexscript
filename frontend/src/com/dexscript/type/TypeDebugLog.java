@@ -1,7 +1,5 @@
 package com.dexscript.type;
 
-import java.util.List;
-
 public class TypeDebugLog {
 
     public static void on() {

@@ -61,6 +61,9 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         boolean needToConsume = false;
         for (FunctionType.Invoked invoked : invokeds) {
             FunctionImpl impl = (FunctionImpl) invoked.function().attachment();
+            if (impl == null) {
+                throw new IllegalStateException("function type defined without impl attached: " + invoked.function());
+            }
             if (impl.hasAwait()) {
                 needToConsume = true;
                 break;

@@ -31,6 +31,7 @@ public class JavaTypes {
         add(Long.class, BuiltinTypes.INT64);
         add(UInt8.class, BuiltinTypes.UINT8);
         add(Boolean.class, BuiltinTypes.BOOL);
+        add(boolean.class, BuiltinTypes.BOOL);
     }
 
     public void add(Class clazz, Type type) {

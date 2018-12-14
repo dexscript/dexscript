@@ -1,11 +1,12 @@
 package com.dexscript.transpile.type.java;
 
-import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.shim.OutShim;
+import com.dexscript.transpile.type.JavaTypes;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         this.oShim = oShim;
         this.clazz = clazz;
         this.typeArgs = typeArgs;
+        oShim.javaTypes().add(clazz, this);
         oShim.typeSystem().defineType(this);
         oShim.typeSystem().lazyDefineFunctions(this);
     }
@@ -53,33 +55,57 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         }
         functions = new ArrayList<>();
         newFuncs(functions);
+        javaMethodToDexFuncs(functions);
         return functions;
     }
 
-    private void newFuncs(List<FunctionType> functions) {
-        for (Constructor ctor : clazz.getConstructors()) {
-            FunctionType function = newFunc(ctor);
-            if (function != null) {
-                functions.add(function);
-            }
+    private void javaMethodToDexFuncs(List<FunctionType> collector) {
+        for (Method method : clazz.getMethods()) {
+            javaMethodToDexFunc(collector, method);
         }
     }
 
-    private FunctionType newFunc(Constructor ctor) {
+    private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
+        JavaTypes javaTypes = oShim.javaTypes();
+        Type ret = javaTypes.tryResolve(method.getReturnType());
+        if (ret == null) {
+            return;
+        }
+        ArrayList<Type> params = new ArrayList<>();
+        params.add(this);
+        for (Class<?> paramClazz : method.getParameterTypes()) {
+            Type param = javaTypes.tryResolve(paramClazz);
+            if (param == null) {
+                return;
+            }
+            params.add(param);
+        }
+        FunctionType function = new FunctionType(method.getName(), params, ret);
+        function.attach((FunctionType.LazyAttachment) () -> new CallJavaMethod(oShim, function, method));
+        collector.add(function);
+    }
+
+    private void newFuncs(List<FunctionType> collector) {
+        for (Constructor ctor : clazz.getConstructors()) {
+            newFunc(collector, ctor);
+        }
+    }
+
+    private void newFunc(List<FunctionType> collector, Constructor ctor) {
         ArrayList<Type> params = new ArrayList<>();
         String funcName = clazz.getSimpleName();
         params.add(new StringLiteralType(funcName));
         for (Class paramType : ctor.getParameterTypes()) {
             Type type = oShim.javaTypes().tryResolve(paramType);
             if (type == null) {
-                return null;
+                return;
             }
             params.add(type);
         }
         FunctionSig sig = new FunctionSig(placeholders, params, this, null);
         FunctionType function = new FunctionType("New__", params, this, sig);
         function.attach((FunctionType.LazyAttachment) () -> new NewJavaClass(oShim, function, ctor));
-        return function;
+        collector.add(function);
     }
 
     @Override
