@@ -35,6 +35,7 @@ public class OutTown {
         oShim.importJavaFunctions(BasicOperators.class);
 //        oShim.importJavaFunctions(Encodes.class);
         oShim.importJavaClass(File.class);
+        oShim.importJavaClass(List.class);
         oShim.importJavaClass(ArrayList.class);
     }
 

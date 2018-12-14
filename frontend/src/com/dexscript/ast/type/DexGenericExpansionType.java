@@ -101,6 +101,7 @@ public class DexGenericExpansionType extends DexType {
         State firstTypeArg() {
             typeArgs = new ArrayList<>();
             DexType typeArg = DexType.parse(src.slice(i), 0);
+            typeArg.reparent(DexGenericExpansionType.this);
             typeArgs.add(typeArg);
             if (!typeArg.matched()) {
                 return this::missingTypeArg;
@@ -133,6 +134,7 @@ public class DexGenericExpansionType extends DexType {
         @Expect("type")
         State moreTypeArgs() {
             DexType typeArg = DexType.parse(src.slice(i), 0);
+            typeArg.reparent(DexGenericExpansionType.this);
             typeArgs.add(typeArg);
             if (!typeArg.matched()) {
                 return this::missingTypeArg;
