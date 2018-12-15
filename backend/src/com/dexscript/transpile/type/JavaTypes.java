@@ -6,9 +6,7 @@ import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.type.BuiltinTypes;
-import com.dexscript.type.StringLiteralType;
-import com.dexscript.type.Type;
+import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;
@@ -51,6 +49,8 @@ public class JavaTypes {
         String isF;
         if (targetType instanceof StringLiteralType) {
             isF = genStringLiteral((StringLiteralType) targetType);
+        } else if (isAny(targetType)) {
+            isF = genAny(targetType);
         } else {
             isF = genGeneral(targetType);
         }
@@ -58,8 +58,15 @@ public class JavaTypes {
         return isF;
     }
 
+    private boolean isAny(Type targetType) {
+        if (targetType instanceof AnyType) {
+            return true;
+        }
+        return targetType instanceof FunctionsProvider && ((FunctionsProvider) targetType).functions().isEmpty();
+    }
+
     private String genStringLiteral(StringLiteralType stringLiteralType) {
-        String isF = oShim.allocateShim("is__" + md5(stringLiteralType.toString()));
+        String isF = allocateShim(stringLiteralType);
         Gen g = oShim.g();
         g.__("public static boolean "
         ).__(isF
@@ -76,7 +83,7 @@ public class JavaTypes {
     }
 
     private String genGeneral(Type targetType) {
-        String isF = oShim.allocateShim("is__" + targetType.toString());
+        String isF = allocateShim(targetType);
         Gen g = oShim.g();
         g.__("public static boolean "
         ).__(isF
@@ -96,6 +103,26 @@ public class JavaTypes {
         }));
         g.__(new Line("}"));
         return isF;
+    }
+
+    private String genAny(Type targetType) {
+        String isF = allocateShim(targetType);
+        Gen g = oShim.g();
+        g.__("public static boolean "
+        ).__(isF
+        ).__("(Object obj) {");
+        g.__(new Indent(() -> {
+            g.__(new Line("return true;"));
+        }));
+        g.__(new Line("}"));
+        return isF;
+    }
+
+    private String allocateShim(Type type) {
+        if (type instanceof NamedType) {
+            return oShim.allocateShim("is__" + type.toString());
+        }
+        return oShim.allocateShim("is__" + md5(type.toString()));
     }
 
     @NotNull
