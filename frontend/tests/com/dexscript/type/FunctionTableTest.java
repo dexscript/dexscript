@@ -5,7 +5,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class FunctionTableTest {
             typeArgs = ResolveType.$(typeTable, typeArgsStr.split(","));
         }
         List<Type> args = ResolveType.$(typeTable, argsStr.split(","));
-        return functionTable.invoke(typeTable, funcName, typeArgs, args, null);
+        return functionTable.invoke(typeTable, new Invocation(funcName, typeArgs, args, null));
     }
 
     @Test

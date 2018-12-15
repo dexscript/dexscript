@@ -8,10 +8,10 @@ import java.util.Map;
 public class FunctionTable {
 
     public interface OnInvocationFilteredFunction {
-        void handle(String funcName, FunctionType func, List<Type> typeArgs, List<Type> args);
+        void handle(FunctionType func, Invocation ivc);
     }
 
-    public static final OnInvocationFilteredFunction ON_INVOCATION_FILTERED_FUNCTION = (funcName, func, typeArgs, args) -> {
+    public static final OnInvocationFilteredFunction ON_INVOCATION_FILTERED_FUNCTION = (func, ivc) -> {
     };
 
     public interface OnFunctionDefined {
@@ -30,22 +30,21 @@ public class FunctionTable {
         ON_FUNCTION_DEFINED.handle(func);
     }
 
-    public List<FunctionType.Invoked> invoke(
-            TypeTable typeTable, String funcName,
-            List<Type> typeArgs, List<Type> args, Type retHint) {
+    public List<FunctionType.Invoked> invoke(TypeTable typeTable, Invocation ivc) {
+        String funcName = ivc.funcName();
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
             return new ArrayList<>();
         }
         List<FunctionType.Invoked> invokeds = new ArrayList<>();
-        for (FunctionType function : functions) {
-            Type ret = function.sig().invoke(typeTable, typeArgs, args, retHint);
+        for (FunctionType func : functions) {
+            Type ret = func.sig().invoke(typeTable, ivc);
             if (BuiltinTypes.UNDEFINED.equals(ret)) {
-                ON_INVOCATION_FILTERED_FUNCTION.handle(funcName, function, typeArgs, args);
+                ON_INVOCATION_FILTERED_FUNCTION.handle(func, ivc);
                 continue;
             }
-            FunctionType.Invoked invoked = new FunctionType.Invoked(function, ret);
+            FunctionType.Invoked invoked = new FunctionType.Invoked(func, ret);
             invokeds.add(invoked);
         }
         return invokeds;

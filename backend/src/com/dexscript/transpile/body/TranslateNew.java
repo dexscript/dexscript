@@ -9,10 +9,7 @@ import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
-import com.dexscript.type.FunctionType;
-import com.dexscript.type.ResolveReturnType;
-import com.dexscript.type.Type;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,7 +37,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
         DexInvocation invocation = iNewExpr.invocation();
         List<Type> args = InferType.inferTypes(ts, invocation.args());
         List<Type> typeArgs = ts.resolveTypes(invocation.typeArgs());
-        List<FunctionType.Invoked> invokeds = ts.invoke("New__", typeArgs, args, null);
+        List<FunctionType.Invoked> invokeds = ts.invoke(new Invocation("New__", typeArgs, args, null));
         if (invokeds.isEmpty()) {
             ON_FUNCTION_MISSING.handle(iNewExpr);
         }

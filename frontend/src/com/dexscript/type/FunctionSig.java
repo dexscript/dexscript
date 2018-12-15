@@ -43,7 +43,7 @@ public class FunctionSig {
     }
 
     public FunctionSig(List<PlaceholderType> typeParams, List<Type> params, Type ret, DexType retElem) {
-        this.typeParams = typeParams;
+        this.typeParams = typeParams == null ? Collections.emptyList() : typeParams;
         this.params = params;
         this.ret = ret;
         this.retElem = retElem;
@@ -81,7 +81,14 @@ public class FunctionSig {
         return ret;
     }
 
-    Type invoke(TypeTable typeTable, List<Type> typeArgs, List<Type> args, Type retHint) {
+    public List<PlaceholderType> typeParams() {
+        return typeParams;
+    }
+
+    Type invoke(TypeTable typeTable, Invocation ivc) {
+        List<Type> args = ivc.args();
+        List<Type> typeArgs = ivc.typeArgs();
+        Type retHint = ivc.retHint();
         if (params.size() != args.size()) {
             ON_ARGUMENTS_COUNT_MISMATCH.handle(this, args);
             return BuiltinTypes.UNDEFINED;
@@ -167,7 +174,7 @@ public class FunctionSig {
         StringBuilder desc = new StringBuilder();
         desc.append('(');
         boolean isFirst = true;
-        for (PlaceholderType typeParam : typeParams) {
+        for (PlaceholderType typeParam : typeParams()) {
             if (isFirst) {
                 isFirst = false;
             } else {

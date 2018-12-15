@@ -16,7 +16,6 @@ import com.dexscript.transpile.skeleton.OutStateMachine;
 import com.dexscript.transpile.skeleton.OutStateMethod;
 import com.dexscript.type.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class TranslateInvocation<E extends DexElement & DexInvocationExpr> implements Translate<E> {
@@ -38,7 +37,8 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
 
         List<Type> args = InferType.inferTypes(ts, iArgs);
         List<Type> typeArgs = ts.resolveTypes(iTypeArgs);
-        List<FunctionType.Invoked> invokeds = ts.invoke(funcName, typeArgs, args, null);
+        Invocation ivc = new Invocation(funcName, typeArgs, args, null);
+        List<FunctionType.Invoked> invokeds = ts.invoke(ivc);
         if (invokeds.size() == 0) {
             throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
                     funcName, args));

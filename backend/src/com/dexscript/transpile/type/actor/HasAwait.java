@@ -11,7 +11,7 @@ import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
 import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.type.FunctionType;
-import com.dexscript.transpile.type.actor.InnerActorType;
+import com.dexscript.type.Invocation;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
@@ -50,7 +50,7 @@ public class HasAwait implements DexElement.Visitor {
         if (elem instanceof DexInvocationExpr) {
             DexInvocation invocation = ((DexInvocationExpr) elem).invocation();
             List<Type> args = InferType.inferTypes(ts, invocation.args());
-            List<FunctionType.Invoked> invokeds = ts.invoke(invocation.funcName(), null, args, null);
+            List<FunctionType.Invoked> invokeds = ts.invoke(new Invocation(invocation.funcName(), null, args, null));
             for (FunctionType.Invoked invoked : invokeds) {
                 FunctionImpl impl = (FunctionImpl) invoked.function().attachment();
                 if (impl.hasAwait()) {

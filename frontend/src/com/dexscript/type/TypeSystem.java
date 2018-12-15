@@ -3,7 +3,6 @@ package com.dexscript.type;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.type.DexType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TypeSystem {
@@ -21,8 +20,8 @@ public class TypeSystem {
         return new InterfaceType(typeTable, functionTable, inf);
     }
 
-    public List<FunctionType.Invoked> invoke(String funcName, List<Type> typeArgs, List<Type> args, Type retHint) {
-        return functionTable.invoke(typeTable, funcName, typeArgs, args, retHint);
+    public List<FunctionType.Invoked> invoke(Invocation ivc) {
+        return functionTable.invoke(typeTable, ivc);
     }
 
     public Type resolveType(String typeName) {
