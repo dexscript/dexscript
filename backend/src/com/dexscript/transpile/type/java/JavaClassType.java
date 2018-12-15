@@ -19,6 +19,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     private List<FunctionType> functions;
     private List<Type> typeParams;
     private ArrayList<PlaceholderType> placeholders;
+    private TypeSystem ts;
 
     public JavaClassType(OutShim oShim, Class clazz) {
         this(oShim, clazz, null);
@@ -28,9 +29,10 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         this.oShim = oShim;
         this.clazz = clazz;
         this.typeArgs = typeArgs;
+        ts = oShim.typeSystem();
         oShim.javaTypes().add(clazz, this);
-        oShim.typeSystem().defineType(this);
-        oShim.typeSystem().lazyDefineFunctions(this);
+        ts.defineType(this);
+        ts.lazyDefineFunctions(this);
     }
 
     @Override
@@ -41,11 +43,6 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     @Override
     public String toString() {
         return name();
-    }
-
-    @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
-        return false;
     }
 
     @Override
@@ -127,5 +124,10 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
             placeholders.add(new PlaceholderType("T", typeParam));
         }
         return typeParams;
+    }
+
+    @Override
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+        return ts.isSubType(ctx, this, that);
     }
 }

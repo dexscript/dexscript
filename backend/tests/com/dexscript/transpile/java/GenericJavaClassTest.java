@@ -28,12 +28,13 @@ public class GenericJavaClassTest {
                 "   list = new ArrayList<int64>()\n" +
                 "   return TakeList(list)\n" +
                 "}\n" +
+                "function TakeList(list: List<interface{}>): string {\n" +
+                "   return 'matched List<interface{}>'\n" +
+                "}\n" +
                 "function TakeList(list: List<int64>): string {\n" +
                 "   return 'matched List<int64>'\n" +
                 "}\n" +
-                "function TakeList(list: List<interface{}>): string {\n" +
-                "   return 'matched List<interface{}>'\n" +
-                "}");
+                "");
         Assert.assertEquals("matched List<int64>", result);
     }
 }

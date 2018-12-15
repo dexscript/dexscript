@@ -8,15 +8,12 @@ import com.dexscript.type.Type;
 class CheckReturn implements CheckSemanticError.Handler<DexReturnStmt> {
     @Override
     public void handle(CheckSemanticError cse, DexReturnStmt elem) {
-        Type actualType = InferType.$(cse.typeSystem(), elem.expr());
-        if (BuiltinTypes.UNDEFINED.equals(actualType)) {
+        Type assignedFrom = InferType.$(cse.typeSystem(), elem.expr());
+        if (BuiltinTypes.UNDEFINED.equals(assignedFrom)) {
             cse.report(elem.expr(), "referenced value not found: " + elem);
             return;
         }
-        Type expectedType = cse.typeSystem().resolveType(elem.sig().ret());
-        if (!expectedType.isAssignableFrom(actualType)) {
-            cse.report(elem, "returned type not assignable, expected: " + expectedType + ", actual: " + actualType);
-            return;
-        }
+        Type assignedTo = cse.typeSystem().resolveType(elem.sig().ret());
+        CheckAssignment.checkTypeAssignable(cse, elem, assignedTo, assignedFrom);
     }
 }

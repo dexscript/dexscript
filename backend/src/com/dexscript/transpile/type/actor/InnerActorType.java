@@ -36,12 +36,7 @@ public class InnerActorType implements Type, FunctionsProvider {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
-        for (FunctionType member : functions()) {
-            if (!ts.isFunctionDefined(ctx, member)) {
-                return false;
-            }
-        }
-        return true;
+    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+        return ts.isSubType(ctx, this, that);
     }
 }

@@ -1,9 +1,6 @@
 package com.dexscript.type;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class TypeComparisonContext {
 
@@ -11,15 +8,25 @@ public final class TypeComparisonContext {
     private final Map<Type, Type> substituted;
     private final Set<FunctionType> undefined = new HashSet<>();
     private final String logPrefix;
+    private final int logUntilLevelN;
+    private final List<String> logCollector;
 
     public TypeComparisonContext(TypeComparisonContext parent) {
         this.parent = parent;
+        this.logUntilLevelN = parent.logUntilLevelN - 1;
+        logCollector = parent.logCollector;
         substituted = new HashMap<>();
         logPrefix = parent.logPrefix + "  ";
     }
 
     public TypeComparisonContext(Map<Type, Type> collector) {
+        this(collector, 0, null);
+    }
+
+    public TypeComparisonContext(Map<Type, Type> collector, int logUntilLevelN, List<String> logCollector) {
+        this.logCollector = logCollector;
         this.parent = null;
+        this.logUntilLevelN = logUntilLevelN;
         substituted = collector;
         logPrefix = "";
     }
@@ -58,15 +65,17 @@ public final class TypeComparisonContext {
     }
 
     public boolean shouldLog() {
-        return false;
+        return logUntilLevelN > 0;
     }
 
     public void log(boolean assignable, Type to, Type from, String reason) {
-        System.out.println(logPrefix + "[" + (assignable ? "assignable" : "not assignable") + "]" + " " + to + " | " + from + " | " + reason);
+        logCollector.add(String.format("%s[%s] %s | %s | %s",
+                logPrefix, assignable ? "assignable" : "not assignable",
+                to, from, reason));
     }
 
     public void log(String msg) {
-        System.out.println(logPrefix + msg);
+        logCollector.add(logPrefix + msg);
     }
 
     public void undefine(FunctionType type) {

@@ -56,13 +56,7 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
-        ctx.putSubstituted(this, that);
-        for (FunctionType member : functions()) {
-            if (!ts.isFunctionDefined(ctx, member)) {
-                return false;
-            }
-        }
-        return true;
+        return ts.isSubType(ctx, this, that);
     }
 
     @Override

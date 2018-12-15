@@ -48,8 +48,8 @@ public class TypeSystem {
         functionTable.lazyDefine(functionsProvider);
     }
 
-    public boolean isFunctionDefined(TypeComparisonContext ctx, FunctionType functionType) {
-        return functionTable.isDefined(ctx, functionType);
+    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider assignedTo, Type assignedFrom) {
+        return functionTable.isSubType(ctx, assignedTo, assignedFrom);
     }
 
     public void lazyDefineTypes(NamedTypesProvider typesProvider) {

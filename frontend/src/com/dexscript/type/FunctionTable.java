@@ -99,4 +99,31 @@ public class FunctionTable {
         }
     }
 
+    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider assignedTo, Type assignedFrom) {
+        if (ctx.levels() > 20) {
+            return true;
+        }
+        if (ctx.shouldLog()) {
+            ctx.log(">>> check " + assignedTo + " is assignable from " + assignedFrom);
+        }
+        ctx.putSubstituted(assignedFrom, assignedTo);
+        TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
+        for (FunctionType member : assignedTo.functions()) {
+            subCtx.undefine(member);
+        }
+        for (FunctionType member : assignedTo.functions()) {
+            if (!isDefined(subCtx, member)) {
+                if (ctx.shouldLog()) {
+                    ctx.log("<<< " + assignedTo + " is not assignable from " + assignedFrom + " because missing " + member);
+                }
+                return false;
+            }
+        }
+        subCtx.commit();
+        if (ctx.shouldLog()) {
+            ctx.log("<<< " + assignedTo + " is assignable from " + assignedFrom);
+        }
+        return true;
+    }
+
 }

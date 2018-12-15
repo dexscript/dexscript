@@ -1,6 +1,11 @@
 package com.dexscript.analyze;
 
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
+import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.DexTopLevelDecl;
+import com.dexscript.ast.type.DexInterfaceType;
+import com.dexscript.type.InterfaceType;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,7 +17,14 @@ public class CheckSemanticErrorTest {
     }
 
     private static boolean check(String src) {
-        CheckSemanticError result = new CheckSemanticError(new TypeSystem(), parse(src));
+        TypeSystem ts = new TypeSystem();
+        DexFile file = parse(src);
+        for (DexTopLevelDecl decl : file.topLevelDecls()) {
+            if (decl.inf() != null) {
+                ts.defineInterface(decl.inf());
+            }
+        }
+        CheckSemanticError result = new CheckSemanticError(ts, file);
         return result.hasError();
     }
 
@@ -65,6 +77,20 @@ public class CheckSemanticErrorTest {
         String src = "" +
                 "function Hello() {\n" +
                 "   var i: int64\n" +
+                "   i = 'hello'\n" +
+                "}";
+        Assert.assertTrue(check(src));
+    }
+
+    @Test
+    public void interface_not_implemented() {
+        String src = "" +
+                "interface MyObject {\n" +
+                "   Say(): string\n" +
+                "}\n" +
+                "" +
+                "function Hello() {\n" +
+                "   var i: MyObject\n" +
                 "   i = 'hello'\n" +
                 "}";
         Assert.assertTrue(check(src));

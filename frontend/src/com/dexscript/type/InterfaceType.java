@@ -87,27 +87,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
-        if (ctx.shouldLog()) {
-            ctx.log(">>> check " + this + " is assignable from " + that);
-        }
-        ctx.putSubstituted(that, this);
-        TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
-        for (FunctionType member : functions()) {
-            subCtx.undefine(member);
-        }
-        for (FunctionType member : functions()) {
-            if (!functionTable.isDefined(subCtx, member)) {
-                if (ctx.shouldLog()) {
-                    ctx.log("<<< " + this + " is not assignable from " + that + " because missing " + member);
-                }
-                return false;
-            }
-        }
-        subCtx.commit();
-        if (ctx.shouldLog()) {
-            ctx.log("<<< " + this + " is assignable from " + that);
-        }
-        return true;
+        return functionTable.isSubType(ctx, this, that);
     }
 
     @Override

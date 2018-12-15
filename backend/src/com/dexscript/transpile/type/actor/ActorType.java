@@ -122,13 +122,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
-        functions();
-        for (FunctionType member : members) {
-            if (!ts.isFunctionDefined(ctx, member)) {
-                return false;
-            }
-        }
-        return true;
+        return ts.isSubType(ctx, this, thatObj);
     }
 
     @Override
