@@ -28,7 +28,6 @@ public class TypeTable {
     };
 
     public final static OnNoSuchType ON_NO_SUCH_TYPE = name -> {
-        throw new DexSyntaxException("no such paramType: " + name);
     };
 
     public final static OnGenericTypeArgumentsSizeMismatch ON_GENERIC_TYPE_ARGUMENTS_SIZE_MISMATCH =

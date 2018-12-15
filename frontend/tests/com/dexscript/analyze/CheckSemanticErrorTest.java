@@ -7,24 +7,31 @@ import org.junit.Test;
 
 public class CheckSemanticErrorTest {
 
+    private static DexFile parse(String src) {
+        return new DexFile("package abc\n" + src);
+    }
+
+    private static boolean check(String src) {
+        CheckSemanticError result = new CheckSemanticError(new TypeSystem(), parse(src));
+        return result.hasError();
+    }
+
     @Test
     public void reference_not_existing_variable() {
-        String src = "package example\n" +
+        String src = "" +
                 "function Hello() {\n" +
                 "   return msg\n" +
                 "}";
-        CheckSemanticError result = new CheckSemanticError(new TypeSystem(), new DexFile(src));
-        Assert.assertTrue(result.hasError());
+        Assert.assertTrue(check(src));
     }
-//
-//    @Test
-//    public void reference_not_existing_type() {
-//        String src = "package example\n" +
-//                "function Hello(msg: int10) {\n" +
-//                "}";
-//        CheckSemanticError result = new CheckSemanticError(new ResolveType(), new DexFile(src));
-//        Assert.assertTrue(result.hasError());
-//    }
+
+    @Test
+    public void reference_not_existing_type() {
+        String src = "package example\n" +
+                "function Hello(msg: int10) {\n" +
+                "}";
+        Assert.assertTrue(check(src));
+    }
 //
 //    @Test
 //    public void return_type_mismatch() {

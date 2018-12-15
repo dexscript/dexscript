@@ -18,6 +18,7 @@ public class CheckSemanticError implements DexElement.Visitor {
     private static Map<Class<? extends DexElement>, Handler> handlers = new HashMap<Class<? extends DexElement>, Handler>() {
         {
             add(new CheckValueRef());
+            add(new CheckTypeRef());
         }
 
         private void add(Handler<?> handler) {
