@@ -14,6 +14,7 @@ import com.dexscript.transpile.type.actor.PromiseType;
 import com.dexscript.transpile.type.actor.TaskType;
 import com.dexscript.transpile.type.java.CallJavaFunction;
 import com.dexscript.transpile.type.java.JavaClassType;
+import com.dexscript.type.FunctionSig;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;

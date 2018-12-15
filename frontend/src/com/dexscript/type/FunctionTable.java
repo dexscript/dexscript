@@ -38,13 +38,17 @@ public class FunctionTable {
             return new ArrayList<>();
         }
         List<FunctionSig.Invoked> invokeds = new ArrayList<>();
-        for (FunctionType func : functions) {
+        for (int i = functions.size() - 1; i >= 0; i--) {
+            FunctionType func = functions.get(i);
             FunctionSig.Invoked invoked = func.sig().invoke(typeTable, ivc);
             if (!invoked.compatible()) {
                 ON_INVOCATION_FILTERED_FUNCTION.handle(func, ivc);
                 continue;
             }
             invokeds.add(invoked);
+            if (!invoked.needRuntimeCheck()) {
+                return invokeds;
+            }
         }
         return invokeds;
     }

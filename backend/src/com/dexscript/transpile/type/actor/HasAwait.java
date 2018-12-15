@@ -10,10 +10,7 @@ import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
 import com.dexscript.transpile.type.FunctionImpl;
-import com.dexscript.type.FunctionType;
-import com.dexscript.type.Invocation;
-import com.dexscript.type.Type;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.*;
 
 import java.util.List;
 

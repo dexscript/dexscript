@@ -3,6 +3,7 @@ package com.dexscript.transpile.shim;
 import com.dexscript.transpile.gen.*;
 import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.transpile.type.JavaTypes;
+import com.dexscript.type.FunctionSig;
 import com.dexscript.type.FunctionType;
 
 import java.util.ArrayList;

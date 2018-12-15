@@ -56,4 +56,12 @@ public class FunctionTableTest {
         List<FunctionSig.Invoked> invokeds = invoke("Hello", "string");
         Assert.assertEquals(2, invokeds.size());
     }
+
+    @Test
+    public void if_static_checked_then_following_candidates_will_be_ignored() {
+        func("Hello(arg0: 'a')");
+        func("Hello(arg0: string)");
+        List<FunctionSig.Invoked> invokeds = invoke("Hello", "string");
+        Assert.assertEquals(1, invokeds.size());
+    }
 }
