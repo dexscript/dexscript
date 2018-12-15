@@ -1,5 +1,8 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.expr.DexInvocation;
+import com.dexscript.infer.InferType;
+
 import java.util.List;
 
 public class Invocation {
@@ -11,6 +14,15 @@ public class Invocation {
 
     public Invocation(String funcName, List<Type> typeArgs, List<Type> args, Type retHint) {
         this.funcName = funcName;
+        this.typeArgs = typeArgs;
+        this.args = args;
+        this.retHint = retHint;
+    }
+
+    public Invocation(TypeSystem ts, DexInvocation ivc, Type retHint) {
+        List<Type> args = InferType.inferTypes(ts, ivc.args());
+        List<Type> typeArgs = ts.resolveTypes(ivc.typeArgs());
+        this.funcName = ivc.funcName();
         this.typeArgs = typeArgs;
         this.args = args;
         this.retHint = retHint;
