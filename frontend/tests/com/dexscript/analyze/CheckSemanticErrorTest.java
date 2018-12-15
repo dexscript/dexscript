@@ -27,21 +27,20 @@ public class CheckSemanticErrorTest {
 
     @Test
     public void reference_not_existing_type() {
-        String src = "package example\n" +
+        String src = "" +
                 "function Hello(msg: int10) {\n" +
                 "}";
         Assert.assertTrue(check(src));
     }
-//
-//    @Test
-//    public void return_type_mismatch() {
-//        String src = "package example\n" +
-//                "function Hello(): string {\n" +
-//                "   return 1\n" +
-//                "}";
-//        CheckSemanticError result = new CheckSemanticError(new ResolveType(), new DexFile(src));
-//        Assert.assertTrue(result.hasError());
-//    }
+
+    @Test
+    public void return_type_mismatch() {
+        String src = "" +
+                "function Hello(): string {\n" +
+                "   return 1\n" +
+                "}";
+        Assert.assertTrue(check(src));
+    }
 //
 //    @Test
 //    public void deduce_expr_type_from_function() {

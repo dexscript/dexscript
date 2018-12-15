@@ -19,6 +19,7 @@ public class CheckSemanticError implements DexElement.Visitor {
         {
             add(new CheckValueRef());
             add(new CheckTypeRef());
+            add(new CheckReturn());
         }
 
         private void add(Handler<?> handler) {
