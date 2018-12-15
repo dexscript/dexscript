@@ -22,6 +22,7 @@ public class CheckSemanticError implements DexElement.Visitor {
             add(new CheckValueRef());
             add(new CheckTypeRef());
             add(new CheckReturn());
+            add(new CheckAssignment());
             add(new CheckInvocation<DexFunctionCallExpr>() {
             });
             add(new CheckInvocation<DexNewExpr>() {

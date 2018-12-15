@@ -59,6 +59,16 @@ public class CheckSemanticErrorTest {
                 "}";
         Assert.assertTrue(check(src));
     }
+
+    @Test
+    public void assign_type_mismatch() {
+        String src = "" +
+                "function Hello() {\n" +
+                "   var i: int64\n" +
+                "   i = 'hello'\n" +
+                "}";
+        Assert.assertTrue(check(src));
+    }
 //
 //    @Test
 //    public void deduce_expr_type_from_function() {
