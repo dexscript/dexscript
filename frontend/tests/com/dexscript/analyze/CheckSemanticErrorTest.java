@@ -69,30 +69,4 @@ public class CheckSemanticErrorTest {
                 "}";
         Assert.assertTrue(check(src));
     }
-//
-//    @Test
-//    public void deduce_expr_type_from_function() {
-//        String src = "package example\n" +
-//                "function Hello(): string {\n" +
-//                "   return ToString(1)\n" +
-//                "}\n" +
-//                "function ToString(i: int64): string {\n" +
-//                "   return 'xxx'\n" +
-//                "}";
-//        DexFile file = new DexFile(src);
-//        ResolveType handle = new ResolveType();
-//        handle.define(file);
-//        CheckSemanticError result = new CheckSemanticError(handle, file);
-//        Assert.assertFalse(result.hasError());
-//    }
-//
-//    @Test
-//    public void call_not_existing_function() {
-//        String src = "package example\n" +
-//                "function Hello() {\n" +
-//                "   NoSuchFunction()\n" +
-//                "}";
-//        CheckSemanticError result = new CheckSemanticError(new ResolveType(), new DexFile(src));
-//        Assert.assertTrue(result.hasError());
-//    }
 }

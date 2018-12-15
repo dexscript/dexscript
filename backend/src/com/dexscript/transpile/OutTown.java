@@ -1,5 +1,6 @@
 package com.dexscript.transpile;
 
+import com.dexscript.analyze.CheckSemanticError;
 import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
@@ -51,6 +52,9 @@ public class OutTown {
 
     public Map<String, Class<?>> transpile() {
         for (DexFile iFile : iFiles) {
+            if (new CheckSemanticError(ts, iFile).hasError()) {
+                throw new DexRuntimeException();
+            }
             for (DexTopLevelDecl iTopLevelDecl : iFile.topLevelDecls()) {
                 if (iTopLevelDecl.function() != null) {
                     DexActor function = iTopLevelDecl.function();
