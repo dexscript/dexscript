@@ -6,6 +6,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexLessThanExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.*;
+import com.dexscript.type.JavaSuperTypeArgs;
 import com.dexscript.type.TypeSystem;
 
 import java.lang.reflect.ParameterizedType;
@@ -60,8 +61,7 @@ public interface InferValue<E extends DexElement> {
         }
 
         private void add(InferValue<?> handler) {
-            ParameterizedType clazz = (ParameterizedType) handler.getClass().getGenericInterfaces()[0];
-            put((Class<? extends DexElement>) clazz.getActualTypeArguments()[0], handler);
+            put((Class<? extends DexElement>) JavaSuperTypeArgs.$(handler.getClass())[0], handler);
         }
     };
 

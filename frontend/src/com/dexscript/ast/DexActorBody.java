@@ -71,10 +71,9 @@ public class DexActorBody extends DexElement {
     public DexBlock blk() {
         if (blk == null) {
             blk = new DexBlock(new Text(matched.bytes, sig().end(), matched.end));
+            blk.reparent(this, null);
             if (!blk.matched()) {
                 syntaxError = new DexSyntaxError(matched, sig().end());
-            } else {
-                blk.reparent(this, null);
             }
         }
         return blk;
