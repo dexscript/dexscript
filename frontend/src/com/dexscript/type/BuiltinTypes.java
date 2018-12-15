@@ -6,6 +6,7 @@ public interface BuiltinTypes {
     NamedType BOOL = new BoolType();
     NamedType STRING = new StringType();
     NamedType INT64 = new Int64Type();
+    NamedType INT32 = new Int32Type();
     NamedType UINT8 = new UInt8Type();
     NamedType VOID = new VoidType();
     NamedType UNDEFINED = new UndefinedType();
@@ -15,6 +16,7 @@ public interface BuiltinTypes {
             STRING,
             UINT8,
             INT64,
+            INT32,
             VOID
     };
 

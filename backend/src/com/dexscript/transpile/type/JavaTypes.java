@@ -26,11 +26,15 @@ public class JavaTypes {
 
     public JavaTypes(OutShim oShim) {
         this.oShim = oShim;
-        add(String.class, BuiltinTypes.STRING);
-        add(Long.class, BuiltinTypes.INT64);
-        add(UInt8.class, BuiltinTypes.UINT8);
         add(Boolean.class, BuiltinTypes.BOOL);
+        add(UInt8.class, BuiltinTypes.UINT8);
+        add(Integer.class, BuiltinTypes.INT32);
+        add(Long.class, BuiltinTypes.INT64);
+        add(String.class, BuiltinTypes.STRING);
         primitiveTypes.put(boolean.class, BuiltinTypes.BOOL);
+        primitiveTypes.put(int.class, BuiltinTypes.INT32);
+        primitiveTypes.put(long.class, BuiltinTypes.INT64);
+        primitiveTypes.put(void.class, BuiltinTypes.VOID);
     }
 
     public void add(Class clazz, Type type) {
@@ -90,6 +94,9 @@ public class JavaTypes {
         ).__("(Object obj) {");
         g.__(new Indent(() -> {
             g.__(new Line("Class clazz = obj.getClass();"));
+            if (targetType.toString().contains("List")) {
+                System.out.println();
+            }
             for (Map.Entry<String, Type> entry : types.entrySet()) {
                 if (!targetType.isAssignableFrom(entry.getValue())) {
                     continue;
@@ -147,10 +154,7 @@ public class JavaTypes {
     }
 
     public Type resolve(Class clazz) {
-        Type type = types.get(clazz.getCanonicalName());
-        if (type == null) {
-            type = primitiveTypes.get(clazz);
-        }
+        Type type = tryResolve(clazz);
         if (type == null) {
             throw new DexRuntimeException(clazz.getCanonicalName() + " has not been imported");
         }
@@ -158,6 +162,10 @@ public class JavaTypes {
     }
 
     public Type tryResolve(Class clazz) {
-        return types.get(clazz.getCanonicalName());
+        Type type = types.get(clazz.getCanonicalName());
+        if (type == null) {
+            type = primitiveTypes.get(clazz);
+        }
+        return type;
     }
 }

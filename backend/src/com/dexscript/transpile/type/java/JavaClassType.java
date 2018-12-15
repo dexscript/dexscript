@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class JavaClassType implements NamedType, FunctionsProvider, GenericType {
@@ -66,7 +67,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
 
     private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
         JavaTypes javaTypes = oShim.javaTypes();
-        Type ret = javaTypes.tryResolve(method.getReturnType());
+        Type ret = resolveJavaType(method.getGenericReturnType());
         if (ret == null) {
             return;
         }
@@ -82,6 +83,17 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         FunctionType function = new FunctionType(method.getName(), params, ret);
         function.attach((FunctionType.LazyAttachment) () -> new CallJavaMethod(oShim, function, method));
         collector.add(function);
+    }
+
+    private Type resolveJavaType(java.lang.reflect.Type javaType) {
+        if (javaType instanceof Class) {
+            return oShim.javaTypes().tryResolve((Class) javaType);
+        }
+        if (javaType instanceof TypeVariable) {
+            TypeVariable typeVar = (TypeVariable) javaType;
+            return BuiltinTypes.ANY;
+        }
+        return null;
     }
 
     private void newFuncs(List<FunctionType> collector) {
