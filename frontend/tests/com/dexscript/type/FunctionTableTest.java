@@ -21,7 +21,7 @@ public class FunctionTableTest {
     }
 
     public FunctionType func(String actorSrc) {
-        DexActor actor = new DexActor(actorSrc);
+        DexActor actor = new DexActor("function " + actorSrc);
         FunctionSig sig = new FunctionSig(typeTable, actor.sig());
         FunctionType funcType = new FunctionType(actor.functionName(), sig.params(), sig.ret());
         functionTable.define(funcType);
@@ -43,8 +43,8 @@ public class FunctionTableTest {
 
     @Test
     public void match_one() {
-        FunctionType func1 = func("function Hello(arg0: string)");
-        FunctionType func2 = func("function Hello(arg0: int64)");
+        FunctionType func1 = func("Hello(arg0: string)");
+        FunctionType func2 = func("Hello(arg0: int64)");
         List<FunctionType.Invoked> invokeds = invoke("Hello", "string");
         Assert.assertEquals(1, invokeds.size());
         Assert.assertEquals(func1, invokeds.get(0).function());
@@ -52,20 +52,9 @@ public class FunctionTableTest {
 
     @Test
     public void match_two() {
-        FunctionTable functionTable = new FunctionTable();
-        FunctionType stringFunc = new FunctionType("Hello", new ArrayList<Type>() {{
-            add(BuiltinTypes.STRING);
-        }}, BuiltinTypes.VOID);
-        functionTable.define(stringFunc);
-        FunctionType aFunc = new FunctionType("Hello", new ArrayList<Type>() {{
-            add(new StringLiteralType("a"));
-        }}, BuiltinTypes.VOID);
-        functionTable.define(aFunc);
-        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        List<FunctionType.Invoked> resolved = functionTable.invoke(typeTable, "Hello",
-                null, new ArrayList<Type>() {{
-                    add(BuiltinTypes.STRING);
-                }}, null);
-        Assert.assertEquals(2, resolved.size());
+        func("Hello(arg0: string)");
+        func("Hello(arg0: 'a')");
+        List<FunctionType.Invoked> invokeds = invoke("Hello", "string");
+        Assert.assertEquals(2, invokeds.size());
     }
 }
