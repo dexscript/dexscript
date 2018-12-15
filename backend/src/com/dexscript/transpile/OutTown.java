@@ -72,7 +72,7 @@ public class OutTown {
         String funcName = function.functionName();
         TypeTable localTypeTable = new TypeTable(ts.typeTable());
         localTypeTable.define(function.typeParams());
-        List<Type> args = ResolveType.$(localTypeTable, function.params());
+        List<Type> args = ResolveType.resolveParams(localTypeTable, function.params());
         List<FunctionType.Invoked> invokeds = ts.invoke(funcName, null, args, null);
         for (FunctionType.Invoked invoked : invokeds) {
             invoked.function().attachment();

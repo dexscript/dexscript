@@ -38,11 +38,7 @@ public class TypeSystem {
     }
 
     public List<Type> resolveTypes(List<DexType> dexTypes) {
-        List<Type> types = new ArrayList<>();
-        for (DexType dexType : dexTypes) {
-            types.add(resolveType(dexType));
-        }
-        return types;
+        return ResolveType.resolveTypes(typeTable, dexTypes);
     }
 
     public void defineType(NamedType type) {

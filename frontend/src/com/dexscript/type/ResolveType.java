@@ -65,10 +65,18 @@ public interface ResolveType<E extends DexType> {
         return types;
     }
 
-    static List<Type> $(TypeTable typeTable, List<DexParam> params) {
+    static List<Type> resolveParams(TypeTable typeTable, List<DexParam> params) {
         List<Type> types = new ArrayList<>();
         for (DexParam param : params) {
             types.add(ResolveType.$(typeTable, param.paramType()));
+        }
+        return types;
+    }
+
+    static List<Type> resolveTypes(TypeTable typeTable, List<DexType> dexTypes) {
+        List<Type> types = new ArrayList<>();
+        for (DexType dexType : dexTypes) {
+            types.add(ResolveType.$(typeTable, dexType));
         }
         return types;
     }

@@ -77,6 +77,10 @@ public class FunctionSig {
         return params;
     }
 
+    public Type ret() {
+        return ret;
+    }
+
     Type invoke(TypeTable typeTable, List<Type> typeArgs, List<Type> args, Type retHint) {
         if (params.size() != args.size()) {
             ON_ARGUMENTS_COUNT_MISMATCH.handle(this, args);
