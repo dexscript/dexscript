@@ -162,11 +162,21 @@ public class FunctionSig {
         }
         StringBuilder desc = new StringBuilder();
         desc.append('(');
-        for (int i = 0; i < params.size(); i++) {
-            if (i > 0) {
+        boolean isFirst = true;
+        for (PlaceholderType typeParam : typeParams) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
                 desc.append(", ");
             }
-            Type param = params.get(i);
+            desc.append(typeParam.description());
+        }
+        for (Type param : params) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                desc.append(", ");
+            }
             desc.append(param.toString());
         }
         desc.append("): ");

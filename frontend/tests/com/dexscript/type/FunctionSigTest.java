@@ -96,6 +96,8 @@ public class FunctionSigTest {
     @Test
     public void test_to_string() {
         Assert.assertEquals("(string): string", sig("(arg0: string) :string").toString());
+        Assert.assertEquals("(string): void", sig("(arg0: string)").toString());
+        Assert.assertEquals("(<T>: string, T): T", sig("(<T>: string, arg0: T): T").toString());
     }
 
     private void defineInterface(String src) {
