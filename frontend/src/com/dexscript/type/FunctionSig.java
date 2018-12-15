@@ -12,6 +12,8 @@ import java.util.*;
 // part of FunctionType
 public class FunctionSig {
 
+    private String description;
+
     public interface OnArgumentTypeMismatch {
         void handle(FunctionSig sig, List<Type> typeArgs, List<Type> args, Type retHint,
                     int index, Type arg, Type param, Map<Type, Type> sub);
@@ -151,5 +153,25 @@ public class FunctionSig {
                 subCtx.commit();
             }
         }
+    }
+
+    @Override
+    public String toString() {
+        if (description != null) {
+            return description;
+        }
+        StringBuilder desc = new StringBuilder();
+        desc.append('(');
+        for (int i = 0; i < params.size(); i++) {
+            if (i > 0) {
+                desc.append(", ");
+            }
+            Type param = params.get(i);
+            desc.append(param.toString());
+        }
+        desc.append("): ");
+        desc.append(ret.toString());
+        description = desc.toString();
+        return description;
     }
 }

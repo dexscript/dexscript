@@ -93,6 +93,11 @@ public class FunctionSigTest {
         Assert.assertEquals(BuiltinTypes.UNDEFINED, ret);
     }
 
+    @Test
+    public void test_to_string() {
+        Assert.assertEquals("(string): string", sig("(arg0: string) :string").toString());
+    }
+
     private void defineInterface(String src) {
         new InterfaceType(typeTable, functionTable, new DexInterface(src));
     }
