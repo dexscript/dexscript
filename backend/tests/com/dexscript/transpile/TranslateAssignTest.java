@@ -8,7 +8,7 @@ public class TranslateAssignTest {
     @Test
     public void declare_then_assign() {
         Object result = Transpile.$("" +
-                "function Hello() {\n" +
+                "function Hello(): string {\n" +
                 "   var msg: string\n" +
                 "   msg = 'hello'\n" +
                 "   return msg\n" +

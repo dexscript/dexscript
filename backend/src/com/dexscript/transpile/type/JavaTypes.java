@@ -22,6 +22,7 @@ import java.util.Map;
 public class JavaTypes {
 
     private final Map<String, Type> types = new HashMap<>();
+    private final Map<Class, Type> primitiveTypes = new HashMap<>();
     private final Map<Type, String> typeChecks = new HashMap<>();
     private final OutShim oShim;
 
@@ -31,7 +32,7 @@ public class JavaTypes {
         add(Long.class, BuiltinTypes.INT64);
         add(UInt8.class, BuiltinTypes.UINT8);
         add(Boolean.class, BuiltinTypes.BOOL);
-        add(boolean.class, BuiltinTypes.BOOL);
+        primitiveTypes.put(boolean.class, BuiltinTypes.BOOL);
     }
 
     public void add(Class clazz, Type type) {
@@ -120,6 +121,9 @@ public class JavaTypes {
 
     public Type resolve(Class clazz) {
         Type type = types.get(clazz.getCanonicalName());
+        if (type == null) {
+            type = primitiveTypes.get(clazz);
+        }
         if (type == null) {
             throw new DexRuntimeException(clazz.getCanonicalName() + " has not been imported");
         }
