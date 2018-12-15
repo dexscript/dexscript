@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FunctionTypeTest {
 
@@ -63,5 +64,11 @@ public class FunctionTypeTest {
         FunctionType hello2 = new FunctionType("hello", new ArrayList<>(), new StringLiteralType("example"));
         Assert.assertTrue(hello1.isAssignableFrom(hello2));
         Assert.assertFalse(hello2.isAssignableFrom(hello1));
+    }
+
+    @Test
+    public void test_to_string() {
+        FunctionType func = new FunctionType("Hello", Arrays.asList(BuiltinTypes.STRING), BuiltinTypes.VOID);
+        Assert.assertEquals("Hello(string): void", func.toString());
     }
 }

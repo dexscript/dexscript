@@ -8,6 +8,8 @@ import java.util.List;
 // Function Signature: generic type constraint & where condition
 public final class FunctionType implements Type {
 
+    private String description;
+
     public interface LazyAttachment {
         Object lazyLoad();
     }
@@ -122,17 +124,10 @@ public final class FunctionType implements Type {
 
     @Override
     public String toString() {
-        StringBuilder msg = new StringBuilder();
-        msg.append(name);
-        msg.append('(');
-        for (int i = 0; i < params.size(); i++) {
-            if (i > 0) {
-                msg.append(", ");
-            }
-            msg.append(params.get(i).toString());
+        if (description != null) {
+            return description;
         }
-        msg.append(") => ");
-        msg.append(ret.toString());
-        return msg.toString();
+        description = name + sig.toString();
+        return description;
     }
 }
