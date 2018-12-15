@@ -15,7 +15,7 @@ public interface ResolveReturnType {
     }
 
     static Type $(TypeSystem ts, String funcName, List<Type> typeArgs, List<Type> args, Type retHint) {
-        List<FunctionType.Invoked> invokeds = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
+        List<FunctionSig.Invoked> invokeds = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
         if (invokeds.size() == 0) {
             Events.ON_MISSING_FUNCTION.handle(ts, funcName, args);
             return BuiltinTypes.UNDEFINED;
@@ -23,7 +23,7 @@ public interface ResolveReturnType {
         return $(invokeds);
     }
 
-    static Type $(List<FunctionType.Invoked> invokeds) {
+    static Type $(List<FunctionSig.Invoked> invokeds) {
         if (invokeds.size() == 1) {
             return invokeds.get(0).ret();
         }

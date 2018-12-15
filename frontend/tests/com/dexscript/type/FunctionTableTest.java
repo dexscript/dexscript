@@ -22,16 +22,16 @@ public class FunctionTableTest {
     public FunctionType func(String actorSrc) {
         DexActor actor = new DexActor("function " + actorSrc);
         FunctionSig sig = new FunctionSig(typeTable, actor.sig());
-        FunctionType funcType = new FunctionType(actor.functionName(), sig.params(), sig.ret());
+        FunctionType funcType = new FunctionType(actor.functionName(), sig.params(), sig.ret(), sig);
         functionTable.define(funcType);
         return funcType;
     }
 
-    public List<FunctionType.Invoked> invoke(String funcName, String argsStr) {
+    public List<FunctionSig.Invoked> invoke(String funcName, String argsStr) {
         return invoke(funcName, null, argsStr);
     }
 
-    public List<FunctionType.Invoked> invoke(String funcName, String typeArgsStr, String argsStr) {
+    public List<FunctionSig.Invoked> invoke(String funcName, String typeArgsStr, String argsStr) {
         List<Type> typeArgs = Collections.emptyList();
         if (typeArgsStr != null) {
             typeArgs = ResolveType.$(typeTable, typeArgsStr.split(","));
@@ -44,7 +44,7 @@ public class FunctionTableTest {
     public void match_one() {
         FunctionType func1 = func("Hello(arg0: string)");
         FunctionType func2 = func("Hello(arg0: int64)");
-        List<FunctionType.Invoked> invokeds = invoke("Hello", "string");
+        List<FunctionSig.Invoked> invokeds = invoke("Hello", "string");
         Assert.assertEquals(1, invokeds.size());
         Assert.assertEquals(func1, invokeds.get(0).function());
     }
@@ -53,7 +53,7 @@ public class FunctionTableTest {
     public void match_two() {
         func("Hello(arg0: string)");
         func("Hello(arg0: 'a')");
-        List<FunctionType.Invoked> invokeds = invoke("Hello", "string");
+        List<FunctionSig.Invoked> invokeds = invoke("Hello", "string");
         Assert.assertEquals(2, invokeds.size());
     }
 }

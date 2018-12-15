@@ -19,9 +19,8 @@ public class FunctionSigTest {
         functionTable = new FunctionTable();
     }
 
-
     public Type invoke(FunctionSig sig, List<Type> args) {
-        return sig.invoke(typeTable, new Invocation("", null, args, null));
+        return sig.invoke(typeTable, new Invocation("", null, args, null)).ret();
     }
 
     @Test
@@ -67,7 +66,7 @@ public class FunctionSigTest {
                 "}");
         FunctionSig sig = sig("(<E1>: string, <E2>: string, arg0: AnotherInf<SomeInf<E1>, SomeInf<E2>>): E2");
         Type ret = invoke(sig, resolve("AnotherInf<SomeInf<'a'>, SomeInf<'b'>>"));
-        Assert.assertEquals("'b'", ret.toString());
+        Assert.assertEquals("string", ret.toString());
     }
 
     @Test
@@ -81,7 +80,7 @@ public class FunctionSigTest {
     public void infer_with_return_value_hint() {
         FunctionSig sig = sig("(<T>: interface{}): T");
         Invocation ivc = new Invocation("", null, resolve(), BuiltinTypes.STRING);
-        Type ret = sig.invoke(typeTable, ivc);
+        Type ret = sig.invoke(typeTable, ivc).ret();
         Assert.assertEquals(BuiltinTypes.STRING, ret);
     }
 
@@ -91,7 +90,7 @@ public class FunctionSigTest {
         Invocation ivc = new Invocation("",
                 resolve("int64"),
                 resolve("string", "string"), null);
-        Type ret = sig.invoke(typeTable, ivc);
+        Type ret = sig.invoke(typeTable, ivc).ret();
         Assert.assertEquals(BuiltinTypes.UNDEFINED, ret);
     }
 

@@ -37,7 +37,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
         DexInvocation invocation = iNewExpr.invocation();
         List<Type> args = InferType.inferTypes(ts, invocation.args());
         List<Type> typeArgs = ts.resolveTypes(invocation.typeArgs());
-        List<FunctionType.Invoked> invokeds = ts.invoke(new Invocation("New__", typeArgs, args, null));
+        List<FunctionSig.Invoked> invokeds = ts.invoke(new Invocation("New__", typeArgs, args, null));
         if (invokeds.isEmpty()) {
             ON_FUNCTION_MISSING.handle(iNewExpr);
         }

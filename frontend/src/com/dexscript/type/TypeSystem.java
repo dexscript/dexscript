@@ -20,7 +20,7 @@ public class TypeSystem {
         return new InterfaceType(typeTable, functionTable, inf);
     }
 
-    public List<FunctionType.Invoked> invoke(Invocation ivc) {
+    public List<FunctionSig.Invoked> invoke(Invocation ivc) {
         return functionTable.invoke(typeTable, ivc);
     }
 

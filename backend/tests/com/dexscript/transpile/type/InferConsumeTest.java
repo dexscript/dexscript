@@ -7,6 +7,7 @@ import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.actor.ActorType;
 import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.Type;
+import com.dexscript.type.TypeDebugLog;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,6 +16,7 @@ public class InferConsumeTest {
 
     @Test
     public void consume_string() {
+        TypeDebugLog.on();
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
         new ActorType(oShim, new DexActor("" +

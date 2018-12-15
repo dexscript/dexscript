@@ -15,11 +15,11 @@ public class FunctionChain {
     private final int paramsCount;
     private final List<FunctionType> functions;
 
-    public FunctionChain(String funcName, int paramsCount, List<FunctionType.Invoked> invokeds) {
+    public FunctionChain(String funcName, int paramsCount, List<FunctionSig.Invoked> invokeds) {
         this.funcName = funcName;
         this.paramsCount = paramsCount;
         this.functions = new ArrayList<>();
-        for (FunctionType.Invoked invoked : invokeds) {
+        for (FunctionSig.Invoked invoked : invokeds) {
             functions.add(invoked.function());
         }
     }

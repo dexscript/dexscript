@@ -45,7 +45,7 @@ public class ActorTypeTest {
                 "   AA(): string\n" +
                 "}"));
         Assert.assertTrue(inf.isAssignableFrom(actor));
-        List<FunctionType.Invoked> newNestedActor = ts.invoke(new Invocation("New__", null, new ArrayList<Type>() {{
+        List<FunctionSig.Invoked> newNestedActor = ts.invoke(new Invocation("New__", null, new ArrayList<Type>() {{
             add(new StringLiteralType("AA"));
             add(actor);
         }}, null));
@@ -59,7 +59,7 @@ public class ActorTypeTest {
         new ActorType(oShim, new DexActor("" +
                 "function Hello() {\n" +
                 "}"));
-        List<FunctionType.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, new ArrayList<>(), null));
+        List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, new ArrayList<>(), null));
         Assert.assertEquals(1, functionTypes.size());
         Assert.assertEquals(BuiltinTypes.VOID, functionTypes.get(0).ret());
     }
@@ -71,7 +71,7 @@ public class ActorTypeTest {
         new ActorType(oShim, new DexActor("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
-        List<FunctionType.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, Arrays.asList(BuiltinTypes.STRING), null));
+        List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, Arrays.asList(BuiltinTypes.STRING), null));
         Assert.assertEquals(1, functionTypes.size());
         Type type = ts.resolveType("Hello", Arrays.asList(BuiltinTypes.STRING));
         Assert.assertNotNull(type);
@@ -87,7 +87,7 @@ public class ActorTypeTest {
                 "}"));
         StringLiteralType a = new StringLiteralType("a");
         StringLiteralType b = new StringLiteralType("b");
-        List<FunctionType.Invoked> functionTypes = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null));
+        List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null));
         Assert.assertEquals(0, functionTypes.size());
     }
 }

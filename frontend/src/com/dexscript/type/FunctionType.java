@@ -14,25 +14,6 @@ public final class FunctionType implements Type {
         Object lazyLoad();
     }
 
-    public static class Invoked {
-
-        private final FunctionType function;
-        private final Type ret;
-
-        public Invoked(FunctionType function, Type ret) {
-            this.function = function;
-            this.ret = ret;
-        }
-
-        public FunctionType function() {
-            return function;
-        }
-
-        public Type ret() {
-            return ret;
-        }
-    }
-
     @NotNull
     private final String name;
 
@@ -58,6 +39,7 @@ public final class FunctionType implements Type {
         if (sig == null) {
             sig = new FunctionSig(params, ret);
         }
+        sig.reparent(this);
         this.sig = sig;
     }
 

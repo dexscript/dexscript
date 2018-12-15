@@ -1,6 +1,5 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
@@ -12,24 +11,95 @@ import java.util.*;
 // part of FunctionType
 public class FunctionSig {
 
+    public abstract class Invoked {
+
+        public abstract boolean compatible();
+
+        public abstract boolean needRuntimeCheck();
+
+        public abstract Type ret();
+
+        public FunctionType function() {
+            return functionType;
+        }
+    }
+
+    public abstract class Incompatible extends Invoked {
+
+        @Override
+        public boolean compatible() {
+            return false;
+        }
+
+        @Override
+        public boolean needRuntimeCheck() {
+            return false;
+        }
+
+        @Override
+        public Type ret() {
+            return BuiltinTypes.UNDEFINED;
+        }
+    }
+
+    public class ArgumentsCountIncompatible extends Incompatible {
+
+    }
+
+    public class ArgumentIncompatible extends Incompatible {
+
+        private final int index;
+
+        public ArgumentIncompatible(int index) {
+            this.index = index;
+        }
+
+        public int index() {
+            return index;
+        }
+    }
+
+    public class MissingTypeArgument extends Incompatible {
+
+        private final PlaceholderType typeParam;
+
+        public MissingTypeArgument(PlaceholderType typeParam) {
+            this.typeParam = typeParam;
+        }
+
+        public PlaceholderType typeParam() {
+            return typeParam;
+        }
+    }
+
+    public class Compatible extends Invoked {
+
+        private final boolean needRuntimeCheck;
+        private final Type ret;
+
+        public Compatible(boolean needRuntimeCheck, Type ret) {
+            this.needRuntimeCheck = needRuntimeCheck;
+            this.ret = ret;
+        }
+
+        @Override
+        public boolean compatible() {
+            return true;
+        }
+
+        @Override
+        public boolean needRuntimeCheck() {
+            return needRuntimeCheck;
+        }
+
+        @Override
+        public Type ret() {
+            return ret;
+        }
+    }
+
     private String description;
-
-    public interface OnArgumentTypeMismatch {
-        void handle(FunctionSig sig, List<Type> typeArgs, List<Type> args, Type retHint,
-                    int index, Type arg, Type param, Map<Type, Type> sub);
-    }
-
-    public static OnArgumentTypeMismatch ON_ARGUMENT_TYPE_MISMATCH =
-            (sig, typeArgs, args, retHint, index, arg, param, sub) -> {
-            };
-
-    public interface OnArgumentsCountMismatch {
-        void handle(FunctionSig sig, List<Type> args);
-    }
-
-    public static OnArgumentsCountMismatch ON_ARGUMENTS_COUNT_MISMATCH = (sig, args) -> {
-    };
-
+    private FunctionType functionType;
     private final List<PlaceholderType> typeParams;
     private final List<Type> params;
     private final Type ret;
@@ -73,6 +143,10 @@ public class FunctionSig {
         retElem = sig.ret();
     }
 
+    public void reparent(FunctionType functionType) {
+        this.functionType = functionType;
+    }
+
     public List<Type> params() {
         return params;
     }
@@ -85,38 +159,38 @@ public class FunctionSig {
         return typeParams;
     }
 
-    Type invoke(TypeTable typeTable, Invocation ivc) {
+    Invoked invoke(TypeTable typeTable, Invocation ivc) {
         List<Type> args = ivc.args();
         List<Type> typeArgs = ivc.typeArgs();
         Type retHint = ivc.retHint();
         if (params.size() != args.size()) {
-            ON_ARGUMENTS_COUNT_MISMATCH.handle(this, args);
-            return BuiltinTypes.UNDEFINED;
+            return new ArgumentsCountIncompatible();
         }
         Map<Type, Type> sub = initSub(typeArgs);
         TypeComparisonContext ctx = new TypeComparisonContext(sub);
+        boolean needRuntimeCheck = false;
         for (int i = 0; i < params.size(); i++) {
             Type param = params.get(i);
             Type arg = args.get(i);
             TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
-            boolean argMatched = arg.isAssignableFrom(subCtx, param);
+            boolean argMatched = param.isAssignableFrom(subCtx, arg);
             if (!argMatched) {
+                needRuntimeCheck = true;
                 subCtx.rollback();
-                argMatched = param.isAssignableFrom(subCtx, arg);
+                argMatched = arg.isAssignableFrom(subCtx, param);
             }
             if (!argMatched) {
-                ON_ARGUMENT_TYPE_MISMATCH.handle(this, typeArgs, args, retHint, i, arg, param, sub);
-                return BuiltinTypes.UNDEFINED;
+                return new ArgumentIncompatible(i);
             }
             subCtx.commit();
         }
-        inferRetHint(retHint, ctx);
         if (retElem == null || typeParams == null) {
-            return ret;
+            return new Compatible(needRuntimeCheck, ret);
         }
+        inferRetHint(retHint, ctx);
         for (PlaceholderType typeParam : typeParams) {
             if (!sub.containsKey(typeParam)) {
-                throw new DexSyntaxException("can not infer type parameter: " + typeParam);
+                return new MissingTypeArgument(typeParam);
             }
         }
         TypeTable localTypeTable = new TypeTable(typeTable);
@@ -126,7 +200,8 @@ public class FunctionSig {
                 localTypeTable.define(((NamedType) key).name(), entry.getValue());
             }
         }
-        return ResolveType.$(localTypeTable, retElem);
+        Type expandedRet = ResolveType.$(localTypeTable, retElem);
+        return new Compatible(needRuntimeCheck, expandedRet);
     }
 
     @NotNull

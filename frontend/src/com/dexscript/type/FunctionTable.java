@@ -30,21 +30,20 @@ public class FunctionTable {
         ON_FUNCTION_DEFINED.handle(func);
     }
 
-    public List<FunctionType.Invoked> invoke(TypeTable typeTable, Invocation ivc) {
+    public List<FunctionSig.Invoked> invoke(TypeTable typeTable, Invocation ivc) {
         String funcName = ivc.funcName();
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
             return new ArrayList<>();
         }
-        List<FunctionType.Invoked> invokeds = new ArrayList<>();
+        List<FunctionSig.Invoked> invokeds = new ArrayList<>();
         for (FunctionType func : functions) {
-            Type ret = func.sig().invoke(typeTable, ivc);
-            if (BuiltinTypes.UNDEFINED.equals(ret)) {
+            FunctionSig.Invoked invoked = func.sig().invoke(typeTable, ivc);
+            if (!invoked.compatible()) {
                 ON_INVOCATION_FILTERED_FUNCTION.handle(func, ivc);
                 continue;
             }
-            FunctionType.Invoked invoked = new FunctionType.Invoked(func, ret);
             invokeds.add(invoked);
         }
         return invokeds;

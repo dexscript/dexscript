@@ -38,7 +38,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         List<Type> args = InferType.inferTypes(ts, iArgs);
         List<Type> typeArgs = ts.resolveTypes(iTypeArgs);
         Invocation ivc = new Invocation(funcName, typeArgs, args, null);
-        List<FunctionType.Invoked> invokeds = ts.invoke(ivc);
+        List<FunctionSig.Invoked> invokeds = ts.invoke(ivc);
         if (invokeds.size() == 0) {
             throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
                     funcName, args));
@@ -59,7 +59,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         }
         oClass.g().__(new Line(");"));
         boolean needToConsume = false;
-        for (FunctionType.Invoked invoked : invokeds) {
+        for (FunctionSig.Invoked invoked : invokeds) {
             FunctionImpl impl = (FunctionImpl) invoked.function().attachment();
             if (impl == null) {
                 throw new IllegalStateException("function type defined without impl attached: " + invoked.function());
