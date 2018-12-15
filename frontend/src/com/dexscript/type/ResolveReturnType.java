@@ -15,22 +15,21 @@ public interface ResolveReturnType {
     }
 
     static Type $(TypeSystem ts, String funcName, List<Type> typeArgs, List<Type> args, Type retHint) {
-        List<FunctionType.Invoked> functions = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
-        if (functions.size() == 0) {
+        List<FunctionType.Invoked> invokeds = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
+        if (invokeds.size() == 0) {
             Events.ON_MISSING_FUNCTION.handle(ts, funcName, args);
             return BuiltinTypes.UNDEFINED;
         }
-        Type ret = functions.get(0).ret();
-        for (int i = 1; i < functions.size(); i++) {
-            ret = ret.union(functions.get(i).ret());
-        }
-        return ret;
+        return $(invokeds);
     }
 
-    static Type $(List<FunctionType.Invoked> functions) {
-        Type ret = functions.get(0).ret();
-        for (int i = 1; i < functions.size(); i++) {
-            ret = ret.union(functions.get(i).ret());
+    static Type $(List<FunctionType.Invoked> invokeds) {
+        if (invokeds.size() == 1) {
+            return invokeds.get(0).ret();
+        }
+        Type ret = invokeds.get(0).ret();
+        for (int i = 1; i < invokeds.size(); i++) {
+            ret = ret.union(invokeds.get(i).ret());
         }
         return ret;
     }

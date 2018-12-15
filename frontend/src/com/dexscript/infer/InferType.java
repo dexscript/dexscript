@@ -24,17 +24,9 @@ public interface InferType<E extends DexExpr> {
             put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(((DexStringLiteral) elem).literalValue()));
             put(DexIntegerLiteral.class, (ts, elem) -> new IntegerLiteralType(elem.toString()));
             put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
-            put(DexNewExpr.class, (ts, elem) -> {
-                DexNewExpr newExpr = (DexNewExpr) elem;
-                String actorName = newExpr.target().asRef().toString();
-                StringLiteralType arg1 = new StringLiteralType(actorName);
-                List<Type> args = InferType.inferTypes(ts, arg1, newExpr.args());
-                List<Type> typeArgs = ts.resolveTypes(newExpr.typeArgs());
-                return ResolveReturnType.$(ts, "New__", typeArgs, args, null);
+            add(new InferInvocation<DexConsumeExpr>() {
             });
-            put(DexConsumeExpr.class, (ts, elem) -> {
-                Type target = InferType.$(ts, ((DexConsumeExpr) elem).right());
-                return ResolveReturnType.$(ts, "Consume__", null, Arrays.asList(target), null);
+            add(new InferInvocation<DexNewExpr>() {
             });
             add(new InferInvocation<DexEqualExpr>() {
             });

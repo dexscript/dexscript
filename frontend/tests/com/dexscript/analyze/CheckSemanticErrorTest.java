@@ -50,6 +50,15 @@ public class CheckSemanticErrorTest {
                 "}";
         Assert.assertTrue(check(src));
     }
+
+    @Test
+    public void new_not_existing_function() {
+        String src = "" +
+                "function Hello() {\n" +
+                "   new world()\n" +
+                "}";
+        Assert.assertTrue(check(src));
+    }
 //
 //    @Test
 //    public void deduce_expr_type_from_function() {

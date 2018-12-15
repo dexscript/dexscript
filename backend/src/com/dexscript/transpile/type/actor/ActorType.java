@@ -39,7 +39,10 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     }
 
     public static String qualifiedClassNameOf(DexActor actor) {
-        String packageName = actor.file().packageClause().identifier().toString();
+        String packageName = "";
+        if (actor.file() != null) {
+            packageName = actor.file().packageClause().identifier().toString();
+        }
         return packageName + "." + actor.actorName();
     }
 

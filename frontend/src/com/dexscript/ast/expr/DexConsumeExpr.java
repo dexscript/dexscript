@@ -4,9 +4,12 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
-public class DexConsumeExpr extends DexUnaryOperator {
+import java.util.Arrays;
+
+public class DexConsumeExpr extends DexUnaryOperator implements DexInvocationExpr {
 
     private static final int LEFT_RANK = 10;
+    private DexInvocation invocation;
 
     public DexConsumeExpr(Text src) {
         super(src);
@@ -27,5 +30,13 @@ public class DexConsumeExpr extends DexUnaryOperator {
     @Override
     public int leftRank() {
         return LEFT_RANK;
+    }
+
+    @Override
+    public DexInvocation invocation() {
+        if (invocation == null) {
+            invocation = new DexInvocation("Consume__", Arrays.asList(right()));
+        }
+        return invocation;
     }
 }

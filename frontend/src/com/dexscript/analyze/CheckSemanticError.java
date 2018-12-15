@@ -3,6 +3,7 @@ package com.dexscript.analyze;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
+import com.dexscript.ast.expr.DexNewExpr;
 import com.dexscript.type.JavaSuperTypeArgs;
 import com.dexscript.type.TypeSystem;
 
@@ -22,6 +23,8 @@ public class CheckSemanticError implements DexElement.Visitor {
             add(new CheckTypeRef());
             add(new CheckReturn());
             add(new CheckInvocation<DexFunctionCallExpr>() {
+            });
+            add(new CheckInvocation<DexNewExpr>() {
             });
         }
 
