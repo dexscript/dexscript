@@ -29,9 +29,11 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         this.oShim = oShim;
         this.clazz = clazz;
         this.typeArgs = typeArgs;
-        ts = oShim.typeSystem();
-        oShim.javaTypes().add(clazz, this);
-        ts.defineType(this);
+        this.ts = oShim.typeSystem();
+        if (typeArgs == null) {
+            oShim.javaTypes().add(clazz, this);
+            ts.defineType(this);
+        }
         ts.lazyDefineFunctions(this);
     }
 
@@ -83,12 +85,21 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     }
 
     private void newFuncs(List<FunctionType> collector) {
+        String subClassName = null;
         for (Constructor ctor : clazz.getConstructors()) {
-            newFunc(collector, ctor);
+            if (subClassName == null) {
+                if (typeArgs == null) {
+                    subClassName = clazz.getCanonicalName();
+                } else {
+                    subClassName = oShim.genSubClass(clazz);
+                    oShim.javaTypes().add(subClassName, this);
+                }
+            }
+            newFunc(collector, ctor, subClassName);
         }
     }
 
-    private void newFunc(List<FunctionType> collector, Constructor ctor) {
+    private void newFunc(List<FunctionType> collector, Constructor ctor, String subClassName) {
         ArrayList<Type> params = new ArrayList<>();
         String funcName = clazz.getSimpleName();
         params.add(new StringLiteralType(funcName));
@@ -101,7 +112,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         }
         FunctionSig sig = new FunctionSig(placeholders, params, this, null);
         FunctionType function = new FunctionType("New__", params, this, sig);
-        function.attach((FunctionType.LazyAttachment) () -> new NewJavaClass(oShim, function, ctor));
+        function.attach((FunctionType.LazyAttachment) () -> new NewJavaClass(oShim, function, ctor, subClassName));
         collector.add(function);
     }
 

@@ -13,10 +13,12 @@ import java.lang.reflect.Constructor;
 class NewJavaClass extends FunctionImpl {
 
     private final Constructor ctor;
+    private final String subClassName;
 
-    public NewJavaClass(OutShim oShim, FunctionType functionType, Constructor ctor) {
+    public NewJavaClass(OutShim oShim, FunctionType functionType, Constructor ctor, String subClassName) {
         super(oShim, functionType);
         this.ctor = ctor;
+        this.subClassName = subClassName;
     }
 
     @Override
@@ -29,7 +31,7 @@ class NewJavaClass extends FunctionImpl {
         g.__(" {");
         g.__(new Indent(() -> {
             g.__("return new "
-            ).__(ctor.getDeclaringClass().getCanonicalName()
+            ).__(subClassName
             ).__('(');
             for (int i = 0; i < ctor.getParameterCount(); i++) {
                 if (i > 0) {

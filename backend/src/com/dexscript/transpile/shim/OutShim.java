@@ -6,7 +6,6 @@ import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.type.FunctionImpl;
-import com.dexscript.transpile.type.TypeCandidate;
 import com.dexscript.transpile.type.JavaTypes;
 import com.dexscript.transpile.type.actor.ActorTable;
 import com.dexscript.transpile.type.actor.ActorType;
@@ -21,21 +20,20 @@ import com.dexscript.type.TypeSystem;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class OutShim {
 
     public static final String CLASSNAME = "Shim__";
-    public static final String QUALIFIED_CLASSNAME = "com.dexscript.runtime.gen." + CLASSNAME;
+    public static final String PACKAGE_NAME = "com.dexscript.runtime.gen.";
+    public static final String QUALIFIED_CLASSNAME = PACKAGE_NAME + CLASSNAME;
     private boolean finished;
     private final TypeSystem ts;
     private final Gen g = new Gen();
     private final Map<String, Integer> shims = new HashMap<>();
     private final Map<FunctionEntry, List<FunctionImpl>> entries = new HashMap<>();
     private final Map<FunctionChain, String> chains = new HashMap<>();
+    private final List<GeneratedSubClass> generatedSubClasses = new ArrayList<>();
     private final JavaTypes javaTypes = new JavaTypes(this);
     private final ActorTable actorTable;
 
@@ -64,6 +62,10 @@ public class OutShim {
         ).__(" {");
         g.indention("  ");
         g.__(new Line());
+    }
+
+    public List<GeneratedSubClass> generatedSubClasses() {
+        return generatedSubClasses;
     }
 
     public String finish() {
@@ -153,5 +155,13 @@ public class OutShim {
 
     public JavaTypes javaTypes() {
         return javaTypes;
+    }
+
+    public String genSubClass(Class clazz) {
+        String subClassName = clazz.getSimpleName() + "__" + UUID.randomUUID().toString().replace('-', '_');
+        GeneratedSubClass generatedSubClass = new GeneratedSubClass(
+                clazz.getCanonicalName(), subClassName);
+        generatedSubClasses.add(generatedSubClass);
+        return generatedSubClass.qualifiedClassName();
     }
 }

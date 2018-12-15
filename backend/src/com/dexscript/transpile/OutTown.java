@@ -8,6 +8,7 @@ import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.std.BasicOperators;
+import com.dexscript.transpile.shim.GeneratedSubClass;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.*;
@@ -66,6 +67,9 @@ public class OutTown {
         }
         try {
             addSource(OutShim.QUALIFIED_CLASSNAME, oShim.finish());
+            for (GeneratedSubClass generatedSubClass : oShim.generatedSubClasses()) {
+                addSource(generatedSubClass.qualifiedClassName(), generatedSubClass.gen());
+            }
             return compiler.compileAll();
         } catch (Exception e) {
             throw new DexRuntimeException(e);
