@@ -45,4 +45,9 @@ public final class PlaceholderType implements NamedType {
     public String description() {
         return "<" + name() + ">: " + constraint;
     }
+
+    @Override
+    public boolean _shouldCacheComparison() {
+        return false;
+    }
 }

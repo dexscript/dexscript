@@ -120,4 +120,14 @@ public final class FunctionType implements DType {
         description = name + sig.toString();
         return description;
     }
+
+    @Override
+    public boolean _shouldCacheComparison() {
+        for (DType param : params) {
+            if (!param._shouldCacheComparison()) {
+                return false;
+            }
+        }
+        return sig.typeParams().isEmpty();
+    }
 }

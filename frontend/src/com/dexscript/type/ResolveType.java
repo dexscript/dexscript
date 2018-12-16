@@ -26,7 +26,7 @@ public interface ResolveType<E extends DexType> {
             String name = elem.toString();
             if (localTypeTable != null) {
                 DType type = localTypeTable.resolveType(name);
-                if (type != null) {
+                if (!(type instanceof UndefinedType)) {
                     return type;
                 }
             }

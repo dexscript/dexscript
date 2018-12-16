@@ -44,7 +44,8 @@ public class FunctionSigTest {
                 "   Get__(arg: T)\n" +
                 "}");
         FunctionSig sig = sig("(<T>: string, arg0: SomeInf<T>): SomeInf<T>");
-        InterfaceType ret = (InterfaceType) invoke(sig, resolve("SomeInf<string>"));
+        List<DType> args = resolve("SomeInf<string>");
+        InterfaceType ret = (InterfaceType) invoke(sig, args);
         Assert.assertEquals(resolve("string"), ret.typeArgs());
     }
 

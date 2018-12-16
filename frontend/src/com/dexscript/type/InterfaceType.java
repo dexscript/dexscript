@@ -120,4 +120,9 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     public List<DType> typeArgs() {
         return typeArgs;
     }
+
+    @Override
+    public boolean _shouldCacheComparison() {
+        return typeParameters().isEmpty();
+    }
 }

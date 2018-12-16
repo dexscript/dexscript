@@ -100,7 +100,6 @@ public class FunctionSig {
 
 
     private final TypeSystem ts;
-    private String description;
     private FunctionType functionType;
     private final List<PlaceholderType> typeParams;
     private final List<DType> params;
@@ -248,9 +247,6 @@ public class FunctionSig {
 
     @Override
     public String toString() {
-        if (description != null) {
-            return description;
-        }
         StringBuilder desc = new StringBuilder();
         desc.append('(');
         boolean isFirst = true;
@@ -272,7 +268,6 @@ public class FunctionSig {
         }
         desc.append("): ");
         desc.append(ret.toString());
-        description = desc.toString();
-        return description;
+        return desc.toString();
     }
 }
