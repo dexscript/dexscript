@@ -49,13 +49,25 @@ public class FunctionSig {
     public class ArgumentIncompatible extends Incompatible {
 
         private final int index;
+        private final List<String> paramArgLogs;
+        private final List<String> argParamLogs;
 
-        public ArgumentIncompatible(int index) {
+        public ArgumentIncompatible(int index, List<String> paramArgLogs, List<String> argParamLogs) {
             this.index = index;
+            this.paramArgLogs = paramArgLogs;
+            this.argParamLogs = argParamLogs;
         }
 
         public int index() {
             return index;
+        }
+
+        public List<String> paramArgLogs() {
+            return paramArgLogs;
+        }
+
+        public List<String> argParamLogs() {
+            return argParamLogs;
         }
     }
 
@@ -176,15 +188,21 @@ public class FunctionSig {
         for (int i = 0; i < params.size(); i++) {
             DType param = params.get(i);
             DType arg = args.get(i);
-            TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
+            ArrayList<String> paramArgLogs = new ArrayList<>();
+            ArrayList<String> argParamLogs = new ArrayList<>();
+            TypeComparisonContext subCtx = new TypeComparisonContext(ctx)
+                    .logUntilLevelN(4)
+                    .logCollector(paramArgLogs);
             boolean argMatched = param.isAssignableFrom(subCtx, arg);
             if (!argMatched) {
                 needRuntimeCheck = true;
-                subCtx.rollback();
+                subCtx = new TypeComparisonContext(ctx)
+                        .logUntilLevelN(4)
+                        .logCollector(argParamLogs);
                 argMatched = arg.isAssignableFrom(subCtx, param);
             }
             if (!argMatched) {
-                return new ArgumentIncompatible(i);
+                return new ArgumentIncompatible(i, paramArgLogs, argParamLogs);
             }
             subCtx.commit();
         }
@@ -236,7 +254,7 @@ public class FunctionSig {
             TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
             boolean assignable = retHint.isAssignableFrom(subCtx, ret);
             if (!assignable) {
-                subCtx.rollback();
+                subCtx = new TypeComparisonContext(ctx);
                 assignable = ret.isAssignableFrom(subCtx, retHint);
             }
             if (assignable) {

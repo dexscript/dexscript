@@ -18,7 +18,19 @@ public class FunctionSigTest {
     }
 
     public DType invoke(FunctionSig sig, List<DType> args) {
-        return sig.invoke(new Invocation("", null, args, null)).ret();
+        FunctionSig.Invoked invoked = sig.invoke(new Invocation("", null, args, null));
+        if (invoked instanceof FunctionSig.ArgumentIncompatible) {
+            FunctionSig.ArgumentIncompatible incompatible = (FunctionSig.ArgumentIncompatible) invoked;
+            System.out.println("=== param = arg ===");
+            for (String log : incompatible.paramArgLogs()) {
+                System.out.println(log);
+            }
+            System.out.println("=== arg = param ===");
+            for (String log : incompatible.argParamLogs()) {
+                System.out.println(log);
+            }
+        }
+        return invoked.ret();
     }
 
     @Test

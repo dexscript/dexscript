@@ -93,7 +93,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         }
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType functionType = new FunctionType(ts, name(), params, ret, sig);
-        functionType.attach((FunctionType.LazyAttachment) () -> new CallActor(oShim, functionType, actor));
+        functionType.setImpl((FunctionType.LazyImpl) () -> new CallActor(oShim, functionType, actor));
         return functionType;
     }
 
@@ -104,7 +104,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
             params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
         FunctionType functionType = new FunctionType(ts, "New__", params, this);
-        functionType.attach((FunctionType.LazyAttachment) () -> new NewActor(oShim, functionType, actor));
+        functionType.setImpl((FunctionType.LazyImpl) () -> new NewActor(oShim, functionType, actor));
         return functionType;
     }
 
@@ -172,7 +172,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
                 params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType(ts, "New__", params, nestedActor);
-            functionType.attach((FunctionType.LazyAttachment) () -> new NewInnerActor(
+            functionType.setImpl((FunctionType.LazyImpl) () -> new NewInnerActor(
                     oShim, functionType, outerClassName, awaitConsumer));
             return functionType;
         }
@@ -188,7 +188,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
                 params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType(ts, funcName, params, ret);
-            functionType.attach((FunctionType.LazyAttachment) () -> new CallInnerActor(
+            functionType.setImpl((FunctionType.LazyImpl) () -> new CallInnerActor(
                     oShim, functionType, outerClassName, awaitConsumer));
             return functionType;
         }

@@ -30,7 +30,7 @@ public class FunctionTable {
         ON_FUNCTION_DEFINED.handle(func);
     }
 
-    public List<FunctionSig.Invoked> invoke(TypeTable typeTable, Invocation ivc) {
+    public List<FunctionSig.Invoked> invoke(Invocation ivc) {
         String funcName = ivc.funcName();
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
@@ -66,11 +66,12 @@ public class FunctionTable {
         if (ctx.shouldLog()) {
             ctx.log(">>> check if " + that + " defined or not");
         }
-        TypeComparisonContext staging = new TypeComparisonContext(ctx);
+        TypeComparisonContext staging = new TypeComparisonContext(ctx, true);
         for (FunctionType function : functions) {
-            if (ctx.isUndefined(function)) {
+            if (!ctx.isAvailable(function)) {
                 continue;
             }
+            staging.compare(that, function);
             if (that.isAssignableFrom(staging, function)) {
                 staging.commit();
                 if (ctx.shouldLog()) {
@@ -78,7 +79,7 @@ public class FunctionTable {
                 }
                 return true;
             } else {
-                staging.rollback();
+                staging = new TypeComparisonContext(ctx, true);
             }
         }
         if (ctx.shouldLog()) {
@@ -99,29 +100,32 @@ public class FunctionTable {
         }
     }
 
-    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider assignedTo, DType assignedFrom) {
-        if (ctx.levels() > 20) {
-            return true;
-        }
+    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider to, DType from) {
         if (ctx.shouldLog()) {
-            ctx.log(">>> check " + assignedTo + " is assignable from " + assignedFrom);
+            ctx.log(">>> check " + to + " is assignable from " + from);
         }
-        ctx.putSubstituted(assignedFrom, assignedTo);
-        TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
-        for (FunctionType member : assignedTo.functions()) {
-            subCtx.undefine(member);
+        TypeComparisonContext subCtx = new TypeComparisonContext(ctx)
+                .compare(to, from);
+        subCtx.putSubstituted(from, to);
+        if (from instanceof FunctionsProvider) {
+            for (FunctionType member : ((FunctionsProvider) from).functions()) {
+                subCtx.makeAvailable(member);
+            }
         }
-        for (FunctionType member : assignedTo.functions()) {
+        for (FunctionType member : to.functions()) {
+            subCtx.makeUnavailable(member);
+        }
+        for (FunctionType member : to.functions()) {
             if (!isDefined(subCtx, member)) {
                 if (ctx.shouldLog()) {
-                    ctx.log("<<< " + assignedTo + " is not assignable from " + assignedFrom + " because missing " + member);
+                    ctx.log("<<< " + to + " is not assignable from " + from + " because missing " + member);
                 }
                 return false;
             }
         }
         subCtx.commit();
         if (ctx.shouldLog()) {
-            ctx.log("<<< " + assignedTo + " is assignable from " + assignedFrom);
+            ctx.log("<<< " + to + " is assignable from " + from);
         }
         return true;
     }

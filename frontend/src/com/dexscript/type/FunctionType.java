@@ -10,7 +10,7 @@ public final class FunctionType implements DType {
 
     private String description;
 
-    public interface LazyAttachment {
+    public interface LazyImpl {
         Object lazyLoad();
     }
 
@@ -46,13 +46,13 @@ public final class FunctionType implements DType {
         this.sig = sig;
     }
 
-    public void attach(Object attachment) {
-        this.attachment = attachment;
+    public void setImpl(Object impl) {
+        this.attachment = impl;
     }
 
-    public final Object attachment() {
-        if (attachment instanceof LazyAttachment) {
-            attachment = ((LazyAttachment) attachment).lazyLoad();
+    public final Object impl() {
+        if (attachment instanceof LazyImpl) {
+            attachment = ((LazyImpl) attachment).lazyLoad();
         }
         return attachment;
     }
@@ -119,15 +119,5 @@ public final class FunctionType implements DType {
         }
         description = name + sig.toString();
         return description;
-    }
-
-    @Override
-    public boolean _shouldCacheComparison() {
-        for (DType param : params) {
-            if (!param._shouldCacheComparison()) {
-                return false;
-            }
-        }
-        return sig.typeParams().isEmpty();
     }
 }

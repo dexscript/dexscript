@@ -80,7 +80,7 @@ public class JClassType implements NamedType, FunctionsProvider, GenericType {
             params.add(param);
         }
         FunctionType function = new FunctionType(ts, method.getName(), params, ret);
-        function.attach((FunctionType.LazyAttachment) () -> new CallJavaMethod(oShim, function, method));
+        function.setImpl((FunctionType.LazyImpl) () -> new CallJavaMethod(oShim, function, method));
         collector.add(function);
     }
 
@@ -129,7 +129,7 @@ public class JClassType implements NamedType, FunctionsProvider, GenericType {
         }
         FunctionSig sig = new FunctionSig(ts, newFuncTypeParams, params, this, createRetElem(newFuncTypeParams));
         FunctionType function = new FunctionType(ts, "New__", params, this, sig);
-        function.attach((FunctionType.LazyAttachment) () -> new NewJavaClass(oShim, function, ctor, subClassName));
+        function.setImpl((FunctionType.LazyImpl) () -> new NewJavaClass(oShim, function, ctor, subClassName));
         collector.add(function);
     }
 
@@ -193,7 +193,11 @@ public class JClassType implements NamedType, FunctionsProvider, GenericType {
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return ts.functionTable().isSubType(ctx, this, that);
+        if (clazz.isInterface()) {
+            return ts.functionTable().isSubType(ctx, this, that);
+        } else {
+            return this.equals(that);
+        }
     }
 
     @Override

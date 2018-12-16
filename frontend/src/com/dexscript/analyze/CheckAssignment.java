@@ -24,9 +24,10 @@ public class CheckAssignment implements CheckSemanticError.Handler<DexAssignStmt
     }
 
     public static void checkTypeAssignable(CheckSemanticError cse, DexElement elem, DType from, DType to) {
-        int logUntilLevelN = 4;
         ArrayList<String> logs = new ArrayList<>();
-        TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>(), logUntilLevelN, logs);
+        TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>())
+                .logUntilLevelN(4)
+                .logCollector(logs);
         if (!to.isAssignableFrom(ctx, from)) {
             cse.report(elem, to + " is not assignable from " + from);
             for (String log : logs) {

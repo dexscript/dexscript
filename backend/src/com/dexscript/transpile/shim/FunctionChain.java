@@ -27,10 +27,10 @@ public class FunctionChain {
 
     public void gen(Gen g, String chainF, JavaTypes javaTypes) {
         for (FunctionType funcType : functions) {
-            if (!(funcType.attachment() instanceof FunctionImpl)) {
+            if (!(funcType.impl() instanceof FunctionImpl)) {
                 throw new IllegalStateException("no implementation attached to function: " + funcType);
             }
-            FunctionImpl impl = (FunctionImpl) funcType.attachment();
+            FunctionImpl impl = (FunctionImpl) funcType.impl();
             impl.canF(javaTypes);
             impl.callF();
         }
@@ -40,7 +40,7 @@ public class FunctionChain {
         g.__(" {");
         g.__(new Indent(() -> {
             for (FunctionType funcType : functions) {
-                FunctionImpl impl = (FunctionImpl) funcType.attachment();
+                FunctionImpl impl = (FunctionImpl) funcType.impl();
                 g.__("if ("
                 ).__(impl.canF(javaTypes));
                 InvokeParams.$(g, paramsCount, false);

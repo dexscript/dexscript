@@ -37,7 +37,7 @@ public class TypeSystem {
     }
 
     public List<FunctionSig.Invoked> invoke(Invocation ivc) {
-        return functionTable.invoke(typeTable, ivc);
+        return functionTable.invoke(ivc);
     }
 
     public void defineType(NamedType type) {

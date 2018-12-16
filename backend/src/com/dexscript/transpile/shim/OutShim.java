@@ -133,7 +133,7 @@ public class OutShim {
         FunctionType functionType = new FunctionType(ts, funcName, params, ret);
         ts.defineFunction(functionType);
         CallJavaFunction impl = new CallJavaFunction(this, functionType, javaFunction);
-        functionType.attach(impl);
+        functionType.setImpl(impl);
     }
 
     public void importJavaClass(Class clazz) {

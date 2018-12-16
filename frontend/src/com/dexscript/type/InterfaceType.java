@@ -15,7 +15,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     private final TypeSystem ts;
     private final DexInterface inf;
     private List<DType> typeArgs;
-    private List<FunctionType> members;
+    private List<FunctionType> functions;
     private List<DType> typeParams;
     private String description;
 
@@ -39,14 +39,14 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     }
 
     public List<FunctionType> functions() {
-        if (members != null) {
-            return members;
+        if (functions != null) {
+            return functions;
         }
         List<DType> typeArgs = this.typeArgs;
         if (typeArgs == null) {
             typeArgs = typeParameters();
         }
-        members = new ArrayList<>();
+        functions = new ArrayList<>();
         TypeTable localTypeTable = new TypeTable(ts);
         for (int i = 0; i < inf.typeParams().size(); i++) {
             DexInfTypeParam typeParam = inf.typeParams().get(i);
@@ -59,7 +59,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         for (DexInfFunction function : inf.functions()) {
             addInfFunction(localTypeTable, function);
         }
-        return members;
+        return functions;
     }
 
     private void addInfFunction(TypeTable localTypeTable, DexInfFunction infFunction) {
@@ -69,7 +69,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
             params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
         DType ret = ResolveType.$(ts, localTypeTable, infFunction.sig().ret());
-        members.add(new FunctionType(ts, name, params, ret));
+        functions.add(new FunctionType(ts, name, params, ret));
     }
 
     private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
@@ -80,7 +80,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
             params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
         DType ret = ResolveType.$(ts, localTypeTable, infMethod.sig().ret());
-        members.add(new FunctionType(ts, name, params, ret));
+        functions.add(new FunctionType(ts, name, params, ret));
     }
 
     @Override
@@ -119,10 +119,5 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
 
     public List<DType> typeArgs() {
         return typeArgs;
-    }
-
-    @Override
-    public boolean _shouldCacheComparison() {
-        return typeParameters().isEmpty();
     }
 }

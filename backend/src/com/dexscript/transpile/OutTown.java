@@ -7,7 +7,6 @@ import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexParam;
-import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.transpile.shim.GeneratedSubClass;
@@ -89,7 +88,7 @@ public class OutTown {
         Invocation ivc = new Invocation(funcName, null, args, null);
         List<FunctionSig.Invoked> invokeds = ts.invoke(ivc);
         for (FunctionSig.Invoked invoked : invokeds) {
-            invoked.function().attachment();
+            invoked.function().impl();
         }
     }
 

@@ -9,7 +9,7 @@ public interface DType {
     }
 
     default boolean isAssignableFrom(TypeComparisonContext ctx, DType that) {
-        if (!_shouldCacheComparison()) {
+        if (!ctx.isTopLevel()) {
             return _isAssignableFrom(ctx, that);
         }
         TypeComparison comparison = new TypeComparison(this, that);
@@ -59,10 +59,6 @@ public interface DType {
             return true;
         }
         return _isSubType(ctx, that);
-    }
-
-    default boolean _shouldCacheComparison() {
-        return true;
     }
 
     boolean _isSubType(TypeComparisonContext ctx, DType that);

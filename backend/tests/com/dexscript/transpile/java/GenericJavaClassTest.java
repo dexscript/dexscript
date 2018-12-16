@@ -9,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class GenericJavaClassTest {
@@ -61,7 +60,7 @@ public class GenericJavaClassTest {
         Assert.assertEquals(1, type.typeParameters().size());
         Assert.assertEquals(ts.ANY, type.typeParameters().get(0));
         Assert.assertTrue(type.functions().size() > 1);
-        Assert.assertFalse(type.isAssignableFrom(ts.UINT8));
+        Assert.assertFalse(new TypeComparison(type, ts.UINT8).isAssignable());
 
         DType listOfInt64 = ResolveType.$(ts, "List<int64>");
         DType listOfString = ResolveType.$(ts, "List<string>");
@@ -79,10 +78,5 @@ public class GenericJavaClassTest {
         DType listOfInt64 = ResolveType.$(ts, "List<int64>");
         DType arrayListOfInt64 = ResolveType.$(ts, "ArrayList<int64>");
         Assert.assertTrue(listOfInt64.isAssignableFrom(arrayListOfInt64));
-        ArrayList<String> logCollector = new ArrayList<>();
-        arrayListOfInt64.isAssignableFrom(new TypeComparisonContext(new HashMap<>(), 10, logCollector), ts.INT64);
-        for (String log : logCollector) {
-            System.out.println(log);
-        }
     }
 }

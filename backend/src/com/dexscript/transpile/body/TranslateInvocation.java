@@ -60,7 +60,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         oClass.g().__(new Line(");"));
         boolean needToConsume = false;
         for (FunctionSig.Invoked invoked : invokeds) {
-            FunctionImpl impl = (FunctionImpl) invoked.function().attachment();
+            FunctionImpl impl = (FunctionImpl) invoked.function().impl();
             if (impl == null) {
                 throw new IllegalStateException("function type defined without impl attached: " + invoked.function());
             }

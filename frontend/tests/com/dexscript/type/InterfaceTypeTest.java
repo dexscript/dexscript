@@ -1,11 +1,10 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
 
 public class InterfaceTypeTest {
 
@@ -14,6 +13,14 @@ public class InterfaceTypeTest {
     @Before
     public void setup() {
         ts = new TypeSystem();
+    }
+
+    private void defineFunction(String src) {
+        DexActor actor = new DexActor("function " + src);
+        FunctionSig sig = new FunctionSig(ts, actor.sig());
+        FunctionType function = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
+        function.setImpl(new Object());
+        ts.defineFunction(function);
     }
 
     @Test
@@ -43,8 +50,8 @@ public class InterfaceTypeTest {
                 "   Action1(): string\n" +
                 "   Action2(): string\n" +
                 "}"));
-        Assert.assertTrue(inf1.isAssignableFrom(inf2));
-        Assert.assertFalse(inf2.isAssignableFrom(inf1));
+        Assert.assertTrue(new TypeComparison(inf1, inf2).isAssignable());
+        Assert.assertFalse(new TypeComparison(inf2, inf1).isAssignable());
     }
 
     @Test
@@ -99,9 +106,7 @@ public class InterfaceTypeTest {
                 "interface SomeInf {\n" +
                 "   SomeAction(): string\n" +
                 "}"));
-        ts.defineFunction(new FunctionType(ts, "SomeAction", new ArrayList<DType>() {{
-            add(ts.STRING);
-        }}, ts.STRING));
+        defineFunction("SomeAction(arg0: string): string");
         Assert.assertFalse(ts.STRING.isAssignableFrom(someInf));
         Assert.assertTrue(someInf.isAssignableFrom(ts.STRING));
     }
@@ -116,19 +121,11 @@ public class InterfaceTypeTest {
                 "interface Duck{\n" +
                         "   DoBoth(duck1: int64, duck2: Swimable): string\n" +
                         "}"));
-        ts.defineFunction(new FunctionType(ts, "Quack", new ArrayList<DType>() {{
-            add(ts.INT64);
-        }}, ts.STRING));
-        ts.defineFunction(new FunctionType(ts, "Swim", new ArrayList<DType>() {{
-            add(ts.INT64);
-        }}, ts.STRING));
-        ts.defineFunction(new FunctionType(ts, "DoBoth", new ArrayList<DType>() {{
-            add(ts.INT64);
-            add(quackable);
-            add(swimable);
-        }}, ts.STRING));
-        Assert.assertTrue(swimable.isAssignableFrom(ts.INT64));
-        Assert.assertTrue(quackable.isAssignableFrom(ts.INT64));
-        Assert.assertTrue(duck.isAssignableFrom(ts.INT64));
+        defineFunction("Quack(arg0: int64): string");
+        defineFunction("Swim(arg0: int64): string");
+        defineFunction("DoBoth(arg0: int64, arg1: Quackable, arg2: Swimable): string");
+        Assert.assertTrue(new TypeComparison(swimable, ts.INT64).isAssignable());
+        Assert.assertTrue(new TypeComparison(quackable, ts.INT64).isAssignable());
+        Assert.assertTrue(new TypeComparison(duck, ts.INT64).isAssignable());
     }
 }
