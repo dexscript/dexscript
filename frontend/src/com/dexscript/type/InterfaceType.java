@@ -89,24 +89,16 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     }
 
     @Override
-    public String description() {
-        if (description == null) {
-            description = describe(typeArgs);
-        }
-        return description;
-    }
-
-    @Override
     public TypeSystem typeSystem() {
         return ts;
     }
 
     @Override
     public String toString() {
-        if (typeArgs == null) {
-            return name();
+        if (description == null) {
+            description = describe(typeArgs);
         }
-        return name() + "@" + System.identityHashCode(this);
+        return description;
     }
 
     @Override

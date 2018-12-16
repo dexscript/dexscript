@@ -28,7 +28,7 @@ public class CheckAssignment implements CheckSemanticError.Handler<DexAssignStmt
         ArrayList<String> logs = new ArrayList<>();
         TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>(), logUntilLevelN, logs);
         if (!to.isAssignableFrom(ctx, from)) {
-            cse.report(elem, to.description() + " is not assignable from " + from.description());
+            cse.report(elem, to + " is not assignable from " + from);
             for (String log : logs) {
                 System.out.println(log);
             }

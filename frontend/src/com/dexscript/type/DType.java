@@ -72,9 +72,5 @@ public interface DType {
         return null;
     }
 
-    default String description() {
-        return toString();
-    }
-
     TypeSystem typeSystem();
 }

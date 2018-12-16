@@ -28,11 +28,6 @@ public final class PlaceholderType implements NamedType {
     }
 
     @Override
-    public String description() {
-        return "<" + name() + ">: " + constraint;
-    }
-
-    @Override
     public TypeSystem typeSystem() {
         return ts;
     }
@@ -45,5 +40,9 @@ public final class PlaceholderType implements NamedType {
     @Override
     public @NotNull String name() {
         return name;
+    }
+
+    public String description() {
+        return "<" + name() + ">: " + constraint;
     }
 }
