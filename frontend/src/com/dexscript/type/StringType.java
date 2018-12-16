@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 public class StringType implements NamedType {
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return that instanceof StringType || that instanceof StringLiteralType;
     }
 

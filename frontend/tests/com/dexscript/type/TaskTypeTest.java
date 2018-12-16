@@ -12,7 +12,7 @@ public class TaskTypeTest {
     @Test
     public void resolve_any() {
         TypeSystem ts = new TypeSystem();
-        Type taskType = ts.resolveType("Task");
+        DType taskType = ts.resolveType("Task");
         InterfaceType inf = ts.defineInterface(new DexInterface("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
@@ -23,7 +23,7 @@ public class TaskTypeTest {
     @Test
     public void resolve_string() {
         TypeSystem ts = new TypeSystem();
-        Type taskType = ts.resolveType("Task", Arrays.asList(BuiltinTypes.STRING));
+        DType taskType = ts.resolveType("Task", Arrays.asList(BuiltinTypes.STRING));
         InterfaceType resolveString = ts.defineInterface(new DexInterface("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +

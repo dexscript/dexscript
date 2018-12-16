@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class TypeComparison {
 
-    private final Type assignedTo;
-    private final Type assignedFrom;
+    private final DType assignedTo;
+    private final DType assignedFrom;
 
-    public TypeComparison(Type assignedTo, Type assignedFrom) {
+    public TypeComparison(DType assignedTo, DType assignedFrom) {
         this.assignedTo = assignedTo;
         this.assignedFrom = assignedFrom;
     }

@@ -3,7 +3,7 @@ package com.dexscript.analyze;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.stmt.DexAssignStmt;
 import com.dexscript.infer.InferType;
-import com.dexscript.type.Type;
+import com.dexscript.type.DType;
 import com.dexscript.type.TypeComparisonCache;
 import com.dexscript.type.TypeComparisonContext;
 import com.dexscript.type.TypeSystem;
@@ -19,12 +19,12 @@ public class CheckAssignment implements CheckSemanticError.Handler<DexAssignStmt
             throw new UnsupportedOperationException("not implemented");
         }
         TypeSystem ts = cse.typeSystem();
-        Type left = InferType.$(ts, elem.targets().get(0));
-        Type right = InferType.$(ts, elem.expr());
+        DType left = InferType.$(ts, elem.targets().get(0));
+        DType right = InferType.$(ts, elem.expr());
         checkTypeAssignable(cse, elem, left, right);
     }
 
-    public static void checkTypeAssignable(CheckSemanticError cse, DexElement elem, Type assignedTo, Type assignedFrom) {
+    public static void checkTypeAssignable(CheckSemanticError cse, DexElement elem, DType assignedTo, DType assignedFrom) {
         int logUntilLevelN = 4;
         ArrayList<String> logs = new ArrayList<>();
         TypeComparisonCache cache = cse.typeSystem().typeTable().comparisonCache();

@@ -1,18 +1,18 @@
 package com.dexscript.transpile.skeleton;
 
 import com.dexscript.transpile.body.OutValue;
-import com.dexscript.type.Type;
+import com.dexscript.type.DType;
 
 public final class OutField extends OutValue {
 
-    private final Type type;
+    private final DType type;
 
-    public OutField(String fieldName, Type type) {
+    public OutField(String fieldName, DType type) {
         super(fieldName);
         this.type = type;
     }
 
-    public Type type() {
+    public DType type() {
         return type;
     }
 }

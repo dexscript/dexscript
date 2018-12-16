@@ -18,10 +18,10 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
 
     private final OutShim oShim;
     private final Class clazz;
-    private final List<Type> typeArgs;
-    private Map<TypeVariable, Type> javaTypeVarMap;
+    private final List<DType> typeArgs;
+    private Map<TypeVariable, DType> javaTypeVarMap;
     private List<FunctionType> functions;
-    private List<Type> typeParams;
+    private List<DType> typeParams;
     private ArrayList<PlaceholderType> placeholders;
     private TypeSystem ts;
     private String description;
@@ -30,7 +30,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         this(oShim, clazz, null);
     }
 
-    public JavaClassType(OutShim oShim, Class clazz, List<Type> typeArgs) {
+    public JavaClassType(OutShim oShim, Class clazz, List<DType> typeArgs) {
         this.oShim = oShim;
         this.clazz = clazz;
         this.typeArgs = typeArgs;
@@ -72,14 +72,14 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
 
     private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
         JavaTypes javaTypes = oShim.javaTypes();
-        Type ret = resolveJavaType(method.getGenericReturnType());
+        DType ret = resolveJavaType(method.getGenericReturnType());
         if (ret == null) {
             return;
         }
-        ArrayList<Type> params = new ArrayList<>();
+        ArrayList<DType> params = new ArrayList<>();
         params.add(this);
         for (Class<?> paramClazz : method.getParameterTypes()) {
-            Type param = javaTypes.tryResolve(paramClazz);
+            DType param = javaTypes.tryResolve(paramClazz);
             if (param == null) {
                 return;
             }
@@ -90,7 +90,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         collector.add(function);
     }
 
-    private Type resolveJavaType(java.lang.reflect.Type javaType) {
+    private DType resolveJavaType(java.lang.reflect.Type javaType) {
         if (javaType instanceof Class) {
             return oShim.javaTypes().tryResolve((Class) javaType);
         }
@@ -117,11 +117,11 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     }
 
     private void newFunc(List<FunctionType> collector, Constructor ctor, String subClassName) {
-        ArrayList<Type> params = new ArrayList<>();
+        ArrayList<DType> params = new ArrayList<>();
         String funcName = clazz.getSimpleName();
         params.add(new StringLiteralType(funcName));
         for (Class paramType : ctor.getParameterTypes()) {
-            Type type = oShim.javaTypes().tryResolve(paramType);
+            DType type = oShim.javaTypes().tryResolve(paramType);
             if (type == null) {
                 return;
             }
@@ -153,31 +153,31 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     }
 
     @Override
-    public Type generateType(List<Type> typeArgs) {
+    public DType generateType(List<DType> typeArgs) {
         return new JavaClassType(oShim, clazz, typeArgs);
     }
 
     @Override
-    public List<Type> typeParameters() {
+    public List<DType> typeParameters() {
         if (typeParams != null) {
             return typeParams;
         }
         typeParams = new ArrayList<>();
         placeholders = new ArrayList<>();
         for (TypeVariable javaTypeVar : clazz.getTypeParameters()) {
-            Type typeParam = translateBound(javaTypeVar.getBounds());
+            DType typeParam = translateBound(javaTypeVar.getBounds());
             typeParams.add(typeParam);
             placeholders.add(new PlaceholderType(javaTypeVar.getName(), typeParam));
         }
         return typeParams;
     }
 
-    private Map<TypeVariable, Type> javaTypeVarMap() {
+    private Map<TypeVariable, DType> javaTypeVarMap() {
         if (javaTypeVarMap != null) {
             return javaTypeVarMap;
         }
         javaTypeVarMap = new HashMap<>();
-        List<Type> typeArgs = this.typeArgs;
+        List<DType> typeArgs = this.typeArgs;
         if (typeArgs == null) {
             typeArgs = typeParameters();
         }
@@ -188,13 +188,13 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         return javaTypeVarMap;
     }
 
-    private Type translateBound(java.lang.reflect.Type[] bounds) {
+    private DType translateBound(java.lang.reflect.Type[] bounds) {
         // TODO: translate bound
         return BuiltinTypes.ANY;
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return ts.isSubType(ctx, this, that);
     }
 

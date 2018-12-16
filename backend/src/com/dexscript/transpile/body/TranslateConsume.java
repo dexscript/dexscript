@@ -4,7 +4,7 @@ import com.dexscript.ast.expr.DexConsumeExpr;
 import com.dexscript.infer.InferType;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
-import com.dexscript.type.Type;
+import com.dexscript.type.DType;
 
 public class TranslateConsume implements Translate<DexConsumeExpr> {
 
@@ -12,7 +12,7 @@ public class TranslateConsume implements Translate<DexConsumeExpr> {
     public void handle(OutClass oClass, DexConsumeExpr iConsumeExpr) {
         Translate.$(oClass, iConsumeExpr.right());
         String targetActor = iConsumeExpr.right().attachmentOfType(OutValue.class).value();
-        Type retType = InferType.$(oClass.typeSystem(), iConsumeExpr);
+        DType retType = InferType.$(oClass.typeSystem(), iConsumeExpr);
         OutField oResultField = TranslateInvocation.consume(oClass, retType, targetActor);
         if (oResultField != null) {
             iConsumeExpr.attach(oResultField);

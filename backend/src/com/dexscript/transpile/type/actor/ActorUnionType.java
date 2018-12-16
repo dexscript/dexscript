@@ -1,7 +1,7 @@
 package com.dexscript.transpile.type.actor;
 
+import com.dexscript.type.DType;
 import com.dexscript.type.NamedType;
-import com.dexscript.type.Type;
 import com.dexscript.type.TypeComparisonContext;
 import com.dexscript.type.UnionType;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +24,7 @@ public class ActorUnionType implements NamedType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return unionType.isAssignableFrom(ctx, that);
     }
 

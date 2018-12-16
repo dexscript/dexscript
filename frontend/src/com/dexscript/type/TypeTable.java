@@ -8,15 +8,15 @@ import java.util.*;
 public class TypeTable {
 
     public interface OnNotGenericType {
-        void handle(String name, List<Type> typeArgs, Type actualType);
+        void handle(String name, List<DType> typeArgs, DType actualType);
     }
 
     public interface OnGenericTypeArgumentsSizeMismatch {
-        void handle(String name, GenericType genericType, List<Type> typeArgs);
+        void handle(String name, GenericType genericType, List<DType> typeArgs);
     }
 
     public interface OnGenericTypeArgumentNotAssignable {
-        void handle(String name, GenericType genericType, List<Type> typeArgs, int i);
+        void handle(String name, GenericType genericType, List<DType> typeArgs, int i);
     }
 
     public interface OnNoSuchType {
@@ -44,8 +44,8 @@ public class TypeTable {
                         name, i + 1, genericType.typeParameters().get(i), typeArgs.get(i)));
             };
 
-    private final Map<String, Type> defined = new HashMap<>();
-    private final Map<Expansion, Type> expanded = new HashMap<>();
+    private final Map<String, DType> defined = new HashMap<>();
+    private final Map<Expansion, DType> expanded = new HashMap<>();
     private final List<NamedTypesProvider> providers = new ArrayList<>();
     private final TypeComparisonCache cache = new TypeComparisonCache();
 
@@ -58,9 +58,9 @@ public class TypeTable {
         expanded.putAll(copiedFrom.expanded);
     }
 
-    public Type resolveType(String name) {
+    public DType resolveType(String name) {
         pullFromProviders();
-        Type type = defined.get(name);
+        DType type = defined.get(name);
         if (type == null) {
             ON_NO_SUCH_TYPE.handle(name);
             return BuiltinTypes.UNDEFINED;
@@ -68,8 +68,8 @@ public class TypeTable {
         return type;
     }
 
-    public Type resolveType(String name, List<Type> typeArgs) {
-        Type type = this.resolveType(name);
+    public DType resolveType(String name, List<DType> typeArgs) {
+        DType type = this.resolveType(name);
         if (type == null) {
             ON_NO_SUCH_TYPE.handle(name);
             return BuiltinTypes.UNDEFINED;
@@ -80,18 +80,18 @@ public class TypeTable {
         }
         GenericType genericType = (GenericType) type;
         Expansion expansion = new Expansion(genericType, typeArgs);
-        Type expandedType = expanded.get(expansion);
+        DType expandedType = expanded.get(expansion);
         if (expandedType != null) {
             return expandedType;
         }
-        List<Type> typeParams = genericType.typeParameters();
+        List<DType> typeParams = genericType.typeParameters();
         if (typeParams.size() != typeArgs.size()) {
             ON_GENERIC_TYPE_ARGUMENTS_SIZE_MISMATCH.handle(name, genericType, typeArgs);
             return BuiltinTypes.UNDEFINED;
         }
         for (int i = 0; i < typeParams.size(); i++) {
-            Type typeParam = typeParams.get(i);
-            Type typeArg = typeArgs.get(i);
+            DType typeParam = typeParams.get(i);
+            DType typeArg = typeArgs.get(i);
             if (!typeParam.isAssignableFrom(cache, typeArg)) {
                 ON_GENERIC_TYPE_ARGUMENT_NOT_ASSIGNABLE.handle(name, genericType, typeArgs, i);
                 return BuiltinTypes.UNDEFINED;
@@ -118,7 +118,7 @@ public class TypeTable {
         defined.put(type.name(), type);
     }
 
-    public void define(String typeName, Type type) {
+    public void define(String typeName, DType type) {
         defined.put(typeName, type);
     }
 
@@ -135,9 +135,9 @@ public class TypeTable {
     private static class Expansion {
 
         private final GenericType genericType;
-        private final List<Type> typeArgs;
+        private final List<DType> typeArgs;
 
-        private Expansion(GenericType genericType, List<Type> typeArgs) {
+        private Expansion(GenericType genericType, List<DType> typeArgs) {
             this.genericType = genericType;
             this.typeArgs = typeArgs;
         }

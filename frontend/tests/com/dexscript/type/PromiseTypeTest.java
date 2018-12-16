@@ -11,7 +11,7 @@ public class PromiseTypeTest {
     @Test
     public void consume_any() {
         TypeSystem ts = new TypeSystem();
-        Type promiseType = ts.resolveType("Promise");
+        DType promiseType = ts.resolveType("Promise");
         InterfaceType inf = ts.defineInterface(new DexInterface("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
@@ -22,7 +22,7 @@ public class PromiseTypeTest {
     @Test
     public void consume_string() {
         TypeSystem ts = new TypeSystem();
-        Type promiseType = ts.resolveType("Promise", Arrays.asList(BuiltinTypes.STRING));
+        DType promiseType = ts.resolveType("Promise", Arrays.asList(BuiltinTypes.STRING));
         InterfaceType consumeString = ts.defineInterface(new DexInterface("" +
                 "interface TaskString {\n" +
                 "   Consume__(): string\n" +

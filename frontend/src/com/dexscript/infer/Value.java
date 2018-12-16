@@ -1,16 +1,16 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.type.Type;
+import com.dexscript.type.DType;
 import org.jetbrains.annotations.NotNull;
 
 public final class Value {
 
     private final String name;
-    private final Type type;
+    private final DType type;
     private final DexElement definedBy;
 
-    public Value(@NotNull String name, @NotNull Type type, DexElement definedBy) {
+    public Value(@NotNull String name, @NotNull DType type, DexElement definedBy) {
         this.name = name;
         this.type = type;
         this.definedBy = definedBy;
@@ -20,7 +20,7 @@ public final class Value {
         return name;
     }
 
-    public final Type type() {
+    public final DType type() {
         return type;
     }
 

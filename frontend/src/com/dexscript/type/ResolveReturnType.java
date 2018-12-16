@@ -5,7 +5,7 @@ import java.util.List;
 public interface ResolveReturnType {
 
     interface OnMissingFunction {
-        void handle(TypeSystem ts, String funcName, List<Type> args);
+        void handle(TypeSystem ts, String funcName, List<DType> args);
     }
 
     class Events {
@@ -14,7 +14,7 @@ public interface ResolveReturnType {
         };
     }
 
-    static Type $(TypeSystem ts, String funcName, List<Type> typeArgs, List<Type> args, Type retHint) {
+    static DType $(TypeSystem ts, String funcName, List<DType> typeArgs, List<DType> args, DType retHint) {
         List<FunctionSig.Invoked> invokeds = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
         if (invokeds.size() == 0) {
             Events.ON_MISSING_FUNCTION.handle(ts, funcName, args);
@@ -23,11 +23,11 @@ public interface ResolveReturnType {
         return $(invokeds);
     }
 
-    static Type $(List<FunctionSig.Invoked> invokeds) {
+    static DType $(List<FunctionSig.Invoked> invokeds) {
         if (invokeds.size() == 1) {
             return invokeds.get(0).ret();
         }
-        Type ret = invokeds.get(0).ret();
+        DType ret = invokeds.get(0).ret();
         for (int i = 1; i < invokeds.size(); i++) {
             ret = ret.union(invokeds.get(i).ret());
         }

@@ -43,9 +43,9 @@ public interface InferType<E extends DexExpr> {
         }
     };
 
-    Type handle(TypeSystem ts, E elem);
+    DType handle(TypeSystem ts, E elem);
 
-    static Type $(TypeSystem ts, DexExpr elem) {
+    static DType $(TypeSystem ts, DexExpr elem) {
         InferType inferType = handlers.get(elem.getClass());
         if (inferType == null) {
             Events.ON_UNKNOWN_ELEM.handle(elem);
@@ -54,16 +54,16 @@ public interface InferType<E extends DexExpr> {
         return inferType.handle(ts, elem);
     }
 
-    static List<Type> inferTypes(TypeSystem ts, List<DexExpr> elems) {
-        ArrayList<Type> types = new ArrayList<>();
+    static List<DType> inferTypes(TypeSystem ts, List<DexExpr> elems) {
+        ArrayList<DType> types = new ArrayList<>();
         for (DexExpr elem : elems) {
             types.add(InferType.$(ts, elem));
         }
         return types;
     }
 
-    static List<Type> inferTypes(TypeSystem ts, Type type1, List<DexExpr> elems) {
-        ArrayList<Type> types = new ArrayList<>();
+    static List<DType> inferTypes(TypeSystem ts, DType type1, List<DexExpr> elems) {
+        ArrayList<DType> types = new ArrayList<>();
         types.add(type1);
         for (DexExpr elem : elems) {
             types.add(InferType.$(ts, elem));

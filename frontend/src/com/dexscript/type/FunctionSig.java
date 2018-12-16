@@ -17,7 +17,7 @@ public class FunctionSig {
 
         public abstract boolean needRuntimeCheck();
 
-        public abstract Type ret();
+        public abstract DType ret();
 
         public FunctionType function() {
             return functionType;
@@ -37,7 +37,7 @@ public class FunctionSig {
         }
 
         @Override
-        public Type ret() {
+        public DType ret() {
             return BuiltinTypes.UNDEFINED;
         }
     }
@@ -75,9 +75,9 @@ public class FunctionSig {
     public class Compatible extends Invoked {
 
         private final boolean needRuntimeCheck;
-        private final Type ret;
+        private final DType ret;
 
-        public Compatible(boolean needRuntimeCheck, Type ret) {
+        public Compatible(boolean needRuntimeCheck, DType ret) {
             this.needRuntimeCheck = needRuntimeCheck;
             this.ret = ret;
         }
@@ -93,7 +93,7 @@ public class FunctionSig {
         }
 
         @Override
-        public Type ret() {
+        public DType ret() {
             return ret;
         }
     }
@@ -101,18 +101,18 @@ public class FunctionSig {
     private String description;
     private FunctionType functionType;
     private final List<PlaceholderType> typeParams;
-    private final List<Type> params;
-    private final Type ret;
+    private final List<DType> params;
+    private final DType ret;
     private final DexType retElem;
 
-    public FunctionSig(List<Type> params, Type ret) {
+    public FunctionSig(List<DType> params, DType ret) {
         this.typeParams = Collections.emptyList();
         this.params = params;
         this.ret = ret;
         this.retElem = null;
     }
 
-    public FunctionSig(List<PlaceholderType> typeParams, List<Type> params, Type ret, DexType retElem) {
+    public FunctionSig(List<PlaceholderType> typeParams, List<DType> params, DType ret, DexType retElem) {
         this.typeParams = typeParams == null ? Collections.emptyList() : typeParams;
         this.params = params;
         this.ret = ret;
@@ -123,11 +123,11 @@ public class FunctionSig {
         this(typeTable, null, sig);
     }
 
-    public FunctionSig(TypeTable typeTable, Type objectType, DexSig sig) {
+    public FunctionSig(TypeTable typeTable, DType objectType, DexSig sig) {
         typeParams = new ArrayList<>();
         TypeTable localTypeTable = new TypeTable(typeTable);
         for (DexTypeParam typeParam : sig.typeParams()) {
-            Type constraint = ResolveType.$(typeTable, typeParam.paramType());
+            DType constraint = ResolveType.$(typeTable, typeParam.paramType());
             PlaceholderType placeholder = new PlaceholderType(typeParam.paramName().toString(), constraint);
             localTypeTable.define(placeholder);
             typeParams.add(placeholder);
@@ -147,11 +147,11 @@ public class FunctionSig {
         this.functionType = functionType;
     }
 
-    public List<Type> params() {
+    public List<DType> params() {
         return params;
     }
 
-    public Type ret() {
+    public DType ret() {
         return ret;
     }
 
@@ -160,18 +160,18 @@ public class FunctionSig {
     }
 
     Invoked invoke(TypeTable typeTable, Invocation ivc) {
-        List<Type> args = ivc.args();
-        List<Type> typeArgs = ivc.typeArgs();
-        Type retHint = ivc.retHint();
+        List<DType> args = ivc.args();
+        List<DType> typeArgs = ivc.typeArgs();
+        DType retHint = ivc.retHint();
         if (params.size() != args.size()) {
             return new ArgumentsCountIncompatible();
         }
-        Map<Type, Type> sub = initSub(typeArgs);
+        Map<DType, DType> sub = initSub(typeArgs);
         TypeComparisonContext ctx = new TypeComparisonContext(typeTable.comparisonCache(), sub);
         boolean needRuntimeCheck = false;
         for (int i = 0; i < params.size(); i++) {
-            Type param = params.get(i);
-            Type arg = args.get(i);
+            DType param = params.get(i);
+            DType arg = args.get(i);
             TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
             boolean argMatched = param.isAssignableFrom(subCtx, arg);
             if (!argMatched) {
@@ -194,19 +194,19 @@ public class FunctionSig {
             }
         }
         TypeTable localTypeTable = new TypeTable(typeTable);
-        for (Map.Entry<Type, Type> entry : sub.entrySet()) {
-            Type key = entry.getKey();
+        for (Map.Entry<DType, DType> entry : sub.entrySet()) {
+            DType key = entry.getKey();
             if (key instanceof NamedType) {
                 localTypeTable.define(((NamedType) key).name(), entry.getValue());
             }
         }
-        Type expandedRet = ResolveType.$(localTypeTable, retElem);
+        DType expandedRet = ResolveType.$(localTypeTable, retElem);
         return new Compatible(needRuntimeCheck, expandedRet);
     }
 
     @NotNull
-    private Map<Type, Type> initSub(List<Type> typeArgs) {
-        Map<Type, Type> collector = new HashMap<>();
+    private Map<DType, DType> initSub(List<DType> typeArgs) {
+        Map<DType, DType> collector = new HashMap<>();
         if (typeArgs == null) {
             return collector;
         }
@@ -221,13 +221,13 @@ public class FunctionSig {
         }
         for (int i = 0; i < typeParams.size(); i++) {
             PlaceholderType typeParam = typeParams.get(i);
-            Type typeArg = typeArgs.get(i);
+            DType typeArg = typeArgs.get(i);
             collector.put(typeParam, typeArg);
         }
         return collector;
     }
 
-    private void inferRetHint(Type retHint, TypeComparisonContext ctx) {
+    private void inferRetHint(DType retHint, TypeComparisonContext ctx) {
         if (retHint != null) {
             TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
             boolean assignable = retHint.isAssignableFrom(subCtx, ret);
@@ -257,7 +257,7 @@ public class FunctionSig {
             }
             desc.append(typeParam.description());
         }
-        for (Type param : params) {
+        for (DType param : params) {
             if (isFirst) {
                 isFirst = false;
             } else {

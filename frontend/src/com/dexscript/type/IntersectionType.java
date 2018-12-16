@@ -3,19 +3,19 @@ package com.dexscript.type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IntersectionType implements Type {
+public class IntersectionType implements DType {
 
-    private final List<Type> types;
+    private final List<DType> types;
 
-    public IntersectionType(Type type1, Type type2) {
+    public IntersectionType(DType type1, DType type2) {
         types = new ArrayList<>();
         types.add(type1);
         types.add(type2);
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
-        for (Type type : types) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
+        for (DType type : types) {
             if (!type.isAssignableFrom(ctx, that)) {
                 return false;
             }
@@ -23,7 +23,7 @@ public class IntersectionType implements Type {
         return true;
     }
 
-    public List<Type> types() {
+    public List<DType> types() {
         return types;
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 public class TaskType implements NamedType, FunctionsProvider, GenericType {
 
-    private final static List<Type> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
+    private final static List<DType> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
     private final @NotNull FunctionType resolveFunc;
     private final TypeSystem ts;
 
@@ -17,7 +17,7 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
         this(ts, null);
     }
 
-    public TaskType(TypeSystem ts, List<Type> typeArgs) {
+    public TaskType(TypeSystem ts, List<DType> typeArgs) {
         this.ts = ts;
         if (typeArgs == null) {
             ts.defineType(this);
@@ -27,8 +27,8 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
     }
 
     @NotNull
-    private FunctionType resolveFunc(List<Type> typeArgs) {
-        ArrayList<Type> params = new ArrayList<>();
+    private FunctionType resolveFunc(List<DType> typeArgs) {
+        ArrayList<DType> params = new ArrayList<>();
         params.add(this);
         params.add(typeArgs.get(0));
         return new FunctionType("Resolve__", params, BuiltinTypes.VOID);
@@ -45,17 +45,17 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
     }
 
     @Override
-    public Type generateType(List<Type> typeArgs) {
+    public DType generateType(List<DType> typeArgs) {
         return new TaskType(ts, typeArgs);
     }
 
     @Override
-    public List<Type> typeParameters() {
+    public List<DType> typeParameters() {
         return TYPE_PARAMETERS;
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return ts.isSubType(ctx, this, that);
     }
 

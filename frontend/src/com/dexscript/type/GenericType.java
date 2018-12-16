@@ -4,13 +4,13 @@ import java.util.List;
 
 public interface GenericType extends NamedType {
 
-    Type generateType(List<Type> typeArgs);
+    DType generateType(List<DType> typeArgs);
 
     // only covariant is supported
-    List<Type> typeParameters();
+    List<DType> typeParameters();
 
 
-    default String describe(List<Type> typeArgs) {
+    default String describe(List<DType> typeArgs) {
         if (typeArgs == null) {
             typeArgs = typeParameters();
         }
@@ -21,7 +21,7 @@ public interface GenericType extends NamedType {
                 if (i > 0) {
                     desc.append(", ");
                 }
-                Type typeArg = typeArgs.get(i);
+                DType typeArg = typeArgs.get(i);
                 desc.append(typeArg.toString());
             }
             desc.append('>');

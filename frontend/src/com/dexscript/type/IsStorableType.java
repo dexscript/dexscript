@@ -1,7 +1,7 @@
 package com.dexscript.type;
 
 public interface IsStorableType {
-    static boolean $(Type type) {
+    static boolean $(DType type) {
         if (BuiltinTypes.UNDEFINED.equals(type)) {
             return false;
         }

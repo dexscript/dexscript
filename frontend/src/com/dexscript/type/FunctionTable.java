@@ -99,7 +99,7 @@ public class FunctionTable {
         }
     }
 
-    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider assignedTo, Type assignedFrom) {
+    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider assignedTo, DType assignedFrom) {
         if (ctx.levels() > 20) {
             return true;
         }

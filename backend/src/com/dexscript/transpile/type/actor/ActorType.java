@@ -20,16 +20,16 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     private final TypeSystem ts;
     private final OutShim oShim;
     private final DexActor actor;
-    private List<Type> typeArgs;
+    private List<DType> typeArgs;
     private List<FunctionType> members;
     private List<FunctionType> functions;
-    private List<Type> typeParams;
+    private List<DType> typeParams;
 
     public ActorType(OutShim oShim, DexActor actor) {
         this(oShim, actor, null);
     }
 
-    public ActorType(OutShim oShim, DexActor actor, List<Type> typeArgs) {
+    public ActorType(OutShim oShim, DexActor actor, List<DType> typeArgs) {
         this.typeArgs = typeArgs;
         this.actor = actor;
         this.oShim = oShim;
@@ -52,12 +52,12 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     }
 
     @Override
-    public Type generateType(List<Type> typeArgs) {
+    public DType generateType(List<DType> typeArgs) {
         return new ActorType(oShim, actor, typeArgs);
     }
 
     @Override
-    public List<Type> typeParameters() {
+    public List<DType> typeParameters() {
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexTypeParam typeParam : actor.typeParams()) {
@@ -91,8 +91,8 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     }
 
     public FunctionType callFunc(TypeTable localTypeTable) {
-        Type ret = ResolveType.$(localTypeTable, actor.sig().ret());
-        ArrayList<Type> params = new ArrayList<>();
+        DType ret = ResolveType.$(localTypeTable, actor.sig().ret());
+        ArrayList<DType> params = new ArrayList<>();
         for (DexParam param : actor.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
@@ -103,7 +103,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     }
 
     public FunctionType newFunc(TypeTable localTypeTable) {
-        ArrayList<Type> params = new ArrayList<>();
+        ArrayList<DType> params = new ArrayList<>();
         params.add(new StringLiteralType(name()));
         for (DexParam param : actor.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
@@ -114,14 +114,14 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     }
 
     private FunctionType consumeFunc(TypeTable localTypeTable) {
-        Type ret = ResolveType.$(localTypeTable, actor.sig().ret());
-        ArrayList<Type> params = new ArrayList<>();
+        DType ret = ResolveType.$(localTypeTable, actor.sig().ret());
+        ArrayList<DType> params = new ArrayList<>();
         params.add(this);
         return new FunctionType("Consume__", params, ret);
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType thatObj) {
         return ts.isSubType(ctx, this, thatObj);
     }
 
@@ -163,7 +163,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         @NotNull
         private FunctionType newFunc(DexAwaitConsumer awaitConsumer) {
             InnerActorType nestedActor = new InnerActorType(ts, awaitConsumer);
-            ArrayList<Type> params = new ArrayList<>();
+            ArrayList<DType> params = new ArrayList<>();
             String funcName = awaitConsumer.identifier().toString();
             params.add(new StringLiteralType(funcName));
             params.add(ActorType.this);
@@ -181,8 +181,8 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         private FunctionType callFunc(DexAwaitConsumer awaitConsumer) {
             DexSig sig = awaitConsumer.produceSig();
             String funcName = awaitConsumer.identifier().toString();
-            Type ret = ResolveType.$(localTypeTable, sig.ret());
-            ArrayList<Type> params = new ArrayList<>();
+            DType ret = ResolveType.$(localTypeTable, sig.ret());
+            ArrayList<DType> params = new ArrayList<>();
             params.add(ActorType.this);
             for (DexParam param : sig.params()) {
                 params.add(ResolveType.$(localTypeTable, param.paramType()));

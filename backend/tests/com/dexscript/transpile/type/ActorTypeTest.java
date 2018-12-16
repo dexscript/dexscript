@@ -45,7 +45,7 @@ public class ActorTypeTest {
                 "   AA(): string\n" +
                 "}"));
         Assert.assertTrue(inf.isAssignableFrom(actor));
-        List<FunctionSig.Invoked> newNestedActor = ts.invoke(new Invocation("New__", null, new ArrayList<Type>() {{
+        List<FunctionSig.Invoked> newNestedActor = ts.invoke(new Invocation("New__", null, new ArrayList<DType>() {{
             add(new StringLiteralType("AA"));
             add(actor);
         }}, null));
@@ -73,7 +73,7 @@ public class ActorTypeTest {
                 "}"));
         List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, Arrays.asList(BuiltinTypes.STRING), null));
         Assert.assertEquals(1, functionTypes.size());
-        Type type = ts.resolveType("Hello", Arrays.asList(BuiltinTypes.STRING));
+        DType type = ts.resolveType("Hello", Arrays.asList(BuiltinTypes.STRING));
         Assert.assertNotNull(type);
     }
 

@@ -5,15 +5,15 @@ import org.jetbrains.annotations.NotNull;
 public final class PlaceholderType implements NamedType {
 
     private final String name;
-    private final Type constraint;
+    private final DType constraint;
 
-    public PlaceholderType(String name, Type constraint) {
+    public PlaceholderType(String name, DType constraint) {
         this.name = name;
         this.constraint = constraint;
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         if (constraint.isAssignableFrom(ctx, that)) {
             if (that instanceof StringLiteralType) {
                 ctx.putSubstituted(this, BuiltinTypes.STRING);

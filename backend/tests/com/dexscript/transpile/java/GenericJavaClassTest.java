@@ -4,7 +4,7 @@ import com.dexscript.transpile.Transpile;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.java.JavaClassType;
 import com.dexscript.type.BuiltinTypes;
-import com.dexscript.type.Type;
+import com.dexscript.type.DType;
 import com.dexscript.type.TypeDebugLog;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
@@ -57,8 +57,8 @@ public class GenericJavaClassTest {
         Assert.assertEquals(BuiltinTypes.ANY, type.typeParameters().get(0));
         Assert.assertTrue(type.functions().size() > 1);
         Assert.assertFalse(type.isAssignableFrom(BuiltinTypes.UINT8));
-        Type listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
-        Type listOfString = ts.resolveType("List", Arrays.asList(BuiltinTypes.STRING));
+        DType listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
+        DType listOfString = ts.resolveType("List", Arrays.asList(BuiltinTypes.STRING));
         Assert.assertFalse(listOfInt64.isAssignableFrom(listOfString));
     }
 
@@ -69,8 +69,8 @@ public class GenericJavaClassTest {
         JavaClassType list = new JavaClassType(oShim, List.class);
         JavaClassType arrayList = new JavaClassType(oShim, ArrayList.class);
         Assert.assertTrue(list.isAssignableFrom(arrayList));
-        Type listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
-        Type arrayListOfInt64 = ts.resolveType("ArrayList", Arrays.asList(BuiltinTypes.INT64));
+        DType listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
+        DType arrayListOfInt64 = ts.resolveType("ArrayList", Arrays.asList(BuiltinTypes.INT64));
         Assert.assertTrue(listOfInt64.isAssignableFrom(arrayListOfInt64));
     }
 }

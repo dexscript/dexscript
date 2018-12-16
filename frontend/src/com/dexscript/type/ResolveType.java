@@ -30,7 +30,7 @@ public interface ResolveType<E extends DexType> {
         });
         put(DexGenericExpansionType.class, (typeTable, elem) -> {
             DexGenericExpansionType genericExpansionType = (DexGenericExpansionType) elem;
-            List<Type> typeArgs = new ArrayList<>();
+            List<DType> typeArgs = new ArrayList<>();
             for (DexType typeArg : genericExpansionType.typeArgs()) {
                 typeArgs.add(ResolveType.$(typeTable, typeArg));
             }
@@ -45,9 +45,9 @@ public interface ResolveType<E extends DexType> {
         });
     }};
 
-    Type handle(TypeTable typeTable, E elem);
+    DType handle(TypeTable typeTable, E elem);
 
-    static Type $(TypeTable typeTable, DexType elem) {
+    static DType $(TypeTable typeTable, DexType elem) {
         ResolveType resolveType = handlers.get(elem.getClass());
         if (resolveType == null) {
             Events.ON_UNKNOWN_ELEM.handle(elem);
@@ -56,8 +56,8 @@ public interface ResolveType<E extends DexType> {
         return resolveType.handle(typeTable, elem);
     }
 
-    static List<Type> $(TypeTable typeTable, String... typeDefs) {
-        List<Type> types = new ArrayList<>();
+    static List<DType> $(TypeTable typeTable, String... typeDefs) {
+        List<DType> types = new ArrayList<>();
         for (String typeDef : typeDefs) {
             DexType dexType = DexType.parse(typeDef);
             types.add(ResolveType.$(typeTable, dexType));
@@ -65,16 +65,16 @@ public interface ResolveType<E extends DexType> {
         return types;
     }
 
-    static List<Type> resolveParams(TypeTable typeTable, List<DexParam> params) {
-        List<Type> types = new ArrayList<>();
+    static List<DType> resolveParams(TypeTable typeTable, List<DexParam> params) {
+        List<DType> types = new ArrayList<>();
         for (DexParam param : params) {
             types.add(ResolveType.$(typeTable, param.paramType()));
         }
         return types;
     }
 
-    static List<Type> resolveTypes(TypeTable typeTable, List<DexType> dexTypes) {
-        List<Type> types = new ArrayList<>();
+    static List<DType> resolveTypes(TypeTable typeTable, List<DexType> dexTypes) {
+        List<DType> types = new ArrayList<>();
         for (DexType dexType : dexTypes) {
             types.add(ResolveType.$(typeTable, dexType));
         }

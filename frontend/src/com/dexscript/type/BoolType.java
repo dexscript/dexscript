@@ -10,7 +10,7 @@ public class BoolType implements NamedType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return that instanceof BoolType;
     }
 

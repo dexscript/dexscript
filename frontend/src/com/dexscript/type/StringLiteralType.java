@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public final class StringLiteralType implements Type {
+public final class StringLiteralType implements DType {
 
     @NotNull
     private final String literalValue;
@@ -14,7 +14,7 @@ public final class StringLiteralType implements Type {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return that.equals(this);
     }
 

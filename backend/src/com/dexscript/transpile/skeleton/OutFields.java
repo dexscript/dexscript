@@ -1,7 +1,7 @@
 package com.dexscript.transpile.skeleton;
 
+import com.dexscript.type.DType;
 import com.dexscript.type.IsStorableType;
-import com.dexscript.type.Type;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,7 +11,7 @@ public final class OutFields implements Iterable<OutField> {
 
     private Map<String, OutField> fields = new HashMap<>();
 
-    public OutField allocate(String suggestedName, Type type) {
+    public OutField allocate(String suggestedName, DType type) {
         suggestedName = "f" + suggestedName;
         if (!IsStorableType.$(type)) {
             throw new IllegalArgumentException("type is not storable: " + type);
@@ -31,7 +31,7 @@ public final class OutFields implements Iterable<OutField> {
         }
     }
 
-    private OutField tryAllocate(String fieldName, Type type) {
+    private OutField tryAllocate(String fieldName, DType type) {
         if (fields.containsKey(fieldName)) {
             return null;
         }

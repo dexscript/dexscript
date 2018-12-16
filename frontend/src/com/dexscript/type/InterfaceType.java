@@ -15,9 +15,9 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     private final TypeTable typeTable;
     private final FunctionTable functionTable;
     private final DexInterface inf;
-    private List<Type> typeArgs;
+    private List<DType> typeArgs;
     private List<FunctionType> members;
-    private List<Type> typeParams;
+    private List<DType> typeParams;
     private String description;
 
     public InterfaceType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, @NotNull DexInterface inf) {
@@ -25,7 +25,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     }
 
     public InterfaceType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable,
-                         @NotNull DexInterface inf, List<Type> typeArgs) {
+                         @NotNull DexInterface inf, List<DType> typeArgs) {
         this.typeArgs = typeArgs;
         this.typeTable = typeTable;
         this.functionTable = functionTable;
@@ -45,7 +45,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         if (members != null) {
             return members;
         }
-        List<Type> typeArgs = this.typeArgs;
+        List<DType> typeArgs = this.typeArgs;
         if (typeArgs == null) {
             typeArgs = typeParameters();
         }
@@ -67,27 +67,27 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
 
     private void addInfFunction(TypeTable localTypeTable, DexInfFunction infFunction) {
         String name = infFunction.identifier().toString();
-        List<Type> params = new ArrayList<>();
+        List<DType> params = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        Type ret = ResolveType.$(localTypeTable, infFunction.sig().ret());
+        DType ret = ResolveType.$(localTypeTable, infFunction.sig().ret());
         members.add(new FunctionType(name, params, ret));
     }
 
     private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
         String name = infMethod.identifier().toString();
-        List<Type> params = new ArrayList<>();
+        List<DType> params = new ArrayList<>();
         params.add(this);
         for (DexParam param : infMethod.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
-        Type ret = ResolveType.$(localTypeTable, infMethod.sig().ret());
+        DType ret = ResolveType.$(localTypeTable, infMethod.sig().ret());
         members.add(new FunctionType(name, params, ret));
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return functionTable.isSubType(ctx, this, that);
     }
 
@@ -108,12 +108,12 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     }
 
     @Override
-    public Type generateType(List<Type> typeArgs) {
+    public DType generateType(List<DType> typeArgs) {
         return new InterfaceType(typeTable, functionTable, inf, typeArgs);
     }
 
     @Override
-    public List<Type> typeParameters() {
+    public List<DType> typeParameters() {
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexInfTypeParam typeParam : inf.typeParams()) {
@@ -123,7 +123,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         return typeParams;
     }
 
-    public List<Type> typeArgs() {
+    public List<DType> typeArgs() {
         return typeArgs;
     }
 }

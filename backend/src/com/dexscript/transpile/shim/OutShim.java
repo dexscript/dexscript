@@ -13,9 +13,9 @@ import com.dexscript.transpile.type.actor.PromiseType;
 import com.dexscript.transpile.type.actor.TaskType;
 import com.dexscript.transpile.type.java.CallJavaFunction;
 import com.dexscript.transpile.type.java.JavaClassType;
+import com.dexscript.type.DType;
 import com.dexscript.type.FunctionSig;
 import com.dexscript.type.FunctionType;
-import com.dexscript.type.Type;
 import com.dexscript.type.TypeSystem;
 
 import java.lang.reflect.Method;
@@ -127,8 +127,8 @@ public class OutShim {
 
     private void importJavaFunction(Method javaFunction) {
         String funcName = javaFunction.getName();
-        List<Type> params = javaTypes.resolve(javaFunction.getParameterTypes());
-        Type ret = javaTypes.resolve(javaFunction.getReturnType());
+        List<DType> params = javaTypes.resolve(javaFunction.getParameterTypes());
+        DType ret = javaTypes.resolve(javaFunction.getReturnType());
         FunctionType functionType = new FunctionType(funcName, params, ret);
         ts.defineFunction(functionType);
         CallJavaFunction impl = new CallJavaFunction(this, functionType, javaFunction);
@@ -158,7 +158,7 @@ public class OutShim {
     }
 
     public String genSubClass(Class clazz) {
-        String subClassName = clazz.getSimpleName() + "__" + UUID.randomUUID().toString().replace('-', '_');
+        String subClassName = clazz.getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
         GeneratedSubClass generatedSubClass = new GeneratedSubClass(
                 clazz.getCanonicalName(), subClassName);
         generatedSubClasses.add(generatedSubClass);

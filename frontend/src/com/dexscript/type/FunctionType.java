@@ -4,9 +4,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-// Function Type: test type compatibility, more permissive than signature
+// Function DType: test type compatibility, more permissive than signature
 // Function Signature: generic type constraint & where condition
-public final class FunctionType implements Type {
+public final class FunctionType implements DType {
 
     private String description;
 
@@ -18,21 +18,21 @@ public final class FunctionType implements Type {
     private final String name;
 
     @NotNull
-    private final List<Type> params;
+    private final List<DType> params;
 
     @NotNull
-    private final Type ret;
+    private final DType ret;
 
     @NotNull
     private final FunctionSig sig;
 
     private Object attachment;
 
-    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret) {
+    public FunctionType(@NotNull String name, @NotNull List<DType> params, @NotNull DType ret) {
         this(name, params, ret, null);
     }
 
-    public FunctionType(@NotNull String name, @NotNull List<Type> params, @NotNull Type ret, FunctionSig sig) {
+    public FunctionType(@NotNull String name, @NotNull List<DType> params, @NotNull DType ret, FunctionSig sig) {
         this.name = name;
         this.params = params;
         this.ret = ret;
@@ -60,12 +60,12 @@ public final class FunctionType implements Type {
     }
 
     @NotNull
-    public List<Type> params() {
+    public List<DType> params() {
         return params;
     }
 
     @NotNull
-    public Type ret() {
+    public DType ret() {
         return ret;
     }
 
@@ -75,7 +75,7 @@ public final class FunctionType implements Type {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type thatObj) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType thatObj) {
         if (!(thatObj instanceof FunctionType)) {
             return false;
         }
@@ -87,8 +87,8 @@ public final class FunctionType implements Type {
             return false;
         }
         for (int i = 0; i < params.size(); i++) {
-            Type thisParam = this.params.get(i);
-            Type thatParam = that.params.get(i);
+            DType thisParam = this.params.get(i);
+            DType thatParam = that.params.get(i);
             if (!thatParam.isAssignableFrom(ctx, thisParam)) {
                 if (ctx.shouldLog()) {
                     String reason = String.format("param %s not assignable from %s", thatParam, thisParam);

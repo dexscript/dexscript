@@ -1,14 +1,14 @@
 package com.dexscript.transpile.type;
 
-import com.dexscript.type.Type;
+import com.dexscript.type.DType;
 
 public class TypeCandidate {
 
     private final String javaClassName;
     private final boolean isInterface;
-    private final Type type;
+    private final DType type;
 
-    public TypeCandidate(String javaClassName, boolean isInterface, Type type) {
+    public TypeCandidate(String javaClassName, boolean isInterface, DType type) {
         this.javaClassName = javaClassName;
         this.isInterface = isInterface;
         this.type = type;
@@ -22,7 +22,7 @@ public class TypeCandidate {
         return isInterface;
     }
 
-    public Type type() {
+    public DType type() {
         return type;
     }
 }

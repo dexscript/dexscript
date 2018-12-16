@@ -24,19 +24,19 @@ public class TypeSystem {
         return functionTable.invoke(typeTable, ivc);
     }
 
-    public Type resolveType(String typeName) {
+    public DType resolveType(String typeName) {
         return typeTable.resolveType(typeName);
     }
 
-    public Type resolveType(String typeName, List<Type> typeArgs) {
+    public DType resolveType(String typeName, List<DType> typeArgs) {
         return typeTable.resolveType(typeName, typeArgs);
     }
 
-    public Type resolveType(DexType elem) {
+    public DType resolveType(DexType elem) {
         return ResolveType.$(typeTable, elem);
     }
 
-    public List<Type> resolveTypes(List<DexType> dexTypes) {
+    public List<DType> resolveTypes(List<DexType> dexTypes) {
         return ResolveType.resolveTypes(typeTable, dexTypes);
     }
 
@@ -48,7 +48,7 @@ public class TypeSystem {
         functionTable.lazyDefine(functionsProvider);
     }
 
-    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider assignedTo, Type assignedFrom) {
+    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider assignedTo, DType assignedFrom) {
         return functionTable.isSubType(ctx, assignedTo, assignedFrom);
     }
 

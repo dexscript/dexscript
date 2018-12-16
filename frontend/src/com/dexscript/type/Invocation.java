@@ -8,20 +8,20 @@ import java.util.List;
 public class Invocation {
 
     private final String funcName;
-    private final List<Type> typeArgs;
-    private final List<Type> args;
-    private final Type retHint;
+    private final List<DType> typeArgs;
+    private final List<DType> args;
+    private final DType retHint;
 
-    public Invocation(String funcName, List<Type> typeArgs, List<Type> args, Type retHint) {
+    public Invocation(String funcName, List<DType> typeArgs, List<DType> args, DType retHint) {
         this.funcName = funcName;
         this.typeArgs = typeArgs;
         this.args = args;
         this.retHint = retHint;
     }
 
-    public Invocation(TypeSystem ts, DexInvocation ivc, Type retHint) {
-        List<Type> args = InferType.inferTypes(ts, ivc.args());
-        List<Type> typeArgs = ts.resolveTypes(ivc.typeArgs());
+    public Invocation(TypeSystem ts, DexInvocation ivc, DType retHint) {
+        List<DType> args = InferType.inferTypes(ts, ivc.args());
+        List<DType> typeArgs = ts.resolveTypes(ivc.typeArgs());
         this.funcName = ivc.funcName();
         this.typeArgs = typeArgs;
         this.args = args;
@@ -32,15 +32,15 @@ public class Invocation {
         return funcName;
     }
 
-    public List<Type> typeArgs() {
+    public List<DType> typeArgs() {
         return typeArgs;
     }
 
-    public List<Type> args() {
+    public List<DType> args() {
         return args;
     }
 
-    public Type retHint() {
+    public DType retHint() {
         return retHint;
     }
 }

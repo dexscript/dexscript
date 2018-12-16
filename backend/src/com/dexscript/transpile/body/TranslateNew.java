@@ -35,16 +35,16 @@ public class TranslateNew implements Translate<DexNewExpr> {
         TypeSystem ts = oClass.typeSystem();
 
         DexInvocation invocation = iNewExpr.invocation();
-        List<Type> args = InferType.inferTypes(ts, invocation.args());
-        List<Type> typeArgs = ts.resolveTypes(invocation.typeArgs());
+        List<DType> args = InferType.inferTypes(ts, invocation.args());
+        List<DType> typeArgs = ts.resolveTypes(invocation.typeArgs());
         List<FunctionSig.Invoked> invokeds = ts.invoke(new Invocation("New__", typeArgs, args, null));
         if (invokeds.isEmpty()) {
             ON_FUNCTION_MISSING.handle(iNewExpr);
         }
         String newF = oClass.oShim().dispatch(funcName, args.size(), invokeds);
-        Type retType = ResolveReturnType.$(invokeds);
+        DType retType = ResolveReturnType.$(invokeds);
 
-        Type promiseType = ts.resolveType("Promise", Arrays.asList(retType));
+        DType promiseType = ts.resolveType("Promise", Arrays.asList(retType));
         OutField oActorField = oClass.allocateField(funcName, promiseType);
         Gen g = oClass.g();
         g.__(oActorField.value()

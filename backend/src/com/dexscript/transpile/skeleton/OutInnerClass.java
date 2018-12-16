@@ -5,7 +5,7 @@ import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.type.Type;
+import com.dexscript.type.DType;
 import com.dexscript.type.TypeSystem;
 
 public class OutInnerClass implements OutClass {
@@ -57,7 +57,7 @@ public class OutInnerClass implements OutClass {
     }
 
     @Override
-    public OutField allocateField(String fieldName, Type fieldType) {
+    public OutField allocateField(String fieldName, DType fieldType) {
         return oOuterClass.allocateField(fieldName, fieldType);
     }
 

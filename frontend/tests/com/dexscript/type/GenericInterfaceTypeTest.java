@@ -18,7 +18,7 @@ public class GenericInterfaceTypeTest {
                 "   <T>: string\n" +
                 "   Get__(index: int64): T\n" +
                 "}"));
-        Type inf1 = ts.resolveType("List", Arrays.asList(BuiltinTypes.STRING));
+        DType inf1 = ts.resolveType("List", Arrays.asList(BuiltinTypes.STRING));
         Assert.assertNotEquals(BuiltinTypes.UNDEFINED, inf1);
         InterfaceType inf2 = ts.defineInterface(new DexInterface("" +
                 "interface ListString {\n" +
@@ -52,7 +52,7 @@ public class GenericInterfaceTypeTest {
                 "   <T>: string\n" +
                 "   Get__(index: int64): T\n" +
                 "}"));
-        Type inf1 = ts.resolveType(DexType.parse("List<string>"));
+        DType inf1 = ts.resolveType(DexType.parse("List<string>"));
         InterfaceType inf2 = ts.defineInterface(new DexInterface("" +
                 "interface ListString {\n" +
                 "   Get__(index: int64): string\n" +

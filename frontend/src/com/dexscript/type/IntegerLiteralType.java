@@ -2,7 +2,7 @@ package com.dexscript.type;
 
 import java.util.Objects;
 
-public class IntegerLiteralType implements Type {
+public class IntegerLiteralType implements DType {
 
     private final String literalValue;
 
@@ -11,7 +11,7 @@ public class IntegerLiteralType implements Type {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return that.equals(this);
     }
 

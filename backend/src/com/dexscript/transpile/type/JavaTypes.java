@@ -19,9 +19,9 @@ import java.util.Map;
 
 public class JavaTypes {
 
-    private final Map<String, Type> types = new HashMap<>();
-    private final Map<Class, Type> primitiveTypes = new HashMap<>();
-    private final Map<Type, String> typeChecks = new HashMap<>();
+    private final Map<String, DType> types = new HashMap<>();
+    private final Map<Class, DType> primitiveTypes = new HashMap<>();
+    private final Map<DType, String> typeChecks = new HashMap<>();
     private final OutShim oShim;
 
     public JavaTypes(OutShim oShim) {
@@ -37,15 +37,15 @@ public class JavaTypes {
         primitiveTypes.put(void.class, BuiltinTypes.VOID);
     }
 
-    public void add(Class clazz, Type type) {
+    public void add(Class clazz, DType type) {
         types.put(clazz.getCanonicalName(), type);
     }
 
-    public void add(String className, Type type) {
+    public void add(String className, DType type) {
         types.put(className, type);
     }
 
-    public String genTypeCheck(Type targetType) {
+    public String genTypeCheck(DType targetType) {
         String typeCheck = typeChecks.get(targetType);
         if (typeCheck != null) {
             return typeCheck;
@@ -62,7 +62,7 @@ public class JavaTypes {
         return isF;
     }
 
-    private boolean isAny(Type targetType) {
+    private boolean isAny(DType targetType) {
         if (targetType instanceof AnyType) {
             return true;
         }
@@ -86,7 +86,7 @@ public class JavaTypes {
         return isF;
     }
 
-    private String genGeneral(Type targetType) {
+    private String genGeneral(DType targetType) {
         String isF = allocateShim(targetType);
         Gen g = oShim.g();
         g.__("public static boolean "
@@ -94,10 +94,7 @@ public class JavaTypes {
         ).__("(Object obj) {");
         g.__(new Indent(() -> {
             g.__(new Line("Class clazz = obj.getClass();"));
-            if (targetType.toString().contains("List")) {
-                System.out.println();
-            }
-            for (Map.Entry<String, Type> entry : types.entrySet()) {
+            for (Map.Entry<String, DType> entry : types.entrySet()) {
                 if (!targetType.isAssignableFrom(entry.getValue())) {
                     continue;
                 }
@@ -112,7 +109,7 @@ public class JavaTypes {
         return isF;
     }
 
-    private String genAny(Type targetType) {
+    private String genAny(DType targetType) {
         String isF = allocateShim(targetType);
         Gen g = oShim.g();
         g.__("public static boolean "
@@ -125,7 +122,7 @@ public class JavaTypes {
         return isF;
     }
 
-    private String allocateShim(Type type) {
+    private String allocateShim(DType type) {
         if (type instanceof NamedType) {
             return oShim.allocateShim("is__" + type.toString());
         }
@@ -145,24 +142,24 @@ public class JavaTypes {
         }
     }
 
-    public List<Type> resolve(Class[] classes) {
-        List<Type> resolved = new ArrayList<>();
+    public List<DType> resolve(Class[] classes) {
+        List<DType> resolved = new ArrayList<>();
         for (Class<?> clazz : classes) {
             resolved.add(resolve(clazz));
         }
         return resolved;
     }
 
-    public Type resolve(Class clazz) {
-        Type type = tryResolve(clazz);
+    public DType resolve(Class clazz) {
+        DType type = tryResolve(clazz);
         if (type == null) {
             throw new DexRuntimeException(clazz.getCanonicalName() + " has not been imported");
         }
         return type;
     }
 
-    public Type tryResolve(Class clazz) {
-        Type type = types.get(clazz.getCanonicalName());
+    public DType tryResolve(Class clazz) {
+        DType type = types.get(clazz.getCanonicalName());
         if (type == null) {
             type = primitiveTypes.get(clazz);
         }

@@ -12,9 +12,9 @@ public class InferNewTest {
     @Test
     public void match_one() {
         TypeSystem ts = new TypeSystem();
-        List<Type> params = ResolveType.$(ts.typeTable(), "'Hello'", "int64");
+        List<DType> params = ResolveType.$(ts.typeTable(), "'Hello'", "int64");
         ts.defineFunction(new FunctionType("New__", params, BuiltinTypes.STRING));
-        Type type = InferType.$(ts, DexExpr.parse("new Hello(100)"));
+        DType type = InferType.$(ts, DexExpr.parse("new Hello(100)"));
         Assert.assertEquals(BuiltinTypes.STRING, type);
     }
 }

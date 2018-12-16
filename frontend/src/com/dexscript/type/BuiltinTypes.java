@@ -2,7 +2,7 @@ package com.dexscript.type;
 
 public interface BuiltinTypes {
 
-    Type ANY = new AnyType();
+    DType ANY = new AnyType();
     NamedType BOOL = new BoolType();
     NamedType STRING = new StringType();
     NamedType INT64 = new Int64Type();

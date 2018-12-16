@@ -15,7 +15,7 @@ public class Int32Type implements NamedType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         if (that instanceof Int32Type) {
             return true;
         }

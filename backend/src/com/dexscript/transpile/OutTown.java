@@ -80,7 +80,7 @@ public class OutTown {
         String funcName = function.functionName();
         TypeTable localTypeTable = new TypeTable(ts.typeTable());
         localTypeTable.define(function.typeParams());
-        List<Type> args = ResolveType.resolveParams(localTypeTable, function.params());
+        List<DType> args = ResolveType.resolveParams(localTypeTable, function.params());
         Invocation ivc = new Invocation(funcName, null, args, null);
         List<FunctionSig.Invoked> invokeds = ts.invoke(ivc);
         for (FunctionSig.Invoked invoked : invokeds) {

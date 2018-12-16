@@ -5,7 +5,7 @@ import java.util.*;
 public final class TypeComparisonContext {
 
     private final TypeComparisonContext parent;
-    private final Map<Type, Type> substituted;
+    private final Map<DType, DType> substituted;
     private final Set<FunctionType> undefined = new HashSet<>();
     private final String logPrefix;
     private final int logUntilLevelN;
@@ -21,11 +21,11 @@ public final class TypeComparisonContext {
         logPrefix = parent.logPrefix + "  ";
     }
 
-    public TypeComparisonContext(TypeComparisonCache cache, Map<Type, Type> substituted) {
+    public TypeComparisonContext(TypeComparisonCache cache, Map<DType, DType> substituted) {
         this(cache, substituted, 0, null);
     }
 
-    public TypeComparisonContext(TypeComparisonCache cache, Map<Type, Type> substituted, int logUntilLevelN, List<String> logCollector) {
+    public TypeComparisonContext(TypeComparisonCache cache, Map<DType, DType> substituted, int logUntilLevelN, List<String> logCollector) {
         this.cache = cache;
         this.logCollector = logCollector;
         this.parent = null;
@@ -34,11 +34,11 @@ public final class TypeComparisonContext {
         logPrefix = "";
     }
 
-    public void putSubstituted(Type key, Type value) {
+    public void putSubstituted(DType key, DType value) {
         substituted.put(key, value);
     }
 
-    public Type getSubstituted(Type key) {
+    public DType getSubstituted(DType key) {
         if (substituted.containsKey(key)) {
             return substituted.get(key);
         }
@@ -52,7 +52,7 @@ public final class TypeComparisonContext {
         if (parent == null) {
             throw new IllegalStateException();
         }
-        for (Map.Entry<Type, Type> entry : substituted.entrySet()) {
+        for (Map.Entry<DType, DType> entry : substituted.entrySet()) {
             if (entry.getKey() instanceof PlaceholderType) {
                 if (shouldLog()) {
                     log("commit " + entry.getKey() + " => " + entry.getValue());
@@ -71,7 +71,7 @@ public final class TypeComparisonContext {
         return logUntilLevelN > 0;
     }
 
-    public void log(boolean assignable, Type to, Type from, String reason) {
+    public void log(boolean assignable, DType to, DType from, String reason) {
         logCollector.add(String.format("%s[%s] %s | %s | %s",
                 logPrefix, assignable ? "assignable" : "not assignable",
                 to, from, reason));

@@ -32,11 +32,11 @@ public class FunctionTableTest {
     }
 
     public List<FunctionSig.Invoked> invoke(String funcName, String typeArgsStr, String argsStr) {
-        List<Type> typeArgs = Collections.emptyList();
+        List<DType> typeArgs = Collections.emptyList();
         if (typeArgsStr != null) {
             typeArgs = ResolveType.$(typeTable, typeArgsStr.split(","));
         }
-        List<Type> args = ResolveType.$(typeTable, argsStr.split(","));
+        List<DType> args = ResolveType.$(typeTable, argsStr.split(","));
         return functionTable.invoke(typeTable, new Invocation(funcName, typeArgs, args, null));
     }
 

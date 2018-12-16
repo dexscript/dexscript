@@ -20,7 +20,8 @@ public class GeneratedSubClass {
 
     public String gen() {
         Gen g = new Gen();
-        g.__("public class "
+        g.__(new Line("package com.dexscript.runtime.gen;")
+        ).__("public class "
         ).__(subClassName
         ).__(" extends "
         ).__(superClassName

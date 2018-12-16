@@ -6,7 +6,7 @@ import com.dexscript.infer.InferType;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.actor.ActorType;
 import com.dexscript.type.BuiltinTypes;
-import com.dexscript.type.Type;
+import com.dexscript.type.DType;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,7 +21,7 @@ public class InferConsumeTest {
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
                 "}"), null);
-        Type type = InferType.$(ts, DexExpr.parse("<-Hello{100}"));
+        DType type = InferType.$(ts, DexExpr.parse("<-Hello{100}"));
         Assert.assertEquals(BuiltinTypes.STRING, type);
     }
 }

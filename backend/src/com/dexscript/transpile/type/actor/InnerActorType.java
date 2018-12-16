@@ -6,7 +6,7 @@ import com.dexscript.type.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InnerActorType implements Type, FunctionsProvider {
+public class InnerActorType implements DType, FunctionsProvider {
 
     private final DexAwaitConsumer awaitConsumer;
     private final TypeSystem ts;
@@ -29,14 +29,14 @@ public class InnerActorType implements Type, FunctionsProvider {
     }
 
     private FunctionType consumeFunc() {
-        Type ret = ts.resolveType(awaitConsumer.produceSig().ret());
-        ArrayList<Type> params = new ArrayList<>();
+        DType ret = ts.resolveType(awaitConsumer.produceSig().ret());
+        ArrayList<DType> params = new ArrayList<>();
         params.add(this);
         return new FunctionType("Consume__", params, ret);
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, Type that) {
+    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return ts.isSubType(ctx, this, that);
     }
 }
