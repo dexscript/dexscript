@@ -49,7 +49,7 @@ public class GenericJavaClassTest {
     }
 
     @Test
-    public void generic_class_functions() {
+    public void map_generic_interface() {
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
         JavaClassType type = new JavaClassType(oShim, List.class);
@@ -60,5 +60,17 @@ public class GenericJavaClassTest {
         Type listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
         Type listOfString = ts.resolveType("List", Arrays.asList(BuiltinTypes.STRING));
         Assert.assertFalse(listOfInt64.isAssignableFrom(listOfString));
+    }
+
+    @Test
+    public void list_should_be_assignable_from_array_list() {
+        TypeSystem ts = new TypeSystem();
+        OutShim oShim = new OutShim(ts);
+        JavaClassType list = new JavaClassType(oShim, List.class);
+        JavaClassType arrayList = new JavaClassType(oShim, ArrayList.class);
+        Assert.assertTrue(list.isAssignableFrom(arrayList));
+        Type listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
+        Type arrayListOfInt64 = ts.resolveType("ArrayList", Arrays.asList(BuiltinTypes.INT64));
+        Assert.assertTrue(listOfInt64.isAssignableFrom(arrayListOfInt64));
     }
 }

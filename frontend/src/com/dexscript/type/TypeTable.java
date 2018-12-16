@@ -47,6 +47,7 @@ public class TypeTable {
     private final Map<String, Type> defined = new HashMap<>();
     private final Map<Expansion, Type> expanded = new HashMap<>();
     private final List<NamedTypesProvider> providers = new ArrayList<>();
+    private final TypeComparisonCache cache = new TypeComparisonCache();
 
     public TypeTable() {
     }
@@ -91,7 +92,7 @@ public class TypeTable {
         for (int i = 0; i < typeParams.size(); i++) {
             Type typeParam = typeParams.get(i);
             Type typeArg = typeArgs.get(i);
-            if (!typeParam.isAssignableFrom(typeArg)) {
+            if (!typeParam.isAssignableFrom(cache, typeArg)) {
                 ON_GENERIC_TYPE_ARGUMENT_NOT_ASSIGNABLE.handle(name, genericType, typeArgs, i);
                 return BuiltinTypes.UNDEFINED;
             }
@@ -154,5 +155,9 @@ public class TypeTable {
         public int hashCode() {
             return Objects.hash(genericType, typeArgs);
         }
+    }
+
+    public TypeComparisonCache comparisonCache() {
+        return cache;
     }
 }

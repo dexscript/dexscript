@@ -57,6 +57,7 @@ public class CheckSemanticError implements DexElement.Visitor {
     }
 
     public void report(DexElement occuredAt, String error) {
+        System.out.println("found semantic error: " + occuredAt);
         System.out.println(error);
         hasError = true;
     }

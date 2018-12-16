@@ -5,13 +5,28 @@ import java.util.HashMap;
 public interface Type {
 
     default boolean isAssignableFrom(Type that) {
+        return isAssignableFrom(new TypeComparisonCache(), that);
+    }
+
+    default boolean isAssignableFrom(TypeComparisonCache cache, Type that) {
         HashMap<Type, Type> collector = new HashMap<>();
-        TypeComparisonContext ctx = new TypeComparisonContext(collector);
+        TypeComparisonContext ctx = new TypeComparisonContext(cache, collector);
         boolean result = isAssignableFrom(ctx, that);
         return result;
     }
 
     default boolean isAssignableFrom(TypeComparisonContext ctx, Type that) {
+        TypeComparison comparison = new TypeComparison(this, that);
+        Boolean assignableFrom = ctx.cache().get(comparison);
+        if (assignableFrom != null) {
+            return assignableFrom;
+        }
+        assignableFrom = _isAssignableFrom(ctx, that);
+        ctx.cache().set(comparison, assignableFrom);
+        return assignableFrom;
+    }
+
+    default boolean _isAssignableFrom(TypeComparisonContext ctx, Type that) {
         if (this.equals(that)) {
             if (ctx.shouldLog()) {
                 ctx.log(true, this, that, "they are equal");
@@ -23,7 +38,7 @@ public interface Type {
             boolean assignable = sub.equals(that);
             // widen string literal to string
             if (that instanceof StringLiteralType) {
-                assignable |= sub.isAssignableFrom(that);
+                assignable |= sub.isAssignableFrom(ctx.cache(), that);
             }
             if (ctx.shouldLog()) {
                 ctx.log(assignable, this, that, this + " sub to " + sub);

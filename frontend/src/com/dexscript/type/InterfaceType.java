@@ -18,6 +18,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
     private List<Type> typeArgs;
     private List<FunctionType> members;
     private List<Type> typeParams;
+    private String description;
 
     public InterfaceType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, @NotNull DexInterface inf) {
         this(typeTable, functionTable, inf, null);
@@ -92,20 +93,10 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
 
     @Override
     public String description() {
-        if (typeArgs != null && typeArgs.size() > 0) {
-            StringBuilder desc = new StringBuilder(name());
-            desc.append('<');
-            for (int i = 0; i < typeArgs.size(); i++) {
-                if (i > 0) {
-                    desc.append(", ");
-                }
-                Type typeArg = typeArgs.get(i);
-                desc.append(typeArg.toString());
-            }
-            desc.append('>');
-            return desc.toString();
+        if (description == null) {
+            description = describe(typeArgs);
         }
-        return name();
+        return description;
     }
 
     @Override

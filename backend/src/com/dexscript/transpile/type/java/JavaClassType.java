@@ -1,5 +1,6 @@
 package com.dexscript.transpile.type.java;
 
+import com.dexscript.ast.type.DexType;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.JavaTypes;
 import com.dexscript.type.*;
@@ -23,6 +24,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     private List<Type> typeParams;
     private ArrayList<PlaceholderType> placeholders;
     private TypeSystem ts;
+    private String description;
 
     public JavaClassType(OutShim oShim, Class clazz) {
         this(oShim, clazz, null);
@@ -55,6 +57,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         if (functions != null) {
             return functions;
         }
+        typeParameters(); // calculate placeholders
         functions = new ArrayList<>();
         newFuncs(functions);
         javaMethodToDexFuncs(functions);
@@ -124,10 +127,29 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
             }
             params.add(type);
         }
-        FunctionSig sig = new FunctionSig(placeholders, params, this, null);
+        FunctionSig sig = new FunctionSig(placeholders, params, this, createRetElem());
         FunctionType function = new FunctionType("New__", params, this, sig);
         function.attach((FunctionType.LazyAttachment) () -> new NewJavaClass(oShim, function, ctor, subClassName));
         collector.add(function);
+    }
+
+    private DexType createRetElem() {
+        if (placeholders.isEmpty()) {
+            return null;
+        }
+        StringBuilder expand = new StringBuilder();
+        expand.append(name());
+        expand.append('<');
+        for (int i = 0; i < placeholders.size(); i++) {
+            if (i > 0) {
+                expand.append(", ");
+            }
+            String placeholder = placeholders.get(i).name();
+            expand.append(placeholder);
+        }
+        expand.append('>');
+        DexType retElem = DexType.parse(expand.toString());
+        return retElem;
     }
 
     @Override
@@ -174,5 +196,13 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, Type that) {
         return ts.isSubType(ctx, this, that);
+    }
+
+    @Override
+    public String description() {
+        if (description == null) {
+            description = describe(typeArgs);
+        }
+        return description;
     }
 }

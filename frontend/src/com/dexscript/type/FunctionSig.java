@@ -167,7 +167,7 @@ public class FunctionSig {
             return new ArgumentsCountIncompatible();
         }
         Map<Type, Type> sub = initSub(typeArgs);
-        TypeComparisonContext ctx = new TypeComparisonContext(sub);
+        TypeComparisonContext ctx = new TypeComparisonContext(typeTable.comparisonCache(), sub);
         boolean needRuntimeCheck = false;
         for (int i = 0; i < params.size(); i++) {
             Type param = params.get(i);

@@ -4,6 +4,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.stmt.DexAssignStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.type.Type;
+import com.dexscript.type.TypeComparisonCache;
 import com.dexscript.type.TypeComparisonContext;
 import com.dexscript.type.TypeSystem;
 
@@ -26,12 +27,13 @@ public class CheckAssignment implements CheckSemanticError.Handler<DexAssignStmt
     public static void checkTypeAssignable(CheckSemanticError cse, DexElement elem, Type assignedTo, Type assignedFrom) {
         int logUntilLevelN = 4;
         ArrayList<String> logs = new ArrayList<>();
-        TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>(), logUntilLevelN, logs);
+        TypeComparisonCache cache = cse.typeSystem().typeTable().comparisonCache();
+        TypeComparisonContext ctx = new TypeComparisonContext(cache, new HashMap<>(), logUntilLevelN, logs);
         if (!assignedTo.isAssignableFrom(ctx, assignedFrom)) {
+            cse.report(elem, assignedTo.description() + " is not assignable from " + assignedFrom.description());
             for (String log : logs) {
                 System.out.println(log);
             }
-            cse.report(elem, assignedTo + " is not assignable from " + assignedFrom);
         }
     }
 }
