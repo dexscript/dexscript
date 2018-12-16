@@ -90,7 +90,9 @@ public class JavaTypes {
     private String genGeneral(DType targetType) {
         String isF = allocateShim(targetType);
         Gen g = oShim.g();
-        g.__("public static boolean "
+        g.__("// is "
+        ).__(new Line(targetType.toString())
+        ).__("public static boolean "
         ).__(isF
         ).__("(Object obj) {");
         g.__(new Indent(() -> {
@@ -125,7 +127,11 @@ public class JavaTypes {
 
     private String allocateShim(DType type) {
         if (type instanceof NamedType) {
-            return oShim.allocateShim("is__" + type.toString());
+            String typeToString = type.toString();
+            if (typeToString.contains("<")) {
+                return oShim.allocateShim("is__" + md5(typeToString));
+            }
+            return oShim.allocateShim("is__" + typeToString);
         }
         return oShim.allocateShim("is__" + md5(type.toString()));
     }

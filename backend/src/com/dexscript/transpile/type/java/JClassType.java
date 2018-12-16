@@ -14,26 +14,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JavaClassType implements NamedType, FunctionsProvider, GenericType {
+public class JClassType implements NamedType, FunctionsProvider, GenericType {
 
     private final OutShim oShim;
     private final Class clazz;
-    private final List<DType> typeArgs;
-    private Map<TypeVariable, DType> javaTypeVarMap;
+    private final List<DType> dTypeArgs;
+    private Map<TypeVariable, DType> jTypeVars;
     private List<FunctionType> functions;
-    private List<DType> typeParams;
-    private ArrayList<PlaceholderType> placeholders;
+    private List<DType> dTypeParams;
     private TypeSystem ts;
     private String description;
 
-    public JavaClassType(OutShim oShim, Class clazz) {
+    public JClassType(OutShim oShim, Class clazz) {
         this(oShim, clazz, null);
     }
 
-    public JavaClassType(OutShim oShim, Class clazz, List<DType> typeArgs) {
+    public JClassType(OutShim oShim, Class clazz, List<DType> typeArgs) {
         this.oShim = oShim;
         this.clazz = clazz;
-        this.typeArgs = typeArgs;
+        this.dTypeArgs = typeArgs;
         this.ts = oShim.typeSystem();
         if (typeArgs == null) {
             oShim.javaTypes().add(clazz, this);
@@ -97,21 +96,27 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     }
 
     private void newFuncs(List<FunctionType> collector) {
+        List<PlaceholderType> newFuncTypeParams = new ArrayList<>();
+        for (TypeVariable javaTypeVar : clazz.getTypeParameters()) {
+            DType typeParam = translateBound(javaTypeVar.getBounds());
+            newFuncTypeParams.add(new PlaceholderType(ts, javaTypeVar.getName(), typeParam));
+        }
         String subClassName = null;
         for (Constructor ctor : clazz.getConstructors()) {
             if (subClassName == null) {
-                if (typeArgs == null) {
+                if (dTypeArgs == null) {
                     subClassName = clazz.getCanonicalName();
                 } else {
                     subClassName = oShim.genSubClass(clazz);
                     oShim.javaTypes().add(subClassName, this);
                 }
             }
-            newFunc(collector, ctor, subClassName);
+            newFunc(collector, ctor, subClassName, newFuncTypeParams);
         }
     }
 
-    private void newFunc(List<FunctionType> collector, Constructor ctor, String subClassName) {
+    private void newFunc(List<FunctionType> collector, Constructor ctor,
+                         String subClassName, List<PlaceholderType> newFuncTypeParams) {
         ArrayList<DType> params = new ArrayList<>();
         String funcName = clazz.getSimpleName();
         params.add(new StringLiteralType(ts, funcName));
@@ -122,24 +127,24 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
             }
             params.add(type);
         }
-        FunctionSig sig = new FunctionSig(ts, placeholders, params, this, createRetElem());
+        FunctionSig sig = new FunctionSig(ts, newFuncTypeParams, params, this, createRetElem(newFuncTypeParams));
         FunctionType function = new FunctionType(ts, "New__", params, this, sig);
         function.attach((FunctionType.LazyAttachment) () -> new NewJavaClass(oShim, function, ctor, subClassName));
         collector.add(function);
     }
 
-    private DexType createRetElem() {
-        if (placeholders.isEmpty()) {
+    private DexType createRetElem(List<PlaceholderType> newFuncTypeParams) {
+        if (newFuncTypeParams.isEmpty()) {
             return null;
         }
         StringBuilder expand = new StringBuilder();
         expand.append(name());
         expand.append('<');
-        for (int i = 0; i < placeholders.size(); i++) {
+        for (int i = 0; i < newFuncTypeParams.size(); i++) {
             if (i > 0) {
                 expand.append(", ");
             }
-            String placeholder = placeholders.get(i).name();
+            String placeholder = newFuncTypeParams.get(i).name();
             expand.append(placeholder);
         }
         expand.append('>');
@@ -149,38 +154,36 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
 
     @Override
     public DType generateType(List<DType> typeArgs) {
-        return new JavaClassType(oShim, clazz, typeArgs);
+        return new JClassType(oShim, clazz, typeArgs);
     }
 
     @Override
     public List<DType> typeParameters() {
-        if (typeParams != null) {
-            return typeParams;
+        if (dTypeParams != null) {
+            return dTypeParams;
         }
-        typeParams = new ArrayList<>();
-        placeholders = new ArrayList<>();
+        dTypeParams = new ArrayList<>();
         for (TypeVariable javaTypeVar : clazz.getTypeParameters()) {
             DType typeParam = translateBound(javaTypeVar.getBounds());
-            typeParams.add(typeParam);
-            placeholders.add(new PlaceholderType(ts, javaTypeVar.getName(), typeParam));
+            dTypeParams.add(typeParam);
         }
-        return typeParams;
+        return dTypeParams;
     }
 
     private Map<TypeVariable, DType> javaTypeVarMap() {
-        if (javaTypeVarMap != null) {
-            return javaTypeVarMap;
+        if (jTypeVars != null) {
+            return jTypeVars;
         }
-        javaTypeVarMap = new HashMap<>();
-        List<DType> typeArgs = this.typeArgs;
+        jTypeVars = new HashMap<>();
+        List<DType> typeArgs = this.dTypeArgs;
         if (typeArgs == null) {
             typeArgs = typeParameters();
         }
         TypeVariable[] javaTypeVars = clazz.getTypeParameters();
         for (int i = 0; i < typeArgs.size(); i++) {
-            javaTypeVarMap.put(javaTypeVars[i], typeArgs.get(i));
+            jTypeVars.put(javaTypeVars[i], typeArgs.get(i));
         }
-        return javaTypeVarMap;
+        return jTypeVars;
     }
 
     private DType translateBound(java.lang.reflect.Type[] bounds) {
@@ -201,7 +204,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     @Override
     public String toString() {
         if (description == null) {
-            description = describe(typeArgs);
+            description = describe(dTypeArgs);
         }
         return description;
     }

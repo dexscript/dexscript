@@ -12,7 +12,7 @@ import com.dexscript.transpile.type.actor.ActorType;
 import com.dexscript.transpile.type.actor.PromiseType;
 import com.dexscript.transpile.type.actor.TaskType;
 import com.dexscript.transpile.type.java.CallJavaFunction;
-import com.dexscript.transpile.type.java.JavaClassType;
+import com.dexscript.transpile.type.java.JClassType;
 import com.dexscript.type.DType;
 import com.dexscript.type.FunctionSig;
 import com.dexscript.type.FunctionType;
@@ -137,7 +137,7 @@ public class OutShim {
     }
 
     public void importJavaClass(Class clazz) {
-        new JavaClassType(this, clazz);
+        new JClassType(this, clazz);
     }
 
     public Gen g() {

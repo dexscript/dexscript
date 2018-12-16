@@ -9,6 +9,7 @@ import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
+import com.dexscript.infer.Value;
 import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.type.*;
 
@@ -39,7 +40,8 @@ public class HasAwait implements DexElement.Visitor {
             return;
         }
         if (elem instanceof DexValueRef) {
-            if (InferValue.$(ts, (DexValueRef) elem).type() instanceof InnerActorType) {
+            Value val = InferValue.$(ts, (DexValueRef) elem);
+            if (val != null && val.type() instanceof InnerActorType) {
                 result = true;
                 return;
             }
