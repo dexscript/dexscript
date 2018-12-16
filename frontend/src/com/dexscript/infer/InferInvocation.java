@@ -15,7 +15,7 @@ public class InferInvocation<E extends DexExpr & DexInvocationExpr> implements I
     public DType handle(TypeSystem ts, E elem) {
         DexInvocation invocation = elem.invocation();
         List<DType> args = InferType.inferTypes(ts, invocation.args());
-        List<DType> typeArgs = ResolveType.resolveTypes(ts.typeTable(), invocation.typeArgs());
+        List<DType> typeArgs = ResolveType.resolveTypes(ts, null, invocation.typeArgs());
         return ResolveReturnType.$(ts, invocation.funcName(), typeArgs, args, null);
     }
 }

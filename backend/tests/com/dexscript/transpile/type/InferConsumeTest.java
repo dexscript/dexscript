@@ -5,7 +5,6 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.infer.InferType;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.actor.ActorType;
-import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.DType;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;

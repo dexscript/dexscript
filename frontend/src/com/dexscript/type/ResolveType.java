@@ -1,7 +1,6 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.type.*;
 
 import java.util.ArrayList;
@@ -22,61 +21,66 @@ public interface ResolveType<E extends DexType> {
     }
 
     Map<Class<? extends DexElement>, ResolveType> handlers = new HashMap<Class<? extends DexElement>, ResolveType>() {{
-        put(DexVoidType.class, (typeTable, elem) -> BuiltinTypes.VOID);
-        put(DexTypeRef.class, (typeTable, elem) -> typeTable.resolveType(elem.toString()));
-        put(DexStringLiteralType.class, (typeTable, elem) -> {
-            String literalValue = ((DexStringLiteralType) (elem)).literalValue();
-            return new StringLiteralType(literalValue);
+        put(DexVoidType.class, (ts, localTypeTable, elem) -> ts.VOID);
+        put(DexTypeRef.class, (ts, localTypeTable, elem) -> {
+            String name = elem.toString();
+            if (localTypeTable != null) {
+                DType type = localTypeTable.resolveType(name);
+                if (type != null) {
+                    return type;
+                }
+            }
+            return ts.typeTable().resolveType(name);
         });
-        put(DexGenericExpansionType.class, (typeTable, elem) -> {
+        put(DexStringLiteralType.class, (ts, localTypeTable, elem) -> {
+            String literalValue = ((DexStringLiteralType) (elem)).literalValue();
+            return new StringLiteralType(ts, literalValue);
+        });
+        put(DexGenericExpansionType.class, (ts, localTypeTable, elem) -> {
             DexGenericExpansionType genericExpansionType = (DexGenericExpansionType) elem;
             List<DType> typeArgs = new ArrayList<>();
             for (DexType typeArg : genericExpansionType.typeArgs()) {
-                typeArgs.add(ResolveType.$(typeTable, typeArg));
+                typeArgs.add(ResolveType.$(ts, localTypeTable, typeArg));
             }
-            return typeTable.resolveType(genericExpansionType.genericType().toString(), typeArgs);
+            String genericTypeName = genericExpansionType.genericType().toString();
+            return ts.typeTable().resolveType(genericTypeName, typeArgs);
         });
-        put(DexInterfaceType.class, (typeTable, elem) -> {
+        put(DexInterfaceType.class, (ts, localTypeTable, elem) -> {
             DexInterfaceType infType = (DexInterfaceType) elem;
             if (infType.functions().isEmpty() && infType.methods().isEmpty()) {
-                return BuiltinTypes.ANY;
+                return ts.ANY;
             }
             throw new UnsupportedOperationException("not implemented");
         });
     }};
 
-    DType handle(TypeTable typeTable, E elem);
+    DType handle(TypeSystem ts, TypeTable localTypeTable, E elem);
 
-    static DType $(TypeTable typeTable, DexType elem) {
+    static DType $(TypeSystem ts, String typeDef) {
+        return ResolveType.$(ts, null, DexType.parse(typeDef));
+    }
+
+    static DType $(TypeSystem ts, TypeTable localTypeTable, DexType elem) {
         ResolveType resolveType = handlers.get(elem.getClass());
         if (resolveType == null) {
             Events.ON_UNKNOWN_ELEM.handle(elem);
-            return BuiltinTypes.UNDEFINED;
+            return ts.UNDEFINED;
         }
-        return resolveType.handle(typeTable, elem);
+        return resolveType.handle(ts, localTypeTable, elem);
     }
 
-    static List<DType> $(TypeTable typeTable, String... typeDefs) {
+    static List<DType> resolveTypes(TypeSystem ts, String... typeDefs) {
         List<DType> types = new ArrayList<>();
         for (String typeDef : typeDefs) {
-            DexType dexType = DexType.parse(typeDef);
-            types.add(ResolveType.$(typeTable, dexType));
+            types.add(ResolveType.$(ts, typeDef));
         }
         return types;
     }
 
-    static List<DType> resolveParams(TypeTable typeTable, List<DexParam> params) {
-        List<DType> types = new ArrayList<>();
-        for (DexParam param : params) {
-            types.add(ResolveType.$(typeTable, param.paramType()));
-        }
-        return types;
-    }
-
-    static List<DType> resolveTypes(TypeTable typeTable, List<DexType> dexTypes) {
+    static List<DType> resolveTypes(TypeSystem ts, TypeTable localTypeTable, List<DexType> dexTypes) {
         List<DType> types = new ArrayList<>();
         for (DexType dexType : dexTypes) {
-            types.add(ResolveType.$(typeTable, dexType));
+            types.add(ResolveType.$(ts, localTypeTable, dexType));
         }
         return types;
     }

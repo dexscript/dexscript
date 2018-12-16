@@ -2,7 +2,6 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexValueRef;
-import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,7 +21,8 @@ public class InferForTest {
         DexValueRef ref = func.stmts().get(1).asFor()
                 .blk().stmts().get(0).asAssign()
                 .expr().asAdd().right().asRef();
-        Value val = InferValue.$(new TypeSystem(), ref);
-        Assert.assertEquals(BuiltinTypes.INT64, val.type());
+        TypeSystem ts = new TypeSystem();
+        Value val = InferValue.$(ts, ref);
+        Assert.assertEquals(ts.INT64, val.type());
     }
 }

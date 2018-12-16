@@ -2,10 +2,10 @@ package com.dexscript.type;
 
 public interface IsStorableType {
     static boolean $(DType type) {
-        if (BuiltinTypes.UNDEFINED.equals(type)) {
+        if (type instanceof UndefinedType) {
             return false;
         }
-        if (BuiltinTypes.VOID.equals(type)) {
+        if (type instanceof VoidType) {
             return false;
         }
         return true;

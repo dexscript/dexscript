@@ -14,6 +14,8 @@ public final class FunctionType implements DType {
         Object lazyLoad();
     }
 
+    private final TypeSystem ts;
+
     @NotNull
     private final String name;
 
@@ -28,16 +30,17 @@ public final class FunctionType implements DType {
 
     private Object attachment;
 
-    public FunctionType(@NotNull String name, @NotNull List<DType> params, @NotNull DType ret) {
-        this(name, params, ret, null);
+    public FunctionType(TypeSystem ts, @NotNull String name, @NotNull List<DType> params, @NotNull DType ret) {
+        this(ts, name, params, ret, null);
     }
 
-    public FunctionType(@NotNull String name, @NotNull List<DType> params, @NotNull DType ret, FunctionSig sig) {
+    public FunctionType(TypeSystem ts, @NotNull String name, @NotNull List<DType> params, @NotNull DType ret, FunctionSig sig) {
+        this.ts = ts;
         this.name = name;
         this.params = params;
         this.ret = ret;
         if (sig == null) {
-            sig = new FunctionSig(params, ret);
+            sig = new FunctionSig(ts, params, ret);
         }
         sig.reparent(this);
         this.sig = sig;
@@ -102,6 +105,11 @@ public final class FunctionType implements DType {
             ctx.log(assignable, this, that, assignable ? "" : String.format("ret %s not assignable from %s", ret, that.ret));
         }
         return assignable;
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 
     @Override

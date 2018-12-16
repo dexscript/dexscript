@@ -44,18 +44,14 @@ public class TypeTable {
                         name, i + 1, genericType.typeParameters().get(i), typeArgs.get(i)));
             };
 
+    private final TypeSystem ts;
     private final Map<String, DType> defined = new HashMap<>();
     private final Map<Expansion, DType> expanded = new HashMap<>();
     private final List<NamedTypesProvider> providers = new ArrayList<>();
     private final TypeComparisonCache cache = new TypeComparisonCache();
 
-    public TypeTable() {
-    }
-
-    public TypeTable(TypeTable copiedFrom) {
-        defined.putAll(copiedFrom.defined);
-        providers.addAll(copiedFrom.providers);
-        expanded.putAll(copiedFrom.expanded);
+    public TypeTable(TypeSystem ts) {
+        this.ts = ts;
     }
 
     public DType resolveType(String name) {
@@ -63,7 +59,7 @@ public class TypeTable {
         DType type = defined.get(name);
         if (type == null) {
             ON_NO_SUCH_TYPE.handle(name);
-            return BuiltinTypes.UNDEFINED;
+            return ts.UNDEFINED;
         }
         return type;
     }
@@ -72,11 +68,11 @@ public class TypeTable {
         DType type = this.resolveType(name);
         if (type == null) {
             ON_NO_SUCH_TYPE.handle(name);
-            return BuiltinTypes.UNDEFINED;
+            return ts.UNDEFINED;
         }
         if (!(type instanceof GenericType)) {
             ON_NOT_GENERIC_TYPE.handle(name, typeArgs, type);
-            return BuiltinTypes.UNDEFINED;
+            return ts.UNDEFINED;
         }
         GenericType genericType = (GenericType) type;
         Expansion expansion = new Expansion(genericType, typeArgs);
@@ -87,14 +83,14 @@ public class TypeTable {
         List<DType> typeParams = genericType.typeParameters();
         if (typeParams.size() != typeArgs.size()) {
             ON_GENERIC_TYPE_ARGUMENTS_SIZE_MISMATCH.handle(name, genericType, typeArgs);
-            return BuiltinTypes.UNDEFINED;
+            return ts.UNDEFINED;
         }
         for (int i = 0; i < typeParams.size(); i++) {
             DType typeParam = typeParams.get(i);
             DType typeArg = typeArgs.get(i);
-            if (!typeParam.isAssignableFrom(cache, typeArg)) {
+            if (!typeParam.isAssignableFrom(typeArg)) {
                 ON_GENERIC_TYPE_ARGUMENT_NOT_ASSIGNABLE.handle(name, genericType, typeArgs, i);
-                return BuiltinTypes.UNDEFINED;
+                return ts.UNDEFINED;
             }
         }
         expandedType = genericType.generateType(typeArgs);
@@ -120,12 +116,6 @@ public class TypeTable {
 
     public void define(String typeName, DType type) {
         defined.put(typeName, type);
-    }
-
-    public void define(List<DexTypeParam> typeParams) {
-        for (DexTypeParam typeParam : typeParams) {
-            define(typeParam.paramName().toString(), ResolveType.$(this, typeParam.paramType()));
-        }
     }
 
     public void lazyDefine(NamedTypesProvider provider) {

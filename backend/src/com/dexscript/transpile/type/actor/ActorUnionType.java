@@ -15,7 +15,7 @@ public class ActorUnionType implements NamedType {
 
     public ActorUnionType(@NotNull String name, List<ActorType> types) {
         this.name = name;
-        unionType = new UnionType((List) types);
+        unionType = new UnionType(ts, (List) types);
     }
 
     @Override

@@ -5,24 +5,18 @@ import java.util.HashMap;
 public interface DType {
 
     default boolean isAssignableFrom(DType that) {
-        return isAssignableFrom(new TypeComparisonCache(), that);
-    }
-
-    default boolean isAssignableFrom(TypeComparisonCache cache, DType that) {
-        HashMap<DType, DType> collector = new HashMap<>();
-        TypeComparisonContext ctx = new TypeComparisonContext(cache, collector);
-        boolean result = isAssignableFrom(ctx, that);
-        return result;
+        return isAssignableFrom(new TypeComparisonContext(new HashMap<>()), that);
     }
 
     default boolean isAssignableFrom(TypeComparisonContext ctx, DType that) {
         TypeComparison comparison = new TypeComparison(this, that);
-        Boolean assignableFrom = ctx.cache().get(comparison);
+        TypeComparisonCache comparisonCache = typeSystem().comparisonCache();
+        Boolean assignableFrom = comparisonCache.get(comparison);
         if (assignableFrom != null) {
             return assignableFrom;
         }
         assignableFrom = _isAssignableFrom(ctx, that);
-        ctx.cache().set(comparison, assignableFrom);
+        comparisonCache.set(comparison, assignableFrom);
         return assignableFrom;
     }
 
@@ -38,7 +32,7 @@ public interface DType {
             boolean assignable = sub.equals(that);
             // widen string literal to string
             if (that instanceof StringLiteralType) {
-                assignable |= sub.isAssignableFrom(ctx.cache(), that);
+                assignable |= sub.isAssignableFrom(ctx, that);
             }
             if (ctx.shouldLog()) {
                 ctx.log(assignable, this, that, this + " sub to " + sub);
@@ -67,11 +61,11 @@ public interface DType {
     boolean _isSubType(TypeComparisonContext ctx, DType that);
 
     default DType union(DType that) {
-        return new UnionType(this, that);
+        return new UnionType(typeSystem(), this, that);
     }
 
     default DType intersect(DType that) {
-        return new IntersectionType(this, that);
+        return new IntersectionType(typeSystem(), this, that);
     }
 
     default String initValue() {
@@ -81,4 +75,6 @@ public interface DType {
     default String description() {
         return toString();
     }
+
+    TypeSystem typeSystem();
 }

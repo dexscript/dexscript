@@ -3,7 +3,6 @@ package com.dexscript.transpile.java;
 import com.dexscript.transpile.Transpile;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.java.JavaClassType;
-import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.DType;
 import com.dexscript.type.TypeDebugLog;
 import com.dexscript.type.TypeSystem;

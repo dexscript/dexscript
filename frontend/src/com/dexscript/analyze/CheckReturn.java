@@ -2,18 +2,20 @@ package com.dexscript.analyze;
 
 import com.dexscript.ast.stmt.DexReturnStmt;
 import com.dexscript.infer.InferType;
-import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.DType;
+import com.dexscript.type.ResolveType;
+import com.dexscript.type.TypeSystem;
 
 class CheckReturn implements CheckSemanticError.Handler<DexReturnStmt> {
     @Override
     public void handle(CheckSemanticError cse, DexReturnStmt elem) {
-        DType assignedFrom = InferType.$(cse.typeSystem(), elem.expr());
-        if (BuiltinTypes.UNDEFINED.equals(assignedFrom)) {
+        TypeSystem ts = cse.typeSystem();
+        DType from = InferType.$(ts, elem.expr());
+        if (ts.UNDEFINED.equals(from)) {
             cse.report(elem.expr(), "referenced value not found: " + elem);
             return;
         }
-        DType assignedTo = cse.typeSystem().resolveType(elem.sig().ret());
-        CheckAssignment.checkTypeAssignable(cse, elem, assignedTo, assignedFrom);
+        DType to = ResolveType.$(ts, null, elem.sig().ret());
+        CheckAssignment.checkTypeAssignable(cse, elem, from, to);
     }
 }

@@ -7,9 +7,10 @@ public class IntersectTest {
 
     @Test
     public void string_literals_intersect_string_literals() {
-        StringLiteralType a = new StringLiteralType("A");
-        StringLiteralType b = new StringLiteralType("B");
-        StringLiteralType c = new StringLiteralType("C");
+        TypeSystem ts = new TypeSystem();
+        StringLiteralType a = new StringLiteralType(ts, "A");
+        StringLiteralType b = new StringLiteralType(ts, "B");
+        StringLiteralType c = new StringLiteralType(ts, "C");
         DType ab = a.union(b);
         DType bc = b.union(c);
         DType intersected = ab.intersect(bc);

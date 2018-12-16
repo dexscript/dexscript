@@ -11,7 +11,8 @@ public class InferLiteralTest {
 
     @Test
     public void string_literal() {
-        DType type = InferType.$(new TypeSystem(), DexExpr.parse("'hello'"));
-        Assert.assertEquals(new StringLiteralType("hello"), type);
+        TypeSystem ts = new TypeSystem();
+        DType type = InferType.$(ts, DexExpr.parse("'hello'"));
+        Assert.assertEquals(new StringLiteralType(ts, "hello"), type);
     }
 }

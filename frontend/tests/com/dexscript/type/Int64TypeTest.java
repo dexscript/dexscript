@@ -7,15 +7,17 @@ public class Int64TypeTest {
 
     @Test
     public void int64_is_assignable_from_int64() {
-        Assert.assertTrue(new Int64Type().isAssignableFrom(BuiltinTypes.INT64));
-        Assert.assertTrue(BuiltinTypes.INT64.isAssignableFrom(new Int64Type()));
+        TypeSystem ts = new TypeSystem();
+        Assert.assertTrue(new Int64Type(ts).isAssignableFrom(ts.INT64));
+        Assert.assertTrue(ts.INT64.isAssignableFrom(new Int64Type(ts)));
     }
 
     @Test
     public void int64_is_assignable_from_in_range_int_literal() {
-        Assert.assertTrue(BuiltinTypes.INT64.isAssignableFrom(
-                new IntegerLiteralType("100")));
-        Assert.assertFalse(BuiltinTypes.INT64.isAssignableFrom(
-                new IntegerLiteralType("1" + Long.MAX_VALUE)));
+        TypeSystem ts = new TypeSystem();
+        Assert.assertTrue(ts.INT64.isAssignableFrom(
+                new IntegerLiteralType(ts, "100")));
+        Assert.assertFalse(ts.INT64.isAssignableFrom(
+                new IntegerLiteralType(ts, "1" + Long.MAX_VALUE)));
     }
 }

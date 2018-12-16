@@ -4,6 +4,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class Int32Type implements NamedType {
 
+    private final TypeSystem ts;
+
+    public Int32Type(TypeSystem ts) {
+        this.ts = ts;
+        ts.defineType(this);
+    }
+
     @Override
     public String toString() {
         return name();
@@ -33,5 +40,10 @@ public class Int32Type implements NamedType {
     @Override
     public String initValue() {
         return "0";
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 }

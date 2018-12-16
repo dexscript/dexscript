@@ -1,7 +1,5 @@
 package com.dexscript.infer;
 
-import com.dexscript.type.BuiltinTypes;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,11 +20,7 @@ class ValueTable {
     }
 
     public Value resolveValue(String name) {
-        Value value = values.get(name);
-        if (value == null) {
-            return new Value(name, BuiltinTypes.UNDEFINED, null);
-        }
-        return value;
+        return values.get(name);
     }
 
     public void define(Value value) {

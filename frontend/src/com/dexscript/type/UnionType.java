@@ -5,15 +5,18 @@ import java.util.List;
 
 public class UnionType implements DType {
 
+    private final TypeSystem ts;
     private final List<DType> types;
 
-    public UnionType(DType type1, DType type2) {
+    public UnionType(TypeSystem ts, DType type1, DType type2) {
+        this.ts = ts;
         types = new ArrayList<>();
         types.add(type1);
         types.add(type2);
     }
 
-    public UnionType(List<DType> types) {
+    public UnionType(TypeSystem ts, List<DType> types) {
+        this.ts = ts;
         this.types = types;
     }
 
@@ -25,7 +28,7 @@ public class UnionType implements DType {
     public DType union(DType that) {
         ArrayList<DType> types = new ArrayList<>(this.types);
         types.add(that);
-        return new UnionType(types);
+        return new UnionType(ts, types);
     }
 
     @Override
@@ -38,9 +41,14 @@ public class UnionType implements DType {
                     union.add(type);
                 }
             }
-            return new UnionType(union);
+            return new UnionType(ts, union);
         }
-        return new IntersectionType(this, that);
+        return new IntersectionType(ts, this, that);
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 
     @Override

@@ -2,16 +2,21 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 public class PromiseTypeTest {
 
+    private TypeSystem ts;
+
+    @Before
+    public void setup() {
+        ts = new TypeSystem();
+    }
+
     @Test
     public void consume_any() {
-        TypeSystem ts = new TypeSystem();
-        DType promiseType = ts.resolveType("Promise");
+        DType promiseType = ResolveType.$(ts, "Promise");
         InterfaceType inf = ts.defineInterface(new DexInterface("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
@@ -21,8 +26,7 @@ public class PromiseTypeTest {
 
     @Test
     public void consume_string() {
-        TypeSystem ts = new TypeSystem();
-        DType promiseType = ts.resolveType("Promise", Arrays.asList(BuiltinTypes.STRING));
+        DType promiseType = ResolveType.$(ts, "Promise<string>");
         InterfaceType consumeString = ts.defineInterface(new DexInterface("" +
                 "interface TaskString {\n" +
                 "   Consume__(): string\n" +

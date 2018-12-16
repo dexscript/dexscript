@@ -6,16 +6,23 @@ import java.util.Objects;
 
 public final class StringLiteralType implements DType {
 
+    private final TypeSystem ts;
     @NotNull
     private final String literalValue;
 
-    public StringLiteralType(@NotNull String literalValue) {
+    public StringLiteralType(TypeSystem ts, @NotNull String literalValue) {
+        this.ts = ts;
         this.literalValue = literalValue;
     }
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType that) {
         return that.equals(this);
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 
     @NotNull

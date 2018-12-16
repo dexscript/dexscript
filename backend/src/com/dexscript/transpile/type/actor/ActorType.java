@@ -104,7 +104,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
 
     public FunctionType newFunc(TypeTable localTypeTable) {
         ArrayList<DType> params = new ArrayList<>();
-        params.add(new StringLiteralType(name()));
+        params.add(new StringLiteralType(ts, name()));
         for (DexParam param : actor.sig().params()) {
             params.add(ResolveType.$(localTypeTable, param.paramType()));
         }
@@ -165,7 +165,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
             InnerActorType nestedActor = new InnerActorType(ts, awaitConsumer);
             ArrayList<DType> params = new ArrayList<>();
             String funcName = awaitConsumer.identifier().toString();
-            params.add(new StringLiteralType(funcName));
+            params.add(new StringLiteralType(ts, funcName));
             params.add(ActorType.this);
             DexSig sig = awaitConsumer.produceSig();
             for (DexParam param : sig.params()) {

@@ -2,12 +2,19 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexValueRef;
-import com.dexscript.type.BuiltinTypes;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class InferFunctionTest {
+
+    private TypeSystem ts;
+
+    @Before
+    public void setup() {
+        ts = new TypeSystem();
+    }
 
     @Test
     public void argument_can_be_referenced() {
@@ -16,9 +23,9 @@ public class InferFunctionTest {
                 "   return arg\n" +
                 "}");
         DexValueRef ref = func.stmts().get(0).asReturn().expr().asRef();
-        Value val = InferValue.$(new TypeSystem(), ref);
+        Value val = InferValue.$(ts, ref);
         Assert.assertEquals("arg: string", val.definedBy().toString());
-        Assert.assertEquals(BuiltinTypes.STRING, val.type());
+        Assert.assertEquals(ts.STRING, val.type());
     }
 
     @Test
@@ -28,8 +35,8 @@ public class InferFunctionTest {
                 "   return arg\n" +
                 "}");
         DexValueRef ref = func.stmts().get(0).asReturn().expr().asRef();
-        Value val = InferValue.$(new TypeSystem(), ref);
+        Value val = InferValue.$(ts, ref);
         Assert.assertEquals("arg: T", val.definedBy().toString());
-        Assert.assertEquals(BuiltinTypes.STRING, val.type());
+        Assert.assertEquals(ts.STRING, val.type());
     }
 }

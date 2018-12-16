@@ -12,13 +12,14 @@ class InferFunction implements InferValue<DexActor> {
 
     @Override
     public void handle(TypeSystem ts, DexActor func, ValueTable table) {
-        TypeTable localTypeTable = new TypeTable(ts.typeTable());
+        TypeTable localTypeTable = new TypeTable(ts);
         for (DexTypeParam typeParam : func.typeParams()) {
-            localTypeTable.define(typeParam.paramName().toString(), ts.resolveType(typeParam.paramType()));
+            DType type = ResolveType.$(ts, null, typeParam.paramType());
+            localTypeTable.define(typeParam.paramName().toString(), type);
         }
         for (DexParam param : func.sig().params()) {
             String name = param.paramName().toString();
-            DType type = ResolveType.$(localTypeTable, param.paramType());
+            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
             table.define(new Value(name, type, param));
         }
     }

@@ -2,24 +2,28 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.core.DexSyntaxException;
-import com.dexscript.ast.type.DexType;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Arrays;
 
 public class GenericInterfaceTypeTest {
 
+    private TypeSystem ts;
+
+    @Before
+    public void setup() {
+        ts = new TypeSystem();
+    }
+
     @Test
     public void resolve_with_assignable_type() {
-        TypeSystem ts = new TypeSystem();
         ts.defineInterface(new DexInterface("" +
                 "interface List {\n" +
                 "   <T>: string\n" +
                 "   Get__(index: int64): T\n" +
                 "}"));
-        DType inf1 = ts.resolveType("List", Arrays.asList(BuiltinTypes.STRING));
-        Assert.assertNotEquals(BuiltinTypes.UNDEFINED, inf1);
+        DType inf1 = ResolveType.$(ts, "List<string>");
+        Assert.assertNotEquals(ts.UNDEFINED, inf1);
         InterfaceType inf2 = ts.defineInterface(new DexInterface("" +
                 "interface ListString {\n" +
                 "   Get__(index: int64): string\n" +
@@ -41,7 +45,7 @@ public class GenericInterfaceTypeTest {
                 "   <T>: string\n" +
                 "   Get__(index: int64): T\n" +
                 "}"));
-        ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
+        ResolveType.$(ts, "List<int64>");
     }
 
     @Test
@@ -52,7 +56,7 @@ public class GenericInterfaceTypeTest {
                 "   <T>: string\n" +
                 "   Get__(index: int64): T\n" +
                 "}"));
-        DType inf1 = ts.resolveType(DexType.parse("List<string>"));
+        DType inf1 = ResolveType.$(ts, "List<string>");
         InterfaceType inf2 = ts.defineInterface(new DexInterface("" +
                 "interface ListString {\n" +
                 "   Get__(index: int64): string\n" +

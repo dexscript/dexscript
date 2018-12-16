@@ -12,28 +12,25 @@ import java.util.List;
 
 public class InterfaceType implements NamedType, GenericType, FunctionsProvider {
 
-    private final TypeTable typeTable;
-    private final FunctionTable functionTable;
+    private final TypeSystem ts;
     private final DexInterface inf;
     private List<DType> typeArgs;
     private List<FunctionType> members;
     private List<DType> typeParams;
     private String description;
 
-    public InterfaceType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable, @NotNull DexInterface inf) {
-        this(typeTable, functionTable, inf, null);
+    public InterfaceType(@NotNull TypeSystem ts, @NotNull DexInterface inf) {
+        this(ts, inf, null);
     }
 
-    public InterfaceType(@NotNull TypeTable typeTable, @NotNull FunctionTable functionTable,
-                         @NotNull DexInterface inf, List<DType> typeArgs) {
+    public InterfaceType(@NotNull TypeSystem ts, @NotNull DexInterface inf, List<DType> typeArgs) {
+        this.ts = ts;
         this.typeArgs = typeArgs;
-        this.typeTable = typeTable;
-        this.functionTable = functionTable;
         this.inf = inf;
         if (typeArgs == null) {
-            typeTable.define(this);
+            ts.defineType(this);
         }
-        functionTable.lazyDefine(this);
+        ts.lazyDefineFunctions(this);
     }
 
     @Override
@@ -50,7 +47,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
             typeArgs = typeParameters();
         }
         members = new ArrayList<>();
-        TypeTable localTypeTable = new TypeTable(typeTable);
+        TypeTable localTypeTable = new TypeTable(ts);
         for (int i = 0; i < inf.typeParams().size(); i++) {
             DexInfTypeParam typeParam = inf.typeParams().get(i);
             String typeParamName = typeParam.paramName().toString();
@@ -69,10 +66,10 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         String name = infFunction.identifier().toString();
         List<DType> params = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
-            params.add(ResolveType.$(localTypeTable, param.paramType()));
+            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
-        DType ret = ResolveType.$(localTypeTable, infFunction.sig().ret());
-        members.add(new FunctionType(name, params, ret));
+        DType ret = ResolveType.$(ts, localTypeTable, infFunction.sig().ret());
+        members.add(new FunctionType(ts, name, params, ret));
     }
 
     private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
@@ -80,15 +77,15 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         List<DType> params = new ArrayList<>();
         params.add(this);
         for (DexParam param : infMethod.sig().params()) {
-            params.add(ResolveType.$(localTypeTable, param.paramType()));
+            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
-        DType ret = ResolveType.$(localTypeTable, infMethod.sig().ret());
-        members.add(new FunctionType(name, params, ret));
+        DType ret = ResolveType.$(ts, localTypeTable, infMethod.sig().ret());
+        members.add(new FunctionType(ts, name, params, ret));
     }
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return functionTable.isSubType(ctx, this, that);
+        return ts.functionTable().isSubType(ctx, this, that);
     }
 
     @Override
@@ -97,6 +94,11 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
             description = describe(typeArgs);
         }
         return description;
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 
     @Override
@@ -109,7 +111,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
 
     @Override
     public DType generateType(List<DType> typeArgs) {
-        return new InterfaceType(typeTable, functionTable, inf, typeArgs);
+        return new InterfaceType(ts, inf, typeArgs);
     }
 
     @Override
@@ -117,7 +119,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexInfTypeParam typeParam : inf.typeParams()) {
-                typeParams.add(ResolveType.$(typeTable, typeParam.paramType()));
+                typeParams.add(ResolveType.$(ts, null, typeParam.paramType()));
             }
         }
         return typeParams;

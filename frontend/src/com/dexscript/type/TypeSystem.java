@@ -1,43 +1,43 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.type.DexType;
 
 import java.util.List;
 
 public class TypeSystem {
 
-    private final TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
+    private final TypeTable typeTable = new TypeTable(this);
     private final FunctionTable functionTable = new FunctionTable();
+    private final TypeComparisonCache comparisonCache = new TypeComparisonCache();
+
+    public final DType ANY = new AnyType(this);
+    public final NamedType BOOL = new BoolType(this);
+    public final NamedType STRING = new StringType(this);
+    public final NamedType INT64 = new Int64Type(this);
+    public final NamedType INT32 = new Int32Type(this);
+    public final NamedType UINT8 = new UInt8Type(this);
+    public final NamedType VOID = new VoidType(this);
+    public final NamedType UNDEFINED = new UndefinedType(this);
+
+    public TypeTable typeTable() {
+        return typeTable;
+    }
+
+    public TypeComparisonCache comparisonCache() {
+        return comparisonCache;
+    }
 
     public void defineFunction(FunctionType function) {
         functionTable.define(function);
     }
 
-    public TypeTable typeTable() { return typeTable; }
 
     public InterfaceType defineInterface(DexInterface inf) {
-        return new InterfaceType(typeTable, functionTable, inf);
+        return new InterfaceType(this, inf);
     }
 
     public List<FunctionSig.Invoked> invoke(Invocation ivc) {
         return functionTable.invoke(typeTable, ivc);
-    }
-
-    public DType resolveType(String typeName) {
-        return typeTable.resolveType(typeName);
-    }
-
-    public DType resolveType(String typeName, List<DType> typeArgs) {
-        return typeTable.resolveType(typeName, typeArgs);
-    }
-
-    public DType resolveType(DexType elem) {
-        return ResolveType.$(typeTable, elem);
-    }
-
-    public List<DType> resolveTypes(List<DexType> dexTypes) {
-        return ResolveType.resolveTypes(typeTable, dexTypes);
     }
 
     public void defineType(NamedType type) {
@@ -48,11 +48,11 @@ public class TypeSystem {
         functionTable.lazyDefine(functionsProvider);
     }
 
-    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider assignedTo, DType assignedFrom) {
-        return functionTable.isSubType(ctx, assignedTo, assignedFrom);
-    }
-
     public void lazyDefineTypes(NamedTypesProvider typesProvider) {
         typeTable.lazyDefine(typesProvider);
+    }
+
+    public FunctionTable functionTable() {
+        return functionTable;
     }
 }

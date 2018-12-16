@@ -9,24 +9,21 @@ public final class TypeComparisonContext {
     private final Set<FunctionType> undefined = new HashSet<>();
     private final String logPrefix;
     private final int logUntilLevelN;
-    private final TypeComparisonCache cache;
     private final List<String> logCollector;
 
     public TypeComparisonContext(TypeComparisonContext parent) {
         this.parent = parent;
         this.logUntilLevelN = parent.logUntilLevelN - 1;
-        this.cache = parent.cache;
         logCollector = parent.logCollector;
         substituted = new HashMap<>();
         logPrefix = parent.logPrefix + "  ";
     }
 
-    public TypeComparisonContext(TypeComparisonCache cache, Map<DType, DType> substituted) {
-        this(cache, substituted, 0, null);
+    public TypeComparisonContext(Map<DType, DType> substituted) {
+        this(substituted, 0, null);
     }
 
-    public TypeComparisonContext(TypeComparisonCache cache, Map<DType, DType> substituted, int logUntilLevelN, List<String> logCollector) {
-        this.cache = cache;
+    public TypeComparisonContext(Map<DType, DType> substituted, int logUntilLevelN, List<String> logCollector) {
         this.logCollector = logCollector;
         this.parent = null;
         this.logUntilLevelN = logUntilLevelN;
@@ -94,9 +91,5 @@ public final class TypeComparisonContext {
             return 0;
         }
         return parent.levels() + 1;
-    }
-
-    public TypeComparisonCache cache() {
-        return cache;
     }
 }

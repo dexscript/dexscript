@@ -10,7 +10,7 @@ public class ArrayTypeTest {
     @Test
     public void resolve_array_type() {
         TypeSystem ts = new TypeSystem();
-        DType type = ts.resolveType(DexType.parse("uint8[]"));
+        DType type = ResolveType.$(ts, "uint8[]");
         InterfaceType inf = ts.defineInterface(new DexInterface("" +
                 "interface GetSet {\n" +
                 "   Get__(index: int64): uint8\n" +

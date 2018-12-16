@@ -7,8 +7,9 @@ public class UnionTest {
 
     @Test
     public void string_literal_union_string_literal() {
-        StringLiteralType a = new StringLiteralType("A");
-        StringLiteralType b = new StringLiteralType("B");
+        TypeSystem ts = new TypeSystem();
+        StringLiteralType a = new StringLiteralType(ts, "A");
+        StringLiteralType b = new StringLiteralType(ts, "B");
         DType ab = a.union(b);
         Assert.assertTrue(ab.isAssignableFrom(a));
         Assert.assertTrue(ab.isAssignableFrom(b));
@@ -18,9 +19,10 @@ public class UnionTest {
 
     @Test
     public void string_literal_union_string_literal_union_string_literal() {
-        StringLiteralType a = new StringLiteralType("A");
-        StringLiteralType b = new StringLiteralType("B");
-        StringLiteralType c = new StringLiteralType("C");
+        TypeSystem ts = new TypeSystem();
+        StringLiteralType a = new StringLiteralType(ts, "A");
+        StringLiteralType b = new StringLiteralType(ts, "B");
+        StringLiteralType c = new StringLiteralType(ts, "C");
         DType abc = a.union(b).union(c);
         Assert.assertTrue(abc.isAssignableFrom(a));
         Assert.assertTrue(abc.isAssignableFrom(b));

@@ -40,7 +40,7 @@ public class FunctionTable {
         List<FunctionSig.Invoked> invokeds = new ArrayList<>();
         for (int i = functions.size() - 1; i >= 0; i--) {
             FunctionType func = functions.get(i);
-            FunctionSig.Invoked invoked = func.sig().invoke(typeTable, ivc);
+            FunctionSig.Invoked invoked = func.sig().invoke(ivc);
             if (!invoked.compatible()) {
                 ON_INVOCATION_FILTERED_FUNCTION.handle(func, ivc);
                 continue;

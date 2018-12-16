@@ -119,7 +119,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     private void newFunc(List<FunctionType> collector, Constructor ctor, String subClassName) {
         ArrayList<DType> params = new ArrayList<>();
         String funcName = clazz.getSimpleName();
-        params.add(new StringLiteralType(funcName));
+        params.add(new StringLiteralType(ts, funcName));
         for (Class paramType : ctor.getParameterTypes()) {
             DType type = oShim.javaTypes().tryResolve(paramType);
             if (type == null) {
@@ -167,7 +167,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         for (TypeVariable javaTypeVar : clazz.getTypeParameters()) {
             DType typeParam = translateBound(javaTypeVar.getBounds());
             typeParams.add(typeParam);
-            placeholders.add(new PlaceholderType(javaTypeVar.getName(), typeParam));
+            placeholders.add(new PlaceholderType(ts, javaTypeVar.getName(), typeParam));
         }
         return typeParams;
     }

@@ -10,20 +10,18 @@ import java.util.List;
 
 public class FunctionTableTest {
 
-    private TypeTable typeTable;
-    private FunctionTable functionTable;
+    private TypeSystem ts;
 
     @Before
     public void setup() {
-        functionTable = new FunctionTable();
-        typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
+        ts = new TypeSystem();
     }
 
     public FunctionType func(String actorSrc) {
         DexActor actor = new DexActor("function " + actorSrc);
-        FunctionSig sig = new FunctionSig(typeTable, actor.sig());
-        FunctionType funcType = new FunctionType(actor.functionName(), sig.params(), sig.ret(), sig);
-        functionTable.define(funcType);
+        FunctionSig sig = new FunctionSig(ts, actor.sig());
+        FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
+        ts.defineFunction(funcType);
         return funcType;
     }
 
@@ -34,10 +32,10 @@ public class FunctionTableTest {
     public List<FunctionSig.Invoked> invoke(String funcName, String typeArgsStr, String argsStr) {
         List<DType> typeArgs = Collections.emptyList();
         if (typeArgsStr != null) {
-            typeArgs = ResolveType.$(typeTable, typeArgsStr.split(","));
+            typeArgs = ResolveType.resolveTypes(ts, typeArgsStr.split(","));
         }
-        List<DType> args = ResolveType.$(typeTable, argsStr.split(","));
-        return functionTable.invoke(typeTable, new Invocation(funcName, typeArgs, args, null));
+        List<DType> args = ResolveType.resolveTypes(ts, argsStr.split(","));
+        return ts.invoke(new Invocation(funcName, typeArgs, args, null));
     }
 
     @Test

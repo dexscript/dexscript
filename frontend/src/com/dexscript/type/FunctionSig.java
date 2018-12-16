@@ -38,7 +38,7 @@ public class FunctionSig {
 
         @Override
         public DType ret() {
-            return BuiltinTypes.UNDEFINED;
+            return ts.UNDEFINED;
         }
     }
 
@@ -98,6 +98,8 @@ public class FunctionSig {
         }
     }
 
+
+    private final TypeSystem ts;
     private String description;
     private FunctionType functionType;
     private final List<PlaceholderType> typeParams;
@@ -105,30 +107,33 @@ public class FunctionSig {
     private final DType ret;
     private final DexType retElem;
 
-    public FunctionSig(List<DType> params, DType ret) {
+    public FunctionSig(TypeSystem ts, List<DType> params, DType ret) {
+        this.ts = ts;
         this.typeParams = Collections.emptyList();
         this.params = params;
         this.ret = ret;
         this.retElem = null;
     }
 
-    public FunctionSig(List<PlaceholderType> typeParams, List<DType> params, DType ret, DexType retElem) {
+    public FunctionSig(TypeSystem ts, List<PlaceholderType> typeParams, List<DType> params, DType ret, DexType retElem) {
+        this.ts = ts;
         this.typeParams = typeParams == null ? Collections.emptyList() : typeParams;
         this.params = params;
         this.ret = ret;
         this.retElem = retElem;
     }
 
-    public FunctionSig(TypeTable typeTable, DexSig sig) {
-        this(typeTable, null, sig);
+    public FunctionSig(TypeSystem ts, DexSig sig) {
+        this(ts, null, sig);
     }
 
-    public FunctionSig(TypeTable typeTable, DType objectType, DexSig sig) {
+    public FunctionSig(TypeSystem ts, DType objectType, DexSig sig) {
+        this.ts = ts;
         typeParams = new ArrayList<>();
-        TypeTable localTypeTable = new TypeTable(typeTable);
+        TypeTable localTypeTable = new TypeTable(ts);
         for (DexTypeParam typeParam : sig.typeParams()) {
-            DType constraint = ResolveType.$(typeTable, typeParam.paramType());
-            PlaceholderType placeholder = new PlaceholderType(typeParam.paramName().toString(), constraint);
+            DType constraint = ResolveType.$(ts, null, typeParam.paramType());
+            PlaceholderType placeholder = new PlaceholderType(ts, typeParam.paramName().toString(), constraint);
             localTypeTable.define(placeholder);
             typeParams.add(placeholder);
         }
@@ -137,9 +142,9 @@ public class FunctionSig {
             params.add(objectType);
         }
         for (DexParam param : sig.params()) {
-            params.add(ResolveType.$(localTypeTable, param.paramType()));
+            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
-        ret = ResolveType.$(localTypeTable, sig.ret());
+        ret = ResolveType.$(ts, localTypeTable, sig.ret());
         retElem = sig.ret();
     }
 
@@ -159,7 +164,7 @@ public class FunctionSig {
         return typeParams;
     }
 
-    Invoked invoke(TypeTable typeTable, Invocation ivc) {
+    Invoked invoke(Invocation ivc) {
         List<DType> args = ivc.args();
         List<DType> typeArgs = ivc.typeArgs();
         DType retHint = ivc.retHint();
@@ -167,7 +172,7 @@ public class FunctionSig {
             return new ArgumentsCountIncompatible();
         }
         Map<DType, DType> sub = initSub(typeArgs);
-        TypeComparisonContext ctx = new TypeComparisonContext(typeTable.comparisonCache(), sub);
+        TypeComparisonContext ctx = new TypeComparisonContext(sub);
         boolean needRuntimeCheck = false;
         for (int i = 0; i < params.size(); i++) {
             DType param = params.get(i);
@@ -193,14 +198,14 @@ public class FunctionSig {
                 return new MissingTypeArgument(typeParam);
             }
         }
-        TypeTable localTypeTable = new TypeTable(typeTable);
+        TypeTable localTypeTable = new TypeTable(ts);
         for (Map.Entry<DType, DType> entry : sub.entrySet()) {
             DType key = entry.getKey();
             if (key instanceof NamedType) {
                 localTypeTable.define(((NamedType) key).name(), entry.getValue());
             }
         }
-        DType expandedRet = ResolveType.$(localTypeTable, retElem);
+        DType expandedRet = ResolveType.$(ts, localTypeTable, retElem);
         return new Compatible(needRuntimeCheck, expandedRet);
     }
 

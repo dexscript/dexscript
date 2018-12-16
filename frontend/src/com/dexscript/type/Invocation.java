@@ -21,7 +21,7 @@ public class Invocation {
 
     public Invocation(TypeSystem ts, DexInvocation ivc, DType retHint) {
         List<DType> args = InferType.inferTypes(ts, ivc.args());
-        List<DType> typeArgs = ts.resolveTypes(ivc.typeArgs());
+        List<DType> typeArgs = ResolveType.resolveTypes(ts, null, ivc.typeArgs());
         this.funcName = ivc.funcName();
         this.typeArgs = typeArgs;
         this.args = args;

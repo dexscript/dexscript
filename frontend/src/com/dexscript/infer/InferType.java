@@ -21,8 +21,8 @@ public interface InferType<E extends DexExpr> {
 
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
         {
-            put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(((DexStringLiteral) elem).literalValue()));
-            put(DexIntegerLiteral.class, (ts, elem) -> new IntegerLiteralType(elem.toString()));
+            put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(ts, ((DexStringLiteral) elem).literalValue()));
+            put(DexIntegerLiteral.class, (ts, elem) -> new IntegerLiteralType(ts, elem.toString()));
             put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
             add(new InferInvocation<DexConsumeExpr>() {
             });
@@ -49,7 +49,7 @@ public interface InferType<E extends DexExpr> {
         InferType inferType = handlers.get(elem.getClass());
         if (inferType == null) {
             Events.ON_UNKNOWN_ELEM.handle(elem);
-            return BuiltinTypes.UNDEFINED;
+            return ts.UNDEFINED;
         }
         return inferType.handle(ts, elem);
     }

@@ -4,6 +4,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class UInt8Type implements NamedType {
 
+    private final TypeSystem ts;
+
+    public UInt8Type(TypeSystem ts) {
+        this.ts = ts;
+        ts.defineType(this);
+    }
+
     @Override
     public String toString() {
         return name();
@@ -15,6 +22,11 @@ public class UInt8Type implements NamedType {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 
     @Override

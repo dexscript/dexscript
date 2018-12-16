@@ -2,22 +2,28 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
 public class InterfaceTypeTest {
 
+    private TypeSystem ts;
+
+    @Before
+    public void setup() {
+        ts = new TypeSystem();
+    }
+
     @Test
     public void assignable_to_same_structure() {
-        FunctionTable functionTable = new FunctionTable();
-        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        InterfaceType inf1 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType inf1 = new InterfaceType(ts, new DexInterface("" +
                 "interface Hello {\n" +
                 "   Action1(): string\n" +
                 "   Action2(): string\n" +
                 "}"));
-        InterfaceType inf2 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType inf2 = new InterfaceType(ts, new DexInterface("" +
                 "interface World {\n" +
                 "   Action1(): string\n" +
                 "   Action2(): string\n" +
@@ -28,13 +34,11 @@ public class InterfaceTypeTest {
 
     @Test
     public void sub_type_has_more_member() {
-        FunctionTable functionTable = new FunctionTable();
-        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        InterfaceType inf1 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType inf1 = new InterfaceType(ts, new DexInterface("" +
                 "interface Hello {\n" +
                 "   Action1(): string\n" +
                 "}"));
-        InterfaceType inf2 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType inf2 = new InterfaceType(ts, new DexInterface("" +
                 "interface World {\n" +
                 "   Action1(): string\n" +
                 "   Action2(): string\n" +
@@ -45,22 +49,20 @@ public class InterfaceTypeTest {
 
     @Test
     public void argument_takes_sub_type() {
-        FunctionTable functionTable = new FunctionTable();
-        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        new InterfaceType(ts, new DexInterface("" +
                 "interface SuperType {\n" +
                 "   Action1(): string\n" +
                 "}"));
-        new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        new InterfaceType(ts, new DexInterface("" +
                 "interface SubType {\n" +
                 "   Action1(): string\n" +
                 "   Action2(): string\n" +
                 "}"));
-        InterfaceType inf1 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType inf1 = new InterfaceType(ts, new DexInterface("" +
                 "interface Hello {\n" +
                 "   Action(arg: SuperType): string\n" +
                 "}"));
-        InterfaceType inf2 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType inf2 = new InterfaceType(ts, new DexInterface("" +
                 "interface World {\n" +
                 "   Action(arg: SubType): string\n" +
                 "}"));
@@ -70,22 +72,20 @@ public class InterfaceTypeTest {
 
     @Test
     public void ret_takes_sub_type() {
-        FunctionTable functionTable = new FunctionTable();
-        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        new InterfaceType(ts, new DexInterface("" +
                 "interface SuperType {\n" +
                 "   Action1(): string\n" +
                 "}"));
-        new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        new InterfaceType(ts, new DexInterface("" +
                 "interface SubType {\n" +
                 "   Action1(): string\n" +
                 "   Action2(): string\n" +
                 "}"));
-        InterfaceType inf1 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType inf1 = new InterfaceType(ts, new DexInterface("" +
                 "interface Hello {\n" +
                 "   Action(): SuperType\n" +
                 "}"));
-        InterfaceType inf2 = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType inf2 = new InterfaceType(ts, new DexInterface("" +
                 "interface World {\n" +
                 "   Action(): SubType\n" +
                 "}"));
@@ -95,44 +95,40 @@ public class InterfaceTypeTest {
 
     @Test
     public void implement_interface_by_define_function() {
-        FunctionTable functionTable = new FunctionTable();
-        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        InterfaceType someInf = new InterfaceType(typeTable, functionTable, new DexInterface("" +
+        InterfaceType someInf = new InterfaceType(ts, new DexInterface("" +
                 "interface SomeInf {\n" +
                 "   SomeAction(): string\n" +
                 "}"));
-        functionTable.define(new FunctionType("SomeAction", new ArrayList<DType>() {{
-            add(BuiltinTypes.STRING);
-        }}, BuiltinTypes.STRING));
-        Assert.assertFalse(BuiltinTypes.STRING.isAssignableFrom(someInf));
-        Assert.assertTrue(someInf.isAssignableFrom(BuiltinTypes.STRING));
+        ts.defineFunction(new FunctionType(ts, "SomeAction", new ArrayList<DType>() {{
+            add(ts.STRING);
+        }}, ts.STRING));
+        Assert.assertFalse(ts.STRING.isAssignableFrom(someInf));
+        Assert.assertTrue(someInf.isAssignableFrom(ts.STRING));
     }
 
     @Test
     public void argument_is_sub_type_can_still_implement() {
-        FunctionTable functionTable = new FunctionTable();
-        TypeTable typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        InterfaceType quackable = new InterfaceType(typeTable, functionTable, new DexInterface(
+        InterfaceType quackable = new InterfaceType(ts, new DexInterface(
                 "interface Quackable{ Quack(): string }"));
-        InterfaceType swimable = new InterfaceType(typeTable, functionTable, new DexInterface(
+        InterfaceType swimable = new InterfaceType(ts, new DexInterface(
                 "interface Swimable{ Swim(): string }"));
-        InterfaceType duck = new InterfaceType(typeTable, functionTable, new DexInterface(
+        InterfaceType duck = new InterfaceType(ts, new DexInterface(
                 "interface Duck{\n" +
                         "   DoBoth(duck1: int64, duck2: Swimable): string\n" +
                         "}"));
-        functionTable.define(new FunctionType("Quack", new ArrayList<DType>() {{
-            add(BuiltinTypes.INT64);
-        }}, BuiltinTypes.STRING));
-        functionTable.define(new FunctionType("Swim", new ArrayList<DType>() {{
-            add(BuiltinTypes.INT64);
-        }}, BuiltinTypes.STRING));
-        functionTable.define(new FunctionType("DoBoth", new ArrayList<DType>() {{
-            add(BuiltinTypes.INT64);
+        ts.defineFunction(new FunctionType(ts, "Quack", new ArrayList<DType>() {{
+            add(ts.INT64);
+        }}, ts.STRING));
+        ts.defineFunction(new FunctionType(ts, "Swim", new ArrayList<DType>() {{
+            add(ts.INT64);
+        }}, ts.STRING));
+        ts.defineFunction(new FunctionType(ts, "DoBoth", new ArrayList<DType>() {{
+            add(ts.INT64);
             add(quackable);
             add(swimable);
-        }}, BuiltinTypes.STRING));
-        Assert.assertTrue(swimable.isAssignableFrom(BuiltinTypes.INT64));
-        Assert.assertTrue(quackable.isAssignableFrom(BuiltinTypes.INT64));
-        Assert.assertTrue(duck.isAssignableFrom(BuiltinTypes.INT64));
+        }}, ts.STRING));
+        Assert.assertTrue(swimable.isAssignableFrom(ts.INT64));
+        Assert.assertTrue(quackable.isAssignableFrom(ts.INT64));
+        Assert.assertTrue(duck.isAssignableFrom(ts.INT64));
     }
 }

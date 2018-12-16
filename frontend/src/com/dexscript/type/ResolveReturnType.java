@@ -18,7 +18,7 @@ public interface ResolveReturnType {
         List<FunctionSig.Invoked> invokeds = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
         if (invokeds.size() == 0) {
             Events.ON_MISSING_FUNCTION.handle(ts, funcName, args);
-            return BuiltinTypes.UNDEFINED;
+            return ts.UNDEFINED;
         }
         return $(invokeds);
     }

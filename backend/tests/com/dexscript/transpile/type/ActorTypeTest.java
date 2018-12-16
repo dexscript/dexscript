@@ -46,7 +46,7 @@ public class ActorTypeTest {
                 "}"));
         Assert.assertTrue(inf.isAssignableFrom(actor));
         List<FunctionSig.Invoked> newNestedActor = ts.invoke(new Invocation("New__", null, new ArrayList<DType>() {{
-            add(new StringLiteralType("AA"));
+            add(new StringLiteralType(ts, "AA"));
             add(actor);
         }}, null));
         Assert.assertEquals(1, newNestedActor.size());
@@ -85,8 +85,8 @@ public class ActorTypeTest {
                 "function Equals(<T>: interface{}, left: T, right: T): bool {\n" +
                 "   return true\n" +
                 "}"));
-        StringLiteralType a = new StringLiteralType("a");
-        StringLiteralType b = new StringLiteralType("b");
+        StringLiteralType a = new StringLiteralType(ts, "a");
+        StringLiteralType b = new StringLiteralType(ts, "b");
         List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null));
         Assert.assertEquals(0, functionTypes.size());
     }

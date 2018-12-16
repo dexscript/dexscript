@@ -10,32 +10,30 @@ import java.util.List;
 
 public class FunctionSigTest {
 
-    private TypeTable typeTable;
-    private FunctionTable functionTable;
+    private TypeSystem ts;
 
     @Before
     public void setup() {
-        typeTable = new TypeTable(BuiltinTypes.TYPE_TABLE);
-        functionTable = new FunctionTable();
+        ts = new TypeSystem();
     }
 
     public DType invoke(FunctionSig sig, List<DType> args) {
-        return sig.invoke(typeTable, new Invocation("", null, args, null)).ret();
+        return sig.invoke(new Invocation("", null, args, null)).ret();
     }
 
     @Test
     public void without_type_params() {
         FunctionSig sig = sig("(arg0: string): int64");
-        Assert.assertEquals(BuiltinTypes.INT64, invoke(sig, resolve("'abc'")));
-        Assert.assertEquals(BuiltinTypes.INT64, invoke(sig, resolve("string")));
-        Assert.assertEquals(BuiltinTypes.UNDEFINED, invoke(sig, resolve("int64")));
+        Assert.assertEquals(ts.INT64, invoke(sig, resolve("'abc'")));
+        Assert.assertEquals(ts.INT64, invoke(sig, resolve("string")));
+        Assert.assertEquals(ts.UNDEFINED, invoke(sig, resolve("int64")));
     }
 
     @Test
     public void infer_type_params() {
         FunctionSig sig = sig("(<T>: string, arg0: T): T");
         DType ret = invoke(sig, resolve("string"));
-        Assert.assertEquals(BuiltinTypes.STRING, ret);
+        Assert.assertEquals(ts.STRING, ret);
     }
 
     @Test
@@ -73,15 +71,15 @@ public class FunctionSigTest {
     public void type_parameter_constraint_function() {
         FunctionSig sig = sig("(<T>: interface{}, left: T, right: T): bool");
         DType ret = invoke(sig, resolve("string", "int64"));
-        Assert.assertEquals(BuiltinTypes.UNDEFINED, ret);
+        Assert.assertEquals(ts.UNDEFINED, ret);
     }
 
     @Test
     public void infer_with_return_value_hint() {
         FunctionSig sig = sig("(<T>: interface{}): T");
-        Invocation ivc = new Invocation("", null, resolve(), BuiltinTypes.STRING);
-        DType ret = sig.invoke(typeTable, ivc).ret();
-        Assert.assertEquals(BuiltinTypes.STRING, ret);
+        Invocation ivc = new Invocation("", null, resolve(), ts.STRING);
+        DType ret = sig.invoke(ivc).ret();
+        Assert.assertEquals(ts.STRING, ret);
     }
 
     @Test
@@ -90,8 +88,8 @@ public class FunctionSigTest {
         Invocation ivc = new Invocation("",
                 resolve("int64"),
                 resolve("string", "string"), null);
-        DType ret = sig.invoke(typeTable, ivc).ret();
-        Assert.assertEquals(BuiltinTypes.UNDEFINED, ret);
+        DType ret = sig.invoke(ivc).ret();
+        Assert.assertEquals(ts.UNDEFINED, ret);
     }
 
     @Test
@@ -102,14 +100,14 @@ public class FunctionSigTest {
     }
 
     private void defineInterface(String src) {
-        new InterfaceType(typeTable, functionTable, new DexInterface(src));
+        new InterfaceType(ts, new DexInterface(src));
     }
 
     private FunctionSig sig(String sig) {
-        return new FunctionSig(typeTable, new DexSig(sig));
+        return new FunctionSig(ts, new DexSig(sig));
     }
 
     private List<DType> resolve(String... typeDefs) {
-        return ResolveType.$(typeTable, typeDefs);
+        return ResolveType.resolveTypes(ts, typeDefs);
     }
 }

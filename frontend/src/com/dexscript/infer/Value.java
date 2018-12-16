@@ -10,7 +10,7 @@ public final class Value {
     private final DType type;
     private final DexElement definedBy;
 
-    public Value(@NotNull String name, @NotNull DType type, DexElement definedBy) {
+    public Value(@NotNull String name, DType type, DexElement definedBy) {
         this.name = name;
         this.type = type;
         this.definedBy = definedBy;

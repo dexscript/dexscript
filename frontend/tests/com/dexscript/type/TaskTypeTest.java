@@ -5,14 +5,12 @@ import com.dexscript.ast.core.DexSyntaxException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 public class TaskTypeTest {
 
     @Test
     public void resolve_any() {
         TypeSystem ts = new TypeSystem();
-        DType taskType = ts.resolveType("Task");
+        DType taskType = ResolveType.$(ts, "Task");
         InterfaceType inf = ts.defineInterface(new DexInterface("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
@@ -23,7 +21,7 @@ public class TaskTypeTest {
     @Test
     public void resolve_string() {
         TypeSystem ts = new TypeSystem();
-        DType taskType = ts.resolveType("Task", Arrays.asList(BuiltinTypes.STRING));
+        DType taskType = ResolveType.$(ts, "Task<string>");
         InterfaceType resolveString = ts.defineInterface(new DexInterface("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
@@ -39,7 +37,7 @@ public class TaskTypeTest {
     @Test(expected = DexSyntaxException.class)
     public void resolve_generic_type_with_wrong_arguments_count() {
         TypeSystem ts = new TypeSystem();
-        ts.resolveType("Task", Arrays.asList(BuiltinTypes.STRING, BuiltinTypes.STRING));
+        ResolveType.$(ts, "Task<string, string>");
     }
 
 }
