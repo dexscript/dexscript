@@ -4,9 +4,11 @@ import com.dexscript.transpile.Transpile;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.java.JavaClassType;
 import com.dexscript.type.DType;
+import com.dexscript.type.ResolveType;
 import com.dexscript.type.TypeDebugLog;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,6 +16,15 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GenericJavaClassTest {
+
+    private TypeSystem ts;
+    private OutShim oShim;
+
+    @Before
+    public void setup() {
+        ts = new TypeSystem();
+        oShim = new OutShim(ts);
+    }
 
     @Test
     public void new_generic_class() {
@@ -49,27 +60,23 @@ public class GenericJavaClassTest {
 
     @Test
     public void map_generic_interface() {
-        TypeSystem ts = new TypeSystem();
-        OutShim oShim = new OutShim(ts);
         JavaClassType type = new JavaClassType(oShim, List.class);
         Assert.assertEquals(1, type.typeParameters().size());
-        Assert.assertEquals(BuiltinTypes.ANY, type.typeParameters().get(0));
+        Assert.assertEquals(ts.ANY, type.typeParameters().get(0));
         Assert.assertTrue(type.functions().size() > 1);
-        Assert.assertFalse(type.isAssignableFrom(BuiltinTypes.UINT8));
-        DType listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
-        DType listOfString = ts.resolveType("List", Arrays.asList(BuiltinTypes.STRING));
+        Assert.assertFalse(type.isAssignableFrom(ts.UINT8));
+        DType listOfInt64 = ResolveType.$(ts, "List<int64>");
+        DType listOfString = ResolveType.$(ts, "List<string>");
         Assert.assertFalse(listOfInt64.isAssignableFrom(listOfString));
     }
 
     @Test
     public void list_should_be_assignable_from_array_list() {
-        TypeSystem ts = new TypeSystem();
-        OutShim oShim = new OutShim(ts);
         JavaClassType list = new JavaClassType(oShim, List.class);
         JavaClassType arrayList = new JavaClassType(oShim, ArrayList.class);
         Assert.assertTrue(list.isAssignableFrom(arrayList));
-        DType listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
-        DType arrayListOfInt64 = ts.resolveType("ArrayList", Arrays.asList(BuiltinTypes.INT64));
+        DType listOfInt64 = ResolveType.$(ts, "List<int64>");
+        DType arrayListOfInt64 = ResolveType.$(ts, "ArrayList<int64>");
         Assert.assertTrue(listOfInt64.isAssignableFrom(arrayListOfInt64));
     }
 }

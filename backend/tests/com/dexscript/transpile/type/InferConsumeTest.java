@@ -21,6 +21,6 @@ public class InferConsumeTest {
                 "   return 'hello'\n" +
                 "}"), null);
         DType type = InferType.$(ts, DexExpr.parse("<-Hello{100}"));
-        Assert.assertEquals(BuiltinTypes.STRING, type);
+        Assert.assertEquals(ts.STRING, type);
     }
 }

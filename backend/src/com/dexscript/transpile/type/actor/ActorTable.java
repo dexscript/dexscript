@@ -12,8 +12,10 @@ import java.util.Map;
 public class ActorTable implements NamedTypesProvider {
 
     private final Map<String, List<ActorType>> defined = new HashMap<>();
+    private final TypeSystem ts;
 
     public ActorTable(TypeSystem ts) {
+        this.ts = ts;
         ts.lazyDefineTypes(this);
     }
 
@@ -29,7 +31,7 @@ public class ActorTable implements NamedTypesProvider {
             if (entry.getValue().size() == 1) {
                 types.add(entry.getValue().get(0));
             } else {
-                types.add(new ActorUnionType(entry.getKey(), entry.getValue()));
+                types.add(new ActorUnionType(ts, entry.getKey(), entry.getValue()));
             }
         }
         return types;

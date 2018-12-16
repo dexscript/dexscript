@@ -34,7 +34,7 @@ public class OutShim {
     private final Map<FunctionEntry, List<FunctionImpl>> entries = new HashMap<>();
     private final Map<FunctionChain, String> chains = new HashMap<>();
     private final List<GeneratedSubClass> generatedSubClasses = new ArrayList<>();
-    private final JavaTypes javaTypes = new JavaTypes(this);
+    private final JavaTypes javaTypes;
     private final ActorTable actorTable;
 
     public OutShim(TypeSystem ts) {
@@ -54,6 +54,7 @@ public class OutShim {
         }
          */
         new PromiseType(ts);
+        javaTypes = new JavaTypes(this);
         g.__("package com.dexscript.runtime.gen"
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
@@ -129,7 +130,7 @@ public class OutShim {
         String funcName = javaFunction.getName();
         List<DType> params = javaTypes.resolve(javaFunction.getParameterTypes());
         DType ret = javaTypes.resolve(javaFunction.getReturnType());
-        FunctionType functionType = new FunctionType(funcName, params, ret);
+        FunctionType functionType = new FunctionType(ts, funcName, params, ret);
         ts.defineFunction(functionType);
         CallJavaFunction impl = new CallJavaFunction(this, functionType, javaFunction);
         functionType.attach(impl);

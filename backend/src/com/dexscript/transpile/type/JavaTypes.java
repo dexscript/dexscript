@@ -26,15 +26,16 @@ public class JavaTypes {
 
     public JavaTypes(OutShim oShim) {
         this.oShim = oShim;
-        add(Boolean.class, BuiltinTypes.BOOL);
-        add(UInt8.class, BuiltinTypes.UINT8);
-        add(Integer.class, BuiltinTypes.INT32);
-        add(Long.class, BuiltinTypes.INT64);
-        add(String.class, BuiltinTypes.STRING);
-        primitiveTypes.put(boolean.class, BuiltinTypes.BOOL);
-        primitiveTypes.put(int.class, BuiltinTypes.INT32);
-        primitiveTypes.put(long.class, BuiltinTypes.INT64);
-        primitiveTypes.put(void.class, BuiltinTypes.VOID);
+        TypeSystem ts = oShim.typeSystem();
+        add(Boolean.class, ts.BOOL);
+        add(UInt8.class, ts.UINT8);
+        add(Integer.class, ts.INT32);
+        add(Long.class, ts.INT64);
+        add(String.class, ts.STRING);
+        primitiveTypes.put(boolean.class, ts.BOOL);
+        primitiveTypes.put(int.class, ts.INT32);
+        primitiveTypes.put(long.class, ts.INT64);
+        primitiveTypes.put(void.class, ts.VOID);
     }
 
     public void add(Class clazz, DType type) {

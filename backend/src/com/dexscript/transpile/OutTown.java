@@ -6,6 +6,8 @@ import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.elem.DexParam;
+import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.transpile.shim.GeneratedSubClass;
@@ -78,9 +80,12 @@ public class OutTown {
 
     private void ensureTypeLoaded(DexActor function) {
         String funcName = function.functionName();
-        TypeTable localTypeTable = new TypeTable(ts.typeTable());
-        localTypeTable.define(function.typeParams());
-        List<DType> args = ResolveType.resolveParams(localTypeTable, function.params());
+        TypeTable localTypeTable = new TypeTable(ts, function.typeParams());
+        List<DType> args = new ArrayList<>();
+        for (DexParam param : function.params()) {
+            DType arg = ResolveType.$(ts, localTypeTable, param.paramType());
+            args.add(arg);
+        }
         Invocation ivc = new Invocation(funcName, null, args, null);
         List<FunctionSig.Invoked> invokeds = ts.invoke(ivc);
         for (FunctionSig.Invoked invoked : invokeds) {

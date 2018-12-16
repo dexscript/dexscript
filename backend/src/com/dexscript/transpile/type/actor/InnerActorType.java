@@ -29,14 +29,19 @@ public class InnerActorType implements DType, FunctionsProvider {
     }
 
     private FunctionType consumeFunc() {
-        DType ret = ts.resolveType(awaitConsumer.produceSig().ret());
+        DType ret = ResolveType.$(ts, null, awaitConsumer.produceSig().ret());
         ArrayList<DType> params = new ArrayList<>();
         params.add(this);
-        return new FunctionType("Consume__", params, ret);
+        return new FunctionType(ts, "Consume__", params, ret);
     }
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return ts.isSubType(ctx, this, that);
+        return ts.functionTable().isSubType(ctx, this, that);
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 }

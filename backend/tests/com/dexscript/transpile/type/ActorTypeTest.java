@@ -61,7 +61,7 @@ public class ActorTypeTest {
                 "}"));
         List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, new ArrayList<>(), null));
         Assert.assertEquals(1, functionTypes.size());
-        Assert.assertEquals(BuiltinTypes.VOID, functionTypes.get(0).ret());
+        Assert.assertEquals(ts.VOID, functionTypes.get(0).ret());
     }
 
     @Test
@@ -71,9 +71,9 @@ public class ActorTypeTest {
         new ActorType(oShim, new DexActor("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
-        List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, Arrays.asList(BuiltinTypes.STRING), null));
+        List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, Arrays.asList(ts.STRING), null));
         Assert.assertEquals(1, functionTypes.size());
-        DType type = ts.resolveType("Hello", Arrays.asList(BuiltinTypes.STRING));
+        DType type = ResolveType.$(ts, "Hello<string>");
         Assert.assertNotNull(type);
     }
 

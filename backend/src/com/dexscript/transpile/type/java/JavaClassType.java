@@ -48,11 +48,6 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
     }
 
     @Override
-    public String toString() {
-        return name();
-    }
-
-    @Override
     public List<FunctionType> functions() {
         if (functions != null) {
             return functions;
@@ -85,7 +80,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
             }
             params.add(param);
         }
-        FunctionType function = new FunctionType(method.getName(), params, ret);
+        FunctionType function = new FunctionType(ts, method.getName(), params, ret);
         function.attach((FunctionType.LazyAttachment) () -> new CallJavaMethod(oShim, function, method));
         collector.add(function);
     }
@@ -127,8 +122,8 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
             }
             params.add(type);
         }
-        FunctionSig sig = new FunctionSig(placeholders, params, this, createRetElem());
-        FunctionType function = new FunctionType("New__", params, this, sig);
+        FunctionSig sig = new FunctionSig(ts, placeholders, params, this, createRetElem());
+        FunctionType function = new FunctionType(ts, "New__", params, this, sig);
         function.attach((FunctionType.LazyAttachment) () -> new NewJavaClass(oShim, function, ctor, subClassName));
         collector.add(function);
     }
@@ -190,16 +185,21 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
 
     private DType translateBound(java.lang.reflect.Type[] bounds) {
         // TODO: translate bound
-        return BuiltinTypes.ANY;
+        return ts.ANY;
     }
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return ts.isSubType(ctx, this, that);
+        return ts.functionTable().isSubType(ctx, this, that);
     }
 
     @Override
-    public String description() {
+    public TypeSystem typeSystem() {
+        return ts;
+    }
+
+    @Override
+    public String toString() {
         if (description == null) {
             description = describe(typeArgs);
         }

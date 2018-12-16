@@ -9,7 +9,6 @@ import java.util.List;
 
 public class TaskType implements NamedType, FunctionsProvider, GenericType {
 
-    private final static List<DType> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
     private final @NotNull FunctionType resolveFunc;
     private final TypeSystem ts;
 
@@ -23,7 +22,7 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
             ts.defineType(this);
         }
         ts.lazyDefineFunctions(this);
-        resolveFunc = resolveFunc(typeArgs == null ? TYPE_PARAMETERS : typeArgs);
+        resolveFunc = resolveFunc(typeArgs == null ? Arrays.asList(ts.ANY) : typeArgs);
     }
 
     @NotNull
@@ -31,7 +30,7 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
         ArrayList<DType> params = new ArrayList<>();
         params.add(this);
         params.add(typeArgs.get(0));
-        return new FunctionType("Resolve__", params, BuiltinTypes.VOID);
+        return new FunctionType(ts, "Resolve__", params, ts.VOID);
     }
 
     @Override
@@ -51,12 +50,17 @@ public class TaskType implements NamedType, FunctionsProvider, GenericType {
 
     @Override
     public List<DType> typeParameters() {
-        return TYPE_PARAMETERS;
+        return Arrays.asList(ts.ANY);
     }
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return ts.isSubType(ctx, this, that);
+        return ts.functionTable().isSubType(ctx, this, that);
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 
     @Override

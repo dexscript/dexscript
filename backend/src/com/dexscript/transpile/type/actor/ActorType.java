@@ -61,7 +61,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexTypeParam typeParam : actor.typeParams()) {
-                typeParams.add(ts.resolveType(typeParam.paramType()));
+                typeParams.add(ResolveType.$(ts, null, typeParam.paramType()));
             }
         }
         return typeParams;
@@ -75,12 +75,7 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         if (typeArgs == null) {
             typeArgs = typeParameters();
         }
-        TypeTable localTypeTable = new TypeTable(ts.typeTable());
-        for (int i = 0; i < actor.typeParams().size(); i++) {
-            DexTypeParam typeParam = actor.typeParams().get(i);
-            String typeParamName = typeParam.paramName().toString();
-            localTypeTable.define(typeParamName, typeArgs.get(i));
-        }
+        TypeTable localTypeTable = new TypeTable(ts, actor.typeParams());
         members = new ArrayList<>();
         members.add(consumeFunc(localTypeTable));
         new AwaitConsumerCollector(localTypeTable).visit(actor.blk());
@@ -91,13 +86,13 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
     }
 
     public FunctionType callFunc(TypeTable localTypeTable) {
-        DType ret = ResolveType.$(localTypeTable, actor.sig().ret());
+        DType ret = ResolveType.$(ts, localTypeTable, actor.sig().ret());
         ArrayList<DType> params = new ArrayList<>();
         for (DexParam param : actor.sig().params()) {
-            params.add(ResolveType.$(localTypeTable, param.paramType()));
+            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
-        FunctionSig sig = new FunctionSig(ts.typeTable(), actor.sig());
-        FunctionType functionType = new FunctionType(name(), params, ret, sig);
+        FunctionSig sig = new FunctionSig(ts, actor.sig());
+        FunctionType functionType = new FunctionType(ts, name(), params, ret, sig);
         functionType.attach((FunctionType.LazyAttachment) () -> new CallActor(oShim, functionType, actor));
         return functionType;
     }
@@ -106,23 +101,28 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         ArrayList<DType> params = new ArrayList<>();
         params.add(new StringLiteralType(ts, name()));
         for (DexParam param : actor.sig().params()) {
-            params.add(ResolveType.$(localTypeTable, param.paramType()));
+            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
-        FunctionType functionType = new FunctionType("New__", params, this);
+        FunctionType functionType = new FunctionType(ts, "New__", params, this);
         functionType.attach((FunctionType.LazyAttachment) () -> new NewActor(oShim, functionType, actor));
         return functionType;
     }
 
     private FunctionType consumeFunc(TypeTable localTypeTable) {
-        DType ret = ResolveType.$(localTypeTable, actor.sig().ret());
+        DType ret = ResolveType.$(ts, localTypeTable, actor.sig().ret());
         ArrayList<DType> params = new ArrayList<>();
         params.add(this);
-        return new FunctionType("Consume__", params, ret);
+        return new FunctionType(ts, "Consume__", params, ret);
     }
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType thatObj) {
-        return ts.isSubType(ctx, this, thatObj);
+        return ts.functionTable().isSubType(ctx, this, thatObj);
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 
     @Override
@@ -169,9 +169,9 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
             params.add(ActorType.this);
             DexSig sig = awaitConsumer.produceSig();
             for (DexParam param : sig.params()) {
-                params.add(ResolveType.$(localTypeTable, param.paramType()));
+                params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
             }
-            FunctionType functionType = new FunctionType("New__", params, nestedActor);
+            FunctionType functionType = new FunctionType(ts, "New__", params, nestedActor);
             functionType.attach((FunctionType.LazyAttachment) () -> new NewInnerActor(
                     oShim, functionType, outerClassName, awaitConsumer));
             return functionType;
@@ -181,13 +181,13 @@ public class ActorType implements NamedType, GenericType, FunctionsProvider {
         private FunctionType callFunc(DexAwaitConsumer awaitConsumer) {
             DexSig sig = awaitConsumer.produceSig();
             String funcName = awaitConsumer.identifier().toString();
-            DType ret = ResolveType.$(localTypeTable, sig.ret());
+            DType ret = ResolveType.$(ts, localTypeTable, sig.ret());
             ArrayList<DType> params = new ArrayList<>();
             params.add(ActorType.this);
             for (DexParam param : sig.params()) {
-                params.add(ResolveType.$(localTypeTable, param.paramType()));
+                params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
             }
-            FunctionType functionType = new FunctionType(funcName, params, ret);
+            FunctionType functionType = new FunctionType(ts, funcName, params, ret);
             functionType.attach((FunctionType.LazyAttachment) () -> new CallInnerActor(
                     oShim, functionType, outerClassName, awaitConsumer));
             return functionType;

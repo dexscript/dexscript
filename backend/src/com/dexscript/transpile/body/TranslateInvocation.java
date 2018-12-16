@@ -36,7 +36,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         TypeSystem ts = oClass.typeSystem();
 
         List<DType> args = InferType.inferTypes(ts, iArgs);
-        List<DType> typeArgs = ts.resolveTypes(iTypeArgs);
+        List<DType> typeArgs = ResolveType.resolveTypes(ts, null, iTypeArgs);
         Invocation ivc = new Invocation(funcName, typeArgs, args, null);
         List<FunctionSig.Invoked> invokeds = ts.invoke(ivc);
         if (invokeds.size() == 0) {
@@ -72,7 +72,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         if (needToConsume) {
             return consume(oClass, retType, oActorField.value());
         }
-        if (BuiltinTypes.VOID.equals(retType)) {
+        if (ts.VOID.equals(retType)) {
             return null;
         }
         OutField oResultField = oClass.allocateField(oActorField.value().substring(1) + "Result", retType);
@@ -85,7 +85,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
 
     public static OutField consume(OutClass oClass, DType retType, String targetActor) {
         checkFinished(oClass, targetActor);
-        if (BuiltinTypes.VOID.equals(retType)) {
+        if (retType instanceof VoidType) {
             return null;
         }
         OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", retType);

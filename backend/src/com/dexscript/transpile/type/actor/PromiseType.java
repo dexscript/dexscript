@@ -10,7 +10,6 @@ import java.util.List;
 
 public class PromiseType implements NamedType, FunctionsProvider, GenericType {
 
-    private final static List<DType> TYPE_PARAMETERS = Arrays.asList(BuiltinTypes.ANY);
     private final @NotNull FunctionType consumeFunc;
     private final TypeSystem ts;
 
@@ -24,7 +23,7 @@ public class PromiseType implements NamedType, FunctionsProvider, GenericType {
             ts.defineType(this);
         }
         ts.lazyDefineFunctions(this);
-        consumeFunc = consumeFunc(typeArgs == null ? TYPE_PARAMETERS : typeArgs);
+        consumeFunc = consumeFunc(typeArgs == null ? Arrays.asList(ts.ANY) : typeArgs);
     }
 
     @Override
@@ -36,7 +35,7 @@ public class PromiseType implements NamedType, FunctionsProvider, GenericType {
     private FunctionType consumeFunc(List<DType> typeArgs) {
         ArrayList<DType> params = new ArrayList<>();
         params.add(this);
-        return new FunctionType("Consume__", params, typeArgs.get(0));
+        return new FunctionType(ts, "Consume__", params, typeArgs.get(0));
     }
 
     @Override
@@ -51,12 +50,17 @@ public class PromiseType implements NamedType, FunctionsProvider, GenericType {
 
     @Override
     public List<DType> typeParameters() {
-        return TYPE_PARAMETERS;
+        return Arrays.asList(ts.ANY);
     }
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return ts.isSubType(ctx, this, that);
+        return ts.functionTable().isSubType(ctx, this, that);
+    }
+
+    @Override
+    public TypeSystem typeSystem() {
+        return ts;
     }
 
     @Override

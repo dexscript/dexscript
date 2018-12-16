@@ -2,6 +2,7 @@ package com.dexscript.type;
 
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.elem.DexTypeParam;
+import com.dexscript.ast.inf.DexInfTypeParam;
 
 import java.util.*;
 
@@ -52,6 +53,14 @@ public class TypeTable {
 
     public TypeTable(TypeSystem ts) {
         this.ts = ts;
+    }
+
+    public TypeTable(TypeSystem ts, List<DexTypeParam> typeParams) {
+        this.ts = ts;
+        for (DexTypeParam typeParam : typeParams) {
+            DType type = ResolveType.$(ts, null, typeParam.paramType());
+            define(typeParam.paramName().toString(), type);
+        }
     }
 
     public DType resolveType(String name) {
