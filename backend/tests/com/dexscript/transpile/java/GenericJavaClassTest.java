@@ -4,12 +4,14 @@ import com.dexscript.transpile.Transpile;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.transpile.type.java.JavaClassType;
 import com.dexscript.type.BuiltinTypes;
+import com.dexscript.type.Type;
 import com.dexscript.type.TypeDebugLog;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GenericJavaClassTest {
@@ -48,10 +50,15 @@ public class GenericJavaClassTest {
 
     @Test
     public void generic_class_functions() {
-        JavaClassType type = new JavaClassType(new OutShim(new TypeSystem()), List.class);
+        TypeSystem ts = new TypeSystem();
+        OutShim oShim = new OutShim(ts);
+        JavaClassType type = new JavaClassType(oShim, List.class);
         Assert.assertEquals(1, type.typeParameters().size());
         Assert.assertEquals(BuiltinTypes.ANY, type.typeParameters().get(0));
         Assert.assertTrue(type.functions().size() > 1);
         Assert.assertFalse(type.isAssignableFrom(BuiltinTypes.UINT8));
+        Type listOfInt64 = ts.resolveType("List", Arrays.asList(BuiltinTypes.INT64));
+        Type listOfString = ts.resolveType("List", Arrays.asList(BuiltinTypes.STRING));
+        Assert.assertFalse(listOfInt64.isAssignableFrom(listOfString));
     }
 }

@@ -9,14 +9,16 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class JavaClassType implements NamedType, FunctionsProvider, GenericType {
 
     private final OutShim oShim;
     private final Class clazz;
     private final List<Type> typeArgs;
+    private Map<TypeVariable, Type> javaTypeVarMap;
     private List<FunctionType> functions;
     private List<Type> typeParams;
     private ArrayList<PlaceholderType> placeholders;
@@ -91,7 +93,7 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
         }
         if (javaType instanceof TypeVariable) {
             TypeVariable typeVar = (TypeVariable) javaType;
-            return BuiltinTypes.ANY;
+            return javaTypeVarMap().get(typeVar);
         }
         return null;
     }
@@ -139,14 +141,34 @@ public class JavaClassType implements NamedType, FunctionsProvider, GenericType 
             return typeParams;
         }
         typeParams = new ArrayList<>();
-        for (TypeVariable typeParameter : clazz.getTypeParameters()) {
-            typeParams.add(BuiltinTypes.ANY);
-        }
         placeholders = new ArrayList<>();
-        for (Type typeParam : typeParameters()) {
-            placeholders.add(new PlaceholderType("T", typeParam));
+        for (TypeVariable javaTypeVar : clazz.getTypeParameters()) {
+            Type typeParam = translateBound(javaTypeVar.getBounds());
+            typeParams.add(typeParam);
+            placeholders.add(new PlaceholderType(javaTypeVar.getName(), typeParam));
         }
         return typeParams;
+    }
+
+    private Map<TypeVariable, Type> javaTypeVarMap() {
+        if (javaTypeVarMap != null) {
+            return javaTypeVarMap;
+        }
+        javaTypeVarMap = new HashMap<>();
+        List<Type> typeArgs = this.typeArgs;
+        if (typeArgs == null) {
+            typeArgs = typeParameters();
+        }
+        TypeVariable[] javaTypeVars = clazz.getTypeParameters();
+        for (int i = 0; i < typeArgs.size(); i++) {
+            javaTypeVarMap.put(javaTypeVars[i], typeArgs.get(i));
+        }
+        return javaTypeVarMap;
+    }
+
+    private Type translateBound(java.lang.reflect.Type[] bounds) {
+        // TODO: translate bound
+        return BuiltinTypes.ANY;
     }
 
     @Override
