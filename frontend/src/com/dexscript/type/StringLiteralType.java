@@ -21,6 +21,11 @@ public final class StringLiteralType implements DType {
     }
 
     @Override
+    public boolean _isSubType(IsAssignable ctx, DType that) {
+        return that.equals(this);
+    }
+
+    @Override
     public TypeSystem typeSystem() {
         return ts;
     }

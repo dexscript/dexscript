@@ -15,19 +15,20 @@ public class StringTypeTest {
 
     @Test
     public void string_is_assignable_from_string() {
-        Assert.assertTrue(new StringType(ts).isAssignableFrom(ts.STRING));
-        Assert.assertTrue(ts.STRING.isAssignableFrom(new StringType(ts)));
+        Assert.assertTrue(new IsAssignable(new StringType(ts), ts.STRING).result());
+        Assert.assertTrue(new IsAssignable(ts.STRING, new StringType(ts)).result());
     }
 
     @Test
     public void string_is_assignable_from_string_literal() {
-        Assert.assertTrue(ts.STRING.isAssignableFrom(new StringLiteralType(ts, "hello")));
-        Assert.assertFalse(new StringLiteralType(ts, "hello").isAssignableFrom(ts.STRING));
+        Assert.assertTrue(new IsAssignable(ts.STRING, new StringLiteralType(ts, "hello")).result());
+        Assert.assertFalse(new IsAssignable(new StringLiteralType(ts, "hello"), ts.STRING).result());
     }
 
     @Test
     public void string_literal_is_assignable_from_string_literal() {
-        Assert.assertTrue(new StringLiteralType(ts, "A").isAssignableFrom(
-                new StringLiteralType(ts, "A")));
+        Assert.assertTrue(new IsAssignable(
+                new StringLiteralType(ts, "A"),
+                new StringLiteralType(ts, "A")).result());
     }
 }

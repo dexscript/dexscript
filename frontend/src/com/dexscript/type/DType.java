@@ -63,6 +63,10 @@ public interface DType {
 
     boolean _isSubType(TypeComparisonContext ctx, DType that);
 
+    default boolean _isSubType(IsAssignable isAssignable, DType that) {
+        return false;
+    }
+
     default DType union(DType that) {
         return new UnionType(typeSystem(), this, that);
     }

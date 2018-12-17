@@ -17,6 +17,11 @@ public class StringType implements NamedType {
     }
 
     @Override
+    public boolean _isSubType(IsAssignable ctx, DType that) {
+        return that instanceof StringType || that instanceof StringLiteralType;
+    }
+
+    @Override
     public TypeSystem typeSystem() {
         return ts;
     }
