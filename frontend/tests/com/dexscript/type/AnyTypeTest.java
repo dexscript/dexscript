@@ -9,7 +9,7 @@ public class AnyTypeTest {
     public void resolve_empty_interface() {
         TypeSystem ts = new TypeSystem();
         AnyType type = (AnyType) ResolveType.$(ts, "interface {}");
-        Assert.assertTrue(type.isAssignableFrom(ts.STRING));
-        Assert.assertTrue(type.isAssignableFrom(ts.INT64));
+        Assert.assertTrue(IsAssignable.$(type, ts.STRING));
+        Assert.assertTrue(IsAssignable.$(type, ts.INT64));
     }
 }

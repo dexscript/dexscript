@@ -22,6 +22,11 @@ public class BoolType implements NamedType {
     }
 
     @Override
+    public boolean _isSubType(IsAssignable ctx, DType that) {
+        return that instanceof BoolType;
+    }
+
+    @Override
     public TypeSystem typeSystem() {
         return ts;
     }

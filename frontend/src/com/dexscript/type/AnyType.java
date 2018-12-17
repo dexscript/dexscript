@@ -14,6 +14,11 @@ public class AnyType implements DType {
     }
 
     @Override
+    public boolean _isSubType(IsAssignable ctx, DType that) {
+        return true;
+    }
+
+    @Override
     public TypeSystem typeSystem() {
         return ts;
     }
