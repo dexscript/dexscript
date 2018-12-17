@@ -108,6 +108,33 @@ public final class FunctionType implements DType {
     }
 
     @Override
+    public boolean _isSubType(IsAssignable ctx, DType thatObj) {
+        if (!(thatObj instanceof FunctionType)) {
+            return false;
+        }
+        FunctionType that = (FunctionType) thatObj;
+        if (!this.name.equals(that.name)) {
+            ctx.addLog("function name not equal", "to", this.name, "from", that.name);
+            return false;
+        }
+        if (this.params.size() != that.params.size()) {
+            ctx.addLog("params count not equal", "to", this.params().size(), "from", that.params.size());
+            return false;
+        }
+        for (int i = 0; i < params.size(); i++) {
+            DType thisParam = this.params.get(i);
+            DType thatParam = that.params.get(i);
+            if (!new IsAssignable(ctx, "#" + i + " param", thatParam, thisParam).result()) {
+                return false;
+            }
+        }
+        if (!new IsAssignable(ctx, "ret", this.ret, that.ret).result()) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public TypeSystem typeSystem() {
         return ts;
     }

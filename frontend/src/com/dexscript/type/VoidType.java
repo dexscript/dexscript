@@ -17,6 +17,11 @@ public class VoidType implements NamedType {
     }
 
     @Override
+    public boolean _isSubType(IsAssignable ctx, DType that) {
+        return that instanceof VoidType;
+    }
+
+    @Override
     public TypeSystem typeSystem() {
         return ts;
     }

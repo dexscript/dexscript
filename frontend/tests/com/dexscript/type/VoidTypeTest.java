@@ -8,6 +8,6 @@ public class VoidTypeTest {
     @Test
     public void assignable_to_void() {
         TypeSystem ts = new TypeSystem();
-        Assert.assertTrue(new VoidType(ts).isAssignableFrom(new VoidType(ts)));
+        Assert.assertTrue(IsAssignable.$(new VoidType(ts), ts.VOID));
     }
 }

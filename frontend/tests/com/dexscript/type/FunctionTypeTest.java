@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexActor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,42 +17,51 @@ public class FunctionTypeTest {
         ts = new TypeSystem();
     }
 
+    private FunctionType func(String src) {
+        DexActor actor = new DexActor("function " + src);
+        FunctionSig sig = new FunctionSig(ts, actor.sig());
+        return new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
+    }
+
     @Test
     public void assignable() {
-        FunctionType hello1 = new FunctionType(ts, "hello", new ArrayList<>(), ts.STRING);
-        FunctionType hello2 = new FunctionType(ts, "hello", new ArrayList<>(), ts.STRING);
-        Assert.assertTrue(hello1.isAssignableFrom(hello2));
-        Assert.assertTrue(hello2.isAssignableFrom(hello1));
+        FunctionType hello1 = func("hello(): string");
+        FunctionType hello2 = func("hello(): string");
+        Assert.assertTrue(new IsAssignable(hello1, hello2).result());
+        Assert.assertTrue(new IsAssignable(hello2, hello1).result());
+        Assert.assertFalse(new IsAssignable(hello2, ts.STRING).result());
     }
 
     @Test
     public void name_not_assignable() {
-        Assert.assertFalse(new FunctionType(ts, "hello", new ArrayList<>(), ts.STRING).isAssignableFrom(
-                new FunctionType(ts, "world", new ArrayList<>(), ts.STRING)));
+        IsAssignable isAssignable = new IsAssignable(
+                func("hello(): string"),
+                func("world(): string"));
+        Assert.assertFalse(isAssignable.result());
     }
 
     @Test
     public void params_count_not_assignable() {
-        Assert.assertFalse(new FunctionType(ts, "hello", new ArrayList<>(), ts.STRING).isAssignableFrom(
-                new FunctionType(ts, "hello", new ArrayList<DType>() {{
-                    add(ts.STRING);
-                }}, ts.STRING)));
+        IsAssignable isAssignable = new IsAssignable(
+                func("hello(): string"),
+                func("hello(arg0: string): string"));
+        Assert.assertFalse(isAssignable.result());
     }
 
     @Test
     public void params_not_assignable() {
-        Assert.assertFalse(new FunctionType(ts, "hello", new ArrayList<DType>() {{
-            add(ts.VOID);
-        }}, ts.STRING).isAssignableFrom(
-                new FunctionType(ts, "hello", new ArrayList<DType>() {{
-                    add(ts.STRING);
-                }}, ts.STRING)));
+        IsAssignable isAssignable = new IsAssignable(
+                func("hello(arg0: int64)"),
+                func("hello(arg0: string)"));
+        Assert.assertFalse(isAssignable.result());
     }
 
     @Test
     public void ret_not_assignable() {
-        Assert.assertFalse(new FunctionType(ts, "hello", new ArrayList<>(), ts.STRING).isAssignableFrom(
-                new FunctionType(ts, "hello", new ArrayList<>(), ts.VOID)));
+        IsAssignable isAssignable = new IsAssignable(
+                func("hello(): string"),
+                func("hello(): void"));
+        Assert.assertFalse(isAssignable.result());
     }
 
     @Test
