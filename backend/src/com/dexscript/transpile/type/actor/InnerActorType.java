@@ -6,7 +6,7 @@ import com.dexscript.type.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InnerActorType implements DType, FunctionsProvider {
+public class InnerActorType implements DType, FunctionsType {
 
     private final DexAwaitConsumer awaitConsumer;
     private final TypeSystem ts;

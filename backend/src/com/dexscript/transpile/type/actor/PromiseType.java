@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PromiseType implements NamedType, FunctionsProvider, GenericType {
+public class PromiseType implements NamedType, FunctionsType, GenericType {
 
     private final @NotNull FunctionType consumeFunc;
     private final TypeSystem ts;

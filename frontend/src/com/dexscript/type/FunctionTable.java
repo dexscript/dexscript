@@ -22,7 +22,7 @@ public class FunctionTable {
     };
 
     private final Map<String, List<FunctionType>> defined = new HashMap<>();
-    private final List<FunctionsProvider> providers = new ArrayList<>();
+    private final List<FunctionsType> providers = new ArrayList<>();
 
     public void define(FunctionType func) {
         List<FunctionType> functions = defined.computeIfAbsent(func.name(), k -> new ArrayList<>());
@@ -53,7 +53,7 @@ public class FunctionTable {
         return invokeds;
     }
 
-    public void lazyDefine(FunctionsProvider provider) {
+    public void lazyDefine(FunctionsType provider) {
         providers.add(provider);
     }
 
@@ -88,27 +88,44 @@ public class FunctionTable {
         return false;
     }
 
+    public boolean isDefined(IsAssignable ctx, FunctionType that) {
+        pullFromProviders();
+        List<FunctionType> candidates = defined.get(that.name());
+        if (candidates == null) {
+            return false;
+        }
+        for (FunctionType candidate : candidates) {
+            if (!ctx.isAvailable(candidate)) {
+                ctx.addLog("member " + that + " filter not available candidate", "candidate", candidate);
+                continue;
+            }
+            if (new IsAssignable(ctx, "member " + that + " candidate", candidate, that).result()) {
+                return true;
+            }
+        }
+        ctx.addLog("member " + that + " is not defined", "candidates_count", candidates.size());
+        return false;
+    }
+
     private void pullFromProviders() {
         while (!(providers.isEmpty())) {
-            ArrayList<FunctionsProvider> toPull = new ArrayList<>(providers);
+            ArrayList<FunctionsType> toPull = new ArrayList<>(providers);
             providers.clear();
-            for (FunctionsProvider provider : toPull) {
-                for (FunctionType function : provider.functions()) {
-                    define(function);
-                }
+            for (FunctionsType provider : toPull) {
+                provider.functions();
             }
         }
     }
 
-    public boolean isSubType(TypeComparisonContext ctx, FunctionsProvider to, DType from) {
+    public boolean isSubType(TypeComparisonContext ctx, FunctionsType to, DType from) {
         if (ctx.shouldLog()) {
             ctx.log(">>> check " + to + " is assignable from " + from);
         }
         TypeComparisonContext subCtx = new TypeComparisonContext(ctx)
                 .compare(to, from);
         subCtx.putSubstituted(from, to);
-        if (from instanceof FunctionsProvider) {
-            for (FunctionType member : ((FunctionsProvider) from).functions()) {
+        if (from instanceof FunctionsType) {
+            for (FunctionType member : ((FunctionsType) from).functions()) {
                 subCtx.makeAvailable(member);
             }
         }
@@ -126,6 +143,20 @@ public class FunctionTable {
         subCtx.commit();
         if (ctx.shouldLog()) {
             ctx.log("<<< " + to + " is assignable from " + from);
+        }
+        return true;
+    }
+
+    public boolean isSubType(IsAssignable ctx, FunctionsType to, DType from) {
+        if (from instanceof FunctionsType) {
+            for (FunctionType member : ((FunctionsType) from).functions()) {
+                ctx.makeAvailable(member);
+            }
+        }
+        for (FunctionType member : to.functions()) {
+            if (!isDefined(ctx, member)) {
+                return false;
+            }
         }
         return true;
     }

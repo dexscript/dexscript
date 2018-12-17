@@ -2,15 +2,48 @@ package com.dexscript.type;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class IsAssignable {
 
     private final DType to;
     private final DType from;
+    private final Set<FunctionType> available = new HashSet<>();
 
     public static boolean $(DType to, DType from) {
         return new IsAssignable(to, from).result();
+    }
+
+    public void makeAvailable(FunctionType function) {
+        available.add(function);
+    }
+
+    public boolean isAvailable(FunctionType function) {
+        if (available.contains(function)) {
+            return true;
+        }
+        return function.impl() != null;
+    }
+
+    public void dump() {
+        dump("");
+    }
+
+    public void dump(String prefix) {
+        if (result) {
+            System.out.println(prefix + ">>> " + to + " is assignable from " + from);
+        } else {
+            System.out.println(prefix + ">>> " + to + " is not assignable from " + from);
+        }
+        for (Log log : logs) {
+            System.out.println(prefix + log.msg);
+            if (log.details != null) {
+                log.details.dump(prefix + "  ");
+            }
+        }
+        System.out.println(prefix + "<<<");
     }
 
     public static class Log {
@@ -28,21 +61,36 @@ public class IsAssignable {
             this.msg = msg;
             this.details = details;
         }
+
+        @Override
+        public String toString() {
+            return msg;
+        }
     }
 
     private boolean result;
     private final List<Log> logs = new ArrayList<>();
+    private final Set<TypeComparison> currentTypeComparisons;
 
     public IsAssignable(DType to, DType from) {
         this.to = to;
         this.from = from;
+        currentTypeComparisons = new HashSet<>();
         result = to._isSubType(this, from);
     }
 
     public IsAssignable(IsAssignable parent, String comparing, DType to, DType from) {
         this.to = to;
         this.from = from;
-        result = to._isSubType(this, from);
+        currentTypeComparisons = parent.currentTypeComparisons;
+        TypeComparison typeComparison = new TypeComparison(to, from);
+        if (currentTypeComparisons.contains(typeComparison)) {
+            result = true;
+        } else {
+            currentTypeComparisons.add(typeComparison);
+            result = to._isSubType(this, from);
+            currentTypeComparisons.remove(typeComparison);
+        }
         parent.addLog(comparing, this);
     }
 

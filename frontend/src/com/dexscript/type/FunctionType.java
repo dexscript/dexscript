@@ -44,6 +44,7 @@ public final class FunctionType implements DType {
         }
         sig.reparent(this);
         this.sig = sig;
+        ts.defineFunction(this);
     }
 
     public void setImpl(Object impl) {

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActorType implements NamedType, GenericType, FunctionsProvider {
+public class ActorType implements NamedType, GenericType, FunctionsType {
 
     private final TypeSystem ts;
     private final OutShim oShim;

@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JClassType implements NamedType, FunctionsProvider, GenericType {
+public class JClassType implements NamedType, FunctionsType, GenericType {
 
     private final OutShim oShim;
     private final Class clazz;

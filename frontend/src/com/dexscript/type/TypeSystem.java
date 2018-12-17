@@ -44,8 +44,8 @@ public class TypeSystem {
         typeTable.define(type);
     }
 
-    public void lazyDefineFunctions(FunctionsProvider functionsProvider) {
-        functionTable.lazyDefine(functionsProvider);
+    public void lazyDefineFunctions(FunctionsType functionsType) {
+        functionTable.lazyDefine(functionsType);
     }
 
     public void lazyDefineTypes(NamedTypesProvider typesProvider) {

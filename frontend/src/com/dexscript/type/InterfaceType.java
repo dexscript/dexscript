@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InterfaceType implements NamedType, GenericType, FunctionsProvider {
+public class InterfaceType implements NamedType, GenericType, FunctionsType {
 
     private final TypeSystem ts;
     private final DexInterface inf;
@@ -85,6 +85,11 @@ public class InterfaceType implements NamedType, GenericType, FunctionsProvider 
 
     @Override
     public boolean _isSubType(TypeComparisonContext ctx, DType that) {
+        return ts.functionTable().isSubType(ctx, this, that);
+    }
+
+    @Override
+    public boolean _isSubType(IsAssignable ctx, DType that) {
         return ts.functionTable().isSubType(ctx, this, that);
     }
 

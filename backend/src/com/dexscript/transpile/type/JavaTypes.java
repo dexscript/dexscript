@@ -67,7 +67,7 @@ public class JavaTypes {
         if (targetType instanceof AnyType) {
             return true;
         }
-        return targetType instanceof FunctionsProvider && ((FunctionsProvider) targetType).functions().isEmpty();
+        return targetType instanceof FunctionsType && ((FunctionsType) targetType).functions().isEmpty();
     }
 
     private String genStringLiteral(StringLiteralType stringLiteralType) {

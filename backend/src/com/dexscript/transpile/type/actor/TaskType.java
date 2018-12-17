@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TaskType implements NamedType, FunctionsProvider, GenericType {
+public class TaskType implements NamedType, FunctionsType, GenericType {
 
     private final @NotNull FunctionType resolveFunc;
     private final TypeSystem ts;

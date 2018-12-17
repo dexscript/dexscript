@@ -15,12 +15,11 @@ public class InterfaceTypeTest {
         ts = new TypeSystem();
     }
 
-    private void defineFunction(String src) {
+    private void func(String src) {
         DexActor actor = new DexActor("function " + src);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType function = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
         function.setImpl(new Object());
-        ts.defineFunction(function);
     }
 
     @Test
@@ -35,8 +34,10 @@ public class InterfaceTypeTest {
                 "   Action1(): string\n" +
                 "   Action2(): string\n" +
                 "}"));
-        Assert.assertTrue(inf1.isAssignableFrom(inf2));
-        Assert.assertTrue(inf2.isAssignableFrom(inf1));
+        IsAssignable isAssignable = new IsAssignable(inf1, inf2);
+        Assert.assertTrue(isAssignable.result());
+        isAssignable = new IsAssignable(inf2, inf1);
+        Assert.assertTrue(isAssignable.result());
     }
 
     @Test
@@ -50,8 +51,10 @@ public class InterfaceTypeTest {
                 "   Action1(): string\n" +
                 "   Action2(): string\n" +
                 "}"));
-        Assert.assertTrue(new TypeComparison(inf1, inf2).isAssignable());
-        Assert.assertFalse(new TypeComparison(inf2, inf1).isAssignable());
+        IsAssignable isAssignable = new IsAssignable(inf1, inf2);
+        Assert.assertTrue(isAssignable.result());
+        isAssignable = new IsAssignable(inf2, inf1);
+        Assert.assertFalse(isAssignable.result());
     }
 
     @Test
@@ -73,8 +76,10 @@ public class InterfaceTypeTest {
                 "interface World {\n" +
                 "   Action(arg: SubType): string\n" +
                 "}"));
-        Assert.assertFalse(inf1.isAssignableFrom(inf2));
-        Assert.assertTrue(inf2.isAssignableFrom(inf1));
+        IsAssignable isAssignable = new IsAssignable(inf1, inf2);
+        Assert.assertTrue(isAssignable.result());
+        isAssignable = new IsAssignable(inf2, inf1);
+        Assert.assertFalse(isAssignable.result());
     }
 
     @Test
@@ -96,8 +101,10 @@ public class InterfaceTypeTest {
                 "interface World {\n" +
                 "   Action(): SubType\n" +
                 "}"));
-        Assert.assertTrue(inf1.isAssignableFrom(inf2));
-        Assert.assertFalse(inf2.isAssignableFrom(inf1));
+        IsAssignable isAssignable = new IsAssignable(inf1, inf2);
+        Assert.assertFalse(isAssignable.result());
+        isAssignable = new IsAssignable(inf2, inf1);
+        Assert.assertTrue(isAssignable.result());
     }
 
     @Test
@@ -106,9 +113,11 @@ public class InterfaceTypeTest {
                 "interface SomeInf {\n" +
                 "   SomeAction(): string\n" +
                 "}"));
-        defineFunction("SomeAction(arg0: string): string");
-        Assert.assertFalse(ts.STRING.isAssignableFrom(someInf));
-        Assert.assertTrue(someInf.isAssignableFrom(ts.STRING));
+        func("SomeAction(arg0: string): string");
+        IsAssignable isAssignable = new IsAssignable(ts.STRING, someInf);
+        Assert.assertFalse(isAssignable.result());
+        isAssignable = new IsAssignable(someInf, ts.STRING);
+        Assert.assertTrue(isAssignable.result());
     }
 
     @Test
@@ -119,13 +128,16 @@ public class InterfaceTypeTest {
                 "interface Swimable{ Swim(): string }"));
         InterfaceType duck = new InterfaceType(ts, new DexInterface(
                 "interface Duck{\n" +
-                        "   DoBoth(duck1: int64, duck2: Swimable): string\n" +
+                        "   DoBoth(duck1: Quackable, duck2: Swimable): string\n" +
                         "}"));
-        defineFunction("Quack(arg0: int64): string");
-        defineFunction("Swim(arg0: int64): string");
-        defineFunction("DoBoth(arg0: int64, arg1: Quackable, arg2: Swimable): string");
-        Assert.assertTrue(new TypeComparison(swimable, ts.INT64).isAssignable());
-        Assert.assertTrue(new TypeComparison(quackable, ts.INT64).isAssignable());
-        Assert.assertTrue(new TypeComparison(duck, ts.INT64).isAssignable());
+        func("Quack(arg0: int64): string");
+        func("Swim(arg0: int64): string");
+        func("DoBoth(arg0: int64, arg1: Quackable, arg2: Swimable): string");
+        IsAssignable isAssignable = new IsAssignable(swimable, ts.INT64);
+        Assert.assertTrue(isAssignable.result());
+        isAssignable = new IsAssignable(quackable, ts.INT64);
+        Assert.assertTrue(isAssignable.result());
+        isAssignable = new IsAssignable(duck, ts.INT64);
+        Assert.assertTrue(isAssignable.result());
     }
 }
