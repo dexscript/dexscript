@@ -13,7 +13,7 @@ public interface OutClass {
 
     String indention();
 
-    OutField allocateField(String fieldName, DType fieldType);
+    OutField allocateField(String fieldName);
 
     OutShim oShim();
 

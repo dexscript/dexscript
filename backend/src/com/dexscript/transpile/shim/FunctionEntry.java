@@ -34,7 +34,7 @@ public class FunctionEntry {
                 InvokeParams.$(g, paramsCount, false);
                 g.__(") {");
                 g.__(new Indent(() -> {
-                    g.__("Promise result = "
+                    g.__("Promise result = (Promise)"
                     ).__(impl.callF());
                     InvokeParams.$(g, paramsCount, true);
                     g.__(new Line(";"));

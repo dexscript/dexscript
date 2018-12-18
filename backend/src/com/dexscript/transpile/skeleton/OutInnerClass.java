@@ -57,8 +57,8 @@ public class OutInnerClass implements OutClass {
     }
 
     @Override
-    public OutField allocateField(String fieldName, DType fieldType) {
-        return oOuterClass.allocateField(fieldName, fieldType);
+    public OutField allocateField(String fieldName) {
+        return oOuterClass.allocateField(fieldName);
     }
 
     @Override

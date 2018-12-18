@@ -42,10 +42,8 @@ public class TranslateNew implements Translate<DexNewExpr> {
             ON_FUNCTION_MISSING.handle(iNewExpr);
         }
         String newF = oClass.oShim().dispatch(funcName, args.size(), invokeds);
-        DType retType = ResolveReturnType.$(invokeds);
 
-        DType promiseType = ts.typeTable().resolveType("Promise", Arrays.asList(retType));
-        OutField oActorField = oClass.allocateField(funcName, promiseType);
+        OutField oActorField = oClass.allocateField(funcName);
         Gen g = oClass.g();
         g.__(oActorField.value()
         ).__(" = "

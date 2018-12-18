@@ -46,7 +46,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         String newF = oClass.oShim().dispatch(funcName, iArgs.size(), invokeds);
         DType retType = ResolveReturnType.$(invokeds);
 
-        OutField oActorField = oClass.allocateField(funcName, retType);
+        OutField oActorField = oClass.allocateField(funcName);
         oClass.g().__(oActorField.value()
         ).__(" = "
         ).__(newF
@@ -75,7 +75,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         if (ts.VOID.equals(retType)) {
             return null;
         }
-        OutField oResultField = oClass.allocateField(oActorField.value().substring(1) + "Result", retType);
+        OutField oResultField = oClass.allocateField(oActorField.value().substring(1) + "Result");
         oClass.g().__(oResultField.value()
         ).__(" = ((Promise)"
         ).__(oActorField.value()
@@ -88,7 +88,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         if (retType instanceof VoidType) {
             return null;
         }
-        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result", retType);
+        OutField oResultField = oClass.allocateField(targetActor.substring(1) + "Result");
         oClass.g().__(oResultField.value()
         ).__(" = ((Promise)"
         ).__(targetActor

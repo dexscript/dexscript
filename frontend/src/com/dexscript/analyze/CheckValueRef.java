@@ -10,7 +10,7 @@ class CheckValueRef implements CheckSemanticError.Handler<DexValueRef> {
     public void handle(CheckSemanticError cse, DexValueRef elem) {
         TypeSystem ts = cse.typeSystem();
         Value val = InferValue.$(ts, elem);
-        if (ts.UNDEFINED.equals(val.type())) {
+        if (val == null) {
             cse.report(elem, "referenced value not found: " + elem);
         }
     }

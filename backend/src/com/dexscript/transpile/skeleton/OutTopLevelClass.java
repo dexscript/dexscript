@@ -64,8 +64,8 @@ public class OutTopLevelClass implements OutClass {
         return g.toString();
     }
 
-    public OutField allocateField(String name, DType type) {
-        return oFields.allocate(name, type);
+    public OutField allocateField(String name) {
+        return oFields.allocate(name);
     }
 
     public String indention() {

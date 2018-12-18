@@ -51,8 +51,7 @@ public class OutInitMethod implements OutMethod {
         ).__(new Indent(() -> {
             g.__(new Line("super(scheduler);"));
             OutField thisTask = oClass.allocateField(
-                    "TaskOf" + iAwaitConsumer.identifier().toString(),
-                    ResolveType.$(ts, "Task"));
+                    "TaskOf" + iAwaitConsumer.identifier().toString());
             iAwaitConsumer.attach(thisTask);
             g.__(thisTask.value()
             ).__(new Line(" = this;"));
@@ -61,13 +60,10 @@ public class OutInitMethod implements OutMethod {
     }
 
     private void genBody(DexSig sig, List<DexStatement> stmts) {
-        TypeTable localTypeTable = new TypeTable(ts, sig.typeParams());
         List<DexParam> params = sig.params();
         DexType ret = sig.ret();
         for (DexParam param : params) {
-            OutField oField = oClass.allocateField(
-                    param.paramName().toString(),
-                    ResolveType.$(ts, localTypeTable, param.paramType()));
+            OutField oField = oClass.allocateField(param.paramName().toString());
             param.attach(oField);
             g.__("this."
             ).__(oField.value()

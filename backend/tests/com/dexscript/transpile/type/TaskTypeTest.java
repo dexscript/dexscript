@@ -2,15 +2,23 @@ package com.dexscript.transpile.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.core.DexSyntaxException;
+import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.*;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TaskTypeTest {
 
+    private TypeSystem ts;
+
+    @Before
+    public void setup() {
+        ts = new OutShim(new TypeSystem()).typeSystem();
+    }
+
     @Test
     public void resolve_any() {
-        TypeSystem ts = new TypeSystem();
         DType taskType = ResolveType.$(ts, "Task");
         InterfaceType inf = ts.defineInterface(new DexInterface("" +
                 "interface TaskString {\n" +
@@ -21,7 +29,6 @@ public class TaskTypeTest {
 
     @Test
     public void resolve_string() {
-        TypeSystem ts = new TypeSystem();
         DType taskType = ResolveType.$(ts, "Task<string>");
         InterfaceType resolveString = ts.defineInterface(new DexInterface("" +
                 "interface TaskString {\n" +
@@ -37,7 +44,6 @@ public class TaskTypeTest {
 
     @Test(expected = DexSyntaxException.class)
     public void resolve_generic_type_with_wrong_arguments_count() {
-        TypeSystem ts = new TypeSystem();
         ResolveType.$(ts, "Task<string, string>");
     }
 

@@ -18,7 +18,7 @@ public class TranslateShortVarDecl implements Translate<DexShortVarDecl> {
         DexIdentifier decl = iShortVarDecl.decls().get(0);
         DexExpr expr = iShortVarDecl.expr();
         Translate.$(oClass, expr);
-        OutField oField = oClass.allocateField(decl.toString(), InferType.$(oClass.typeSystem(), expr));
+        OutField oField = oClass.allocateField(decl.toString());
         oClass.g().__(oField.value()
         ).__(" = "
         ).__(OutValue.of(expr)

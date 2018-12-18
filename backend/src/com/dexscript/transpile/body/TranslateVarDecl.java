@@ -11,7 +11,7 @@ public class TranslateVarDecl implements Translate<DexVarDecl> {
     @Override
     public void handle(OutClass oClass, DexVarDecl iVarDecl) {
         DType type = ResolveType.$(oClass.typeSystem(), null, iVarDecl.type());
-        OutField oField = oClass.allocateField(iVarDecl.identifier().toString(), type);
+        OutField oField = oClass.allocateField(iVarDecl.identifier().toString());
         iVarDecl.identifier().attach(oField);
         String initValue = type.initValue();
         if (initValue != null) {

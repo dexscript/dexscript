@@ -2,6 +2,7 @@ package com.dexscript.transpile.shim;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
@@ -9,8 +10,6 @@ import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.transpile.type.JavaTypes;
 import com.dexscript.transpile.type.actor.ActorTable;
 import com.dexscript.transpile.type.actor.ActorType;
-import com.dexscript.transpile.type.actor.PromiseType;
-import com.dexscript.transpile.type.actor.TaskType;
 import com.dexscript.transpile.type.java.CallJavaFunction;
 import com.dexscript.transpile.type.java.JClassType;
 import com.dexscript.type.DType;
@@ -40,20 +39,16 @@ public class OutShim {
     public OutShim(TypeSystem ts) {
         this.ts = ts;
         actorTable = new ActorTable(ts);
-        /*
-        interface Task {
-            <T>: interface{}
-            Resolve__(value: T)
-        }
-         */
-        new TaskType(ts);
-        /*
-        interface Promise {
-            <T>: interface{}
-            Consume__(): T
-        }
-         */
-        new PromiseType(ts);
+        ts.defineInterface(new DexInterface("" +
+                "interface Task {\n" +
+                "   <T>: interface{}\n" +
+                "   Resolve__(value: T)\n" +
+                "}"));
+        ts.defineInterface(new DexInterface("" +
+                "interface Promise {\n" +
+                "   <T>: interface{}\n" +
+                "   Consume__(): T\n" +
+                "}"));
         javaTypes = new JavaTypes(this);
         g.__("package com.dexscript.runtime.gen"
         ).__(new Line(";"));
