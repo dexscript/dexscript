@@ -6,12 +6,12 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.type.FunctionImpl;
-import com.dexscript.transpile.type.JavaTypes;
+import com.dexscript.transpile.type.java.FunctionImpl;
+import com.dexscript.transpile.type.java.JavaTypes;
 import com.dexscript.transpile.type.actor.ActorTable;
 import com.dexscript.transpile.type.actor.ActorType;
 import com.dexscript.transpile.type.java.CallJavaFunction;
-import com.dexscript.transpile.type.java.JClassType;
+import com.dexscript.transpile.type.java.JavaType;
 import com.dexscript.type.DType;
 import com.dexscript.type.FunctionSig;
 import com.dexscript.type.FunctionType;
@@ -132,7 +132,7 @@ public class OutShim {
     }
 
     public void importJavaClass(Class clazz) {
-        new JClassType(this, clazz);
+        new JavaType(this, clazz);
     }
 
     public Gen g() {

@@ -1,8 +1,8 @@
 package com.dexscript.transpile.shim;
 
 import com.dexscript.transpile.gen.*;
-import com.dexscript.transpile.type.FunctionImpl;
-import com.dexscript.transpile.type.JavaTypes;
+import com.dexscript.transpile.type.java.FunctionImpl;
+import com.dexscript.transpile.type.java.JavaTypes;
 
 import java.util.List;
 import java.util.Objects;

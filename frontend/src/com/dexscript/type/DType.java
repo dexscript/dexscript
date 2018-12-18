@@ -2,7 +2,7 @@ package com.dexscript.type;
 
 public interface DType {
 
-    boolean _isAssignable(IsAssignable isAssignable, DType that);
+    boolean _isAssignable(IsAssignable ctx, DType that);
 
     default DType union(DType that) {
         return new UnionType(typeSystem(), this, that);

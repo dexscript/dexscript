@@ -1,4 +1,4 @@
-package com.dexscript.transpile.type;
+package com.dexscript.transpile.type.java;
 
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.UInt8;

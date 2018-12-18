@@ -2,7 +2,7 @@ package com.dexscript.transpile.java;
 
 import com.dexscript.transpile.Transpile;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.type.java.JClassType;
+import com.dexscript.transpile.type.java.JavaType;
 import com.dexscript.type.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,25 +54,25 @@ public class GenericJavaClassTest {
         Assert.assertEquals("matched List<int64>", result);
     }
 
-    @Test
-    public void map_generic_interface() {
-        JClassType type = new JClassType(oShim, List.class);
-        Assert.assertEquals(1, type.typeParameters().size());
-        Assert.assertEquals(ts.ANY, type.typeParameters().get(0));
-        Assert.assertTrue(type.functions().size() > 1);
-        Assert.assertFalse(IsAssignable.$(type, ts.UINT8));
-
-        DType listOfInt64 = ResolveType.$(ts, "List<int64>");
-        DType listOfString = ResolveType.$(ts, "List<string>");
-        Assert.assertFalse(IsAssignable.$(listOfInt64, listOfString));
-        Assert.assertFalse(IsAssignable.$(listOfInt64, ts.INT64));
-    }
+//    @Test
+//    public void map_generic_interface() {
+//        JavaType type = new JavaType(oShim, List.class);
+//        Assert.assertEquals(1, type.typeParameters().size());
+//        Assert.assertEquals(ts.ANY, type.typeParameters().get(0));
+//        Assert.assertTrue(type.functions().size() > 1);
+//        Assert.assertFalse(IsAssignable.$(type, ts.UINT8));
+//
+//        DType listOfInt64 = ResolveType.$(ts, "List<int64>");
+//        DType listOfString = ResolveType.$(ts, "List<string>");
+//        Assert.assertFalse(IsAssignable.$(listOfInt64, listOfString));
+//        Assert.assertFalse(IsAssignable.$(listOfInt64, ts.INT64));
+//    }
 
     @Test
     public void list_should_be_assignable_from_array_list() {
         TypeDebugLog.on();
-        JClassType list = new JClassType(oShim, List.class);
-        JClassType arrayList = new JClassType(oShim, ArrayList.class);
+        JavaType list = new JavaType(oShim, List.class);
+        JavaType arrayList = new JavaType(oShim, ArrayList.class);
         Assert.assertTrue(IsAssignable.$(list, arrayList));
 
         DType listOfInt64 = ResolveType.$(ts, "List<int64>");

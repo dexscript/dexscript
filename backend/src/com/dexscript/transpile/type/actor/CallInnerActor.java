@@ -6,7 +6,7 @@ import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.type.FunctionImpl;
+import com.dexscript.transpile.type.java.FunctionImpl;
 import com.dexscript.type.FunctionType;
 
 class CallInnerActor extends FunctionImpl {

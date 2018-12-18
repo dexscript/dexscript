@@ -1,7 +1,6 @@
 package com.dexscript.transpile.type.java;
 
 import com.dexscript.transpile.gen.*;
-import com.dexscript.transpile.type.FunctionImpl;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.FunctionType;
 
