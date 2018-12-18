@@ -1,16 +1,56 @@
 package com.dexscript.type;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class IsAssignable {
 
+    private boolean result;
+    private final List<Log> logs = new ArrayList<>();
+    private final Set<TypeComparison> currentTypeComparisons;
     private final DType to;
     private final DType from;
+    private final Map<DType, DType> tempSub;
     private final Set<FunctionType> available = new HashSet<>();
+
+    public IsAssignable(Map<DType, DType> permSub) {
+        this.to = null;
+        this.from = null;
+        this.tempSub = permSub;
+        this.currentTypeComparisons = new HashSet<>();
+    }
+
+    public IsAssignable(DType to, DType from) {
+        this.to = to;
+        this.from = from;
+        this.tempSub = new HashMap<>();
+        this.currentTypeComparisons = new HashSet<>();
+        result = to._isSubType(this, from);
+    }
+
+    public IsAssignable(IsAssignable parent, String comparing, DType to, DType from) {
+        this.tempSub = new HashMap<>(parent.tempSub);
+        DType substituted = tempSub.get(to);
+        if (substituted != null) {
+            addLog("substituted", "placeholder", to, "substituted", substituted);
+            to = substituted;
+        }
+        this.to = to;
+        this.from = from;
+        this.currentTypeComparisons = parent.currentTypeComparisons;
+        TypeComparison typeComparison = new TypeComparison(to, from);
+        if (currentTypeComparisons.contains(typeComparison)) {
+            result = true;
+        } else {
+            currentTypeComparisons.add(typeComparison);
+            result = to._isSubType(this, from);
+            currentTypeComparisons.remove(typeComparison);
+        }
+        parent.addLog(comparing, this);
+        if (result) {
+            parent.tempSub.putAll(tempSub);
+        }
+    }
 
     public static boolean $(DType to, DType from) {
         return new IsAssignable(to, from).result();
@@ -46,54 +86,6 @@ public class IsAssignable {
         System.out.println(prefix + "<<<");
     }
 
-    public static class Log {
-
-        public final String msg;
-
-        public final IsAssignable details;
-
-        public Log(String msg) {
-            this.msg = msg;
-            this.details = null;
-        }
-
-        public Log(String msg, IsAssignable details) {
-            this.msg = msg;
-            this.details = details;
-        }
-
-        @Override
-        public String toString() {
-            return msg;
-        }
-    }
-
-    private boolean result;
-    private final List<Log> logs = new ArrayList<>();
-    private final Set<TypeComparison> currentTypeComparisons;
-
-    public IsAssignable(DType to, DType from) {
-        this.to = to;
-        this.from = from;
-        currentTypeComparisons = new HashSet<>();
-        result = to._isSubType(this, from);
-    }
-
-    public IsAssignable(IsAssignable parent, String comparing, DType to, DType from) {
-        this.to = to;
-        this.from = from;
-        currentTypeComparisons = parent.currentTypeComparisons;
-        TypeComparison typeComparison = new TypeComparison(to, from);
-        if (currentTypeComparisons.contains(typeComparison)) {
-            result = true;
-        } else {
-            currentTypeComparisons.add(typeComparison);
-            result = to._isSubType(this, from);
-            currentTypeComparisons.remove(typeComparison);
-        }
-        parent.addLog(comparing, this);
-    }
-
     public DType to() {
         return to;
     }
@@ -127,5 +119,31 @@ public class IsAssignable {
 
     public List<Log> logs() {
         return logs;
+    }
+
+    public void substitute(PlaceholderType placeholder, DType substituted) {
+        tempSub.put(placeholder, substituted);
+    }
+
+    public static class Log {
+
+        public final String msg;
+
+        public final IsAssignable details;
+
+        public Log(String msg) {
+            this.msg = msg;
+            this.details = null;
+        }
+
+        public Log(String msg, IsAssignable details) {
+            this.msg = msg;
+            this.details = details;
+        }
+
+        @Override
+        public String toString() {
+            return msg;
+        }
     }
 }

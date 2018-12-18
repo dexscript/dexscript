@@ -28,6 +28,19 @@ public final class PlaceholderType implements NamedType {
     }
 
     @Override
+    public boolean _isSubType(IsAssignable ctx, DType that) {
+        if (new IsAssignable(ctx, "constraint", constraint, that).result()) {
+            if (that instanceof StringLiteralType) {
+                ctx.substitute(this, ts.STRING);
+                return true;
+            }
+            ctx.substitute(this, that);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public TypeSystem typeSystem() {
         return ts;
     }

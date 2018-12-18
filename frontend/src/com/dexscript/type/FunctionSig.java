@@ -49,25 +49,26 @@ public class FunctionSig {
     public class ArgumentIncompatible extends Incompatible {
 
         private final int index;
-        private final List<String> paramArgLogs;
-        private final List<String> argParamLogs;
+        private final IsAssignable paramArg;
+        private final IsAssignable argParam;
 
-        public ArgumentIncompatible(int index, List<String> paramArgLogs, List<String> argParamLogs) {
+        public ArgumentIncompatible(int index, IsAssignable paramArg, IsAssignable argParam) {
+
             this.index = index;
-            this.paramArgLogs = paramArgLogs;
-            this.argParamLogs = argParamLogs;
+            this.paramArg = paramArg;
+            this.argParam = argParam;
         }
 
         public int index() {
             return index;
         }
 
-        public List<String> paramArgLogs() {
-            return paramArgLogs;
+        public IsAssignable paramArg() {
+            return paramArg;
         }
 
-        public List<String> argParamLogs() {
-            return argParamLogs;
+        public IsAssignable argParam() {
+            return argParam;
         }
     }
 
@@ -183,28 +184,22 @@ public class FunctionSig {
             return new ArgumentsCountIncompatible();
         }
         Map<DType, DType> sub = initSub(typeArgs);
-        TypeComparisonContext ctx = new TypeComparisonContext(sub);
+        IsAssignable ctx = new IsAssignable(sub);
         boolean needRuntimeCheck = false;
         for (int i = 0; i < params.size(); i++) {
             DType param = params.get(i);
             DType arg = args.get(i);
-            ArrayList<String> paramArgLogs = new ArrayList<>();
-            ArrayList<String> argParamLogs = new ArrayList<>();
-            TypeComparisonContext subCtx = new TypeComparisonContext(ctx)
-                    .logUntilLevelN(4)
-                    .logCollector(paramArgLogs);
-            boolean argMatched = param.isAssignableFrom(subCtx, arg);
+            IsAssignable paramArg = new IsAssignable(ctx, "#" + i + " param=arg", param, arg);
+            IsAssignable argParam = null;
+            boolean argMatched = paramArg.result();
             if (!argMatched) {
                 needRuntimeCheck = true;
-                subCtx = new TypeComparisonContext(ctx)
-                        .logUntilLevelN(4)
-                        .logCollector(argParamLogs);
-                argMatched = arg.isAssignableFrom(subCtx, param);
+                argParam = new IsAssignable(ctx, "#" + i + " arg=param", arg, param);
+                argMatched = argParam.result();
             }
             if (!argMatched) {
-                return new ArgumentIncompatible(i, paramArgLogs, argParamLogs);
+                return new ArgumentIncompatible(i, paramArg, argParam);
             }
-            subCtx.commit();
         }
         if (retElem == null || typeParams == null) {
             return new Compatible(needRuntimeCheck, ret);
@@ -249,16 +244,11 @@ public class FunctionSig {
         return collector;
     }
 
-    private void inferRetHint(DType retHint, TypeComparisonContext ctx) {
+    private void inferRetHint(DType retHint, IsAssignable ctx) {
         if (retHint != null) {
-            TypeComparisonContext subCtx = new TypeComparisonContext(ctx);
-            boolean assignable = retHint.isAssignableFrom(subCtx, ret);
+            boolean assignable = new IsAssignable(ctx, "ret", retHint, ret).result();
             if (!assignable) {
-                subCtx = new TypeComparisonContext(ctx);
-                assignable = ret.isAssignableFrom(subCtx, retHint);
-            }
-            if (assignable) {
-                subCtx.commit();
+                new IsAssignable(ctx, "ret", ret, retHint);
             }
         }
     }
