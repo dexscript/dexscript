@@ -22,23 +22,7 @@ public class Int64Type implements NamedType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        if (that instanceof Int64Type) {
-            return true;
-        }
-        if (that instanceof IntegerLiteralType) {
-            try {
-                Long.valueOf(((IntegerLiteralType) that).literalValue());
-                return true;
-            } catch (NumberFormatException ignored) {
-                return false;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean _isSubType(IsAssignable ctx, DType that) {
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
         if (that instanceof Int64Type) {
             return true;
         }

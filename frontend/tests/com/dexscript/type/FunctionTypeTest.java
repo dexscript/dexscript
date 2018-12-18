@@ -72,16 +72,16 @@ public class FunctionTypeTest {
         FunctionType hello2 = new FunctionType(ts, "hello", new ArrayList<DType>() {{
             add(new StringLiteralType(ts, "example"));
         }}, ts.VOID);
-        Assert.assertFalse(hello1.isAssignableFrom(hello2));
-        Assert.assertTrue(hello2.isAssignableFrom(hello1));
+        Assert.assertFalse(IsAssignable.$(hello1, hello2));
+        Assert.assertTrue(IsAssignable.$(hello2, hello1));
     }
 
     @Test
     public void ret_is_sub_type() {
         FunctionType hello1 = new FunctionType(ts, "hello", new ArrayList<>(), ts.STRING);
         FunctionType hello2 = new FunctionType(ts, "hello", new ArrayList<>(), new StringLiteralType(ts, "example"));
-        Assert.assertTrue(hello1.isAssignableFrom(hello2));
-        Assert.assertFalse(hello2.isAssignableFrom(hello1));
+        Assert.assertTrue(IsAssignable.$(hello1, hello2));
+        Assert.assertFalse(IsAssignable.$(hello2, hello1));
     }
 
     @Test

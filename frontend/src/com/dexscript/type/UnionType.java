@@ -52,17 +52,7 @@ public class UnionType implements DType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        for (DType type : members) {
-            if (type.isAssignableFrom(ctx, that)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean _isSubType(IsAssignable ctx, DType that) {
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
         for (DType member : members) {
             if (new IsAssignable(ctx, "union member", member, that).result()) {
                 return true;

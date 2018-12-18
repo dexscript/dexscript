@@ -83,7 +83,7 @@ public class IsAssignable {
             }
             return true;
         }
-        return to._isSubType(ctx, from);
+        return to._isAssignable(ctx, from);
     }
 
     public void makeAvailable(FunctionType function) {

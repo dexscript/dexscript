@@ -64,8 +64,8 @@ public class GenericJavaClassTest {
 
         DType listOfInt64 = ResolveType.$(ts, "List<int64>");
         DType listOfString = ResolveType.$(ts, "List<string>");
-        Assert.assertFalse(listOfInt64.isAssignableFrom(listOfString));
-        Assert.assertFalse(listOfInt64.isAssignableFrom(ts.INT64));
+        Assert.assertFalse(IsAssignable.$(listOfInt64, listOfString));
+        Assert.assertFalse(IsAssignable.$(listOfInt64, ts.INT64));
     }
 
     @Test
@@ -73,10 +73,10 @@ public class GenericJavaClassTest {
         TypeDebugLog.on();
         JClassType list = new JClassType(oShim, List.class);
         JClassType arrayList = new JClassType(oShim, ArrayList.class);
-        Assert.assertTrue(list.isAssignableFrom(arrayList));
+        Assert.assertTrue(IsAssignable.$(list, arrayList));
 
         DType listOfInt64 = ResolveType.$(ts, "List<int64>");
         DType arrayListOfInt64 = ResolveType.$(ts, "ArrayList<int64>");
-        Assert.assertTrue(listOfInt64.isAssignableFrom(arrayListOfInt64));
+        Assert.assertTrue(IsAssignable.$(listOfInt64, arrayListOfInt64));
     }
 }

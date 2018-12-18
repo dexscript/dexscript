@@ -7,6 +7,7 @@ import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.type.DType;
 import com.dexscript.type.InterfaceType;
+import com.dexscript.type.IsAssignable;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,6 +30,6 @@ public class InferAwaitConsumerTest {
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
                 "}"));
-        Assert.assertTrue(inf.isAssignableFrom(hello));
+        Assert.assertTrue(IsAssignable.$(inf, hello));
     }
 }

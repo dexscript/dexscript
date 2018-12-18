@@ -2,7 +2,6 @@ package com.dexscript.type;
 
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.elem.DexTypeParam;
-import com.dexscript.ast.inf.DexInfTypeParam;
 
 import java.util.*;
 
@@ -97,7 +96,7 @@ public class TypeTable {
         for (int i = 0; i < typeParams.size(); i++) {
             DType typeParam = typeParams.get(i);
             DType typeArg = typeArgs.get(i);
-            if (!typeParam.isAssignableFrom(typeArg)) {
+            if (!IsAssignable.$(typeParam, typeArg)) {
                 ON_GENERIC_TYPE_ARGUMENT_NOT_ASSIGNABLE.handle(name, genericType, typeArgs, i);
                 return ts.UNDEFINED;
             }

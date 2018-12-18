@@ -98,7 +98,7 @@ public class JavaTypes {
         g.__(new Indent(() -> {
             g.__(new Line("Class clazz = obj.getClass();"));
             for (Map.Entry<String, DType> entry : types.entrySet()) {
-                if (!targetType.isAssignableFrom(entry.getValue())) {
+                if (!IsAssignable.$(targetType, entry.getValue())) {
                     continue;
                 }
                 String className = entry.getKey();

@@ -12,7 +12,7 @@ public class UndefinedType implements NamedType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
         return false;
     }
 

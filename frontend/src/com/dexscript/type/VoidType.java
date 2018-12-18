@@ -12,12 +12,7 @@ public class VoidType implements NamedType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return that instanceof VoidType;
-    }
-
-    @Override
-    public boolean _isSubType(IsAssignable ctx, DType that) {
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
         return that instanceof VoidType;
     }
 

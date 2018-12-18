@@ -26,7 +26,7 @@ public class InnerActorTypeTest {
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
-        Assert.assertTrue(inf.isAssignableFrom(innerActorType));
-        Assert.assertTrue(innerActorType.isAssignableFrom(inf));
+        Assert.assertTrue(IsAssignable.$(inf, innerActorType));
+        Assert.assertTrue(IsAssignable.$(innerActorType, inf));
     }
 }

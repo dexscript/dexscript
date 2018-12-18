@@ -26,7 +26,7 @@ public class ActorTypeTest {
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
-        Assert.assertTrue(inf.isAssignableFrom(actor));
+        Assert.assertTrue(IsAssignable.$(inf, actor));
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ActorTypeTest {
                 "interface HasAA {\n" +
                 "   AA(): string\n" +
                 "}"));
-        Assert.assertTrue(inf.isAssignableFrom(actor));
+        Assert.assertTrue(IsAssignable.$(inf, actor));
         List<FunctionSig.Invoked> newNestedActor = ts.invoke(new Invocation("New__", null, new ArrayList<DType>() {{
             add(new StringLiteralType(ts, "AA"));
             add(actor);

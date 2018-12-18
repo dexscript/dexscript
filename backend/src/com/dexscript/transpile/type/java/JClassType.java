@@ -192,7 +192,7 @@ public class JClassType implements NamedType, FunctionsType, GenericType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
         if (clazz.isInterface()) {
             return ts.functionTable().isSubType(ctx, this, that);
         } else {

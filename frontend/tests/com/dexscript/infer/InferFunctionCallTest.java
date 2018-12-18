@@ -41,7 +41,7 @@ public class InferFunctionCallTest {
             add(ts.STRING);
         }}, new StringLiteralType(ts, "b")));
         DType type = InferType.$(ts, DexExpr.parse("Hello('hello')"));
-        Assert.assertTrue(type.isAssignableFrom(new StringLiteralType(ts, "a")));
-        Assert.assertTrue(type.isAssignableFrom(new StringLiteralType(ts, "b")));
+        Assert.assertTrue(IsAssignable.$(type, new StringLiteralType(ts, "a")));
+        Assert.assertTrue(IsAssignable.$(type, new StringLiteralType(ts, "b")));
     }
 }

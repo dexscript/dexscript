@@ -12,17 +12,7 @@ public class Int32Type implements NamedType {
     }
 
     @Override
-    public String toString() {
-        return name();
-    }
-
-    @Override
-    public @NotNull String name() {
-        return "int32";
-    }
-
-    @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
         if (that instanceof Int32Type) {
             return true;
         }
@@ -35,6 +25,16 @@ public class Int32Type implements NamedType {
             }
         }
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return name();
+    }
+
+    @Override
+    public @NotNull String name() {
+        return "int32";
     }
 
     @Override

@@ -9,12 +9,7 @@ public class AnyType implements DType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return true;
-    }
-
-    @Override
-    public boolean _isSubType(IsAssignable ctx, DType that) {
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
         return true;
     }
 

@@ -116,7 +116,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType thatObj) {
+    public boolean _isAssignable(IsAssignable ctx, DType thatObj) {
         return ts.functionTable().isSubType(ctx, this, thatObj);
     }
 

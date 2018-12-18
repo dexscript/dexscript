@@ -15,20 +15,7 @@ public final class PlaceholderType implements NamedType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        if (constraint.isAssignableFrom(ctx, that)) {
-            if (that instanceof StringLiteralType) {
-                ctx.putSubstituted(this, ts.STRING);
-                return true;
-            }
-            ctx.putSubstituted(this, that);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean _isSubType(IsAssignable ctx, DType that) {
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
         if (new IsAssignable(ctx, "constraint", constraint, that).result()) {
             if (that instanceof StringLiteralType) {
                 ctx.substitute(this, ts.STRING);

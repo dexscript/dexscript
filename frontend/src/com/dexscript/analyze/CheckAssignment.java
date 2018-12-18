@@ -4,11 +4,8 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.stmt.DexAssignStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.type.DType;
-import com.dexscript.type.TypeComparisonContext;
+import com.dexscript.type.IsAssignable;
 import com.dexscript.type.TypeSystem;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CheckAssignment implements CheckSemanticError.Handler<DexAssignStmt> {
 
@@ -24,15 +21,10 @@ public class CheckAssignment implements CheckSemanticError.Handler<DexAssignStmt
     }
 
     public static void checkTypeAssignable(CheckSemanticError cse, DexElement elem, DType from, DType to) {
-        ArrayList<String> logs = new ArrayList<>();
-        TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>())
-                .logUntilLevelN(4)
-                .logCollector(logs);
-        if (!to.isAssignableFrom(ctx, from)) {
+        IsAssignable isAssignable = new IsAssignable(to, from);
+        if (!isAssignable.result()) {
             cse.report(elem, to + " is not assignable from " + from);
-            for (String log : logs) {
-                System.out.println(log);
-            }
+            isAssignable.dump();
         }
     }
 }

@@ -23,8 +23,8 @@ public class ActorUnionType implements NamedType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType that) {
-        return unionType.isAssignableFrom(ctx, that);
+    public boolean _isAssignable(IsAssignable ctx, DType that) {
+        return new IsAssignable(ctx, "union", unionType, that).result();
     }
 
     @Override

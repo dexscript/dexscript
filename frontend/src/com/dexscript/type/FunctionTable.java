@@ -57,37 +57,6 @@ public class FunctionTable {
         providers.add(provider);
     }
 
-    public boolean isDefined(TypeComparisonContext ctx, FunctionType that) {
-        pullFromProviders();
-        List<FunctionType> functions = defined.get(that.name());
-        if (functions == null) {
-            return false;
-        }
-        if (ctx.shouldLog()) {
-            ctx.log(">>> check if " + that + " defined or not");
-        }
-        TypeComparisonContext staging = new TypeComparisonContext(ctx, true);
-        for (FunctionType function : functions) {
-            if (!ctx.isAvailable(function)) {
-                continue;
-            }
-            staging.compare(that, function);
-            if (that.isAssignableFrom(staging, function)) {
-                staging.commit();
-                if (ctx.shouldLog()) {
-                    ctx.log("<<< " + that + " is defined");
-                }
-                return true;
-            } else {
-                staging = new TypeComparisonContext(ctx, true);
-            }
-        }
-        if (ctx.shouldLog()) {
-            ctx.log("<<< " + that + " is not defined");
-        }
-        return false;
-    }
-
     public boolean isDefined(IsAssignable ctx, FunctionType that) {
         pullFromProviders();
         List<FunctionType> candidates = defined.get(that.name());
@@ -115,36 +84,6 @@ public class FunctionTable {
                 provider.functions();
             }
         }
-    }
-
-    public boolean isSubType(TypeComparisonContext ctx, FunctionsType to, DType from) {
-        if (ctx.shouldLog()) {
-            ctx.log(">>> check " + to + " is assignable from " + from);
-        }
-        TypeComparisonContext subCtx = new TypeComparisonContext(ctx)
-                .compare(to, from);
-        subCtx.putSubstituted(from, to);
-        if (from instanceof FunctionsType) {
-            for (FunctionType member : ((FunctionsType) from).functions()) {
-                subCtx.makeAvailable(member);
-            }
-        }
-        for (FunctionType member : to.functions()) {
-            subCtx.makeUnavailable(member);
-        }
-        for (FunctionType member : to.functions()) {
-            if (!isDefined(subCtx, member)) {
-                if (ctx.shouldLog()) {
-                    ctx.log("<<< " + to + " is not assignable from " + from + " because missing " + member);
-                }
-                return false;
-            }
-        }
-        subCtx.commit();
-        if (ctx.shouldLog()) {
-            ctx.log("<<< " + to + " is assignable from " + from);
-        }
-        return true;
     }
 
     public boolean isSubType(IsAssignable ctx, FunctionsType to, DType from) {

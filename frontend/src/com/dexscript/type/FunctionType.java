@@ -79,37 +79,7 @@ public final class FunctionType implements DType {
     }
 
     @Override
-    public boolean _isSubType(TypeComparisonContext ctx, DType thatObj) {
-        if (!(thatObj instanceof FunctionType)) {
-            return false;
-        }
-        FunctionType that = (FunctionType) thatObj;
-        if (!this.name.equals(that.name)) {
-            return false;
-        }
-        if (this.params.size() != that.params.size()) {
-            return false;
-        }
-        for (int i = 0; i < params.size(); i++) {
-            DType thisParam = this.params.get(i);
-            DType thatParam = that.params.get(i);
-            if (!thatParam.isAssignableFrom(ctx, thisParam)) {
-                if (ctx.shouldLog()) {
-                    String reason = String.format("param %s not assignable from %s", thatParam, thisParam);
-                    ctx.log(false, this, that, reason);
-                }
-                return false;
-            }
-        }
-        boolean assignable = this.ret.isAssignableFrom(ctx, that.ret);
-        if (ctx.shouldLog()) {
-            ctx.log(assignable, this, that, assignable ? "" : String.format("ret %s not assignable from %s", ret, that.ret));
-        }
-        return assignable;
-    }
-
-    @Override
-    public boolean _isSubType(IsAssignable ctx, DType thatObj) {
+    public boolean _isAssignable(IsAssignable ctx, DType thatObj) {
         if (!(thatObj instanceof FunctionType)) {
             return false;
         }
