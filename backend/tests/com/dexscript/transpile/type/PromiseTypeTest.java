@@ -1,6 +1,7 @@
 package com.dexscript.transpile.type;
 
 import com.dexscript.ast.DexInterface;
+import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +13,7 @@ public class PromiseTypeTest {
 
     @Before
     public void setup() {
-        ts = new TypeSystem();
+        ts = new OutShim(new TypeSystem()).typeSystem();
     }
 
     @Test
@@ -22,7 +23,8 @@ public class PromiseTypeTest {
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
-        Assert.assertTrue(IsAssignable.$(promiseType, inf));
+        IsAssignable isAssignable = new IsAssignable(promiseType, inf);
+        Assert.assertTrue(isAssignable.result());
     }
 
     @Test

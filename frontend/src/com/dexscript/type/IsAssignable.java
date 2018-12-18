@@ -25,7 +25,10 @@ public class IsAssignable {
         this.from = from;
         this.tempSub = new HashMap<>();
         this.currentTypeComparisons = new HashSet<>();
-        result = isAssignableWithCache(this, new TypeComparison(to, from));
+        TypeComparison comparison = new TypeComparison(to, from);
+        currentTypeComparisons.add(comparison);
+        result = isAssignableWithCache(this, comparison);
+        currentTypeComparisons.remove(comparison);
     }
 
     public IsAssignable(IsAssignable parent, String comparing, DType to, DType from) {
@@ -38,13 +41,13 @@ public class IsAssignable {
         this.to = to;
         this.from = from;
         this.currentTypeComparisons = parent.currentTypeComparisons;
-        TypeComparison typeComparison = new TypeComparison(to, from);
-        if (currentTypeComparisons.contains(typeComparison)) {
+        TypeComparison comparison = new TypeComparison(to, from);
+        if (currentTypeComparisons.contains(comparison)) {
             result = true;
         } else {
-            currentTypeComparisons.add(typeComparison);
+            currentTypeComparisons.add(comparison);
             result = isAssignable(this, to, from);
-            currentTypeComparisons.remove(typeComparison);
+            currentTypeComparisons.remove(comparison);
         }
         parent.addLog(comparing, this);
         if (result) {
@@ -151,12 +154,16 @@ public class IsAssignable {
         return logs;
     }
 
-    public void substitute(PlaceholderType placeholder, DType substituted) {
+    public void substitute(DType placeholder, DType substituted) {
         tempSub.put(placeholder, substituted);
     }
 
     public static boolean $(DType to, DType from) {
         return new IsAssignable(to, from).result();
+    }
+
+    public void unsubstitute(DType placeholder) {
+        tempSub.remove(placeholder);
     }
 
     public static class Log {

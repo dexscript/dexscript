@@ -55,7 +55,7 @@ public class PromiseType implements NamedType, FunctionsType, GenericType {
 
     @Override
     public boolean _isAssignable(IsAssignable ctx, DType that) {
-        return ts.functionTable().isSubType(ctx, this, that);
+        return ts.functionTable().isAssignable(ctx, this, that);
     }
 
     @Override

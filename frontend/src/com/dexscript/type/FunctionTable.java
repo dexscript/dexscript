@@ -57,22 +57,22 @@ public class FunctionTable {
         providers.add(provider);
     }
 
-    public boolean isDefined(IsAssignable ctx, FunctionType that) {
+    public boolean isDefined(IsAssignable ctx, FunctionType target) {
         pullFromProviders();
-        List<FunctionType> candidates = defined.get(that.name());
+        List<FunctionType> candidates = defined.get(target.name());
         if (candidates == null) {
             return false;
         }
         for (FunctionType candidate : candidates) {
             if (!ctx.isAvailable(candidate)) {
-                ctx.addLog("member " + that + " filter not available candidate", "candidate", candidate);
+                ctx.addLog("member " + target + " filter not available candidate", "candidate", candidate);
                 continue;
             }
-            if (new IsAssignable(ctx, "member " + that + " candidate", candidate, that).result()) {
+            if (new IsAssignable(ctx, "member " + target + " candidate", target, candidate).result()) {
                 return true;
             }
         }
-        ctx.addLog("member " + that + " is not defined", "candidates_count", candidates.size());
+        ctx.addLog("member " + target + " is not defined", "candidates_count", candidates.size());
         return false;
     }
 
@@ -86,17 +86,19 @@ public class FunctionTable {
         }
     }
 
-    public boolean isSubType(IsAssignable ctx, FunctionsType to, DType from) {
+    public boolean isAssignable(IsAssignable ctx, FunctionsType to, DType from) {
         if (from instanceof FunctionsType) {
             for (FunctionType member : ((FunctionsType) from).functions()) {
                 ctx.makeAvailable(member);
             }
         }
+        ctx.substitute(from, to);
         for (FunctionType member : to.functions()) {
             if (!isDefined(ctx, member)) {
                 return false;
             }
         }
+        ctx.unsubstitute(from);
         return true;
     }
 

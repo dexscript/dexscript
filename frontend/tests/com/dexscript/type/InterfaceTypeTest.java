@@ -77,9 +77,9 @@ public class InterfaceTypeTest {
                 "   Action(arg: SubType): string\n" +
                 "}"));
         IsAssignable isAssignable = new IsAssignable(inf1, inf2);
-        Assert.assertTrue(isAssignable.result());
-        isAssignable = new IsAssignable(inf2, inf1);
         Assert.assertFalse(isAssignable.result());
+        isAssignable = new IsAssignable(inf2, inf1);
+        Assert.assertTrue(isAssignable.result());
     }
 
     @Test
@@ -102,9 +102,9 @@ public class InterfaceTypeTest {
                 "   Action(): SubType\n" +
                 "}"));
         IsAssignable isAssignable = new IsAssignable(inf1, inf2);
-        Assert.assertFalse(isAssignable.result());
-        isAssignable = new IsAssignable(inf2, inf1);
         Assert.assertTrue(isAssignable.result());
+        isAssignable = new IsAssignable(inf2, inf1);
+        Assert.assertFalse(isAssignable.result());
     }
 
     @Test
