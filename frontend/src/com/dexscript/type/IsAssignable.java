@@ -25,7 +25,7 @@ public class IsAssignable {
         this.from = from;
         this.tempSub = new HashMap<>();
         this.currentTypeComparisons = new HashSet<>();
-        result = isAssignable(to, from);
+        result = isAssignableWithCache(this, new TypeComparison(to, from));
     }
 
     public IsAssignable(IsAssignable parent, String comparing, DType to, DType from) {
@@ -43,7 +43,7 @@ public class IsAssignable {
             result = true;
         } else {
             currentTypeComparisons.add(typeComparison);
-            result = isAssignable(to, from);
+            result = isAssignable(this, to, from);
             currentTypeComparisons.remove(typeComparison);
         }
         parent.addLog(comparing, this);
@@ -52,10 +52,24 @@ public class IsAssignable {
         }
     }
 
-    private boolean isAssignable(DType to, DType from) {
+    private static boolean isAssignableWithCache(IsAssignable ctx, TypeComparison comparison) {
+        DType to = comparison.to();
+        DType from = comparison.from();
+        TypeSystem ts = to.typeSystem();
+        TypeComparisonCache typeComparisonCache = ts.comparisonCache();
+        Boolean cached = typeComparisonCache.get(comparison);
+        if (cached != null) {
+            return cached;
+        }
+        cached = isAssignable(ctx, to, from);
+        typeComparisonCache.set(comparison, cached);
+        return cached;
+    }
+
+    private static boolean isAssignable(IsAssignable ctx, DType to, DType from) {
         if (from instanceof IntersectionType) {
             for (DType member : ((IntersectionType) from).members()) {
-                if (new IsAssignable(this, "intersection member", to, member).result()) {
+                if (new IsAssignable(ctx, "intersection member", to, member).result()) {
                     return true;
                 }
             }
@@ -63,13 +77,13 @@ public class IsAssignable {
         }
         if (from instanceof UnionType) {
             for (DType member : ((UnionType) from).members()) {
-                if (!new IsAssignable(this, "union member", to, member).result()) {
+                if (!new IsAssignable(ctx, "union member", to, member).result()) {
                     return false;
                 }
             }
             return true;
         }
-        return to._isSubType(this, from);
+        return to._isSubType(ctx, from);
     }
 
     public void makeAvailable(FunctionType function) {

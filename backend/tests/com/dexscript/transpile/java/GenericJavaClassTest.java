@@ -60,7 +60,7 @@ public class GenericJavaClassTest {
         Assert.assertEquals(1, type.typeParameters().size());
         Assert.assertEquals(ts.ANY, type.typeParameters().get(0));
         Assert.assertTrue(type.functions().size() > 1);
-        Assert.assertFalse(new TypeComparison(type, ts.UINT8).isAssignable());
+        Assert.assertFalse(IsAssignable.$(type, ts.UINT8));
 
         DType listOfInt64 = ResolveType.$(ts, "List<int64>");
         DType listOfString = ResolveType.$(ts, "List<string>");

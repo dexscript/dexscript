@@ -1,7 +1,5 @@
 package com.dexscript.type;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Objects;
 
 public class TypeComparison {
@@ -12,6 +10,14 @@ public class TypeComparison {
     public TypeComparison(DType to, DType from) {
         this.to = to;
         this.from = from;
+    }
+
+    public DType to() {
+        return to;
+    }
+
+    public DType from() {
+        return from;
     }
 
     @Override
@@ -26,18 +32,6 @@ public class TypeComparison {
     @Override
     public int hashCode() {
         return Objects.hash(to, from);
-    }
-
-    public boolean isAssignable() {
-        ArrayList<String> logs = new ArrayList<>();
-        TypeComparisonContext ctx = new TypeComparisonContext(new HashMap<>())
-                .logUntilLevelN(4)
-                .logCollector(logs);
-        boolean assignableFrom = to.isAssignableFrom(ctx, from);
-        for (String log : logs) {
-            System.out.println(log);
-        }
-        return assignableFrom;
     }
 
     @Override
