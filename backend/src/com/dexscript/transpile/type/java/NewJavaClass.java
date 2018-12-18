@@ -9,7 +9,7 @@ import com.dexscript.type.FunctionType;
 
 import java.lang.reflect.Constructor;
 
-class NewJavaClass extends FunctionImpl {
+public class NewJavaClass extends FunctionImpl {
 
     private final Constructor ctor;
     private final String subClassName;

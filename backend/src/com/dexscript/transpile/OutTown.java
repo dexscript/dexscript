@@ -36,10 +36,7 @@ public class OutTown {
 
     public OutTown() {
         oShim.importJavaFunctions(BasicOperators.class);
-//        oShim.importJavaFunctions(Encodes.class);
-        oShim.importJavaClass(File.class);
-        oShim.importJavaClass(List.class);
-        oShim.importJavaClass(ArrayList.class);
+        oShim.importJavaConstructors(File.class);
     }
 
     public OutTown addFile(String fileName, String src) {

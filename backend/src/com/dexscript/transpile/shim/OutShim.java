@@ -6,17 +6,12 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.type.java.FunctionImpl;
-import com.dexscript.transpile.type.java.JavaTypes;
+import com.dexscript.transpile.type.java.*;
 import com.dexscript.transpile.type.actor.ActorTable;
 import com.dexscript.transpile.type.actor.ActorType;
-import com.dexscript.transpile.type.java.CallJavaFunction;
-import com.dexscript.transpile.type.java.JavaType;
-import com.dexscript.type.DType;
-import com.dexscript.type.FunctionSig;
-import com.dexscript.type.FunctionType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.*;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -121,18 +116,32 @@ public class OutShim {
         }
     }
 
-    private void importJavaFunction(Method javaFunction) {
+    public void importJavaFunction(Method javaFunction) {
         String funcName = javaFunction.getName();
         List<DType> params = javaTypes.resolve(javaFunction.getParameterTypes());
         DType ret = javaTypes.resolve(javaFunction.getReturnType());
         FunctionType functionType = new FunctionType(ts, funcName, params, ret);
-        ts.defineFunction(functionType);
         CallJavaFunction impl = new CallJavaFunction(this, functionType, javaFunction);
         functionType.setImpl(impl);
     }
 
-    public void importJavaClass(Class clazz) {
-        new JavaType(this, clazz);
+    public void importJavaConstructors(Class clazz) {
+        for (Constructor ctor : clazz.getConstructors()) {
+            importJavaConstructor(ctor);
+        }
+    }
+
+    public void importJavaConstructor(Constructor ctor) {
+        Class clazz = ctor.getDeclaringClass();
+        ArrayList<DType> params = new ArrayList<>();
+        params.add(new StringLiteralType(ts, clazz.getSimpleName()));
+        for (Class param : ctor.getParameterTypes()) {
+            params.add(javaTypes.resolve(param));
+        }
+        DType ret = javaTypes.resolve(clazz);
+        FunctionType functionType = new FunctionType(ts, "New__", params, ret);
+        NewJavaClass impl = new NewJavaClass(this, functionType, ctor, clazz.getCanonicalName());
+        functionType.setImpl(impl);
     }
 
     public Gen g() {
