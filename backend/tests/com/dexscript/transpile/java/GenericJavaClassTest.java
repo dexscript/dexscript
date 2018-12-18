@@ -2,14 +2,13 @@ package com.dexscript.transpile.java;
 
 import com.dexscript.transpile.Transpile;
 import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.transpile.type.java.JavaType;
-import com.dexscript.type.*;
+import com.dexscript.type.TypeDebugLog;
+import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class GenericJavaClassTest {
 
@@ -25,8 +24,14 @@ public class GenericJavaClassTest {
     @Test
     public void new_generic_class() {
         ArrayList result = (ArrayList) Transpile.$("" +
-                "function Hello(): interface{} {" +
-                "   return new ArrayList<int64>()\n" +
+                "interface List {\n" +
+                "   <E>: interface{}\n" +
+                "   get(index: int32): E\n" +
+                "}\n" +
+                "function Hello(): interface{} {\n" +
+                "   var list: List<int64>\n" +
+                "   list = new ArrayList<int64>()\n" +
+                "   return list\n" +
                 "}");
         Assert.assertEquals(0, result.size());
     }
@@ -36,12 +41,16 @@ public class GenericJavaClassTest {
         TypeDebugLog.on();
         // we can tell runtime java object implement List<int64> or List<interface{}>
         String result = (String) Transpile.$("" +
-                "function Hello(): string {" +
+                "interface List {\n" +
+                "   <E>: interface{}\n" +
+                "   get(index: int32): E\n" +
+                "}\n" +
+                "function Hello(): string {\n" +
                 "   var list: List<int64>\n" +
                 "   list = new ArrayList<int64>()\n" +
                 "   return TakeAny(list)\n" +
                 "}\n" +
-                "function TakeAny(obj: interface{}): string {" +
+                "function TakeAny(obj: interface{}): string {\n" +
                 "   return TakeList(obj)\n" +
                 "}\n" +
                 "function TakeList(list: List<int64>): string {\n" +
@@ -52,31 +61,5 @@ public class GenericJavaClassTest {
                 "}\n" +
                 "");
         Assert.assertEquals("matched List<int64>", result);
-    }
-
-//    @Test
-//    public void map_generic_interface() {
-//        JavaType type = new JavaType(oShim, List.class);
-//        Assert.assertEquals(1, type.typeParameters().size());
-//        Assert.assertEquals(ts.ANY, type.typeParameters().get(0));
-//        Assert.assertTrue(type.functions().size() > 1);
-//        Assert.assertFalse(IsAssignable.$(type, ts.UINT8));
-//
-//        DType listOfInt64 = ResolveType.$(ts, "List<int64>");
-//        DType listOfString = ResolveType.$(ts, "List<string>");
-//        Assert.assertFalse(IsAssignable.$(listOfInt64, listOfString));
-//        Assert.assertFalse(IsAssignable.$(listOfInt64, ts.INT64));
-//    }
-
-    @Test
-    public void list_should_be_assignable_from_array_list() {
-        TypeDebugLog.on();
-        JavaType list = new JavaType(oShim, List.class);
-        JavaType arrayList = new JavaType(oShim, ArrayList.class);
-        Assert.assertTrue(IsAssignable.$(list, arrayList));
-
-        DType listOfInt64 = ResolveType.$(ts, "List<int64>");
-        DType arrayListOfInt64 = ResolveType.$(ts, "ArrayList<int64>");
-        Assert.assertTrue(IsAssignable.$(listOfInt64, arrayListOfInt64));
     }
 }

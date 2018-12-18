@@ -1,5 +1,6 @@
 package com.dexscript.ast.inf;
 
+import com.dexscript.ast.DexInterfaceBody;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.token.Blank;
@@ -58,6 +59,10 @@ public class DexInfTypeParam extends DexElement {
         return paramType;
     }
 
+    public void reparent(DexElement parent) {
+        this.parent = parent;
+    }
+
     private class Parser {
 
         int i = src.begin;
@@ -85,6 +90,7 @@ public class DexInfTypeParam extends DexElement {
         @Expect("paramName")
         State identifier() {
             paramName = new DexIdentifier(src.slice(i));
+            paramName.reparent(DexInfTypeParam.this);
             if (!paramName.matched()) {
                 return this::missingIdentifier;
             }
@@ -127,6 +133,7 @@ public class DexInfTypeParam extends DexElement {
         @Expect("type")
         State type() {
             paramType = DexType.parse(src.slice(i));
+            paramType.reparent(DexInfTypeParam.this);
             if (!paramType.matched()) {
                 return this::missingType;
             }

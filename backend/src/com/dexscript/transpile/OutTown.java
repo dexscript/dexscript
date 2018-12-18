@@ -29,7 +29,9 @@ public class OutTown {
     public static OnSourceAdded ON_SOURCE_ADDED = (className, classSrc) -> {
     };
 
-    private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
+    private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler
+            .newInstance()
+            .ignoreWarnings();
     private final List<DexFile> iFiles = new ArrayList<>();
     private final TypeSystem ts = new TypeSystem();
     private final OutShim oShim = new OutShim(ts);
@@ -37,6 +39,7 @@ public class OutTown {
     public OutTown() {
         oShim.importJavaFunctions(BasicOperators.class);
         oShim.importJavaConstructors(File.class);
+        oShim.importJavaConstructors(ArrayList.class);
     }
 
     public OutTown addFile(String fileName, String src) {

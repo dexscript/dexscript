@@ -30,4 +30,19 @@ public class NormalJavaClassTest {
                 "}");
         Assert.assertFalse(result);
     }
+
+    @Test
+    public void java_method_return_another_java_object() {
+        Boolean result = (Boolean) Transpile.$("" +
+                "interface File {\n" +
+                "   getParentFile(): File\n" +
+                "   canRead(): bool\n" +
+                "}\n" +
+                "function Hello(): interface{} {" +
+                "   var file: File\n" +
+                "   file = new File('/tmp/test.txt')\n" +
+                "   return file.getParentFile().canRead()\n" +
+                "}");
+        Assert.assertTrue(result);
+    }
 }

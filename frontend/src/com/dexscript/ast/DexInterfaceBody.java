@@ -124,6 +124,7 @@ public class DexInterfaceBody extends DexElement {
                 }
                 if (b == '<') {
                     DexInfTypeParam typeParam = new DexInfTypeParam(src.slice(i));
+                    typeParam.reparent(DexInterfaceBody.this);
                     typeParams.add(typeParam);
                     i = typeParam.end();
                     return this::maybeTypeParameter;
