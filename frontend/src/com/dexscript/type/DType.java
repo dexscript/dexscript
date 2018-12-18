@@ -43,7 +43,7 @@ public interface DType {
             return assignable;
         }
         if (that instanceof IntersectionType) {
-            for (DType elem : ((IntersectionType) that).types()) {
+            for (DType elem : ((IntersectionType) that).members()) {
                 if (this.isAssignableFrom(ctx, elem)) {
                     return true;
                 }
@@ -51,7 +51,7 @@ public interface DType {
             return false;
         }
         if (that instanceof UnionType) {
-            for (DType elem : ((UnionType) that).types()) {
+            for (DType elem : ((UnionType) that).members()) {
                 if (!this.isAssignableFrom(ctx, elem)) {
                     return false;
                 }

@@ -14,11 +14,11 @@ public class IntersectTest {
         DType ab = a.union(b);
         DType bc = b.union(c);
         DType intersected = ab.intersect(bc);
-        Assert.assertFalse(intersected.isAssignableFrom(a));
-        Assert.assertTrue(intersected.isAssignableFrom(b));
-        Assert.assertFalse(intersected.isAssignableFrom(c));
-        Assert.assertFalse(a.isAssignableFrom(intersected));
-        Assert.assertTrue(b.isAssignableFrom(intersected));
-        Assert.assertFalse(c.isAssignableFrom(intersected));
+        Assert.assertFalse(IsAssignable.$(intersected, a));
+        Assert.assertTrue(IsAssignable.$(intersected, b));
+        Assert.assertFalse(IsAssignable.$(intersected, c));
+        Assert.assertFalse(IsAssignable.$(a, intersected));
+        Assert.assertTrue(IsAssignable.$(b, intersected));
+        Assert.assertFalse(IsAssignable.$(c, intersected));
     }
 }

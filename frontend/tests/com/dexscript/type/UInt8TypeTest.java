@@ -8,7 +8,7 @@ public class UInt8TypeTest {
     @Test
     public void uint8_is_assignable_from_uint8() {
         TypeSystem ts = new TypeSystem();
-        Assert.assertTrue(new UInt8Type(ts).isAssignableFrom(ts.UINT8));
-        Assert.assertTrue(ts.UINT8.isAssignableFrom(new UInt8Type(ts)));
+        Assert.assertTrue(IsAssignable.$(new UInt8Type(ts), ts.UINT8));
+        Assert.assertTrue(IsAssignable.$(ts.UINT8, new UInt8Type(ts)));
     }
 }

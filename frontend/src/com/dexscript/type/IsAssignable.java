@@ -25,7 +25,7 @@ public class IsAssignable {
         this.from = from;
         this.tempSub = new HashMap<>();
         this.currentTypeComparisons = new HashSet<>();
-        result = to._isSubType(this, from);
+        result = isAssignable(to, from);
     }
 
     public IsAssignable(IsAssignable parent, String comparing, DType to, DType from) {
@@ -43,7 +43,7 @@ public class IsAssignable {
             result = true;
         } else {
             currentTypeComparisons.add(typeComparison);
-            result = to._isSubType(this, from);
+            result = isAssignable(to, from);
             currentTypeComparisons.remove(typeComparison);
         }
         parent.addLog(comparing, this);
@@ -52,8 +52,24 @@ public class IsAssignable {
         }
     }
 
-    public static boolean $(DType to, DType from) {
-        return new IsAssignable(to, from).result();
+    private boolean isAssignable(DType to, DType from) {
+        if (from instanceof IntersectionType) {
+            for (DType member : ((IntersectionType) from).members()) {
+                if (new IsAssignable(this, "intersection member", to, member).result()) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (from instanceof UnionType) {
+            for (DType member : ((UnionType) from).members()) {
+                if (!new IsAssignable(this, "union member", to, member).result()) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return to._isSubType(this, from);
     }
 
     public void makeAvailable(FunctionType function) {
@@ -123,6 +139,10 @@ public class IsAssignable {
 
     public void substitute(PlaceholderType placeholder, DType substituted) {
         tempSub.put(placeholder, substituted);
+    }
+
+    public static boolean $(DType to, DType from) {
+        return new IsAssignable(to, from).result();
     }
 
     public static class Log {

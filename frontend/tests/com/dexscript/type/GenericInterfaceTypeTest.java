@@ -28,18 +28,18 @@ public class GenericInterfaceTypeTest {
                 "interface ListString {\n" +
                 "   Get__(index: int64): string\n" +
                 "}"));
-        Assert.assertTrue(inf2.isAssignableFrom(inf1));
-        Assert.assertTrue(inf1.isAssignableFrom(inf2));
+
+        Assert.assertTrue(IsAssignable.$(inf2, inf1));
+        Assert.assertTrue(IsAssignable.$(inf1, inf2));
         InterfaceType inf3 = ts.defineInterface(new DexInterface("" +
                 "interface ListInt {\n" +
                 "   Get__(index: int64): int64\n" +
                 "}"));
-        Assert.assertFalse(inf3.isAssignableFrom(inf1));
+        Assert.assertFalse(IsAssignable.$(inf3, inf1));
     }
 
     @Test(expected = DexSyntaxException.class)
     public void resolve_with_not_assignable_type() {
-        TypeSystem ts = new TypeSystem();
         ts.defineInterface(new DexInterface("" +
                 "interface List {\n" +
                 "   <T>: string\n" +
@@ -50,7 +50,6 @@ public class GenericInterfaceTypeTest {
 
     @Test
     public void resolve_generic_expansion_type() {
-        TypeSystem ts = new TypeSystem();
         ts.defineInterface(new DexInterface("" +
                 "interface List {\n" +
                 "   <T>: string\n" +
@@ -61,6 +60,6 @@ public class GenericInterfaceTypeTest {
                 "interface ListString {\n" +
                 "   Get__(index: int64): string\n" +
                 "}"));
-        Assert.assertTrue(inf2.isAssignableFrom(inf1));
+        Assert.assertTrue(IsAssignable.$(inf2, inf1));
     }
 }

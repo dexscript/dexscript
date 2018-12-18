@@ -11,10 +11,10 @@ public class UnionTest {
         StringLiteralType a = new StringLiteralType(ts, "A");
         StringLiteralType b = new StringLiteralType(ts, "B");
         DType ab = a.union(b);
-        Assert.assertTrue(ab.isAssignableFrom(a));
-        Assert.assertTrue(ab.isAssignableFrom(b));
-        Assert.assertFalse(a.isAssignableFrom(ab));
-        Assert.assertFalse(b.isAssignableFrom(ab));
+        Assert.assertTrue(IsAssignable.$(ab, a));
+        Assert.assertTrue(IsAssignable.$(ab, b));
+        Assert.assertFalse(IsAssignable.$(a, ab));
+        Assert.assertFalse(IsAssignable.$(b, ab));
     }
 
     @Test
@@ -24,11 +24,11 @@ public class UnionTest {
         StringLiteralType b = new StringLiteralType(ts, "B");
         StringLiteralType c = new StringLiteralType(ts, "C");
         DType abc = a.union(b).union(c);
-        Assert.assertTrue(abc.isAssignableFrom(a));
-        Assert.assertTrue(abc.isAssignableFrom(b));
-        Assert.assertTrue(abc.isAssignableFrom(c));
-        Assert.assertFalse(a.isAssignableFrom(abc));
-        Assert.assertFalse(b.isAssignableFrom(abc));
-        Assert.assertFalse(c.isAssignableFrom(abc));
+        Assert.assertTrue(IsAssignable.$(abc, a));
+        Assert.assertTrue(IsAssignable.$(abc, b));
+        Assert.assertTrue(IsAssignable.$(abc, c));
+        Assert.assertFalse(IsAssignable.$(a, abc));
+        Assert.assertFalse(IsAssignable.$(b, abc));
+        Assert.assertFalse(IsAssignable.$(c, abc));
     }
 }

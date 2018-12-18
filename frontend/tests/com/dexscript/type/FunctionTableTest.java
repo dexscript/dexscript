@@ -21,7 +21,6 @@ public class FunctionTableTest {
         DexActor actor = new DexActor("function " + actorSrc);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
-        ts.defineFunction(funcType);
         return funcType;
     }
 

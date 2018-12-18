@@ -1,6 +1,10 @@
-package com.dexscript.type;
+package com.dexscript.transpile.type;
 
 import com.dexscript.ast.DexInterface;
+import com.dexscript.type.DType;
+import com.dexscript.type.InterfaceType;
+import com.dexscript.type.ResolveType;
+import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

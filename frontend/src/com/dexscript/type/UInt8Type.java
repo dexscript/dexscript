@@ -25,6 +25,14 @@ public class UInt8Type implements NamedType {
     }
 
     @Override
+    public boolean _isSubType(IsAssignable ctx, DType that) {
+        if (that instanceof UInt8Type) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public TypeSystem typeSystem() {
         return ts;
     }
