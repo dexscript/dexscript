@@ -11,6 +11,7 @@ public class Invocation {
     private final List<DType> typeArgs;
     private final List<DType> args;
     private final DType retHint;
+    private boolean requireImpl;
 
     public Invocation(String funcName, List<DType> typeArgs, List<DType> args, DType retHint) {
         this.funcName = funcName;
@@ -27,6 +28,13 @@ public class Invocation {
         this.args = args;
         this.retHint = retHint;
     }
+
+    public Invocation requireImpl(boolean val) {
+        requireImpl = val;
+        return this;
+    }
+
+    public boolean requireImpl() { return requireImpl; }
 
     public String funcName() {
         return funcName;

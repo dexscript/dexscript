@@ -45,6 +45,9 @@ public class FunctionTable {
                 ON_INVOCATION_FILTERED_FUNCTION.handle(func, ivc);
                 continue;
             }
+            if (ivc.requireImpl() && invoked.function().impl() == null) {
+                continue;
+            }
             invokeds.add(invoked);
             if (!invoked.needRuntimeCheck()) {
                 return invokeds;

@@ -1,5 +1,6 @@
 package com.dexscript.ast.inf;
 
+import com.dexscript.ast.DexInterfaceBody;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
@@ -51,5 +52,9 @@ public class DexInfMethod extends DexElement {
 
     public DexIdentifier identifier() {
         return identifier;
+    }
+
+    public void reparent(DexElement parent) {
+        this.parent = parent;
     }
 }

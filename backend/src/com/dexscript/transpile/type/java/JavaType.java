@@ -3,6 +3,7 @@ package com.dexscript.transpile.type.java;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.*;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,42 +27,39 @@ public class JavaType implements FunctionsType {
 
     @Override
     public List<FunctionType> functions() {
-//        if (functions != null) {
-//            return functions;
-//        }
-//        typeParameters(); // calculate placeholders
-//        functions = new ArrayList<>();
-//        newFuncs(functions);
-//        javaMethodToDexFuncs(functions);
-//        return functions;
-        return new ArrayList<>();
+        if (functions != null) {
+            return functions;
+        }
+        functions = new ArrayList<>();
+        javaMethodToDexFuncs(functions);
+        return functions;
     }
-//
-//    private void javaMethodToDexFuncs(List<FunctionType> collector) {
-//        for (Method method : clazz.getMethods()) {
-//            javaMethodToDexFunc(collector, method);
-//        }
-//    }
-//
-//    private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
-//        JavaTypes javaTypes = oShim.javaTypes();
-//        DType ret = resolveJavaType(method.getGenericReturnType());
-//        if (ret == null) {
-//            return;
-//        }
-//        ArrayList<DType> params = new ArrayList<>();
-//        params.add(this);
-//        for (Class<?> paramClazz : method.getParameterTypes()) {
-//            DType param = javaTypes.tryResolve(paramClazz);
-//            if (param == null) {
-//                return;
-//            }
-//            params.add(param);
-//        }
-//        FunctionType function = new FunctionType(ts, method.getName(), params, ret);
-//        function.setImpl((FunctionType.LazyImpl) () -> new CallJavaMethod(oShim, function, method));
-//        collector.add(function);
-//    }
+
+    private void javaMethodToDexFuncs(List<FunctionType> collector) {
+        for (Method method : clazz.getMethods()) {
+            javaMethodToDexFunc(collector, method);
+        }
+    }
+
+    private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
+        JavaTypes javaTypes = oShim.javaTypes();
+        DType ret = javaTypes.resolve(method.getReturnType());
+        if (ret == null) {
+            return;
+        }
+        ArrayList<DType> params = new ArrayList<>();
+        params.add(this);
+        for (Class<?> paramClazz : method.getParameterTypes()) {
+            DType param = javaTypes.resolve(paramClazz);
+            if (param == null) {
+                return;
+            }
+            params.add(param);
+        }
+        FunctionType function = new FunctionType(ts, method.getName(), params, ret);
+        function.setImpl((FunctionType.LazyImpl) () -> new CallJavaMethod(oShim, function, method));
+        collector.add(function);
+    }
 //
 //    private DType resolveJavaType(java.lang.reflect.Type javaType) {
 //        if (javaType instanceof Class) {
@@ -172,5 +170,10 @@ public class JavaType implements FunctionsType {
     @Override
     public TypeSystem typeSystem() {
         return ts;
+    }
+
+    @Override
+    public String toString() {
+        return "java[" + clazz.getCanonicalName() + "]";
     }
 }

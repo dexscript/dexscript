@@ -20,6 +20,9 @@ public class NormalJavaClassTest {
     @Test
     public void call_java_method() {
         Boolean result = (Boolean) Transpile.$("" +
+                "interface File {\n" +
+                "   canRead(): bool\n" +
+                "}\n" +
                 "function Hello(): interface{} {" +
                 "   var file: File\n" +
                 "   file = new File('/tmp/test.txt')\n" +

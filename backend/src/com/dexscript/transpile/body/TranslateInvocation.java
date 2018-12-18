@@ -37,7 +37,8 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
 
         List<DType> args = InferType.inferTypes(ts, iArgs);
         List<DType> typeArgs = ResolveType.resolveTypes(ts, null, iTypeArgs);
-        Invocation ivc = new Invocation(funcName, typeArgs, args, null);
+        Invocation ivc = new Invocation(funcName, typeArgs, args, null)
+                .requireImpl(true);
         List<FunctionSig.Invoked> invokeds = ts.invoke(ivc);
         if (invokeds.size() == 0) {
             throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
