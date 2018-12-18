@@ -158,17 +158,13 @@ public class JavaTypes {
     }
 
     public DType resolve(Class clazz) {
-        DType type = tryResolve(clazz);
-        if (type == null) {
-            throw new DexRuntimeException(clazz.getCanonicalName() + " has not been imported");
-        }
-        return type;
-    }
-
-    public DType tryResolve(Class clazz) {
         DType type = types.get(clazz.getCanonicalName());
         if (type == null) {
             type = primitiveTypes.get(clazz);
+        }
+        if (type == null) {
+            type = new JavaType(oShim, clazz);
+            add(clazz, type);
         }
         return type;
     }
