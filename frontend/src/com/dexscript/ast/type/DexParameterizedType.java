@@ -10,7 +10,7 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexGenericExpansionType extends DexType {
+public class DexParameterizedType extends DexType {
 
     private static final int LEFT_RANK = 10;
     private final DexType genericType;
@@ -18,7 +18,7 @@ public class DexGenericExpansionType extends DexType {
     private List<DexType> typeArgs;
     private DexSyntaxError syntaxError;
 
-    public DexGenericExpansionType(Text src, DexType genericType) {
+    public DexParameterizedType(Text src, DexType genericType) {
         super(src);
         this.genericType = genericType;
         new Parser();
@@ -101,7 +101,7 @@ public class DexGenericExpansionType extends DexType {
         State firstTypeArg() {
             typeArgs = new ArrayList<>();
             DexType typeArg = DexType.parse(src.slice(i), 0);
-            typeArg.reparent(DexGenericExpansionType.this);
+            typeArg.reparent(DexParameterizedType.this);
             typeArgs.add(typeArg);
             if (!typeArg.matched()) {
                 return this::missingTypeArg;
@@ -134,7 +134,7 @@ public class DexGenericExpansionType extends DexType {
         @Expect("type")
         State moreTypeArgs() {
             DexType typeArg = DexType.parse(src.slice(i), 0);
-            typeArg.reparent(DexGenericExpansionType.this);
+            typeArg.reparent(DexParameterizedType.this);
             typeArgs.add(typeArg);
             if (!typeArg.matched()) {
                 return this::missingTypeArg;

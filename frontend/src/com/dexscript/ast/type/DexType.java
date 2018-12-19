@@ -54,10 +54,14 @@ public abstract class DexType extends DexElement {
 
     private static DexType parseRight(Text src, DexType left) {
         src = new Text(src.bytes, left.end(), src.end);
-        return new DexGenericExpansionType(src, left);
+        return new DexParameterizedType(src, left);
     }
 
     public void reparent(DexElement parent) {
         this.parent = parent;
+    }
+
+    public DexParameterizedType asParameterizedType() {
+        return (DexParameterizedType) this;
     }
 }

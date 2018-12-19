@@ -2,6 +2,7 @@ package com.dexscript.transpile.type.java;
 
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.TypeVariable;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JavaType implements FunctionsType {
+public class JavaType implements NamedType, FunctionsType {
 
     private final OutShim oShim;
     private final Class clazz;
@@ -174,6 +175,11 @@ public class JavaType implements FunctionsType {
 
     @Override
     public String toString() {
-        return "java[" + clazz.getCanonicalName() + "]";
+        return name();
+    }
+
+    @Override
+    public @NotNull String name() {
+        return TranslateSig.dTypeNameOf(clazz);
     }
 }
