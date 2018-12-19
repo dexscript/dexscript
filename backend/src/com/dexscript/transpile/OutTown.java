@@ -15,7 +15,6 @@ import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.*;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,8 +37,6 @@ public class OutTown {
 
     public OutTown() {
         oShim.importJavaFunctions(BasicOperators.class);
-        oShim.importJavaConstructors(File.class);
-        oShim.importJavaConstructors(ArrayList.class);
     }
 
     public OutTown addFile(String fileName, String src) {
@@ -99,5 +96,9 @@ public class OutTown {
         } catch (Exception e) {
             throw new DexRuntimeException(e);
         }
+    }
+
+    public OutShim oShim() {
+        return oShim;
     }
 }

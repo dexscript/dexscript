@@ -10,8 +10,12 @@ import java.util.Map;
 public interface Transpile {
 
     static Object $(String src, Object... args) {
+        OutTown oTown = new OutTown();
+        return Transpile.$(oTown, src, args);
+    }
+
+    static Object $(OutTown oTown, String src, Object... args) {
         try {
-            OutTown oTown = new OutTown();
             oTown.ON_SOURCE_ADDED = (className, classSrc) -> {
                 System.out.println(">>> " + className);
                 String lines[] = classSrc.split("\\r?\\n");
