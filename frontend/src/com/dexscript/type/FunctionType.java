@@ -120,4 +120,8 @@ public final class FunctionType implements DType {
     public FunctionImplProvider implProvider() {
         return implProvider;
     }
+
+    public boolean hasImpl() {
+        return implProvider != null;
+    }
 }

@@ -96,6 +96,15 @@ public class FunctionSigTest {
     }
 
     @Test
+    public void invoke_non_generic_function_with_type_args() {
+        FunctionSig sig = sig("(left: T, right: T): bool");
+        Invocation ivc = new Invocation("",
+                resolve("int64"),
+                resolve("string", "string"), null);
+        Assert.assertFalse(sig.invoke(ivc).success());
+    }
+
+    @Test
     public void test_to_string() {
         Assert.assertEquals("(string): string", sig("(arg0: string) :string").toString());
         Assert.assertEquals("(string): void", sig("(arg0: string)").toString());

@@ -45,6 +45,14 @@ public class FunctionSig {
         }
     }
 
+    public class TypeArgumentsCountIncompatible extends Incompatible {
+
+        @Override
+        public void dump() {
+            System.out.println("type arguments count incompatible");
+        }
+    }
+
     public class ArgumentIncompatible extends Incompatible {
 
         private final int index;
@@ -193,6 +201,9 @@ public class FunctionSig {
         if (params.size() != args.size()) {
             return new ArgumentsCountIncompatible();
         }
+        if (!typeArgs.isEmpty() && typeParams.size() != typeArgs.size()) {
+            return new TypeArgumentsCountIncompatible();
+        }
         Map<DType, DType> sub = initSub(typeArgs);
         IsAssignable ctx = new IsAssignable(sub);
         boolean needRuntimeCheck = false;
@@ -250,9 +261,6 @@ public class FunctionSig {
     @NotNull
     private Map<DType, DType> initSub(List<DType> typeArgs) {
         Map<DType, DType> collector = new HashMap<>();
-        if (typeArgs.isEmpty()) {
-            return collector;
-        }
         if (typeParams.size() != typeArgs.size()) {
             return collector;
         }

@@ -102,7 +102,7 @@ public class IsAssignable {
         if (available.contains(function)) {
             return true;
         }
-        return function.impl() != null;
+        return function.hasImpl();
     }
 
     public void dump() {

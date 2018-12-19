@@ -17,7 +17,7 @@ public class FunctionTableTest {
         ts = new TypeSystem();
     }
 
-    public FunctionType func(String actorSrc) {
+    private FunctionType func(String actorSrc) {
         DexActor actor = new DexActor("function " + actorSrc);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
