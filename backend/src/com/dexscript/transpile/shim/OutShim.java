@@ -4,16 +4,16 @@ import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.type.java.*;
 import com.dexscript.transpile.type.actor.ActorTable;
 import com.dexscript.transpile.type.actor.ActorType;
 import com.dexscript.type.*;
+import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.util.*;
 
 public class OutShim {
@@ -138,9 +138,15 @@ public class OutShim {
             params.add(javaTypes.resolve(param));
         }
         DType ret = javaTypes.resolve(clazz);
-        FunctionType functionType = new FunctionType(ts, "New__", params, ret);
+        FunctionSig sig = new FunctionSig(ts, translateSig());
+        FunctionType functionType = new FunctionType(ts, "New__", params, ret, sig);
         functionType.setImplProvider(expandedFunc ->
                 new NewJavaClass(this, expandedFunc, ctor, clazz.getCanonicalName()));
+    }
+
+    @NotNull
+    public DexSig translateSig() {
+        return new DexSig("");
     }
 
     public Gen g() {
