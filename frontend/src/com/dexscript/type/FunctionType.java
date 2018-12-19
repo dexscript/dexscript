@@ -10,10 +10,6 @@ public final class FunctionType implements DType {
 
     private String description;
 
-    public interface LazyImpl {
-        Object lazyLoad();
-    }
-
     private final TypeSystem ts;
 
     @NotNull
@@ -28,7 +24,9 @@ public final class FunctionType implements DType {
     @NotNull
     private final FunctionSig sig;
 
-    private Object attachment;
+    private Object impl;
+
+    private FunctionImplProvider implProvider;
 
     public FunctionType(TypeSystem ts, @NotNull String name, @NotNull List<DType> params, @NotNull DType ret) {
         this(ts, name, params, ret, null);
@@ -47,15 +45,15 @@ public final class FunctionType implements DType {
         ts.defineFunction(this);
     }
 
-    public void setImpl(Object impl) {
-        this.attachment = impl;
+    public void setImplProvider(FunctionImplProvider implProvider) {
+        this.implProvider = implProvider;
     }
 
     public final Object impl() {
-        if (attachment instanceof LazyImpl) {
-            attachment = ((LazyImpl) attachment).lazyLoad();
+        if (impl == null) {
+            impl = implProvider.implOf(this);
         }
-        return attachment;
+        return impl;
     }
 
     @NotNull
@@ -117,5 +115,9 @@ public final class FunctionType implements DType {
         }
         description = name + sig.toString();
         return description;
+    }
+
+    public FunctionImplProvider implProvider() {
+        return implProvider;
     }
 }

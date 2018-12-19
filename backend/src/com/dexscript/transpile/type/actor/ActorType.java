@@ -93,7 +93,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
         }
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType functionType = new FunctionType(ts, name(), params, ret, sig);
-        functionType.setImpl((FunctionType.LazyImpl) () -> new CallActor(oShim, functionType, actor));
+        functionType.setImplProvider(expandedFunc -> new CallActor(oShim, expandedFunc, actor));
         return functionType;
     }
 
@@ -104,7 +104,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
             params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
         FunctionType functionType = new FunctionType(ts, "New__", params, this);
-        functionType.setImpl((FunctionType.LazyImpl) () -> new NewActor(oShim, functionType, actor));
+        functionType.setImplProvider(expandedFunc -> new NewActor(oShim, expandedFunc, actor));
         return functionType;
     }
 
@@ -172,8 +172,8 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
                 params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType(ts, "New__", params, nestedActor);
-            functionType.setImpl((FunctionType.LazyImpl) () -> new NewInnerActor(
-                    oShim, functionType, outerClassName, awaitConsumer));
+            functionType.setImplProvider(expandedFunc -> new NewInnerActor(
+                    oShim, expandedFunc, outerClassName, awaitConsumer));
             return functionType;
         }
 
@@ -188,8 +188,8 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
                 params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
             }
             FunctionType functionType = new FunctionType(ts, funcName, params, ret);
-            functionType.setImpl((FunctionType.LazyImpl) () -> new CallInnerActor(
-                    oShim, functionType, outerClassName, awaitConsumer));
+            functionType.setImplProvider(expandedFunc -> new CallInnerActor(
+                    oShim, expandedFunc, outerClassName, awaitConsumer));
             return functionType;
         }
     }

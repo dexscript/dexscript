@@ -242,6 +242,7 @@ public class FunctionSig {
         }
         DType expandedRet = ResolveType.$(ts, localTypeTable, dexSig.ret());
         expanded = new FunctionType(ts, func.name(), expandedParams, expandedRet);
+        expanded.setImplProvider(func.implProvider());
         expandedFuncs.put(sub, expanded);
         return expanded;
     }
@@ -249,13 +250,7 @@ public class FunctionSig {
     @NotNull
     private Map<DType, DType> initSub(List<DType> typeArgs) {
         Map<DType, DType> collector = new HashMap<>();
-        if (typeArgs == null) {
-            return collector;
-        }
         if (typeArgs.isEmpty()) {
-            return collector;
-        }
-        if (typeParams == null) {
             return collector;
         }
         if (typeParams.size() != typeArgs.size()) {

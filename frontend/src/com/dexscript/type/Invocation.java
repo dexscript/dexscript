@@ -3,6 +3,7 @@ package com.dexscript.type;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.infer.InferType;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Invocation {
@@ -15,7 +16,7 @@ public class Invocation {
 
     public Invocation(String funcName, List<DType> typeArgs, List<DType> args, DType retHint) {
         this.funcName = funcName;
-        this.typeArgs = typeArgs;
+        this.typeArgs = typeArgs == null ? Collections.emptyList() : typeArgs;
         this.args = args;
         this.retHint = retHint;
     }

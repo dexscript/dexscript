@@ -19,7 +19,7 @@ public class InterfaceTypeTest {
         DexActor actor = new DexActor("function " + src);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType function = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
-        function.setImpl(new Object());
+        function.setImplProvider(expandedFunc -> new Object());
     }
 
     @Test

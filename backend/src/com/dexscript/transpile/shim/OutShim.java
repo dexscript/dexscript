@@ -121,8 +121,7 @@ public class OutShim {
         List<DType> params = javaTypes.resolve(javaFunction.getParameterTypes());
         DType ret = javaTypes.resolve(javaFunction.getReturnType());
         FunctionType functionType = new FunctionType(ts, funcName, params, ret);
-        CallJavaFunction impl = new CallJavaFunction(this, functionType, javaFunction);
-        functionType.setImpl(impl);
+        functionType.setImplProvider(expandedFunc -> new CallJavaFunction(this, expandedFunc, javaFunction));
     }
 
     public void importJavaConstructors(Class clazz) {
@@ -140,8 +139,8 @@ public class OutShim {
         }
         DType ret = javaTypes.resolve(clazz);
         FunctionType functionType = new FunctionType(ts, "New__", params, ret);
-        NewJavaClass impl = new NewJavaClass(this, functionType, ctor, clazz.getCanonicalName());
-        functionType.setImpl(impl);
+        functionType.setImplProvider(expandedFunc ->
+                new NewJavaClass(this, expandedFunc, ctor, clazz.getCanonicalName()));
     }
 
     public Gen g() {

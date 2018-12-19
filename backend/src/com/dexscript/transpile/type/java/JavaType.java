@@ -57,7 +57,7 @@ public class JavaType implements FunctionsType {
             params.add(param);
         }
         FunctionType function = new FunctionType(ts, method.getName(), params, ret);
-        function.setImpl((FunctionType.LazyImpl) () -> new CallJavaMethod(oShim, function, method));
+        function.setImplProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));
         collector.add(function);
     }
 //
