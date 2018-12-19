@@ -1,25 +1,13 @@
 package com.dexscript.transpile.java;
 
 import com.dexscript.transpile.Transpile;
-import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.TypeDebugLog;
-import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 
 public class GenericJavaClassTest {
-
-    private TypeSystem ts;
-    private OutShim oShim;
-
-    @Before
-    public void setup() {
-        ts = new TypeSystem();
-        oShim = new OutShim(ts);
-    }
 
     @Test
     public void new_generic_class() {

@@ -1,11 +1,7 @@
 package com.dexscript.analyze;
 
-import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
-import com.dexscript.ast.type.DexInterfaceType;
-import com.dexscript.type.InterfaceType;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -92,6 +88,26 @@ public class CheckSemanticErrorTest {
                 "function Hello() {\n" +
                 "   var i: MyObject\n" +
                 "   i = 'hello'\n" +
+                "}";
+        Assert.assertTrue(check(src));
+    }
+
+    @Test
+    public void generic_interface() {
+        String src = "" +
+                "interface List {\n" +
+                "   <E>: interface{}\n" +
+                "   get(index: int32): E\n" +
+                "}";
+        Assert.assertFalse(check(src));
+    }
+
+    @Test
+    public void generic_interface_referenced() {
+        String src = "" +
+                "interface List {\n" +
+                "   <E>: interface{}\n" +
+                "   get(index: int32): T\n" +
                 "}";
         Assert.assertTrue(check(src));
     }

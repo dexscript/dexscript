@@ -7,6 +7,7 @@ import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.ast.expr.DexNewExpr;
 import com.dexscript.type.JavaSuperTypeArgs;
 import com.dexscript.type.TypeSystem;
+import com.dexscript.type.TypeTable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class CheckSemanticError implements DexElement.Visitor {
             add(new CheckTypeRef());
             add(new CheckReturn());
             add(new CheckAssignment());
+            add(new CheckInterface());
             add(new CheckInvocation<DexFunctionCallExpr>() {
             });
             add(new CheckInvocation<DexMethodCallExpr>() {
@@ -39,10 +41,19 @@ public class CheckSemanticError implements DexElement.Visitor {
 
     private final TypeSystem ts;
     private boolean hasError;
+    private TypeTable localTypeTable;
 
     public CheckSemanticError(TypeSystem ts, DexFile file) {
         this.ts = ts;
         visit(file);
+    }
+
+    public void localTypeTable(TypeTable localTypeTable) {
+        this.localTypeTable = localTypeTable;
+    }
+
+    public TypeTable localTypeTable() {
+        return localTypeTable;
     }
 
     @Override
