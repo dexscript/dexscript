@@ -6,11 +6,11 @@ import com.dexscript.transpile.gen.Line;
 
 public class GeneratedSubClass {
 
-    private final String superClassName;
+    private final Class superClass;
     private final String subClassName;
 
-    GeneratedSubClass(String superClassName, String subClassName) {
-        this.superClassName = superClassName;
+    GeneratedSubClass(Class superClass, String subClassName) {
+        this.superClass = superClass;
         this.subClassName = subClassName;
     }
 
@@ -23,8 +23,8 @@ public class GeneratedSubClass {
         g.__(new Line("package com.dexscript.runtime.gen;")
         ).__("public class "
         ).__(subClassName
-        ).__(" extends "
-        ).__(superClassName
+        ).__(superClass.isInterface() ? " implements "  : " extends "
+        ).__(superClass.getCanonicalName()
         ).__(" {"
         ).__(new Indent(() -> {
 

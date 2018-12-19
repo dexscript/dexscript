@@ -19,23 +19,29 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     private List<FunctionType> functions;
     private List<DType> dTypeParams;
     private List<DType> dTypeArgs;
+    private final String runtimeClassName;
     private TypeSystem ts;
     private String description;
 
     public JavaType(OutShim oShim, Class clazz) {
-        this(oShim, clazz, null);
+        this(oShim, clazz, null, clazz.getCanonicalName());
     }
 
-    public JavaType(OutShim oShim, Class clazz, List<DType> dTypeArgs) {
+    public JavaType(OutShim oShim, Class clazz, List<DType> dTypeArgs, String runtimeClassName) {
         this.oShim = oShim;
         this.clazz = clazz;
         this.ts = oShim.typeSystem();
         this.dTypeArgs = dTypeArgs;
+        this.runtimeClassName = runtimeClassName;
         if (dTypeArgs == null) {
             ts.defineType(this);
         }
-        oShim.javaTypes().add(clazz, this);
+        oShim.javaTypes().add(runtimeClassName, this);
         ts.lazyDefineFunctions(this);
+    }
+
+    public String runtimeClassName() {
+        return runtimeClassName;
     }
 
     @Override
@@ -105,7 +111,8 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
 
     @Override
     public DType generateType(List<DType> typeArgs) {
-        return new JavaType(oShim, clazz, typeArgs);
+        String runtimeClassName = oShim.genSubClass(clazz);
+        return new JavaType(oShim, clazz, typeArgs, runtimeClassName);
     }
 
     @Override

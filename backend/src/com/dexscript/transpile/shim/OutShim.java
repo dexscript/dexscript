@@ -142,7 +142,8 @@ public class OutShim {
         FunctionSig sig = new FunctionSig(ts, dexSig);
         FunctionType functionType = new FunctionType(ts, "New__", params, ret, sig);
         functionType.setImplProvider(expandedFunc -> {
-            return new NewJavaClass(this, expandedFunc, ctor, clazz.getCanonicalName());
+            JavaType type = (JavaType) expandedFunc.ret();
+            return new NewJavaClass(this, expandedFunc, ctor, type.runtimeClassName());
         });
     }
 
@@ -165,9 +166,15 @@ public class OutShim {
     }
 
     public String genSubClass(Class clazz) {
+        if (Modifier.isFinal(clazz.getModifiers())) {
+            return clazz.getCanonicalName();
+        }
+        if (Modifier.isAbstract(clazz.getModifiers())) {
+            return clazz.getCanonicalName();
+        }
         String subClassName = clazz.getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
         GeneratedSubClass generatedSubClass = new GeneratedSubClass(
-                clazz.getCanonicalName(), subClassName);
+                clazz, subClassName);
         generatedSubClasses.add(generatedSubClass);
         return generatedSubClass.qualifiedClassName();
     }
