@@ -25,11 +25,11 @@ public interface ResolveReturnType {
 
     static DType $(List<FunctionSig.Invoked> invokeds) {
         if (invokeds.size() == 1) {
-            return invokeds.get(0).ret();
+            return invokeds.get(0).function().ret();
         }
-        DType ret = invokeds.get(0).ret();
+        DType ret = invokeds.get(0).function().ret();
         for (int i = 1; i < invokeds.size(); i++) {
-            ret = ret.union(invokeds.get(i).ret());
+            ret = ret.union(invokeds.get(i).function().ret());
         }
         return ret;
     }

@@ -38,6 +38,11 @@ public class IsAssignable {
             addLog("substituted", "placeholder", to, "substituted", substituted);
             to = substituted;
         }
+        substituted = tempSub.get(from);
+        if (substituted != null) {
+            addLog("substituted", "placeholder", from, "substituted", substituted);
+            from = substituted;
+        }
         this.to = to;
         this.from = from;
         this.currentTypeComparisons = parent.currentTypeComparisons;

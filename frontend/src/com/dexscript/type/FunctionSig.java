@@ -13,21 +13,21 @@ public class FunctionSig {
 
     public abstract class Invoked {
 
-        public abstract boolean compatible();
+        public abstract boolean success();
 
         public abstract boolean needRuntimeCheck();
 
-        public abstract DType ret();
-
         public FunctionType function() {
-            return functionType;
+            return func;
         }
+
+        public abstract void dump();
     }
 
     public abstract class Incompatible extends Invoked {
 
         @Override
-        public boolean compatible() {
+        public boolean success() {
             return false;
         }
 
@@ -36,14 +36,14 @@ public class FunctionSig {
             return false;
         }
 
-        @Override
-        public DType ret() {
-            return ts.UNDEFINED;
-        }
     }
 
     public class ArgumentsCountIncompatible extends Incompatible {
 
+        @Override
+        public void dump() {
+            System.out.println("arguments count incompatible");
+        }
     }
 
     public class ArgumentIncompatible extends Incompatible {
@@ -70,6 +70,15 @@ public class FunctionSig {
         public IsAssignable argParam() {
             return argParam;
         }
+
+        @Override
+        public void dump() {
+            System.out.println("#" + index + " argument is incompatible");
+            System.out.println("tried param=arg");
+            paramArg.dump();
+            System.out.println("tried arg=param");
+            argParam.dump();
+        }
     }
 
     public class MissingTypeArgument extends Incompatible {
@@ -83,21 +92,35 @@ public class FunctionSig {
         public PlaceholderType typeParam() {
             return typeParam;
         }
+
+        @Override
+        public void dump() {
+            System.out.println("missing type argument: " + typeParam);
+        }
     }
 
     public class Compatible extends Invoked {
 
         private final boolean needRuntimeCheck;
-        private final DType ret;
+        private final FunctionType expandedFunction;
 
-        public Compatible(boolean needRuntimeCheck, DType ret) {
+        public Compatible(boolean needRuntimeCheck, FunctionType expandedFunction) {
             this.needRuntimeCheck = needRuntimeCheck;
-            this.ret = ret;
+            this.expandedFunction = expandedFunction;
         }
 
         @Override
-        public boolean compatible() {
+        public boolean success() {
             return true;
+        }
+
+        @Override
+        public FunctionType function() {
+            return expandedFunction;
+        }
+
+        @Override
+        public void dump() {
         }
 
         @Override
@@ -105,15 +128,11 @@ public class FunctionSig {
             return needRuntimeCheck;
         }
 
-        @Override
-        public DType ret() {
-            return ret;
-        }
     }
 
 
     private final TypeSystem ts;
-    private FunctionType functionType;
+    private FunctionType func;
     private final List<PlaceholderType> typeParams;
     private final List<DType> params;
     private final DType ret;
@@ -161,7 +180,7 @@ public class FunctionSig {
     }
 
     public void reparent(FunctionType functionType) {
-        this.functionType = functionType;
+        this.func = functionType;
     }
 
     public List<DType> params() {
@@ -202,7 +221,7 @@ public class FunctionSig {
             }
         }
         if (retElem == null || typeParams == null) {
-            return new Compatible(needRuntimeCheck, ret);
+            return new Compatible(needRuntimeCheck, func);
         }
         inferRetHint(retHint, ctx);
         for (PlaceholderType typeParam : typeParams) {
@@ -218,7 +237,7 @@ public class FunctionSig {
             }
         }
         DType expandedRet = ResolveType.$(ts, localTypeTable, retElem);
-        return new Compatible(needRuntimeCheck, expandedRet);
+        return new Compatible(needRuntimeCheck, new FunctionType(ts, func.name(), func.params(), expandedRet));
     }
 
     @NotNull

@@ -32,6 +32,7 @@ public class JavaTypes {
         add(Integer.class, ts.INT32);
         add(Long.class, ts.INT64);
         add(String.class, ts.STRING);
+        primitiveTypes.put(Object.class, ts.ANY);
         primitiveTypes.put(boolean.class, ts.BOOL);
         primitiveTypes.put(int.class, ts.INT32);
         primitiveTypes.put(long.class, ts.INT64);

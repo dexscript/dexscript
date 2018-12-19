@@ -61,7 +61,7 @@ public class ActorTypeTest {
                 "}"));
         List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, new ArrayList<>(), null));
         Assert.assertEquals(1, functionTypes.size());
-        Assert.assertEquals(ts.VOID, functionTypes.get(0).ret());
+        Assert.assertEquals(ts.VOID, functionTypes.get(0).function().ret());
     }
 
     @Test
