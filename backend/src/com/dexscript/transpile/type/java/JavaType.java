@@ -10,13 +10,12 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class JavaType implements NamedType, FunctionsType, GenericType {
 
     private final OutShim oShim;
     private final Class clazz;
-    private Map<TypeVariable, DType> jTypeVars;
+    private TypeTable localTypeTable;
     private List<FunctionType> functions;
     private List<DType> dTypeParams;
     private List<DType> dTypeArgs;
@@ -55,124 +54,29 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     }
 
     private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
-        JavaTypes javaTypes = oShim.javaTypes();
-        DType ret = javaTypes.resolve(method.getReturnType());
-        if (ret == null) {
+        Type jRet = method.getGenericReturnType();
+        DType dRet = resolve(jRet);
+        if (dRet == null) {
             return;
         }
-        ArrayList<DType> params = new ArrayList<>();
-        params.add(this);
-        for (Class<?> paramClazz : method.getParameterTypes()) {
-            DType param = javaTypes.resolve(paramClazz);
-            if (param == null) {
+        ArrayList<DType> dParams = new ArrayList<>();
+        dParams.add(this);
+        for (Type jParam : method.getGenericParameterTypes()) {
+            DType dParam = resolve(jParam);
+            if (dParam == null) {
                 return;
             }
-            params.add(param);
+            dParams.add(dParam);
         }
-        FunctionType function = new FunctionType(ts, method.getName(), params, ret);
+        FunctionType function = new FunctionType(ts, method.getName(), dParams, dRet);
         function.setImplProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));
         collector.add(function);
     }
-//
-//    private DType resolveJavaType(java.lang.reflect.Type javaType) {
-//        if (javaType instanceof Class) {
-//            return oShim.javaTypes().tryResolve((Class) javaType);
-//        }
-//        if (javaType instanceof TypeVariable) {
-//            TypeVariable typeVar = (TypeVariable) javaType;
-//            return javaTypeVarMap().get(typeVar);
-//        }
-//        return null;
-//    }
-//
-//    private void newFuncs(List<FunctionType> collector) {
-//        List<PlaceholderType> newFuncTypeParams = new ArrayList<>();
-//        for (TypeVariable javaTypeVar : clazz.getTypeParameters()) {
-//            DType typeParam = translateBound(javaTypeVar.getBounds());
-//            newFuncTypeParams.add(new PlaceholderType(ts, javaTypeVar.getName(), typeParam));
-//        }
-//        String subClassName = null;
-//        for (Constructor ctor : clazz.getConstructors()) {
-//            if (subClassName == null) {
-//                if (dTypeArgs == null) {
-//                    subClassName = clazz.getCanonicalName();
-//                } else {
-//                    subClassName = oShim.genSubClass(clazz);
-//                    oShim.javaTypes().add(subClassName, this);
-//                }
-//            }
-//            newFunc(collector, ctor, subClassName, newFuncTypeParams);
-//        }
-//    }
-//
-//    private void newFunc(List<FunctionType> collector, Constructor ctor,
-//                         String subClassName, List<PlaceholderType> newFuncTypeParams) {
-//        ArrayList<DType> params = new ArrayList<>();
-//        String funcName = clazz.getSimpleName();
-//        params.add(new StringLiteralType(ts, funcName));
-//        for (Class paramType : ctor.getParameterTypes()) {
-//            DType type = oShim.javaTypes().tryResolve(paramType);
-//            if (type == null) {
-//                return;
-//            }
-//            params.add(type);
-//        }
-//        FunctionSig sig = new FunctionSig(ts, newFuncTypeParams, params, this, createRetElem(newFuncTypeParams));
-//        FunctionType function = new FunctionType(ts, "New__", params, this, sig);
-//        function.setImpl((FunctionType.LazyImpl) () -> new NewJavaClass(oShim, function, ctor, subClassName));
-//        collector.add(function);
-//    }
-//
-//    private DexType createRetElem(List<PlaceholderType> newFuncTypeParams) {
-//        if (newFuncTypeParams.isEmpty()) {
-//            return null;
-//        }
-//        StringBuilder expand = new StringBuilder();
-//        expand.append("");
-//        expand.append('<');
-//        for (int i = 0; i < newFuncTypeParams.size(); i++) {
-//            if (i > 0) {
-//                expand.append(", ");
-//            }
-//            String placeholder = newFuncTypeParams.get(i).name();
-//            expand.append(placeholder);
-//        }
-//        expand.append('>');
-//        DexType retElem = DexType.parse(expand.toString());
-//        return retElem;
-//    }
-//
-//    public List<DType> typeParameters() {
-//        if (dTypeParams != null) {
-//            return dTypeParams;
-//        }
-//        dTypeParams = new ArrayList<>();
-//        for (TypeVariable javaTypeVar : clazz.getTypeParameters()) {
-//            DType typeParam = translateBound(javaTypeVar.getBounds());
-//            dTypeParams.add(typeParam);
-//        }
-//        return dTypeParams;
-//    }
-//
-//    private Map<TypeVariable, DType> javaTypeVarMap() {
-//        if (jTypeVars != null) {
-//            return jTypeVars;
-//        }
-//        jTypeVars = new HashMap<>();
-//        List<DType> typeArgs = this.dTypeArgs;
-//        if (typeArgs == null) {
-//            typeArgs = typeParameters();
-//        }
-//        TypeVariable[] javaTypeVars = clazz.getTypeParameters();
-//        for (int i = 0; i < typeArgs.size(); i++) {
-//            jTypeVars.put(javaTypeVars[i], typeArgs.get(i));
-//        }
-//        return jTypeVars;
-//    }
 
-    private DType translateBound(java.lang.reflect.Type[] bounds) {
-        // TODO: translate bound
-        return ts.ANY;
+    private DType resolve(Type jTypeObj) {
+        String src = TranslateSig.translateType(oShim.javaTypes(), jTypeObj);
+        TypeTable localTypeTable = localTypeTable();
+        return ResolveType.$(ts, localTypeTable, DexType.parse(src));
     }
 
     @Override
@@ -216,9 +120,30 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
                 throw new UnsupportedOperationException("not implemented");
             }
             String dTypeParamSrc = TranslateSig.translateType(javaTypes, jTypeParams[0]);
-            DType dTypeParam = ResolveType.$(ts, null, DexType.parse(dTypeParamSrc));
-            dTypeParams.add(dTypeParam);
+            // TODO: implement recursive generic expansion
+            if (dTypeParamSrc.startsWith(name())) {
+                dTypeParams.add(ts.ANY);
+            } else {
+                DType dTypeParam = ResolveType.$(ts, null, DexType.parse(dTypeParamSrc));
+                dTypeParams.add(dTypeParam);
+            }
         }
         return dTypeParams;
+    }
+
+    private TypeTable localTypeTable() {
+        if (localTypeTable != null) {
+            return localTypeTable;
+        }
+        localTypeTable = new TypeTable(ts);
+        List<DType> dTypeArgs = this.dTypeArgs;
+        if (dTypeArgs == null) {
+            dTypeArgs = typeParameters();
+        }
+        for (int i = 0; i < clazz.getTypeParameters().length; i++) {
+            TypeVariable jTypeParam = clazz.getTypeParameters()[i];
+            localTypeTable.define(jTypeParam.getName(), dTypeArgs.get(i));
+        }
+        return localTypeTable;
     }
 }

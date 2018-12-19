@@ -86,7 +86,7 @@ public interface TranslateSig {
             }
             return "interface{}";
         } else {
-            throw new UnsupportedOperationException("not implemented");
+            return "interface{}";
         }
     }
 
