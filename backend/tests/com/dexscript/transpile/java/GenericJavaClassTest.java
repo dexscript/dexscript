@@ -1,7 +1,6 @@
 package com.dexscript.transpile.java;
 
 import com.dexscript.transpile.Transpile;
-import com.dexscript.type.TypeDebugLog;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -26,7 +25,6 @@ public class GenericJavaClassTest {
 
     @Test
     public void multi_dispatch_with_generic_argument() {
-        TypeDebugLog.on();
         // we can tell runtime java object implement List<int64> or List<interface{}>
         String result = (String) Transpile.$("" +
                 "interface List {\n" +
@@ -34,20 +32,23 @@ public class GenericJavaClassTest {
                 "   get(index: int32): E\n" +
                 "}\n" +
                 "function Hello(): string {\n" +
-                "   var list: List<int64>\n" +
-                "   list = new ArrayList<int64>()\n" +
-                "   return TakeAny(list)\n" +
+                "   str1 := TakeAny(new ArrayList<int64>())" +
+                "   str2 := TakeAny(new ArrayList<string>())" +
+                "   return str1 + ' ' + str2\n" +
                 "}\n" +
                 "function TakeAny(obj: interface{}): string {\n" +
                 "   return TakeList(obj)\n" +
                 "}\n" +
-                "function TakeList(list: List<int64>): string {\n" +
-                "   return 'matched List<int64>'\n" +
-                "}\n" +
                 "function TakeList(list: List<string>): string {\n" +
                 "   return 'matched List<string>'\n" +
                 "}\n" +
+                "function TakeList(list: List<int64>): string {\n" +
+                "   return 'matched List<int64>'\n" +
+                "}\n" +
+                "function TakeList(list: List<interface{}>): string {\n" +
+                "   return 'matched List<interface{}>'\n" +
+                "}\n" +
                 "");
-        Assert.assertEquals("matched List<int64>", result);
+        Assert.assertEquals("matched List<int64> matched List<string>", result);
     }
 }

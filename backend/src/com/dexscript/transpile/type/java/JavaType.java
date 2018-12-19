@@ -34,6 +34,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         if (dTypeArgs == null) {
             ts.defineType(this);
         }
+        oShim.javaTypes().add(clazz, this);
         ts.lazyDefineFunctions(this);
     }
 

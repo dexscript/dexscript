@@ -36,6 +36,8 @@ public interface InferType<E extends DexExpr> {
             });
             add(new InferInvocation<DexFunctionCallExpr>() {
             });
+            add(new InferInvocation<DexAddExpr>() {
+            });
         }
 
         private void add(InferType<?> handler) {

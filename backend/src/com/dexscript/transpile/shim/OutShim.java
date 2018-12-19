@@ -101,7 +101,7 @@ public class OutShim {
         FunctionChain chain = new FunctionChain(funcName, paramsCount, invokeds);
         String chainF = chains.get(chain);
         if (chainF != null) {
-            return chainF;
+            return CLASSNAME + "." + chainF;
         }
         chainF = allocateShim("chain__" + funcName);
         chains.put(chain, chainF);

@@ -38,7 +38,7 @@ public class OutTown {
 
     public OutTown() {
         oShim.importJavaFunctions(BasicOperators.class);
-//        oShim.importJavaConstructors(File.class);
+        oShim.importJavaConstructors(File.class);
         oShim.importJavaConstructors(ArrayList.class);
     }
 
