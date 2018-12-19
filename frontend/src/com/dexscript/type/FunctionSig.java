@@ -3,7 +3,6 @@ package com.dexscript.type;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
-import com.dexscript.ast.type.DexType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -130,39 +129,32 @@ public class FunctionSig {
 
     }
 
-
     private final TypeSystem ts;
     private FunctionType func;
     private final List<PlaceholderType> typeParams;
     private final List<DType> params;
     private final DType ret;
-    private final DexType retElem;
+    private final DexSig dexSig;
+    private final Map<Object, FunctionType> expandedFuncs = new HashMap<>();
 
     public FunctionSig(TypeSystem ts, List<DType> params, DType ret) {
         this.ts = ts;
         this.typeParams = Collections.emptyList();
         this.params = params;
         this.ret = ret;
-        this.retElem = null;
-    }
-
-    public FunctionSig(TypeSystem ts, List<PlaceholderType> typeParams, List<DType> params, DType ret, DexType retElem) {
-        this.ts = ts;
-        this.typeParams = typeParams == null ? Collections.emptyList() : typeParams;
-        this.params = params;
-        this.ret = ret;
-        this.retElem = retElem;
+        this.dexSig = null;
     }
 
     public FunctionSig(TypeSystem ts, DexSig sig) {
         this(ts, null, sig);
     }
 
-    public FunctionSig(TypeSystem ts, DType objectType, DexSig sig) {
+    public FunctionSig(TypeSystem ts, DType objectType, DexSig dexSig) {
         this.ts = ts;
+        this.dexSig = dexSig;
         typeParams = new ArrayList<>();
         TypeTable localTypeTable = new TypeTable(ts);
-        for (DexTypeParam typeParam : sig.typeParams()) {
+        for (DexTypeParam typeParam : dexSig.typeParams()) {
             DType constraint = ResolveType.$(ts, null, typeParam.paramType());
             PlaceholderType placeholder = new PlaceholderType(ts, typeParam.paramName().toString(), constraint);
             localTypeTable.define(placeholder);
@@ -172,11 +164,10 @@ public class FunctionSig {
         if (objectType != null) {
             params.add(objectType);
         }
-        for (DexParam param : sig.params()) {
+        for (DexParam param : dexSig.params()) {
             params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
         }
-        ret = ResolveType.$(ts, localTypeTable, sig.ret());
-        retElem = sig.ret();
+        ret = ResolveType.$(ts, localTypeTable, dexSig.ret());
     }
 
     public void reparent(FunctionType functionType) {
@@ -220,7 +211,7 @@ public class FunctionSig {
                 return new ArgumentIncompatible(i, paramArg, argParam);
             }
         }
-        if (retElem == null || typeParams == null) {
+        if (typeParams.isEmpty()) {
             return new Compatible(needRuntimeCheck, func);
         }
         inferRetHint(retHint, ctx);
@@ -229,6 +220,15 @@ public class FunctionSig {
                 return new MissingTypeArgument(typeParam);
             }
         }
+        return new Compatible(needRuntimeCheck, expand(sub));
+    }
+
+    @NotNull
+    private FunctionType expand(Map<DType, DType> sub) {
+        FunctionType expanded = expandedFuncs.get(sub);
+        if (expanded != null) {
+            return expanded;
+        }
         TypeTable localTypeTable = new TypeTable(ts);
         for (Map.Entry<DType, DType> entry : sub.entrySet()) {
             DType key = entry.getKey();
@@ -236,8 +236,14 @@ public class FunctionSig {
                 localTypeTable.define(((NamedType) key).name(), entry.getValue());
             }
         }
-        DType expandedRet = ResolveType.$(ts, localTypeTable, retElem);
-        return new Compatible(needRuntimeCheck, new FunctionType(ts, func.name(), func.params(), expandedRet));
+        ArrayList<DType> expandedParams = new ArrayList<>();
+        for (DexParam param : dexSig.params()) {
+            expandedParams.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+        }
+        DType expandedRet = ResolveType.$(ts, localTypeTable, dexSig.ret());
+        expanded = new FunctionType(ts, func.name(), expandedParams, expandedRet);
+        expandedFuncs.put(sub, expanded);
+        return expanded;
     }
 
     @NotNull

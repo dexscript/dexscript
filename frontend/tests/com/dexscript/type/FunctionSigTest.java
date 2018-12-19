@@ -33,8 +33,9 @@ public class FunctionSigTest {
     @Test
     public void infer_type_params() {
         FunctionSig sig = sig("(<T>: string, arg0: T): T");
-        DType ret = invoke(sig, resolve("string")).function().ret();
-        Assert.assertEquals(ts.STRING, ret);
+        FunctionType func = invoke(sig, resolve("string")).function();
+        Assert.assertEquals(ts.STRING, func.ret());
+        Assert.assertEquals(ts.STRING, func.params().get(0));
     }
 
     @Test
