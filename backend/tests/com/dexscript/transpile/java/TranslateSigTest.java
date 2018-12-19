@@ -32,7 +32,7 @@ public class TranslateSigTest {
         Constructor<Class1> ctor = Class1.class.getConstructor();
         DexSig sig = TranslateSig.$(javaTypes, ctor);
         Assert.assertEquals(0, sig.typeParams().size());
-        Assert.assertEquals(0, sig.params().size());
+        Assert.assertEquals(1, sig.params().size());
         Assert.assertEquals(TranslateSig.dTypeNameOf(Class1.class), sig.ret().toString());
     }
 
@@ -45,8 +45,8 @@ public class TranslateSigTest {
     public void one_param() throws Exception {
         Constructor<Class2> ctor = Class2.class.getConstructor(String.class);
         DexSig sig = TranslateSig.$(javaTypes, ctor);
-        Assert.assertEquals(1, sig.params().size());
-        Assert.assertEquals("string", sig.params().get(0).paramType().toString());
+        Assert.assertEquals(2, sig.params().size());
+        Assert.assertEquals("string", sig.params().get(1).paramType().toString());
     }
 
     public static class Class3 {
@@ -58,9 +58,9 @@ public class TranslateSigTest {
     public void two_params() throws Exception {
         Constructor<Class3> ctor = Class3.class.getConstructor(String.class, Long.class);
         DexSig sig = TranslateSig.$(javaTypes, ctor);
-        Assert.assertEquals(2, sig.params().size());
-        Assert.assertEquals("string", sig.params().get(0).paramType().toString());
-        Assert.assertEquals("int64", sig.params().get(1).paramType().toString());
+        Assert.assertEquals(3, sig.params().size());
+        Assert.assertEquals("string", sig.params().get(1).paramType().toString());
+        Assert.assertEquals("int64", sig.params().get(2).paramType().toString());
     }
 
     public static class Class4<T1> {
@@ -74,6 +74,7 @@ public class TranslateSigTest {
         DexTypeParam typeParam0 = sig.typeParams().get(0);
         Assert.assertEquals("T1", typeParam0.paramName().toString());
         Assert.assertEquals("interface{}", typeParam0.paramType().toString().trim());
+        Assert.assertEquals("T1", sig.ret().asParameterizedType().typeArgs().get(0).toString());
     }
 
     public static class Class5<T1 extends Long> {
@@ -133,9 +134,9 @@ public class TranslateSigTest {
         DexTypeParam typeParam0 = sig.typeParams().get(0);
         Assert.assertEquals("T1", typeParam0.paramName().toString());
         Assert.assertEquals("interface{}", typeParam0.paramType().toString().trim());
-        Assert.assertEquals(1, sig.params().size());
-        DexParam param0 = sig.params().get(0);
-        Assert.assertEquals("T1", param0.paramType().toString());
+        Assert.assertEquals(2, sig.params().size());
+        DexParam param1 = sig.params().get(1);
+        Assert.assertEquals("T1", param1.paramType().toString());
     }
 
     public static class Class9<T1> {
@@ -151,9 +152,9 @@ public class TranslateSigTest {
         DexTypeParam typeParam0 = sig.typeParams().get(0);
         Assert.assertEquals("T1", typeParam0.paramName().toString());
         Assert.assertEquals("interface{}", typeParam0.paramType().toString().trim());
-        Assert.assertEquals(1, sig.params().size());
-        DexParam param0 = sig.params().get(0);
-        Assert.assertEquals("T1", param0.paramType().asParameterizedType().typeArgs().get(0).toString());
+        Assert.assertEquals(2, sig.params().size());
+        DexParam param1 = sig.params().get(1);
+        Assert.assertEquals("T1", param1.paramType().asParameterizedType().typeArgs().get(0).toString());
     }
 
     public static class Class10 {
@@ -165,9 +166,24 @@ public class TranslateSigTest {
     public void param_ref_wildcard() throws Exception {
         Constructor<Class10> ctor = Class10.class.getConstructor(List.class);
         DexSig sig = TranslateSig.$(javaTypes, ctor);
-        Assert.assertEquals(1, sig.params().size());
-        DexParam param0 = sig.params().get(0);
-        DexParameterizedType parameterizedType = param0.paramType().asParameterizedType();
+        Assert.assertEquals(2, sig.params().size());
+        DexParam param1 = sig.params().get(1);
+        DexParameterizedType parameterizedType = param1.paramType().asParameterizedType();
         Assert.assertEquals("interface{}", parameterizedType.typeArgs().get(0).toString());
+    }
+
+    public static class Class11<E> {
+        public Class11(List<? extends E> arg0) {
+        }
+    }
+
+    @Test
+    public void param_ref_wildcard_extends() throws Exception {
+        Constructor<Class11> ctor = Class11.class.getConstructor(List.class);
+        DexSig sig = TranslateSig.$(javaTypes, ctor);
+        Assert.assertEquals(2, sig.params().size());
+        DexParam param1 = sig.params().get(1);
+        DexParameterizedType parameterizedType = param1.paramType().asParameterizedType();
+        Assert.assertEquals("E", parameterizedType.typeArgs().get(0).toString());
     }
 }

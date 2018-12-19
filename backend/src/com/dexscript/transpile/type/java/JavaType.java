@@ -1,28 +1,40 @@
 package com.dexscript.transpile.type.java;
 
+import com.dexscript.ast.type.DexType;
 import com.dexscript.transpile.shim.OutShim;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JavaType implements NamedType, FunctionsType {
+public class JavaType implements NamedType, FunctionsType, GenericType {
 
     private final OutShim oShim;
     private final Class clazz;
     private Map<TypeVariable, DType> jTypeVars;
     private List<FunctionType> functions;
     private List<DType> dTypeParams;
+    private List<DType> dTypeArgs;
     private TypeSystem ts;
+    private String description;
 
     public JavaType(OutShim oShim, Class clazz) {
+        this(oShim, clazz, null);
+    }
+
+    public JavaType(OutShim oShim, Class clazz, List<DType> dTypeArgs) {
         this.oShim = oShim;
         this.clazz = clazz;
         this.ts = oShim.typeSystem();
+        this.dTypeArgs = dTypeArgs;
+        if (dTypeArgs == null) {
+            ts.defineType(this);
+        }
         ts.lazyDefineFunctions(this);
     }
 
@@ -175,11 +187,38 @@ public class JavaType implements NamedType, FunctionsType {
 
     @Override
     public String toString() {
-        return name();
+        if (description == null) {
+            description = describe(dTypeArgs);
+        }
+        return description;
     }
 
     @Override
     public @NotNull String name() {
         return TranslateSig.dTypeNameOf(clazz);
+    }
+
+    @Override
+    public DType generateType(List<DType> typeArgs) {
+        return new JavaType(oShim, clazz, typeArgs);
+    }
+
+    @Override
+    public List<DType> typeParameters() {
+        if (dTypeParams != null) {
+            return dTypeParams;
+        }
+        dTypeParams = new ArrayList<>();
+        JavaTypes javaTypes = oShim.javaTypes();
+        for (TypeVariable jTypeVar : clazz.getTypeParameters()) {
+            Type[] jTypeParams = jTypeVar.getBounds();
+            if (jTypeParams.length != 1) {
+                throw new UnsupportedOperationException("not implemented");
+            }
+            String dTypeParamSrc = TranslateSig.translateType(javaTypes, jTypeParams[0]);
+            DType dTypeParam = ResolveType.$(ts, null, DexType.parse(dTypeParamSrc));
+            dTypeParams.add(dTypeParam);
+        }
+        return dTypeParams;
     }
 }

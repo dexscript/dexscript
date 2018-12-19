@@ -138,15 +138,12 @@ public class OutShim {
             params.add(javaTypes.resolve(param));
         }
         DType ret = javaTypes.resolve(clazz);
-        FunctionSig sig = new FunctionSig(ts, translateSig());
+        DexSig dexSig = TranslateSig.$(javaTypes, ctor);
+        FunctionSig sig = new FunctionSig(ts, dexSig);
         FunctionType functionType = new FunctionType(ts, "New__", params, ret, sig);
-        functionType.setImplProvider(expandedFunc ->
-                new NewJavaClass(this, expandedFunc, ctor, clazz.getCanonicalName()));
-    }
-
-    @NotNull
-    public DexSig translateSig() {
-        return new DexSig("");
+        functionType.setImplProvider(expandedFunc -> {
+            return new NewJavaClass(this, expandedFunc, ctor, clazz.getCanonicalName());
+        });
     }
 
     public Gen g() {

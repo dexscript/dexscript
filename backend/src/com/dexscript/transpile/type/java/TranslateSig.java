@@ -2,36 +2,63 @@ package com.dexscript.transpile.type.java;
 
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.type.DType;
+import com.dexscript.type.NamedType;
 
 import java.lang.reflect.*;
 
 public interface TranslateSig {
+
     static DexSig $(JavaTypes javaTypes, Constructor ctor) {
+        Class clazz = ctor.getDeclaringClass();
         StringBuilder sig = new StringBuilder();
         sig.append('(');
         boolean isFirst = true;
-        isFirst = translateTypeVariables(javaTypes, sig, ctor.getDeclaringClass().getTypeParameters(), isFirst);
+        isFirst = translateTypeVariables(javaTypes, sig, clazz.getTypeParameters(), isFirst);
         isFirst = translateTypeVariables(javaTypes, sig, ctor.getTypeParameters(), isFirst);
         Type[] jParams = ctor.getGenericParameterTypes();
+        isFirst = appendMore(sig, isFirst);
+        sig.append("clazz: '");
+        sig.append(clazz.getSimpleName());
+        sig.append("'");
         for (int i = 0; i < jParams.length; i++) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sig.append(", ");
-            }
+            isFirst = appendMore(sig, isFirst);
             sig.append("arg");
             sig.append(i);
             sig.append(": ");
             sig.append(translateType(javaTypes, jParams[i]));
         }
         sig.append("): ");
-        sig.append(dTypeNameOf(ctor.getDeclaringClass()));
+        sig.append(dTypeNameOf(clazz));
+        if (clazz.getTypeParameters().length > 0) {
+            sig.append('<');
+            for (int i = 0; i < clazz.getTypeParameters().length; i++) {
+                if (i > 0) {
+                    sig.append(", ");
+                }
+                TypeVariable jTypeParam = clazz.getTypeParameters()[i];
+                sig.append(jTypeParam.getName());
+            }
+            sig.append('>');
+        }
         return new DexSig(sig.toString());
+    }
+
+    static boolean appendMore(StringBuilder sig, boolean isFirst) {
+        if (isFirst) {
+            isFirst = false;
+        } else {
+            sig.append(", ");
+        }
+        return isFirst;
     }
 
     static String translateType(JavaTypes javaTypes, Type jTypeObj) {
         if (jTypeObj instanceof Class) {
-            DType dType = javaTypes.resolve((Class) jTypeObj);
+            Class jType = (Class) jTypeObj;
+            DType dType = javaTypes.resolve(jType);
+            if (dType instanceof NamedType) {
+                return ((NamedType) dType).name();
+            }
             return dType.toString();
         } else if (jTypeObj instanceof TypeVariable) {
             TypeVariable jType = (TypeVariable) jTypeObj;
@@ -53,6 +80,10 @@ public interface TranslateSig {
             dType.append('>');
             return dType.toString();
         } else if (jTypeObj instanceof WildcardType) {
+            Type[] upperBounds = ((WildcardType) jTypeObj).getUpperBounds();
+            if (upperBounds.length == 1) {
+                return translateType(javaTypes, upperBounds[0]);
+            }
             return "interface{}";
         } else {
             throw new UnsupportedOperationException("not implemented");
@@ -62,11 +93,7 @@ public interface TranslateSig {
     static boolean translateTypeVariables(
             JavaTypes javaTypes, StringBuilder sig, TypeVariable[] typeVariables, boolean isFirst) {
         for (TypeVariable jTypeParam : typeVariables) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                sig.append(", ");
-            }
+            isFirst = appendMore(sig, isFirst);
             sig.append('<');
             sig.append(jTypeParam.getName());
             sig.append(">: ");
