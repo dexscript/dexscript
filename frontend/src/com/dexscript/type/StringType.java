@@ -2,6 +2,8 @@ package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class StringType implements NamedType {
 
     private final TypeSystem ts;
@@ -29,5 +31,18 @@ public class StringType implements NamedType {
     @Override
     public @NotNull String name() {
         return "string";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StringType that = (StringType) o;
+        return Objects.equals(ts, that.ts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ts);
     }
 }

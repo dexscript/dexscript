@@ -2,6 +2,8 @@ package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class Int64Type implements NamedType {
 
     private final TypeSystem ts;
@@ -48,5 +50,18 @@ public class Int64Type implements NamedType {
     @Override
     public TypeSystem typeSystem() {
         return ts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Int64Type int64Type = (Int64Type) o;
+        return Objects.equals(ts, int64Type.ts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ts);
     }
 }

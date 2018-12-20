@@ -2,6 +2,8 @@ package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class Float32Type implements NamedType {
 
     private final TypeSystem ts;
@@ -29,5 +31,18 @@ public class Float32Type implements NamedType {
     @Override
     public String toString() {
         return name();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Float32Type that = (Float32Type) o;
+        return Objects.equals(ts, that.ts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ts);
     }
 }

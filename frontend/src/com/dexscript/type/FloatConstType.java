@@ -1,5 +1,7 @@
 package com.dexscript.type;
 
+import java.util.Objects;
+
 class FloatConstType implements DType {
 
     private final TypeSystem ts;
@@ -22,6 +24,20 @@ class FloatConstType implements DType {
 
     @Override
     public String toString() {
-        return "const'" + val;
+        return "(const)" + val;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FloatConstType that = (FloatConstType) o;
+        return Objects.equals(ts, that.ts) &&
+                Objects.equals(val, that.val);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ts, val);
     }
 }

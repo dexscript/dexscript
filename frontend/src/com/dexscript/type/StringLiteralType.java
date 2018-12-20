@@ -34,20 +34,21 @@ public final class StringLiteralType implements DType {
     }
 
     @Override
+    public String toString() {
+        return "'" + val + "'";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StringLiteralType that = (StringLiteralType) o;
-        return val.equals(that.val);
+        return Objects.equals(ts, that.ts) &&
+                val.equals(that.val);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(val);
-    }
-
-    @Override
-    public String toString() {
-        return "'" + val + "'";
+        return Objects.hash(ts, val);
     }
 }

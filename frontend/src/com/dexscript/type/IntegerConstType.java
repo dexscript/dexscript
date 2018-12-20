@@ -24,7 +24,7 @@ public class IntegerConstType implements DType {
 
     @Override
     public String toString() {
-        return "const'" + val;
+        return "(const)" + val;
     }
 
     public String constValue() {

@@ -2,6 +2,8 @@ package com.dexscript.type;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class Int32Type implements NamedType {
 
     private final TypeSystem ts;
@@ -42,5 +44,18 @@ public class Int32Type implements NamedType {
     @Override
     public TypeSystem typeSystem() {
         return ts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Int32Type int32Type = (Int32Type) o;
+        return Objects.equals(ts, int32Type.ts);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ts);
     }
 }
