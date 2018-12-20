@@ -31,11 +31,15 @@ public class JavaTypes {
         add(UInt8.class, ts.UINT8);
         add(Integer.class, ts.INT32);
         add(Long.class, ts.INT64);
+        add(Float.class, ts.FLOAT32);
+        add(Double.class, ts.FLOAT64);
         add(String.class, ts.STRING);
         primitiveTypes.put(Object.class, ts.ANY);
         primitiveTypes.put(boolean.class, ts.BOOL);
         primitiveTypes.put(int.class, ts.INT32);
         primitiveTypes.put(long.class, ts.INT64);
+        primitiveTypes.put(float.class, ts.FLOAT32);
+        primitiveTypes.put(double.class, ts.FLOAT64);
         primitiveTypes.put(void.class, ts.VOID);
     }
 

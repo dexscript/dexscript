@@ -124,4 +124,12 @@ public class TypeSystem {
     public boolean isIntegerLiteral(DType type) {
         return type instanceof IntegerLiteralType && type.typeSystem().equals(this);
     }
+
+    public boolean isBoolConst(DType type) {
+        return type instanceof BoolConstType && type.typeSystem().equals(this);
+    }
+
+    public boolean isStringConst(DType type) {
+        return type instanceof StringConstType && type.typeSystem().equals(this);
+    }
 }

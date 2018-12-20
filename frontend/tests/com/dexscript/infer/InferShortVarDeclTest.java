@@ -40,7 +40,6 @@ public class InferShortVarDeclTest {
                 "}");
         DexValueRef ref = func.stmts().get(1).asReturn().expr().asRef();
         Value value = InferValue.$(ts, ref);
-        Assert.assertNull(value.definedBy());
-        Assert.assertEquals(ts.UNDEFINED, value.type());
+        Assert.assertNull(value);
     }
 }

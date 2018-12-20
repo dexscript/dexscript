@@ -15,10 +15,14 @@ public class InferShortVarDecl implements InferValue<DexShortVarDecl> {
         String valueName = decl.toString();
         DType valueType = InferType.$(ts, shortVarDecl.expr());
         // widen const types
-        if (valueType instanceof StringConstType) {
+        if (ts.isStringConst(valueType)) {
             valueType = ts.STRING;
-        } else if (valueType instanceof IntegerConstType) {
+        } else if (ts.isIntegerConst(valueType)) {
             valueType = ts.INT64;
+        } else if (ts.isFloatConst(valueType)) {
+            valueType = ts.FLOAT64;
+        } else if (ts.isBoolConst(valueType)) {
+            valueType = ts.BOOL;
         }
         table.define(new Value(valueName, valueType, decl));
     }
