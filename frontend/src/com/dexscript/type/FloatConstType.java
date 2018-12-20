@@ -40,4 +40,8 @@ class FloatConstType implements DType {
     public int hashCode() {
         return Objects.hash(ts, val);
     }
+
+    public String constValue() {
+        return val;
+    }
 }

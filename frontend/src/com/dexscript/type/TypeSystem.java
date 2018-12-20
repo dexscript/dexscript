@@ -2,6 +2,7 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class TypeSystem {
@@ -93,8 +94,16 @@ public class TypeSystem {
         return new IntegerConstType(this, val);
     }
 
+    public DType literalOfInteger(String val) {
+        return new IntegerLiteralType(this, val);
+    }
+
     public DType constOfBool(String val) {
         return new BoolConstType(this, val);
+    }
+
+    public DType literalOfBool(String val) {
+        return new BoolLiteralType(this, val);
     }
 
     public boolean isFloatConst(DType type) {
@@ -131,5 +140,24 @@ public class TypeSystem {
 
     public boolean isStringConst(DType type) {
         return type instanceof StringConstType && type.typeSystem().equals(this);
+    }
+
+    public List<DType> widen(DType type) {
+        if (type instanceof BoolConstType) {
+            String val = ((BoolConstType) type).constValue();
+            return Arrays.asList(literalOfBool(val), BOOL);
+        }
+        if (type instanceof StringConstType) {
+            String val = ((StringConstType) type).constValue();
+            return Arrays.asList(literalOf(val), STRING);
+        }
+        if (type instanceof IntegerConstType) {
+            String val = ((IntegerConstType) type).constValue();
+            return Arrays.asList(literalOfInteger(val), INT64, INT32, FLOAT64, FLOAT32);
+        }
+        if (type instanceof FloatConstType) {
+            return Arrays.asList(FLOAT64, FLOAT32);
+        }
+        return Arrays.asList(type);
     }
 }
