@@ -4,10 +4,11 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
 import com.dexscript.ast.stmt.DexBlock;
 import com.dexscript.ast.stmt.DexStatement;
+import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
 import com.dexscript.transpile.skeleton.OutClass;
-import com.dexscript.type.JavaSuperTypeArgs;
+import com.dexscript.type.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,5 +99,20 @@ public interface Translate<E extends DexElement> {
             return;
         }
         translate.handle(oClass, iElem);
+    }
+
+    static String translateExpr(OutClass oClass, DexExpr iExpr, DType targetType) {
+        Translate.$(oClass, iExpr);
+        String val = OutValue.of(iExpr);
+        if (InferType.$(oClass.typeSystem(), iExpr) instanceof IntegerConstType) {
+            if (targetType instanceof Int32Type) {
+                return "Integer.valueOf((int)" + val + ")";
+            } else if (targetType instanceof Int64Type || targetType instanceof IntegerLiteralType) {
+                // keep it as Long
+                return val;
+            }
+            throw new UnsupportedOperationException("not implemented");
+        }
+        return val;
     }
 }

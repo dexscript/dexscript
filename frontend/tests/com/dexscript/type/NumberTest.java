@@ -28,5 +28,8 @@ public class NumberTest {
         TestAssignable.$(false, ts.INT32, ts.literalOf(100));
         TestAssignable.$(true, ts.INT32, ts.constOf(100));
         TestAssignable.$(false, ts.constOf(100), ts.INT32);
+
+        TestAssignable.$(true, ts.literalOf(100), ts.constOf(100));
+        TestAssignable.$(false, ts.literalOf(101), ts.constOf(100));
     }
 }

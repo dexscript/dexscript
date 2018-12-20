@@ -5,15 +5,18 @@ import java.util.Objects;
 public class IntegerLiteralType implements DType {
 
     private final TypeSystem ts;
-    private final String literalValue;
+    private final String val;
 
-    public IntegerLiteralType(TypeSystem ts, String literalValue) {
+    public IntegerLiteralType(TypeSystem ts, String val) {
         this.ts = ts;
-        this.literalValue = literalValue;
+        this.val = val;
     }
 
     @Override
     public boolean _isAssignable(IsAssignable ctx, DType that) {
+        if (that instanceof IntegerConstType) {
+            return val.equals(((IntegerConstType) that).constValue());
+        }
         return that.equals(this);
     }
 
@@ -23,12 +26,12 @@ public class IntegerLiteralType implements DType {
     }
 
     public String literalValue() {
-        return literalValue;
+        return val;
     }
 
     @Override
     public String toString() {
-        return literalValue;
+        return val;
     }
 
     @Override
@@ -36,11 +39,12 @@ public class IntegerLiteralType implements DType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         IntegerLiteralType that = (IntegerLiteralType) o;
-        return Objects.equals(literalValue, that.literalValue);
+        return Objects.equals(ts, that.ts) &&
+                Objects.equals(val, that.val);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(literalValue);
+        return Objects.hash(ts, val);
     }
 }

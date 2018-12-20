@@ -17,7 +17,7 @@ public class InferShortVarDecl implements InferValue<DexShortVarDecl> {
         // widen literal types
         if (valueType instanceof StringLiteralType) {
             valueType = ts.STRING;
-        } else if (valueType instanceof IntegerLiteralType) {
+        } else if (valueType instanceof IntegerConstType) {
             valueType = ts.INT64;
         }
         table.define(new Value(valueName, valueType, decl));
