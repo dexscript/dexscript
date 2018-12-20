@@ -83,9 +83,9 @@ public class OutTown {
             args.add(arg);
         }
         Invocation ivc = new Invocation(funcName, null, args, null);
-        List<FunctionSig.Invoked> invokeds = ts.invoke(ivc);
-        for (FunctionSig.Invoked invoked : invokeds) {
-            invoked.function().impl();
+        Invoked invoked = ts.invoke(ivc);
+        for (FunctionSig.Invoked success : invoked.successes()) {
+            success.function().impl();
         }
     }
 

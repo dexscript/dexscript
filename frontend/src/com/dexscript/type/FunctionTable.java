@@ -7,13 +7,6 @@ import java.util.Map;
 
 public class FunctionTable {
 
-    public interface OnInvocationFilteredFunction {
-        void handle(FunctionType func, Invocation ivc);
-    }
-
-    public static final OnInvocationFilteredFunction ON_INVOCATION_FILTERED_FUNCTION = (func, ivc) -> {
-    };
-
     public interface OnFunctionDefined {
         void handle(FunctionType func);
     }
@@ -30,30 +23,38 @@ public class FunctionTable {
         ON_FUNCTION_DEFINED.handle(func);
     }
 
-    public List<FunctionSig.Invoked> invoke(Invocation ivc) {
+    public Invoked invoke(Invocation ivc) {
         String funcName = ivc.funcName();
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
-            return new ArrayList<>();
+            return new Invoked(ivc.args(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         }
-        List<FunctionSig.Invoked> invokeds = new ArrayList<>();
+        boolean alreadyMatched = false;
+        List<FunctionSig.Invoked> successes = new ArrayList<>();
+        List<FunctionSig.Invoked> failures = new ArrayList<>();
+        List<FunctionType> ignoreds = new ArrayList<>();
         for (int i = 0; i < functions.size(); i++) {
             FunctionType func = functions.get(i);
+            if (alreadyMatched) {
+                ignoreds.add(func);
+                continue;
+            }
             FunctionSig.Invoked invoked = func.sig().invoke(ivc);
             if (!invoked.success()) {
-                ON_INVOCATION_FILTERED_FUNCTION.handle(func, ivc);
+                failures.add(invoked);
                 continue;
             }
             if (ivc.requireImpl() && !invoked.function().hasImpl()) {
+                failures.add(invoked);
                 continue;
             }
-            invokeds.add(invoked);
+            successes.add(invoked);
             if (!invoked.needRuntimeCheck()) {
-                return invokeds;
+                alreadyMatched = true;
             }
         }
-        return invokeds;
+        return new Invoked(ivc.args(), successes, failures, ignoreds);
     }
 
     public void lazyDefine(FunctionsType provider) {

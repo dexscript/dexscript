@@ -20,10 +20,6 @@ public final class PlaceholderType implements NamedType {
             that = ((PlaceholderType) that).constraint;
         }
         if (new IsAssignable(ctx, "constraint", constraint, that).result()) {
-            if (that instanceof StringLiteralType) {
-                ctx.substitute(this, ts.STRING);
-                return true;
-            }
             ctx.substitute(this, that);
             return true;
         }

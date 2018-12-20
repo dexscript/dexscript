@@ -45,11 +45,11 @@ public class ActorTypeTest {
                 "   AA(): string\n" +
                 "}"));
         Assert.assertTrue(IsAssignable.$(inf, actor));
-        List<FunctionSig.Invoked> newNestedActor = ts.invoke(new Invocation("New__", null, new ArrayList<DType>() {{
+        Invoked invoked = ts.invoke(new Invocation("New__", null, new ArrayList<DType>() {{
             add(new StringLiteralType(ts, "AA"));
             add(actor);
         }}, null));
-        Assert.assertEquals(1, newNestedActor.size());
+        Assert.assertEquals(1, invoked.successes().size());
     }
 
     @Test
@@ -59,9 +59,9 @@ public class ActorTypeTest {
         new ActorType(oShim, new DexActor("" +
                 "function Hello() {\n" +
                 "}"));
-        List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, new ArrayList<>(), null));
-        Assert.assertEquals(1, functionTypes.size());
-        Assert.assertEquals(ts.VOID, functionTypes.get(0).function().ret());
+        Invoked invoked = ts.invoke(new Invocation("Hello", null, new ArrayList<>(), null));
+        Assert.assertEquals(1, invoked.successes().size());
+        Assert.assertEquals(ts.VOID, invoked.successes().get(0).function().ret());
     }
 
     @Test
@@ -71,8 +71,8 @@ public class ActorTypeTest {
         new ActorType(oShim, new DexActor("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
-        List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Hello", null, Arrays.asList(ts.STRING), null));
-        Assert.assertEquals(1, functionTypes.size());
+        Invoked invoked = ts.invoke(new Invocation("Hello", null, Arrays.asList(ts.STRING), null));
+        Assert.assertEquals(1, invoked.successes().size());
         DType type = ResolveType.$(ts, "Hello<string>");
         Assert.assertNotNull(type);
     }
@@ -87,7 +87,7 @@ public class ActorTypeTest {
                 "}"));
         StringLiteralType a = new StringLiteralType(ts, "a");
         StringLiteralType b = new StringLiteralType(ts, "b");
-        List<FunctionSig.Invoked> functionTypes = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null));
-        Assert.assertEquals(0, functionTypes.size());
+        Invoked invoked = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null));
+        Assert.assertEquals(0, invoked.successes().size());
     }
 }

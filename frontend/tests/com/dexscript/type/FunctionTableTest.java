@@ -24,11 +24,11 @@ public class FunctionTableTest {
         return funcType;
     }
 
-    public List<FunctionSig.Invoked> invoke(String funcName, String argsStr) {
+    public Invoked invoke(String funcName, String argsStr) {
         return invoke(funcName, null, argsStr);
     }
 
-    public List<FunctionSig.Invoked> invoke(String funcName, String typeArgsStr, String argsStr) {
+    public Invoked invoke(String funcName, String typeArgsStr, String argsStr) {
         List<DType> typeArgs = Collections.emptyList();
         if (typeArgsStr != null) {
             typeArgs = ResolveType.resolveTypes(ts, typeArgsStr.split(","));
@@ -41,24 +41,24 @@ public class FunctionTableTest {
     public void match_one() {
         FunctionType func1 = func("Hello(arg0: string)");
         FunctionType func2 = func("Hello(arg0: int64)");
-        List<FunctionSig.Invoked> invokeds = invoke("Hello", "string");
-        Assert.assertEquals(1, invokeds.size());
-        Assert.assertEquals(func1, invokeds.get(0).function());
+        Invoked invoked = invoke("Hello", "string");
+        Assert.assertEquals(1, invoked.successes().size());
+        Assert.assertEquals(func1, invoked.successes().get(0).function());
     }
 
     @Test
     public void match_two() {
-        func("Hello(arg0: string)");
         func("Hello(arg0: 'a')");
-        List<FunctionSig.Invoked> invokeds = invoke("Hello", "string");
-        Assert.assertEquals(2, invokeds.size());
+        func("Hello(arg0: string)");
+        Invoked invoked = invoke("Hello", "string");
+        Assert.assertEquals(2, invoked.successes().size());
     }
 
     @Test
     public void if_static_checked_then_following_candidates_will_be_ignored() {
         func("Hello(arg0: 'a')");
         func("Hello(arg0: string)");
-        List<FunctionSig.Invoked> invokeds = invoke("Hello", "string");
-        Assert.assertEquals(1, invokeds.size());
+        Invoked invoked = invoke("Hello", "string");
+        Assert.assertEquals(1, invoked.successes().size());
     }
 }

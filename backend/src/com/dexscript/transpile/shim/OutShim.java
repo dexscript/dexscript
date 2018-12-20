@@ -97,8 +97,8 @@ public class OutShim {
         return shimName + "__" + count;
     }
 
-    public String dispatch(String funcName, int paramsCount, List<FunctionSig.Invoked> invokeds) {
-        FunctionChain chain = new FunctionChain(funcName, paramsCount, invokeds);
+    public String dispatch(String funcName, int paramsCount, Invoked invoked) {
+        FunctionChain chain = new FunctionChain(funcName, paramsCount, invoked);
         String chainF = chains.get(chain);
         if (chainF != null) {
             return CLASSNAME + "." + chainF;

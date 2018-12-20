@@ -35,7 +35,9 @@ public class Invocation {
         return this;
     }
 
-    public boolean requireImpl() { return requireImpl; }
+    public boolean requireImpl() {
+        return requireImpl;
+    }
 
     public String funcName() {
         return funcName;

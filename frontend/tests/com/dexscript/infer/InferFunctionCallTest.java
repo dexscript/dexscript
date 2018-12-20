@@ -42,8 +42,7 @@ public class InferFunctionCallTest {
     public void match_two() {
         func("Hello(arg0: 'a'): 'a'");
         func("Hello(arg0: string): 'b'");
-        // TODO: support as
-        DType type = InferType.$(ts, DexExpr.parse("Hello('hello' as string)"));
+        DType type = InferType.$(ts, DexExpr.parse("Hello('hello')"));
         Assert.assertTrue(IsAssignable.$(type, new StringLiteralType(ts, "a")));
         Assert.assertTrue(IsAssignable.$(type, new StringLiteralType(ts, "b")));
     }

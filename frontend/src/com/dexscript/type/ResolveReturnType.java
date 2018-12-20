@@ -15,21 +15,22 @@ public interface ResolveReturnType {
     }
 
     static DType $(TypeSystem ts, String funcName, List<DType> typeArgs, List<DType> args, DType retHint) {
-        List<FunctionSig.Invoked> invokeds = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
-        if (invokeds.size() == 0) {
+        Invoked invoked = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
+        if (invoked.successes().size() == 0) {
             Events.ON_MISSING_FUNCTION.handle(ts, funcName, args);
             return ts.UNDEFINED;
         }
-        return $(invokeds);
+        return ResolveReturnType.$(invoked);
     }
 
-    static DType $(List<FunctionSig.Invoked> invokeds) {
-        if (invokeds.size() == 1) {
-            return invokeds.get(0).function().ret();
+    static DType $(Invoked invoked) {
+        List<FunctionSig.Invoked> successes = invoked.successes();
+        if (successes.size() == 1) {
+            return successes.get(0).function().ret();
         }
-        DType ret = invokeds.get(0).function().ret();
-        for (int i = 1; i < invokeds.size(); i++) {
-            ret = ret.union(invokeds.get(i).function().ret());
+        DType ret = successes.get(0).function().ret();
+        for (int i = 1; i < successes.size(); i++) {
+            ret = ret.union(successes.get(i).function().ret());
         }
         return ret;
     }

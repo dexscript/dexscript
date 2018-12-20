@@ -39,13 +39,13 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         List<DType> typeArgs = ResolveType.resolveTypes(ts, null, iTypeArgs);
         Invocation ivc = new Invocation(funcName, typeArgs, args, null)
                 .requireImpl(true);
-        List<FunctionSig.Invoked> invokeds = ts.invoke(ivc);
-        if (invokeds.size() == 0) {
+        Invoked invoked = ts.invoke(ivc);
+        if (invoked.successes().size() == 0) {
             throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
                     funcName, args));
         }
-        String newF = oClass.oShim().dispatch(funcName, iArgs.size(), invokeds);
-        DType retType = ResolveReturnType.$(invokeds);
+        String newF = oClass.oShim().dispatch(funcName, iArgs.size(), invoked);
+        DType retType = ResolveReturnType.$(invoked);
 
         OutField oActorField = oClass.allocateField(funcName);
         oClass.g().__(oActorField.value()
@@ -60,10 +60,10 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         }
         oClass.g().__(new Line(");"));
         boolean needToConsume = false;
-        for (FunctionSig.Invoked invoked : invokeds) {
-            FunctionImpl impl = (FunctionImpl) invoked.function().impl();
+        for (FunctionSig.Invoked success : invoked.successes()) {
+            FunctionImpl impl = (FunctionImpl) success.function().impl();
             if (impl == null) {
-                throw new IllegalStateException("function type defined without impl attached: " + invoked.function());
+                throw new IllegalStateException("function type defined without impl attached: " + success.function());
             }
             if (impl.hasAwait()) {
                 needToConsume = true;
