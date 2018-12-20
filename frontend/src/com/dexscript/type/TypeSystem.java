@@ -56,11 +56,19 @@ public class TypeSystem {
         return functionTable;
     }
 
-    public IntegerLiteralType literalOf(long i) {
-        return new IntegerLiteralType(this, String.valueOf(i));
+    public IntegerLiteralType literalOf(long val) {
+        return new IntegerLiteralType(this, String.valueOf(val));
     }
 
-    public IntegerConstType constOf(long i) {
-        return new IntegerConstType(this, String.valueOf(i));
+    public IntegerConstType constOf(long val) {
+        return new IntegerConstType(this, String.valueOf(val));
+    }
+
+    public StringLiteralType literalOf(String val) {
+        return new StringLiteralType(this, val);
+    }
+
+    public StringConstType constOf(String val) {
+        return new StringConstType(this, val);
     }
 }

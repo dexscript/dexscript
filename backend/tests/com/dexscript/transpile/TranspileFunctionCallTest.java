@@ -40,4 +40,28 @@ public class TranspileFunctionCallTest {
                 "}");
         Assert.assertEquals("hello world", result);
     }
+
+    @Test
+    public void invoke_int64() {
+        Object result = Transpile.$("" +
+                "function Hello(): int64 {\n" +
+                "   return World(100)\n" +
+                "}\n" +
+                "function World(arg: int64): int64 {" +
+                "   return arg\n" +
+                "}");
+        Assert.assertEquals(100L, result);
+    }
+
+    @Test
+    public void invoke_int32() {
+        Object result = Transpile.$("" +
+                "function Hello(): int32 {\n" +
+                "   return World(100)\n" +
+                "}\n" +
+                "function World(arg: int32): int32 {" +
+                "   return arg\n" +
+                "}");
+        Assert.assertEquals(100, result);
+    }
 }

@@ -3,7 +3,7 @@ package com.dexscript.type;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NumberTest {
+public class NumberTypeTest {
 
     private TypeSystem ts;
 

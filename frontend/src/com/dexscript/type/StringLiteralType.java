@@ -8,15 +8,18 @@ public final class StringLiteralType implements DType {
 
     private final TypeSystem ts;
     @NotNull
-    private final String literalValue;
+    private final String val;
 
-    public StringLiteralType(TypeSystem ts, @NotNull String literalValue) {
+    public StringLiteralType(TypeSystem ts, @NotNull String val) {
         this.ts = ts;
-        this.literalValue = literalValue;
+        this.val = val;
     }
 
     @Override
     public boolean _isAssignable(IsAssignable ctx, DType that) {
+        if (that instanceof StringConstType) {
+            return val.equals(((StringConstType) that).constValue());
+        }
         return that.equals(this);
     }
 
@@ -27,7 +30,7 @@ public final class StringLiteralType implements DType {
 
     @NotNull
     public String literalValue() {
-        return literalValue;
+        return val;
     }
 
     @Override
@@ -35,16 +38,16 @@ public final class StringLiteralType implements DType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StringLiteralType that = (StringLiteralType) o;
-        return literalValue.equals(that.literalValue);
+        return val.equals(that.val);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(literalValue);
+        return Objects.hash(val);
     }
 
     @Override
     public String toString() {
-        return "'" + literalValue + "'";
+        return "'" + val + "'";
     }
 }

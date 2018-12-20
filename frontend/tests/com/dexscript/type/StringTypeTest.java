@@ -1,6 +1,5 @@
 package com.dexscript.type;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -14,21 +13,16 @@ public class StringTypeTest {
     }
 
     @Test
-    public void string_is_assignable_from_string() {
-        Assert.assertTrue(IsAssignable.$(new StringType(ts), ts.STRING));
-        Assert.assertTrue(IsAssignable.$(ts.STRING, new StringType(ts)));
-    }
+    public void relationship() {
+        TestAssignable.$(true, new StringType(ts), ts.STRING);
+        TestAssignable.$(true, ts.STRING, new StringType(ts));
+        TestAssignable.$(true, ts.STRING, ts.literalOf("hello"));
+        TestAssignable.$(false, ts.literalOf("hello"), ts.STRING);
+        TestAssignable.$(true, ts.literalOf("hello"), ts.literalOf("hello"));
 
-    @Test
-    public void string_is_assignable_from_string_literal() {
-        Assert.assertTrue(IsAssignable.$(ts.STRING, new StringLiteralType(ts, "hello")));
-        Assert.assertFalse(IsAssignable.$(new StringLiteralType(ts, "hello"), ts.STRING));
-    }
-
-    @Test
-    public void string_literal_is_assignable_from_string_literal() {
-        Assert.assertTrue(IsAssignable.$(
-                new StringLiteralType(ts, "A"),
-                new StringLiteralType(ts, "A")));
+        TestAssignable.$(true, ts.STRING, ts.constOf("hello"));
+        TestAssignable.$(true, ts.literalOf("hello"), ts.constOf("hello"));
+        TestAssignable.$(false, ts.literalOf("world"), ts.constOf("hello"));
+        TestAssignable.$(false, ts.constOf("world"), ts.literalOf("hello"));
     }
 }

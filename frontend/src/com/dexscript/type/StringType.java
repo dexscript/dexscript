@@ -13,7 +13,7 @@ public class StringType implements NamedType {
 
     @Override
     public boolean _isAssignable(IsAssignable ctx, DType that) {
-        return that instanceof StringType || that instanceof StringLiteralType;
+        return that instanceof StringType || that instanceof StringLiteralType || that instanceof StringConstType;
     }
 
     @Override
