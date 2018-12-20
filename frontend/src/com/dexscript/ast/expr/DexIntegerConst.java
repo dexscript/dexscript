@@ -6,16 +6,16 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.One2Nine;
 import com.dexscript.ast.token.Zero2Nine;
 
-public class DexIntegerLiteral extends DexLeafExpr {
+public class DexIntegerConst extends DexLeafExpr {
 
     private Text matched;
 
-    public DexIntegerLiteral(Text src) {
+    public DexIntegerConst(Text src) {
         super(src);
         new Parser();
     }
 
-    public DexIntegerLiteral(String src) {
+    public DexIntegerConst(String src) {
         this(new Text(src));
     }
 

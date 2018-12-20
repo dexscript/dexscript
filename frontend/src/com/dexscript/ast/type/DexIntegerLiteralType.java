@@ -1,7 +1,7 @@
 package com.dexscript.ast.type;
 
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.expr.DexIntegerLiteral;
+import com.dexscript.ast.expr.DexIntegerConst;
 
 public class DexIntegerLiteralType extends DexType {
 
@@ -9,7 +9,7 @@ public class DexIntegerLiteralType extends DexType {
 
     public DexIntegerLiteralType(Text src) {
         super(src);
-        DexIntegerLiteral integerLiteral = new DexIntegerLiteral(src);
+        DexIntegerConst integerLiteral = new DexIntegerConst(src);
         if (integerLiteral.matched()) {
             matched = src.slice(integerLiteral.begin(), integerLiteral.end());
         }

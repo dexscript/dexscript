@@ -22,7 +22,7 @@ public interface InferType<E extends DexExpr> {
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
         {
             put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(ts, ((DexStringLiteral) elem).literalValue()));
-            put(DexIntegerLiteral.class, (ts, elem) -> new IntegerLiteralType(ts, elem.toString()));
+            put(DexIntegerConst.class, (ts, elem) -> new IntegerConstType(ts, elem.toString()));
             put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
             add(new InferInvocation<DexConsumeExpr>() {
             });

@@ -3,7 +3,6 @@ package com.dexscript.transpile.body;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
 import com.dexscript.ast.stmt.DexBlock;
-import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
@@ -31,8 +30,8 @@ public interface Translate<E extends DexElement> {
                 DexStringLiteral iStringLiteral = (DexStringLiteral) iElem;
                 iElem.attach(new OutValue("\"" + iStringLiteral.literalValue() + "\""));
             });
-            put(DexIntegerLiteral.class, (oClass, iElem) -> {
-                DexIntegerLiteral iIntegerLiteral = (DexIntegerLiteral) iElem;
+            put(DexIntegerConst.class, (oClass, iElem) -> {
+                DexIntegerConst iIntegerLiteral = (DexIntegerConst) iElem;
                 iElem.attach(new OutValue(iIntegerLiteral.toString() + "L"));
             });
             put(DexValueRef.class, (oClass, iElem) -> {

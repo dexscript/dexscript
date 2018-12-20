@@ -1,5 +1,7 @@
 package com.dexscript.type;
 
+import java.util.Objects;
+
 public class IntegerConstType implements DType {
 
     private final TypeSystem ts;
@@ -27,5 +29,19 @@ public class IntegerConstType implements DType {
 
     public String constValue() {
         return val;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        IntegerConstType that = (IntegerConstType) o;
+        return Objects.equals(ts, that.ts) &&
+                Objects.equals(val, that.val);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ts, val);
     }
 }

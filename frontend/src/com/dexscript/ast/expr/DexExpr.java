@@ -88,7 +88,7 @@ public abstract class DexExpr extends DexElement {
         }
         expr = new DexFloatLiteral(src);
         if (expr.matched()) {
-            DexExpr intExpr = new DexIntegerLiteral(src);
+            DexExpr intExpr = new DexIntegerConst(src);
             if (intExpr.matched() && intExpr.end() == expr.end()) {
                 return intExpr;
             }
