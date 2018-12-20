@@ -59,4 +59,26 @@ public class TranslateAssignTest {
                 "}");
         Assert.assertEquals(1, result);
     }
+
+    @Test
+    public void assign_bool_const_type_to_literal_type() {
+        Object result = Transpile.$("" +
+                "function Hello(): true {\n" +
+                "   var msg: true\n" +
+                "   msg = true\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
+    public void assign_bool_const_type_to_bool() {
+        Object result = Transpile.$("" +
+                "function Hello(): bool {\n" +
+                "   var msg: bool\n" +
+                "   msg = true\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals(true, result);
+    }
 }

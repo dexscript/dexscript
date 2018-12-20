@@ -28,12 +28,16 @@ public interface Translate<E extends DexElement> {
     Map<Class<? extends DexElement>, Translate> handlers = new HashMap<Class<? extends DexElement>, Translate>() {
         {
             put(DexStringConst.class, (oClass, iElem) -> {
-                DexStringConst iStringLiteral = (DexStringConst) iElem;
-                iElem.attach(new OutValue("\"" + iStringLiteral.literalValue() + "\""));
+                DexStringConst iStringConst = (DexStringConst) iElem;
+                iElem.attach(new OutValue("\"" + iStringConst.literalValue() + "\""));
             });
             put(DexIntegerConst.class, (oClass, iElem) -> {
-                DexIntegerConst iIntegerLiteral = (DexIntegerConst) iElem;
-                iElem.attach(new OutValue(iIntegerLiteral.toString() + "L"));
+                DexIntegerConst iIntegerConst = (DexIntegerConst) iElem;
+                iElem.attach(new OutValue(iIntegerConst.toString() + "L"));
+            });
+            put(DexBoolConst.class, (oClass, iElem) -> {
+                DexBoolConst iBoolConst = (DexBoolConst) iElem;
+                iElem.attach(new OutValue(iBoolConst.toString()));
             });
             put(DexValueRef.class, (oClass, iElem) -> {
                 Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
