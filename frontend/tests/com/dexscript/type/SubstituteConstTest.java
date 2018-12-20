@@ -1,11 +1,8 @@
-package com.dexscript.transpile.body;
+package com.dexscript.type;
 
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferType;
-import com.dexscript.type.DType;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.TypeSystem;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;

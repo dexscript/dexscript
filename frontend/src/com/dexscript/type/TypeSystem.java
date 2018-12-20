@@ -141,23 +141,4 @@ public class TypeSystem {
     public boolean isStringConst(DType type) {
         return type instanceof StringConstType && type.typeSystem().equals(this);
     }
-
-    public List<DType> widen(DType type) {
-        if (type instanceof BoolConstType) {
-            String val = ((BoolConstType) type).constValue();
-            return Arrays.asList(literalOfBool(val), BOOL);
-        }
-        if (type instanceof StringConstType) {
-            String val = ((StringConstType) type).constValue();
-            return Arrays.asList(literalOf(val), STRING);
-        }
-        if (type instanceof IntegerConstType) {
-            String val = ((IntegerConstType) type).constValue();
-            return Arrays.asList(literalOfInteger(val), INT64, INT32, FLOAT64, FLOAT32);
-        }
-        if (type instanceof FloatConstType) {
-            return Arrays.asList(FLOAT64, FLOAT32);
-        }
-        return Arrays.asList(type);
-    }
 }

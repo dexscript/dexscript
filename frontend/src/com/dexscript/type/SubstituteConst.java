@@ -1,8 +1,7 @@
-package com.dexscript.transpile.body;
-
-import com.dexscript.type.DType;
+package com.dexscript.type;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -37,7 +36,7 @@ class SubstituteConst implements Iterator<List<DType>> {
 
     SubstituteConst(List<DType> orig) {
         for (DType type : orig) {
-            columns.add(new Column(type.typeSystem().widen(type)));
+            columns.add(new Column(widen(type.typeSystem(), type)));
         }
         current = collect();
     }
@@ -69,5 +68,24 @@ class SubstituteConst implements Iterator<List<DType>> {
             collected.add(column.current());
         }
         return collected;
+    }
+
+    private static List<DType> widen(TypeSystem ts, DType type) {
+        if (type instanceof BoolConstType) {
+            String val = ((BoolConstType) type).constValue();
+            return Arrays.asList(ts.literalOfBool(val), ts.BOOL);
+        }
+        if (type instanceof StringConstType) {
+            String val = ((StringConstType) type).constValue();
+            return Arrays.asList(ts.literalOf(val), ts.STRING);
+        }
+        if (type instanceof IntegerConstType) {
+            String val = ((IntegerConstType) type).constValue();
+            return Arrays.asList(ts.literalOfInteger(val), ts.INT64, ts.INT32, ts.FLOAT64, ts.FLOAT32);
+        }
+        if (type instanceof FloatConstType) {
+            return Arrays.asList(ts.FLOAT64, ts.FLOAT32);
+        }
+        return Arrays.asList(type);
     }
 }

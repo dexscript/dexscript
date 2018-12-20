@@ -24,11 +24,24 @@ public class FunctionTable {
     }
 
     public Invoked invoke(Invocation ivc) {
+        SubstituteConst substituteConst = new SubstituteConst(ivc.args());
+        Invoked invoked = null;
+        while (substituteConst.hasNext()) {
+            List<DType> args = substituteConst.next();
+            invoked = tryInvoke(ivc, args);
+            if (!invoked.successes().isEmpty()) {
+                return invoked;
+            }
+        }
+        return invoked;
+    }
+
+    public Invoked tryInvoke(Invocation ivc, List<DType> args) {
         String funcName = ivc.funcName();
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
-            return new Invoked(ivc.args(), new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            return new Invoked(args, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
         }
         boolean alreadyMatched = false;
         List<FunctionSig.Invoked> successes = new ArrayList<>();
@@ -40,7 +53,7 @@ public class FunctionTable {
                 ignoreds.add(func);
                 continue;
             }
-            FunctionSig.Invoked invoked = func.sig().invoke(ivc);
+            FunctionSig.Invoked invoked = func.sig().invoke(ivc, args);
             if (!invoked.success()) {
                 failures.add(invoked);
                 continue;
@@ -54,7 +67,7 @@ public class FunctionTable {
                 alreadyMatched = true;
             }
         }
-        return new Invoked(ivc.args(), successes, failures, ignoreds);
+        return new Invoked(args, successes, failures, ignoreds);
     }
 
     public void lazyDefine(FunctionsType provider) {
