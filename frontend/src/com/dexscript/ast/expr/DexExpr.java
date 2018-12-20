@@ -82,7 +82,7 @@ public abstract class DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
-        expr = new DexStringLiteral(src);
+        expr = new DexStringConst(src);
         if (expr.matched()) {
             return expr;
         }

@@ -6,17 +6,17 @@ import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 
-public class DexStringLiteral extends DexLeafExpr {
+public class DexStringConst extends DexLeafExpr {
 
     private Text matched;
     private DexSyntaxError syntaxError;
 
-    public DexStringLiteral(Text src) {
+    public DexStringConst(Text src) {
         super(src);
         new Parser();
     }
 
-    public DexStringLiteral(String src) {
+    public DexStringConst(String src) {
         this(new Text(src));
     }
 

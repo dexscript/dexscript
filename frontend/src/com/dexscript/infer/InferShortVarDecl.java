@@ -14,8 +14,8 @@ public class InferShortVarDecl implements InferValue<DexShortVarDecl> {
         DexIdentifier decl = shortVarDecl.decls().get(0);
         String valueName = decl.toString();
         DType valueType = InferType.$(ts, shortVarDecl.expr());
-        // widen literal types
-        if (valueType instanceof StringLiteralType) {
+        // widen const types
+        if (valueType instanceof StringConstType) {
             valueType = ts.STRING;
         } else if (valueType instanceof IntegerConstType) {
             valueType = ts.INT64;

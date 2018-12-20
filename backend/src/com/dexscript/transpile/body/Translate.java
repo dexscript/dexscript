@@ -27,8 +27,8 @@ public interface Translate<E extends DexElement> {
 
     Map<Class<? extends DexElement>, Translate> handlers = new HashMap<Class<? extends DexElement>, Translate>() {
         {
-            put(DexStringLiteral.class, (oClass, iElem) -> {
-                DexStringLiteral iStringLiteral = (DexStringLiteral) iElem;
+            put(DexStringConst.class, (oClass, iElem) -> {
+                DexStringConst iStringLiteral = (DexStringConst) iElem;
                 iElem.attach(new OutValue("\"" + iStringLiteral.literalValue() + "\""));
             });
             put(DexIntegerConst.class, (oClass, iElem) -> {

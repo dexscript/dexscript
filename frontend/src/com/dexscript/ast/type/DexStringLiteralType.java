@@ -1,7 +1,7 @@
 package com.dexscript.ast.type;
 
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.expr.DexStringLiteral;
+import com.dexscript.ast.expr.DexStringConst;
 
 public class DexStringLiteralType extends DexType {
 
@@ -9,7 +9,7 @@ public class DexStringLiteralType extends DexType {
 
     public DexStringLiteralType(Text src) {
         super(src);
-        DexStringLiteral stringLiteral = new DexStringLiteral(src);
+        DexStringConst stringLiteral = new DexStringConst(src);
         if (stringLiteral.matched()) {
             matched = src.slice(stringLiteral.begin(), stringLiteral.end());
         }

@@ -7,7 +7,6 @@ import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
 import com.dexscript.ast.type.DexType;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -112,7 +111,7 @@ public class DexNewExpr extends DexExpr implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            DexStringLiteral targetAsStr = new DexStringLiteral("'" + target.toString() + "'");
+            DexStringConst targetAsStr = new DexStringConst("'" + target.toString() + "'");
             invocation = new DexInvocation("New__", targetAsStr, typeArgs(), args());
         }
         return invocation;

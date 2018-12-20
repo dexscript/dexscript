@@ -6,7 +6,18 @@ import org.junit.Test;
 public class TranslateAssignTest {
 
     @Test
-    public void declare_then_assign() {
+    public void assign_string_const_type_to_literal_type() {
+        Object result = Transpile.$("" +
+                "function Hello(): 'hello' {\n" +
+                "   var msg: 'hello'\n" +
+                "   msg = 'hello'\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals("hello", result);
+    }
+
+    @Test
+    public void assign_string_const_type_to_string_type() {
         Object result = Transpile.$("" +
                 "function Hello(): string {\n" +
                 "   var msg: string\n" +

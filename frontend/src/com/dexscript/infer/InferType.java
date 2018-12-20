@@ -21,7 +21,7 @@ public interface InferType<E extends DexExpr> {
 
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
         {
-            put(DexStringLiteral.class, (ts, elem) -> new StringLiteralType(ts, ((DexStringLiteral) elem).literalValue()));
+            put(DexStringConst.class, (ts, elem) -> new StringConstType(ts, ((DexStringConst) elem).literalValue()));
             put(DexIntegerConst.class, (ts, elem) -> new IntegerConstType(ts, elem.toString()));
             put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
             add(new InferInvocation<DexConsumeExpr>() {
@@ -65,14 +65,4 @@ public interface InferType<E extends DexExpr> {
         }
         return types;
     }
-
-    static List<DType> inferTypes(TypeSystem ts, DType type1, List<DexExpr> elems) {
-        ArrayList<DType> types = new ArrayList<>();
-        types.add(type1);
-        for (DexExpr elem : elems) {
-            types.add(InferType.$(ts, elem));
-        }
-        return types;
-    }
-
 }

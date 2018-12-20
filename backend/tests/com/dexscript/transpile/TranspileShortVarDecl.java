@@ -6,7 +6,7 @@ import org.junit.Test;
 public class TranspileShortVarDecl {
 
     @Test
-    public void reference() {
+    public void string_const_widen_to_string() {
         Object result = Transpile.$("" +
                 "function Hello(): string {" +
                 "   msg := 'hello'\n" +
