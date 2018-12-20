@@ -32,16 +32,10 @@ public class TypeTable {
 
     public final static OnGenericTypeArgumentsSizeMismatch ON_GENERIC_TYPE_ARGUMENTS_SIZE_MISMATCH =
             (name, genericType, typeArgs) -> {
-                throw new DexSyntaxException(String.format(
-                        "generic paramType %s parameters: %s, actual arguments: %s",
-                        name, genericType.typeParameters(), typeArgs));
             };
 
     public final static OnGenericTypeArgumentNotAssignable ON_GENERIC_TYPE_ARGUMENT_NOT_ASSIGNABLE =
             (name, genericType, typeArgs, i) -> {
-                throw new DexSyntaxException(String.format(
-                        "generic paramType %s #%d parameter: %s, actual argument: %s",
-                        name, i + 1, genericType.typeParameters().get(i), typeArgs.get(i)));
             };
 
     private final TypeSystem ts;

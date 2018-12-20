@@ -78,7 +78,9 @@ public class JavaTypes {
     private String genStringLiteral(StringLiteralType stringLiteralType) {
         String isF = allocateShim(stringLiteralType);
         Gen g = oShim.g();
-        g.__("public static boolean "
+        g.__("// is "
+        ).__(new Line(stringLiteralType.toString())
+        ).__("public static boolean "
         ).__(isF
         ).__("(Object obj) {");
         g.__(new Indent(() -> {
@@ -119,7 +121,9 @@ public class JavaTypes {
     private String genAny(DType targetType) {
         String isF = allocateShim(targetType);
         Gen g = oShim.g();
-        g.__("public static boolean "
+        g.__("// is "
+        ).__(new Line(targetType.toString())
+        ).__("public static boolean "
         ).__(isF
         ).__("(Object obj) {");
         g.__(new Indent(() -> {
@@ -132,7 +136,7 @@ public class JavaTypes {
     private String allocateShim(DType type) {
         if (type instanceof NamedType) {
             String typeToString = type.toString();
-            if (typeToString.contains("<")) {
+            if (typeToString.contains("<") || typeToString.contains("[")) {
                 return oShim.allocateShim("is__" + md5(typeToString));
             }
             return oShim.allocateShim("is__" + typeToString);

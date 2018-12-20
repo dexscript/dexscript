@@ -50,14 +50,24 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             return functions;
         }
         functions = new ArrayList<>();
-        javaMethodToDexFuncs(functions);
+        for (Method method : clazz.getMethods()) {
+            javaMethodToDexFunc(functions, method);
+        }
+        arrayGetToDexFunc(functions);
         return functions;
     }
 
-    private void javaMethodToDexFuncs(List<FunctionType> collector) {
-        for (Method method : clazz.getMethods()) {
-            javaMethodToDexFunc(collector, method);
+    private void arrayGetToDexFunc(List<FunctionType> collector) {
+        if (!clazz.isArray()) {
+            return;
         }
+        ArrayList<DType> params = new ArrayList<>();
+        params.add(this);
+        params.add(ts.INT32);
+        DType ret = oShim.javaTypes().resolve(clazz.getComponentType());
+        FunctionType func = new FunctionType(ts, "get", params, ret);
+        func.setImplProvider(expandedFunc -> new CallJavaArrayGet(oShim, expandedFunc, clazz));
+        collector.add(func);
     }
 
     private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
@@ -75,9 +85,9 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             }
             dParams.add(dParam);
         }
-        FunctionType function = new FunctionType(ts, method.getName(), dParams, dRet);
-        function.setImplProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));
-        collector.add(function);
+        FunctionType func = new FunctionType(ts, method.getName(), dParams, dRet);
+        func.setImplProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));
+        collector.add(func);
     }
 
     private DType resolve(Type jTypeObj) {
@@ -127,13 +137,12 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             if (jTypeParams.length != 1) {
                 throw new UnsupportedOperationException("not implemented");
             }
-            String dTypeParamSrc = TranslateSig.translateType(javaTypes, jTypeParams[0]);
             // TODO: implement recursive generic expansion
-            if (dTypeParamSrc.startsWith(name())) {
-                dTypeParams.add(ts.ANY);
+            Type jTypeParam = jTypeParams[0];
+            if (jTypeParam instanceof Class) {
+                dTypeParams.add(javaTypes.resolve((Class) jTypeParam));
             } else {
-                DType dTypeParam = ResolveType.$(ts, null, DexType.parse(dTypeParamSrc));
-                dTypeParams.add(dTypeParam);
+                dTypeParams.add(ts.ANY);
             }
         }
         return dTypeParams;

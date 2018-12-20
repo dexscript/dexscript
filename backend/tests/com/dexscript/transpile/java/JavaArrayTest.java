@@ -35,12 +35,8 @@ public class JavaArrayTest {
         OutTown oTown = new OutTown();
         oTown.oShim().importJavaFunctions(Class2.class);
         String ret = (String) Transpile.$(oTown, "" +
-                "interface StringArray {\n" +
-                "   get(index: int32): string\n" +
-                "}\n" +
                 "function Hello(): string {\n" +
-                "   var arr: StringArray\n" +
-                "   arr = newArray()\n" +
+                "   arr := newArray()\n" +
                 "   return arr[0]\n" +
                 "}");
         Assert.assertEquals("hello", ret);

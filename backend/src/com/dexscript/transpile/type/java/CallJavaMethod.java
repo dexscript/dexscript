@@ -33,8 +33,8 @@ class CallJavaMethod extends FunctionImpl {
             ).__(javaMethod.getName()
             ).__('(');
             Class<?>[] paramTypes = javaMethod.getParameterTypes();
-            for (int i = 1; i < paramTypes.length; i++) {
-                if (i > 1) {
+            for (int i = 0; i < paramTypes.length; i++) {
+                if (i > 0) {
                     g.__(", ");
                 }
                 Class<?> paramType = paramTypes[i];
