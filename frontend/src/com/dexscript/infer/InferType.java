@@ -38,6 +38,8 @@ public interface InferType<E extends DexExpr> {
             });
             add(new InferInvocation<DexAddExpr>() {
             });
+            add(new InferInvocation<DexIndexExpr>() {
+            });
         }
 
         private void add(InferType<?> handler) {

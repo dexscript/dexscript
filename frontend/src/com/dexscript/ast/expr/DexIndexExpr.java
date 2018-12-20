@@ -1,6 +1,8 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.stmt.DexStatement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +49,24 @@ public class DexIndexExpr extends DexExpr implements DexInvocationExpr {
     }
 
     @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+        if (obj() != null) {
+            obj().reparent(this, stmt);
+        }
+        arrayLiteral.reparent(this, stmt);
+    }
+
+    @Override
     public DexInvocation invocation() {
         if (invocation == null) {
             invocation = new DexInvocation("get", obj, new ArrayList<>(), args());
         }
         return invocation;
     }
+
+    public DexExpr obj() { return obj; }
 
     public List<DexExpr> args() {
         return arrayLiteral.elems();

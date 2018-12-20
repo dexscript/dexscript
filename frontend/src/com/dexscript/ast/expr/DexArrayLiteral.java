@@ -1,9 +1,7 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexSyntaxError;
-import com.dexscript.ast.core.Expect;
-import com.dexscript.ast.core.State;
-import com.dexscript.ast.core.Text;
+import com.dexscript.ast.core.*;
+import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 
@@ -53,6 +51,17 @@ public class DexArrayLiteral extends DexExpr {
         if (elems() != null) {
             for (DexExpr elem : elems()) {
                 visitor.visit(elem);
+            }
+        }
+    }
+
+    @Override
+    public void reparent(DexElement parent, DexStatement stmt) {
+        this.parent = parent;
+        this.stmt = stmt;
+        if (elems() != null) {
+            for (DexExpr elem : elems()) {
+                elem.reparent(this, stmt);
             }
         }
     }

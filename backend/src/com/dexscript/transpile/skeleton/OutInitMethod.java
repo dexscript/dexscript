@@ -65,8 +65,7 @@ public class OutInitMethod implements OutMethod {
         for (DexParam param : params) {
             OutField oField = oClass.allocateField(param.paramName().toString());
             param.attach(oField);
-            g.__("this."
-            ).__(oField.value()
+            g.__(oField.value()
             ).__(" = "
             ).__(param.paramName().toString()
             ).__(new Line(";"));
