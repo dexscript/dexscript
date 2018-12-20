@@ -36,6 +36,8 @@ public interface ResolveType<E extends DexType> {
             String literalValue = ((DexStringLiteralType) (elem)).literalValue();
             return new StringLiteralType(ts, literalValue);
         });
+        put(DexIntegerLiteralType.class, (ts, localTypeTable, elem) ->
+                new IntegerLiteralType(ts, elem.toString()));
         put(DexParameterizedType.class, (ts, localTypeTable, elem) -> {
             DexParameterizedType genericExpansionType = (DexParameterizedType) elem;
             List<DType> typeArgs = new ArrayList<>();

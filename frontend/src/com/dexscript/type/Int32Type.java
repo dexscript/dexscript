@@ -13,18 +13,7 @@ public class Int32Type implements NamedType {
 
     @Override
     public boolean _isAssignable(IsAssignable ctx, DType that) {
-        if (that instanceof Int32Type) {
-            return true;
-        }
-        if (that instanceof IntegerLiteralType) {
-            try {
-                Integer.valueOf(((IntegerLiteralType) that).literalValue());
-                return true;
-            } catch (NumberFormatException ignored) {
-                return false;
-            }
-        }
-        return false;
+        return that instanceof Int32Type;
     }
 
     @Override

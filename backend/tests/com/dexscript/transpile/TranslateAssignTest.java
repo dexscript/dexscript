@@ -15,4 +15,15 @@ public class TranslateAssignTest {
                 "}");
         Assert.assertEquals("hello", result);
     }
+
+    @Test
+    public void widen_integer_const_type_to_literal_type() {
+        Object result = Transpile.$("" +
+                "function Hello(): 1 {\n" +
+                "   var msg: 1\n" +
+                "   msg = 1\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals(1L, result);
+    }
 }

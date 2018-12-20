@@ -41,6 +41,10 @@ public abstract class DexType extends DexElement {
         if (type.matched()) {
             return type;
         }
+        type = new DexIntegerLiteralType(src);
+        if (type.matched()) {
+            return type;
+        }
         type = new DexVoidType(src);
         if (type.matched()) {
             return type;
