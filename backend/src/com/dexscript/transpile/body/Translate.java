@@ -116,6 +116,10 @@ public interface Translate<E extends DexElement> {
         if (ts.isIntegerConst(InferType.$(ts, iExpr))) {
             if (ts.isInt32(targetType)) {
                 return "Integer.valueOf((int)" + val + ")";
+            } else if (ts.isFloat64(targetType)) {
+                return "Double.valueOf((double)" + val + ")";
+            } else if (ts.isFloat32(targetType)) {
+                return "Float.valueOf((float)" + val + ")";
             } else if (ts.isInt64(targetType) || ts.isIntegerLiteral(targetType)) {
                 // keep it as Long
                 return val;

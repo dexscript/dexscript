@@ -20,7 +20,7 @@ class Float32Type implements NamedType {
 
     @Override
     public boolean _isAssignable(IsAssignable ctx, DType that) {
-        return that instanceof Float32Type || that instanceof FloatConstType;
+        return this.equals(that) || ts.isFloatConst(that) || ts.isIntegerConst(that);
     }
 
     @Override

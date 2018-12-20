@@ -83,6 +83,28 @@ public class TranslateAssignTest {
     }
 
     @Test
+    public void assign_integer_const_type_to_float64() {
+        Object result = Transpile.$("" +
+                "function Hello(): float64 {\n" +
+                "   var msg: float64\n" +
+                "   msg = 1\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals(1D, result);
+    }
+
+    @Test
+    public void assign_integer_const_type_to_float32() {
+        Object result = Transpile.$("" +
+                "function Hello(): float32 {\n" +
+                "   var msg: float32\n" +
+                "   msg = 1\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals(1F, result);
+    }
+
+    @Test
     public void assign_float_const_type_to_float64() {
         Object result = Transpile.$("" +
                 "function Hello(): float64 {\n" +

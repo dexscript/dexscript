@@ -114,7 +114,7 @@ public class TypeSystem {
     }
 
     public boolean isFloat64(DType type) {
-        return type instanceof Int64Type && type.typeSystem().equals(this);
+        return type instanceof Float64Type && type.typeSystem().equals(this);
     }
 
     public boolean isInt64(DType type) {

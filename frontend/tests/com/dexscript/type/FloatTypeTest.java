@@ -20,12 +20,14 @@ public class FloatTypeTest {
         TestAssignable.$(true, new Float64Type(ts), ts.FLOAT64);
         TestAssignable.$(false, ts.FLOAT64, ts.FLOAT32);
         TestAssignable.$(true, ts.FLOAT64, ts.constOf(100.0));
+        TestAssignable.$(true, ts.FLOAT64, ts.constOf(100));
 
         Assert.assertEquals("float32", ts.FLOAT32.toString());
         Assert.assertEquals(ts.FLOAT32, new Float32Type(ts));
         TestAssignable.$(true, new Float32Type(ts), ts.FLOAT32);
         TestAssignable.$(false, ts.FLOAT32, ts.FLOAT64);
         TestAssignable.$(true, ts.FLOAT32, ts.constOf(100.0));
+        TestAssignable.$(true, ts.FLOAT32, ts.constOf(100));
 
         Assert.assertEquals("(const)100.0", ts.constOf(100.0).toString());
         Assert.assertEquals(ts.constOf(100.0), ts.constOf(100.0));
