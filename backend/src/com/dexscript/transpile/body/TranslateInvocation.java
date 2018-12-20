@@ -54,22 +54,10 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         ).__("(scheduler");
         for (int i = 0; i < iArgs.size(); i++) {
             oClass.g().__(", ");
-            DexExpr iArg = iArgs.get(i);
-            OutValue oValue = iArg.attachmentOfType(OutValue.class);
-            oClass.g().__(oValue.value());
+            oClass.g().__(Translate.translateExpr(oClass, iArgs.get(i), invoked.args().get(i)));
         }
         oClass.g().__(new Line(");"));
-        boolean needToConsume = false;
-        for (FunctionSig.Invoked success : invoked.successes()) {
-            FunctionImpl impl = (FunctionImpl) success.function().impl();
-            if (impl == null) {
-                throw new IllegalStateException("function type defined without impl attached: " + success.function());
-            }
-            if (impl.hasAwait()) {
-                needToConsume = true;
-                break;
-            }
-        }
+        boolean needToConsume = needToConsume(invoked);
         if (needToConsume) {
             return consume(oClass, retType, oActorField.value());
         }
@@ -82,6 +70,21 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         ).__(oActorField.value()
         ).__(new Line(").value();"));
         return oResultField;
+    }
+
+    private static boolean needToConsume(Invoked invoked) {
+        boolean needToConsume = false;
+        for (FunctionSig.Invoked success : invoked.successes()) {
+            FunctionImpl impl = (FunctionImpl) success.function().impl();
+            if (impl == null) {
+                throw new IllegalStateException("function type defined without impl attached: " + success.function());
+            }
+            if (impl.hasAwait()) {
+                needToConsume = true;
+                break;
+            }
+        }
+        return needToConsume;
     }
 
     public static OutField consume(OutClass oClass, DType retType, String targetActor) {

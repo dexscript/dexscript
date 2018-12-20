@@ -53,9 +53,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
         ).__("\"");
         for (int i = 0; i < iArgs.size(); i++) {
             g.__(", ");
-            DexExpr iArg = iArgs.get(i);
-            OutValue oValue = iArg.attachmentOfType(OutValue.class);
-            g.__(oValue.value());
+            g.__(Translate.translateExpr(oClass, iArgs.get(i), invoked.args().get(i)));
         }
         g.__(new Line(");"));
         iNewExpr.attach(oActorField);
