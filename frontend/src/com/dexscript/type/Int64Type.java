@@ -27,8 +27,11 @@ public class Int64Type implements NamedType {
             return true;
         }
         if (that instanceof IntegerLiteralType) {
+            return true;
+        }
+        if (that instanceof IntegerConstType) {
             try {
-                Long.valueOf(((IntegerLiteralType) that).literalValue());
+                Long.valueOf(((IntegerConstType) that).constValue());
                 return true;
             } catch (NumberFormatException ignored) {
                 return false;

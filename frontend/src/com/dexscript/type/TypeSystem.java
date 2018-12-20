@@ -55,4 +55,12 @@ public class TypeSystem {
     public FunctionTable functionTable() {
         return functionTable;
     }
+
+    public IntegerLiteralType literalOf(long i) {
+        return new IntegerLiteralType(this, String.valueOf(i));
+    }
+
+    public IntegerConstType constOf(long i) {
+        return new IntegerConstType(this, String.valueOf(i));
+    }
 }

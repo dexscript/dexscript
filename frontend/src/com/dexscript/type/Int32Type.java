@@ -13,6 +13,14 @@ public class Int32Type implements NamedType {
 
     @Override
     public boolean _isAssignable(IsAssignable ctx, DType that) {
+        if (that instanceof IntegerConstType) {
+            try {
+                Integer.valueOf(((IntegerConstType) that).constValue());
+                return true;
+            } catch (NumberFormatException ignored) {
+                return false;
+            }
+        }
         return that instanceof Int32Type;
     }
 
