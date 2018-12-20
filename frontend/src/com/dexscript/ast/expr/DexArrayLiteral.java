@@ -1,13 +1,20 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.LineEnd;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DexArrayLiteral extends DexExpr {
 
     private int arrayLiteralEnd = -1;
+    private List<DexExpr> elems;
+    private DexSyntaxError syntaxError;
 
     public DexArrayLiteral(Text src) {
         super(src);
@@ -37,8 +44,21 @@ public class DexArrayLiteral extends DexExpr {
     }
 
     @Override
-    public void walkDown(Visitor visitor) {
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
+    }
 
+    @Override
+    public void walkDown(Visitor visitor) {
+        if (elems() != null) {
+            for (DexExpr elem : elems()) {
+                visitor.visit(elem);
+            }
+        }
+    }
+
+    public List<DexExpr> elems() {
+        return elems;
     }
 
     private class Parser {
@@ -58,7 +78,8 @@ public class DexArrayLiteral extends DexExpr {
                 }
                 if (b == '[') {
                     i += 1;
-                    return this::exprOrRightBracket;
+                    elems = new ArrayList<>();
+                    return this::elemOrRightBracket;
                 }
                 return null;
             }
@@ -67,7 +88,7 @@ public class DexArrayLiteral extends DexExpr {
 
         @Expect("expression")
         @Expect("]")
-        State exprOrRightBracket() {
+        State elemOrRightBracket() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
@@ -77,9 +98,76 @@ public class DexArrayLiteral extends DexExpr {
                     arrayLiteralEnd = i + 1;
                     return null;
                 }
-                return null;
+                break;
             }
+            DexExpr elem = DexExpr.parse(src.slice(i));
+            if (!elem.matched()) {
+                return this::missingElem;
+            }
+            elems.add(elem);
+            i = elem.end();
+            return this::commaOrRightBracket;
+        }
+
+        @Expect(",")
+        @Expect("]")
+        State commaOrRightBracket() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::elemOrRightBracket;
+                }
+                if (b == ']') {
+                    arrayLiteralEnd = i + 1;
+                    return null;
+                }
+                return this::missingRightBracket;
+            }
+            return this::missingRightBracket;
+        }
+
+        State missingRightBracket() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    arrayLiteralEnd = i;
+                    return null;
+                }
+            }
+            arrayLiteralEnd = i;
             return null;
+        }
+
+        State missingElem() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    arrayLiteralEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::commaOrRightBracket;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::elemOrRightBracket;
+                }
+            }
+            arrayLiteralEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }
