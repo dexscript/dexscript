@@ -57,23 +57,31 @@ public class TypeSystem {
         return functionTable;
     }
 
-    public IntegerLiteralType literalOf(long val) {
+    public DType literalOf(long val) {
         return new IntegerLiteralType(this, String.valueOf(val));
     }
 
-    public IntegerConstType constOf(long val) {
+    public DType constOf(long val) {
         return new IntegerConstType(this, String.valueOf(val));
     }
 
-    public StringLiteralType literalOf(String val) {
+    public DType literalOf(String val) {
         return new StringLiteralType(this, val);
     }
 
-    public StringConstType constOf(String val) {
+    public DType constOf(String val) {
         return new StringConstType(this, val);
     }
 
-    public FloatConstType constOf(double val) {
+    public DType constOf(double val) {
         return new FloatConstType(this, String.valueOf(val));
+    }
+
+    public DType literalOf(boolean val) {
+        return new BoolLiteralType(this, String.valueOf(val));
+    }
+
+    public DType constOf(boolean val) {
+        return new BoolConstType(this, String.valueOf(val));
     }
 }
