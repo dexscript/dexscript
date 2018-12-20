@@ -1,9 +1,8 @@
 package com.dexscript.ast.stmt;
 
-import com.dexscript.ast.core.DexSyntaxError;
-import com.dexscript.ast.core.Expect;
-import com.dexscript.ast.core.State;
-import com.dexscript.ast.core.Text;
+import com.dexscript.ast.DexActor;
+import com.dexscript.ast.core.*;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
@@ -77,6 +76,17 @@ public class DexProduceStmt extends DexStatement implements DexInvocationExpr  {
             }
         }
         return invocation;
+    }
+
+    public DexSig sig() {
+        DexElement current = parent;
+        while (current != null) {
+            if (current instanceof DexAwaitConsumer) {
+                return ((DexAwaitConsumer) current).produceSig();
+            }
+            current = current.parent();
+        }
+        return null;
     }
 
     private class Parser {
