@@ -1,24 +1,24 @@
 package com.dexscript.ast.type;
 
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.expr.DexStringConst;
+import com.dexscript.ast.expr.DexBoolConst;
+import com.dexscript.ast.expr.DexIntegerConst;
 
-public class DexStringLiteralType extends DexType {
+public class DexBoolLiteralType extends DexType {
 
     private Text matched;
 
-    public DexStringLiteralType(Text src) {
+    public DexBoolLiteralType(Text src) {
         super(src);
-        DexStringConst stringConst = new DexStringConst(src);
-        if (stringConst.matched()) {
-            matched = src.slice(stringConst.begin(), stringConst.end());
+        DexBoolConst boolConst = new DexBoolConst(src);
+        if (boolConst.matched()) {
+            matched = src.slice(boolConst.begin(), boolConst.end());
         }
     }
 
-    public DexStringLiteralType(String src) {
+    public DexBoolLiteralType(String src) {
         this(new Text(src));
     }
-
     @Override
     public int leftRank() {
         return 0;
@@ -41,10 +41,5 @@ public class DexStringLiteralType extends DexType {
 
     @Override
     public void walkDown(Visitor visitor) {
-
-    }
-
-    public String literalValue() {
-        return matched.slice(matched.begin + 1, matched.end - 1).toString();
     }
 }

@@ -3,7 +3,7 @@ package com.dexscript.ast.type;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DexIntegerConstTypeTest {
+public class DexIntegerLiteralTypeTest {
 
     @Test
     public void matched() {

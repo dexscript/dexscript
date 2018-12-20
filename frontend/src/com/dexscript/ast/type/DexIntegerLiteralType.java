@@ -9,9 +9,9 @@ public class DexIntegerLiteralType extends DexType {
 
     public DexIntegerLiteralType(Text src) {
         super(src);
-        DexIntegerConst integerLiteral = new DexIntegerConst(src);
-        if (integerLiteral.matched()) {
-            matched = src.slice(integerLiteral.begin(), integerLiteral.end());
+        DexIntegerConst integerConst = new DexIntegerConst(src);
+        if (integerConst.matched()) {
+            matched = src.slice(integerConst.begin(), integerConst.end());
         }
     }
 
