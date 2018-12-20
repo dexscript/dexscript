@@ -115,6 +115,10 @@ public abstract class DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
+        expr = new DexIndexExpr(src, left);
+        if (expr.matched()) {
+            return expr;
+        }
         expr = new DexMethodCallExpr(src, left);
         if (expr.matched()) {
             return expr;
