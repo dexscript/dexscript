@@ -11,13 +11,15 @@ public class TypeSystem {
     private final TypeComparisonCache comparisonCache = new TypeComparisonCache();
 
     public final DType ANY = new AnyType(this);
-    public final NamedType BOOL = new BoolType(this);
-    public final NamedType STRING = new StringType(this);
-    public final NamedType INT64 = new Int64Type(this);
-    public final NamedType INT32 = new Int32Type(this);
-    public final NamedType UINT8 = new UInt8Type(this);
-    public final NamedType VOID = new VoidType(this);
-    public final NamedType UNDEFINED = new UndefinedType(this);
+    public final DType BOOL = new BoolType(this);
+    public final DType STRING = new StringType(this);
+    public final DType FLOAT64 = new Float64Type(this);
+    public final DType FLOAT32 = new Float32Type(this);
+    public final DType INT64 = new Int64Type(this);
+    public final DType INT32 = new Int32Type(this);
+    public final DType UINT8 = new UInt8Type(this);
+    public final DType VOID = new VoidType(this);
+    public final DType UNDEFINED = new UndefinedType(this);
 
     public TypeTable typeTable() {
         return typeTable;
@@ -30,7 +32,6 @@ public class TypeSystem {
     public void defineFunction(FunctionType function) {
         functionTable.define(function);
     }
-
 
     public InterfaceType defineInterface(DexInterface inf) {
         return new InterfaceType(this, inf);
@@ -70,5 +71,9 @@ public class TypeSystem {
 
     public StringConstType constOf(String val) {
         return new StringConstType(this, val);
+    }
+
+    public FloatConstType constOf(double val) {
+        return new FloatConstType(this, String.valueOf(val));
     }
 }
