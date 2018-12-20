@@ -110,7 +110,7 @@ public class DexFloatConst extends DexLeafExpr {
                     i += 1;
                     return this::eFound;
                 }
-                matched = new Text(src.bytes, floatConstBegin, i - 1);
+                matched = new Text(src.bytes, floatConstBegin, i);
                 return null;
             }
             matched = new Text(src.bytes, floatConstBegin, i);

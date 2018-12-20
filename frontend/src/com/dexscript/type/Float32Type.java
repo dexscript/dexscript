@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-public class Float32Type implements NamedType {
+class Float32Type implements NamedType {
 
     private final TypeSystem ts;
 

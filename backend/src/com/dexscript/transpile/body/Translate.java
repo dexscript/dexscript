@@ -39,6 +39,10 @@ public interface Translate<E extends DexElement> {
                 DexBoolConst iBoolConst = (DexBoolConst) iElem;
                 iElem.attach(new OutValue(iBoolConst.toString()));
             });
+            put(DexFloatConst.class, (oClass, iElem) -> {
+                DexFloatConst iFloatConst = (DexFloatConst) iElem;
+                iElem.attach(new OutValue(iFloatConst.toString() + "D"));
+            });
             put(DexValueRef.class, (oClass, iElem) -> {
                 Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
                 if (refValue.definedBy() == null) {
@@ -108,11 +112,21 @@ public interface Translate<E extends DexElement> {
     static String translateExpr(OutClass oClass, DexExpr iExpr, DType targetType) {
         Translate.$(oClass, iExpr);
         String val = OutValue.of(iExpr);
-        if (InferType.$(oClass.typeSystem(), iExpr) instanceof IntegerConstType) {
-            if (targetType instanceof Int32Type) {
+        TypeSystem ts = oClass.typeSystem();
+        if (ts.isIntegerConst(InferType.$(ts, iExpr))) {
+            if (ts.isInt32(targetType)) {
                 return "Integer.valueOf((int)" + val + ")";
-            } else if (targetType instanceof Int64Type || targetType instanceof IntegerLiteralType) {
+            } else if (ts.isInt64(targetType) || ts.isIntegerLiteral(targetType)) {
                 // keep it as Long
+                return val;
+            }
+            throw new UnsupportedOperationException("not implemented");
+        }
+        if (ts.isFloatConst(InferType.$(ts, iExpr))) {
+            if (ts.isFloat32(targetType)) {
+                return "Float.valueOf((float)" + val + ")";
+            } else if (ts.isFloat64(targetType)) {
+                // keep it as Double
                 return val;
             }
             throw new UnsupportedOperationException("not implemented");

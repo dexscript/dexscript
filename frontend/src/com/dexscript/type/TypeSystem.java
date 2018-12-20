@@ -96,4 +96,32 @@ public class TypeSystem {
     public DType constOfBool(String val) {
         return new BoolConstType(this, val);
     }
+
+    public boolean isFloatConst(DType type) {
+        return type instanceof FloatConstType && type.typeSystem().equals(this);
+    }
+
+    public boolean isIntegerConst(DType type) {
+        return type instanceof IntegerConstType && type.typeSystem().equals(this);
+    }
+
+    public boolean isFloat32(DType type) {
+        return type instanceof Float32Type && type.typeSystem().equals(this);
+    }
+
+    public boolean isInt32(DType type) {
+        return type instanceof Int32Type && type.typeSystem().equals(this);
+    }
+
+    public boolean isFloat64(DType type) {
+        return type instanceof Int64Type && type.typeSystem().equals(this);
+    }
+
+    public boolean isInt64(DType type) {
+        return type instanceof Int64Type && type.typeSystem().equals(this);
+    }
+
+    public boolean isIntegerLiteral(DType type) {
+        return type instanceof IntegerLiteralType && type.typeSystem().equals(this);
+    }
 }

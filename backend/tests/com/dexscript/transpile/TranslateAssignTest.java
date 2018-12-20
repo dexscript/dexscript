@@ -28,6 +28,28 @@ public class TranslateAssignTest {
     }
 
     @Test
+    public void assign_bool_const_type_to_literal_type() {
+        Object result = Transpile.$("" +
+                "function Hello(): true {\n" +
+                "   var msg: true\n" +
+                "   msg = true\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
+    public void assign_bool_const_type_to_bool() {
+        Object result = Transpile.$("" +
+                "function Hello(): bool {\n" +
+                "   var msg: bool\n" +
+                "   msg = true\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
     public void assign_integer_const_type_to_literal_type() {
         Object result = Transpile.$("" +
                 "function Hello(): 1 {\n" +
@@ -61,24 +83,24 @@ public class TranslateAssignTest {
     }
 
     @Test
-    public void assign_bool_const_type_to_literal_type() {
+    public void assign_float_const_type_to_float64() {
         Object result = Transpile.$("" +
-                "function Hello(): true {\n" +
-                "   var msg: true\n" +
-                "   msg = true\n" +
+                "function Hello(): float64 {\n" +
+                "   var msg: float64\n" +
+                "   msg = 1.1\n" +
                 "   return msg\n" +
                 "}");
-        Assert.assertEquals(true, result);
+        Assert.assertEquals(1.1D, result);
     }
 
     @Test
-    public void assign_bool_const_type_to_bool() {
+    public void assign_float_const_type_to_float32() {
         Object result = Transpile.$("" +
-                "function Hello(): bool {\n" +
-                "   var msg: bool\n" +
-                "   msg = true\n" +
+                "function Hello(): float32 {\n" +
+                "   var msg: float32\n" +
+                "   msg = 1.1\n" +
                 "   return msg\n" +
                 "}");
-        Assert.assertEquals(true, result);
+        Assert.assertEquals(1.1F, result);
     }
 }
