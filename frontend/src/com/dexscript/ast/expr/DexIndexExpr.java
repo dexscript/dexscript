@@ -11,13 +11,13 @@ public class DexIndexExpr extends DexExpr implements DexInvocationExpr {
 
     private static final int LEFT_RANK = 1;
     private final DexExpr obj;
-    private final DexArrayLiteral arrayLiteral;
+    private final DexArrayExpr arrayLiteral;
     private DexInvocation invocation;
 
     public DexIndexExpr(Text src, DexExpr obj) {
         super(src);
         this.obj = obj;
-        arrayLiteral = new DexArrayLiteral(src);
+        arrayLiteral = new DexArrayExpr(src);
     }
 
     @Override

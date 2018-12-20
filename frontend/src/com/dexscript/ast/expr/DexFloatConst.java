@@ -8,17 +8,17 @@ import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.One2Nine;
 import com.dexscript.ast.token.Zero2Nine;
 
-public class DexFloatLiteral extends DexLeafExpr {
+public class DexFloatConst extends DexLeafExpr {
 
     private Text matched;
     private DexSyntaxError syntaxError;
 
-    public DexFloatLiteral(Text src) {
+    public DexFloatConst(Text src) {
         super(src);
         new Parser();
     }
 
-    public DexFloatLiteral(String src) {
+    public DexFloatConst(String src) {
         this(new Text(src));
     }
 
@@ -50,7 +50,7 @@ public class DexFloatLiteral extends DexLeafExpr {
     private class Parser {
 
         int i = src.begin;
-        int integerBegin = -1;
+        int floatConstBegin = -1;
 
         Parser() {
             State.Play(this::firstChar);
@@ -64,7 +64,7 @@ public class DexFloatLiteral extends DexLeafExpr {
                 }
                 if ('0' == b) {
                     if (Keyword.$(src, i+1, '.')) {
-                        integerBegin = i;
+                        floatConstBegin = i;
                         i += 2;
                         return this::dotFound;
                     }
@@ -72,7 +72,7 @@ public class DexFloatLiteral extends DexLeafExpr {
                     return null;
                 }
                 if (One2Nine.$(b)) {
-                    integerBegin = i;
+                    floatConstBegin = i;
                     return this::remainingChars;
                 }
                 return null;
@@ -96,7 +96,7 @@ public class DexFloatLiteral extends DexLeafExpr {
                 }
                 break;
             }
-            matched = new Text(src.bytes, integerBegin, i);
+            matched = new Text(src.bytes, floatConstBegin, i);
             return null;
         }
 
@@ -110,10 +110,10 @@ public class DexFloatLiteral extends DexLeafExpr {
                     i += 1;
                     return this::eFound;
                 }
-                matched = new Text(src.bytes, integerBegin, i - 1);
+                matched = new Text(src.bytes, floatConstBegin, i - 1);
                 return null;
             }
-            matched = new Text(src.bytes, integerBegin, i);
+            matched = new Text(src.bytes, floatConstBegin, i);
             return null;
         }
 
@@ -129,7 +129,7 @@ public class DexFloatLiteral extends DexLeafExpr {
                 }
                 break;
             }
-            matched = new Text(src.bytes, integerBegin, i);
+            matched = new Text(src.bytes, floatConstBegin, i);
             return null;
         }
 
@@ -142,7 +142,7 @@ public class DexFloatLiteral extends DexLeafExpr {
                 }
                 break;
             }
-            matched = new Text(src.bytes, integerBegin, i);
+            matched = new Text(src.bytes, floatConstBegin, i);
             if (j == 0) {
                 return reportError();
             }

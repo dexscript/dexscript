@@ -84,4 +84,12 @@ public class TypeSystem {
     public DType constOf(boolean val) {
         return new BoolConstType(this, String.valueOf(val));
     }
+
+    public DType constOfFloat(String val) {
+        return new FloatConstType(this, val);
+    }
+
+    public DType constOfInteger(String val) {
+        return new IntegerConstType(this, val);
+    }
 }

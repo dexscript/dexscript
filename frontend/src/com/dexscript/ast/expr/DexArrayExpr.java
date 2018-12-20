@@ -8,18 +8,18 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexArrayLiteral extends DexExpr {
+public class DexArrayExpr extends DexExpr {
 
     private int arrayLiteralEnd = -1;
     private List<DexExpr> elems;
     private DexSyntaxError syntaxError;
 
-    public DexArrayLiteral(Text src) {
+    public DexArrayExpr(Text src) {
         super(src);
         new Parser();
     }
 
-    public DexArrayLiteral(String src) {
+    public DexArrayExpr(String src) {
         this(new Text(src));
     }
 

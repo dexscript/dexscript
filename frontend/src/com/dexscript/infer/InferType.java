@@ -21,8 +21,9 @@ public interface InferType<E extends DexExpr> {
 
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
         {
-            put(DexStringConst.class, (ts, elem) -> new StringConstType(ts, ((DexStringConst) elem).literalValue()));
-            put(DexIntegerConst.class, (ts, elem) -> new IntegerConstType(ts, elem.toString()));
+            put(DexStringConst.class, (ts, elem) -> ts.constOf(((DexStringConst) elem).literalValue()));
+            put(DexIntegerConst.class, (ts, elem) -> ts.constOfInteger(elem.toString()));
+            put(DexFloatConst.class, (ts, elem) -> ts.constOfFloat(elem.toString()));
             put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
             add(new InferInvocation<DexConsumeExpr>() {
             });

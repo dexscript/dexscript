@@ -62,6 +62,10 @@ public abstract class DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
+        expr = new DexBoolConst(src);
+        if (expr.matched()) {
+            return expr;
+        }
         expr = new DexValueRef(src);
         if (expr.matched()) {
             return expr;
@@ -86,7 +90,7 @@ public abstract class DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
-        expr = new DexFloatLiteral(src);
+        expr = new DexFloatConst(src);
         if (expr.matched()) {
             DexExpr intExpr = new DexIntegerConst(src);
             if (intExpr.matched() && intExpr.end() == expr.end()) {

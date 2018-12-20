@@ -51,7 +51,7 @@ public class DexValueRef extends DexLeafExpr {
     private class Parser {
 
         int i;
-        int identifierBegin;
+        int valueRefBegin;
 
         Parser() {
             i = src.begin;
@@ -68,7 +68,7 @@ public class DexValueRef extends DexLeafExpr {
                     continue;
                 }
                 if (A2Z.$(b)) {
-                    identifierBegin = i;
+                    valueRefBegin = i;
                     i += 1;
                     return this::remainingChars;
                 }
@@ -89,7 +89,7 @@ public class DexValueRef extends DexLeafExpr {
                 }
                 break;
             }
-            matched = new Text(src.bytes, identifierBegin, i);
+            matched = new Text(src.bytes, valueRefBegin, i);
             return null;
         }
 
