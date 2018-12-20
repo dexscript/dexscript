@@ -92,4 +92,8 @@ public class TypeSystem {
     public DType constOfInteger(String val) {
         return new IntegerConstType(this, val);
     }
+
+    public DType constOfBool(String val) {
+        return new BoolConstType(this, val);
+    }
 }

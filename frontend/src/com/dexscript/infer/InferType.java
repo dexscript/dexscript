@@ -24,6 +24,7 @@ public interface InferType<E extends DexExpr> {
             put(DexStringConst.class, (ts, elem) -> ts.constOf(((DexStringConst) elem).literalValue()));
             put(DexIntegerConst.class, (ts, elem) -> ts.constOfInteger(elem.toString()));
             put(DexFloatConst.class, (ts, elem) -> ts.constOfFloat(elem.toString()));
+            put(DexBoolConst.class, (ts, elem) -> ts.constOfBool(elem.toString()));
             put(DexValueRef.class, (ts, elem) -> InferValue.$(ts, (DexValueRef) elem).type());
             add(new InferInvocation<DexConsumeExpr>() {
             });
