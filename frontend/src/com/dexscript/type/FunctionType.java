@@ -93,6 +93,11 @@ public final class FunctionType implements DType {
         for (int i = 0; i < params.size(); i++) {
             FunctionParam thisParam = this.params.get(i);
             FunctionParam thatParam = that.params.get(i);
+            if (!thisParam.name().equals(thatParam.name())) {
+                ctx.addLog("param name not equal",
+                        "index", i, "to", thisParam.name(), "from", thatParam.name());
+                return false;
+            }
             if (!new IsAssignable(ctx, "#" + i + " param", thatParam.type(), thisParam.type()).result()) {
                 return false;
             }

@@ -5,9 +5,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class FunctionTypeTest {
 
     private TypeSystem ts;
@@ -27,70 +24,54 @@ public class FunctionTypeTest {
     public void assignable() {
         FunctionType hello1 = func("hello(): string");
         FunctionType hello2 = func("hello(): string");
-        Assert.assertTrue(new IsAssignable(hello1, hello2).result());
-        Assert.assertTrue(new IsAssignable(hello2, hello1).result());
-        Assert.assertFalse(new IsAssignable(hello2, ts.STRING).result());
+        TestAssignable.$(true, hello1, hello2);
+        TestAssignable.$(true, hello2, hello1);
+        TestAssignable.$(false, hello2, ts.STRING);
     }
 
     @Test
     public void name_not_assignable() {
-        IsAssignable isAssignable = new IsAssignable(
-                func("hello(): string"),
-                func("world(): string"));
-        Assert.assertFalse(isAssignable.result());
+        TestAssignable.$(false, func("hello(): string"), func("world(): string"));
     }
 
     @Test
     public void params_count_not_assignable() {
-        IsAssignable isAssignable = new IsAssignable(
-                func("hello(): string"),
-                func("hello(arg0: string): string"));
-        Assert.assertFalse(isAssignable.result());
+        TestAssignable.$(false, func("hello(): string"), func("hello(arg0: string): string"));
     }
 
     @Test
-    public void params_not_assignable() {
-        IsAssignable isAssignable = new IsAssignable(
-                func("hello(arg0: int64)"),
-                func("hello(arg0: string)"));
-        Assert.assertFalse(isAssignable.result());
+    public void param_name_not_assignable() {
+        TestAssignable.$(false, func("hello(a: int64)"), func("hello(b: int64)"));
+    }
+
+    @Test
+    public void param_type_not_assignable() {
+        TestAssignable.$(false, func("hello(arg0: int64)"), func("hello(arg0: string)"));
     }
 
     @Test
     public void ret_not_assignable() {
-        IsAssignable isAssignable = new IsAssignable(
-                func("hello(): string"),
-                func("hello(): void"));
-        Assert.assertFalse(isAssignable.result());
+        TestAssignable.$(false, func("hello(): string"), func("hello(): void"));
     }
 
     @Test
     public void param_is_sub_type() {
-        FunctionType hello1 = new FunctionType(ts, "hello", new ArrayList<FunctionParam>() {{
-            add(new FunctionParam("arg0", ts.STRING));
-        }}, ts.VOID);
-        FunctionType hello2 = new FunctionType(ts, "hello", new ArrayList<FunctionParam>() {{
-            add(new FunctionParam("arg0", ts.literalOf("example")));
-        }}, ts.VOID);
-        Assert.assertFalse(IsAssignable.$(hello1, hello2));
-        Assert.assertTrue(IsAssignable.$(hello2, hello1));
+        FunctionType hello1 = func("hello(arg0: string)");
+        FunctionType hello2 = func("hello(arg0: 'example')");
+        TestAssignable.$(false, hello1, hello2);
+        TestAssignable.$(true, hello2, hello1);
     }
 
     @Test
     public void ret_is_sub_type() {
-        FunctionType hello1 = new FunctionType(ts, "hello",
-                new ArrayList<>(), ts.STRING);
-        FunctionType hello2 = new FunctionType(ts, "hello",
-                new ArrayList<>(), new StringLiteralType(ts, "example"));
-        Assert.assertTrue(IsAssignable.$(hello1, hello2));
-        Assert.assertFalse(IsAssignable.$(hello2, hello1));
+        FunctionType hello1 = func("hello(): string");
+        FunctionType hello2 = func("hello(): 'example'");
+        TestAssignable.$(true, hello1, hello2);
+        TestAssignable.$(false, hello2, hello1);
     }
 
     @Test
     public void test_to_string() {
-        FunctionType func = new FunctionType(ts, "Hello", new ArrayList<FunctionParam>(){{
-            add(new FunctionParam("arg0", ts.STRING));
-        }}, ts.VOID);
-        Assert.assertEquals("Hello(arg0: string): void", func.toString());
+        Assert.assertEquals("Hello(arg0: string): void", func("Hello(arg0: string): void").toString());
     }
 }
