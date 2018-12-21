@@ -10,7 +10,7 @@ public class DexNewExprTest {
         DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new world()");
         Assert.assertEquals("new world()", newExpr.toString());
         Assert.assertEquals("world", newExpr.target().toString());
-        Assert.assertEquals(0, newExpr.args().size());
+        Assert.assertEquals(0, newExpr.posArgs().size());
     }
 
     @Test
@@ -24,10 +24,10 @@ public class DexNewExprTest {
         DexNewExpr newExpr = (DexNewExpr) DexExpr.parse("new print(a1,b1,c1)");
         Assert.assertEquals("new print(a1,b1,c1)", newExpr.toString());
         Assert.assertEquals("print", newExpr.target().toString());
-        Assert.assertEquals(3, newExpr.args().size());
-        Assert.assertEquals("a1", newExpr.args().get(0).toString());
-        Assert.assertEquals("b1", newExpr.args().get(1).toString());
-        Assert.assertEquals("c1", newExpr.args().get(2).toString());
+        Assert.assertEquals(3, newExpr.posArgs().size());
+        Assert.assertEquals("a1", newExpr.posArgs().get(0).toString());
+        Assert.assertEquals("b1", newExpr.posArgs().get(1).toString());
+        Assert.assertEquals("c1", newExpr.posArgs().get(2).toString());
     }
 
     @Test

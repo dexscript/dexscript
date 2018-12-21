@@ -5,6 +5,7 @@ import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
@@ -20,8 +21,9 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
     private static final int RIGHT_RANK = 0;
 
     private final DexExpr target;
-    private List<DexExpr> args;
+    private List<DexExpr> posArgs;
     private List<DexType> typeArgs;
+    private List<DexNamedArg> namedArgs;
     private int callExprEnd = -1;
     private DexSyntaxError syntaxError;
     private DexInvocation invocation;
@@ -36,11 +38,11 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
         return target;
     }
 
-    public List<DexExpr> args() {
-        if (args == null) {
+    public List<DexExpr> posArgs() {
+        if (posArgs == null) {
             return Collections.emptyList();
         }
-        return args;
+        return posArgs;
     }
 
     public List<DexType> typeArgs() {
@@ -50,6 +52,13 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
         return typeArgs;
     }
 
+    public List<DexNamedArg> namedArgs() {
+        if (namedArgs == null) {
+            return Collections.emptyList();
+        }
+        return namedArgs;
+    }
+
     @Override
     public void reparent(DexElement parent, DexStatement stmt) {
         this.parent = parent;
@@ -57,9 +66,15 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
         if (target() != null) {
             target().reparent(this, stmt);
         }
-        if (args() != null) {
-            for (DexExpr arg : args()) {
+        if (posArgs() != null) {
+            for (DexExpr arg : posArgs()) {
                 arg.reparent(this, stmt);
+            }
+        }
+        if (namedArgs() != null) {
+            for (DexNamedArg namedArg : namedArgs()) {
+                namedArg.name().reparent(this);
+                namedArg.val().reparent(this, stmt);
             }
         }
     }
@@ -97,8 +112,8 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
         if (target() != null) {
             visitor.visit(target());
         }
-        if (args() != null) {
-            for (DexExpr arg : args()) {
+        if (posArgs() != null) {
+            for (DexExpr arg : posArgs()) {
                 visitor.visit(arg);
             }
         }
@@ -112,7 +127,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation(target().asRef().toString(), typeArgs(), args());
+            invocation = new DexInvocation(target().asRef().toString(), typeArgs(), posArgs());
         }
         return invocation;
     }
@@ -120,6 +135,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
     private class Parser {
 
         int i = src.begin;
+        DexIdentifier namedArgName;
 
         Parser() {
             State.Play(this::leftAngleBracketOrLeftParen);
@@ -135,34 +151,34 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 }
                 if (b == '(') {
                     i += 1;
-                    args = new ArrayList<>();
-                    return this::argument;
+                    posArgs = new ArrayList<>();
+                    return this::posArg;
                 }
                 if (b == '<') {
                     i += 1;
                     typeArgs = new ArrayList<>();
-                    return this::typeArgument;
+                    return this::typeArg;
                 }
                 return null;
             }
             return null;
         }
 
-        @Expect("type reference")
-        State typeArgument() {
+        @Expect("type")
+        State typeArg() {
             DexType typeArg = DexType.parse(src.slice(i));
             typeArg.reparent(DexFunctionCallExpr.this);
             if (!typeArg.matched()) {
-                return this::missingTypeArgument;
+                return this::missingTypeArg;
             }
             typeArgs.add(typeArg);
             i = typeArg.end();
-            return this::moreTypeArgument;
+            return this::moreTypeArg;
         }
 
         @Expect(",")
         @Expect(">")
-        State moreTypeArgument() {
+        State moreTypeArg() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
@@ -170,7 +186,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 }
                 if (b == ',') {
                     i += 1;
-                    return this::typeArgument;
+                    return this::typeArg;
                 }
                 if (b == '>') {
                     i += 1;
@@ -190,8 +206,8 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 }
                 if (b == '(') {
                     i += 1;
-                    args = new ArrayList<>();
-                    return this::argument;
+                    posArgs = new ArrayList<>();
+                    return this::posArg;
                 }
                 return this::missingLeftParen;
             }
@@ -199,7 +215,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
         }
 
         @Expect("expression")
-        State argument() {
+        State posArg() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
@@ -212,26 +228,37 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 break;
             }
             DexExpr arg = DexExpr.parse(new Text(src.bytes, i, src.end), RIGHT_RANK);
-            args.add(arg);
+            posArgs.add(arg);
             if (!arg.matched()) {
-                return this::missingArgument;
+                return this::missingPosArg;
             }
             i = arg.end();
-            return this::commaOrRightParen;
+            return this::morePosArg;
         }
 
+        @Expect("=")
         @Expect(",")
         @Expect(")")
-        State commaOrRightParen() {
+        State morePosArg() {
             int originalCursor = i;
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
                 }
+                if (b == '=') {
+                    i += 1;
+                    DexExpr lastPosArg = posArgs.remove(posArgs.size() - 1);
+                    namedArgName = new DexIdentifier(src.slice(lastPosArg.begin(), lastPosArg.end()));
+                    if (!namedArgName.matched() && syntaxError == null) {
+                        syntaxError = new DexSyntaxError(src, lastPosArg.begin());
+                    }
+                    namedArgs = new ArrayList<>();
+                    return this::namedArgVal;
+                }
                 if (b == ',') {
                     i += 1;
-                    return this::argument;
+                    return this::posArg;
                 }
                 if (b == ')') {
                     callExprEnd = i + 1;
@@ -243,7 +270,67 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
             return this::missingRightParen;
         }
 
-        State missingTypeArgument() {
+        @Expect("identifier")
+        State namedArgName() {
+            namedArgName = new DexIdentifier(src.slice(i));
+            if (!namedArgName.matched()) {
+                return this::missingNamedArgName;
+            }
+            i = namedArgName.end();
+            return this::equal;
+        }
+
+        @Expect("=")
+        State equal() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == '=') {
+                    i += 1;
+                    return this::namedArgVal;
+                }
+                return null;
+            }
+            return null;
+        }
+
+        @Expect("expression")
+        State namedArgVal() {
+            DexExpr val = DexExpr.parse(src.slice(i));
+            if (!val.matched()) {
+                return this::missingNamedArgVal;
+            }
+            namedArgs.add(new DexNamedArg(namedArgName, val));
+            i = val.end();
+            return this::moreNamedArg;
+        }
+
+        @Expect(",")
+        @Expect(")")
+        State moreNamedArg() {
+            int originalCursor = i;
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::namedArgName;
+                }
+                if (b == ')') {
+                    callExprEnd = i + 1;
+                    return null;
+                }
+                break;
+            }
+            i = originalCursor;
+            return this::missingRightParen;
+        }
+
+        State missingNamedArgName() {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
@@ -253,7 +340,57 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 }
                 if (Blank.$(b)) {
                     i += 1;
-                    return this::typeArgument;
+                    return this::equal;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::namedArgName;
+                }
+                if (b == ')') {
+                    callExprEnd = i + 1;
+                    return null;
+                }
+            }
+            callExprEnd = i;
+            return null;
+        }
+
+        State missingNamedArgVal() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    callExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::moreNamedArg;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::namedArgName;
+                }
+                if (b == ')') {
+                    callExprEnd = i + 1;
+                    return null;
+                }
+            }
+            callExprEnd = i;
+            return null;
+        }
+
+        State missingTypeArg() {
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    callExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::typeArg;
                 }
                 if (b == '>') {
                     i += 1;
@@ -264,13 +401,13 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
             return null;
         }
 
-        State missingArgument() {
+        State missingPosArg() {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (b == ',') {
                     i += 1;
-                    return this::argument;
+                    return this::posArg;
                 }
                 if (b == ')') {
                     callExprEnd = i + 1;
@@ -299,7 +436,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 }
                 if (b == '(') {
                     i += 1;
-                    return this::argument;
+                    return this::posArg;
                 }
             }
             callExprEnd = i;
@@ -316,7 +453,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                 }
                 if (Blank.$(b)) {
                     i += 1;
-                    return this::argument;
+                    return this::posArg;
                 }
                 if (b == ')') {
                     callExprEnd = i + 1;

@@ -29,17 +29,6 @@ public class DexNewExpr extends DexExpr implements DexInvocationExpr {
         return target;
     }
 
-    public List<DexExpr> args() {
-        if (functionCallExpr == null) {
-            return Collections.emptyList();
-        }
-        List<DexExpr> args = functionCallExpr.args();
-        if (args == null) {
-            return Collections.emptyList();
-        }
-        return args;
-    }
-
     public List<DexType> typeArgs() {
         if (functionCallExpr == null) {
             return Collections.emptyList();
@@ -49,6 +38,28 @@ public class DexNewExpr extends DexExpr implements DexInvocationExpr {
             return Collections.emptyList();
         }
         return typeArgs;
+    }
+
+    public List<DexExpr> posArgs() {
+        if (functionCallExpr == null) {
+            return Collections.emptyList();
+        }
+        List<DexExpr> posArgs = functionCallExpr.posArgs();
+        if (posArgs == null) {
+            return Collections.emptyList();
+        }
+        return posArgs;
+    }
+
+    public List<DexNamedArg> namedArgs() {
+        if (functionCallExpr == null) {
+            return Collections.emptyList();
+        }
+        List<DexNamedArg> namedArgs = functionCallExpr.namedArgs();
+        if (namedArgs == null) {
+            return Collections.emptyList();
+        }
+        return namedArgs;
     }
 
     @Override
@@ -63,8 +74,8 @@ public class DexNewExpr extends DexExpr implements DexInvocationExpr {
                 typeArg.reparent(this);
             }
         }
-        if (args() != null) {
-            for (DexExpr arg : args()) {
+        if (posArgs() != null) {
+            for (DexExpr arg : posArgs()) {
                 arg.reparent(this, stmt);
             }
         }
@@ -101,8 +112,8 @@ public class DexNewExpr extends DexExpr implements DexInvocationExpr {
                 visitor.visit(typeArg);
             }
         }
-        if (args() != null) {
-            for (DexExpr arg : args()) {
+        if (posArgs() != null) {
+            for (DexExpr arg : posArgs()) {
                 visitor.visit(arg);
             }
         }
@@ -112,7 +123,7 @@ public class DexNewExpr extends DexExpr implements DexInvocationExpr {
     public DexInvocation invocation() {
         if (invocation == null) {
             DexStringConst targetAsStr = new DexStringConst("'" + target.toString() + "'");
-            invocation = new DexInvocation("New__", targetAsStr, typeArgs(), args());
+            invocation = new DexInvocation("New__", targetAsStr, typeArgs(), posArgs());
         }
         return invocation;
     }

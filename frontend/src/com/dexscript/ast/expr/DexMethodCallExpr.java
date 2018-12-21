@@ -7,6 +7,7 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.type.DexType;
+import javafx.beans.NamedArg;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,17 +35,6 @@ public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
         return method;
     }
 
-    public List<DexExpr> args() {
-        if (functionCallExpr == null) {
-            return Collections.emptyList();
-        }
-        List<DexExpr> args = functionCallExpr.args();
-        if (args == null) {
-            return Collections.emptyList();
-        }
-        return args;
-    }
-
     public List<DexType> typeArgs() {
         if (functionCallExpr == null) {
             return Collections.emptyList();
@@ -54,6 +44,28 @@ public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
             return Collections.emptyList();
         }
         return typeArgs;
+    }
+
+    public List<DexExpr> posArgs() {
+        if (functionCallExpr == null) {
+            return Collections.emptyList();
+        }
+        List<DexExpr> posArgs = functionCallExpr.posArgs();
+        if (posArgs == null) {
+            return Collections.emptyList();
+        }
+        return posArgs;
+    }
+
+    public List<DexNamedArg> namedArgs() {
+        if (functionCallExpr == null) {
+            return Collections.emptyList();
+        }
+        List<DexNamedArg> namedArgs = functionCallExpr.namedArgs();
+        if (namedArgs == null) {
+            return Collections.emptyList();
+        }
+        return namedArgs;
     }
 
     @Override
@@ -80,7 +92,7 @@ public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
     public void walkDown(Visitor visitor) {
         visitor.visit(obj);
         visitor.visit(method);
-        for (DexExpr arg : args()) {
+        for (DexExpr arg : posArgs()) {
             visitor.visit(arg);
         }
     }
@@ -95,8 +107,8 @@ public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
         if (method() != null) {
             method().reparent(this, stmt);
         }
-        if (args() != null) {
-            for (DexExpr arg : args()) {
+        if (posArgs() != null) {
+            for (DexExpr arg : posArgs()) {
                 arg.reparent(this, stmt);
             }
         }
@@ -105,7 +117,7 @@ public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation(method().toString(), obj(), typeArgs(), args());
+            invocation = new DexInvocation(method().toString(), obj(), typeArgs(), posArgs());
         }
         return invocation;
     }

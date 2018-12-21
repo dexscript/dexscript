@@ -11,6 +11,6 @@ public class DexMethodCallExprTest {
         Assert.assertEquals("a.b()", methodCallExpr.toString());
         Assert.assertEquals("a", methodCallExpr.obj().toString());
         Assert.assertEquals("b", methodCallExpr.method().toString());
-        Assert.assertEquals(0, methodCallExpr.args().size());
+        Assert.assertEquals(0, methodCallExpr.posArgs().size());
     }
 }

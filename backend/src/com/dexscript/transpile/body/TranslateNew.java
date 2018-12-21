@@ -11,7 +11,6 @@ import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.type.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class TranslateNew implements Translate<DexNewExpr> {
@@ -26,7 +25,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
 
     @Override
     public void handle(OutClass oClass, DexNewExpr iNewExpr) {
-        List<DexExpr> iArgs = iNewExpr.args();
+        List<DexExpr> iArgs = iNewExpr.posArgs();
         for (DexExpr iArg : iArgs) {
             Translate.$(oClass, iArg);
         }
