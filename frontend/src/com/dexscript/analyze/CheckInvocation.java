@@ -10,7 +10,7 @@ public class CheckInvocation<E extends DexElement & DexInvocationExpr> implement
     public void handle(CheckSemanticError cse, E elem) {
         TypeSystem ts = cse.typeSystem();
         Invocation ivc = new Invocation(ts, elem.invocation(), null);
-        if (ts.invoke(ivc).successes().isEmpty()) {
+        if (ts.invoke(ivc).candidates.isEmpty()) {
             cse.report(elem, "no matching function: " + elem);
         }
     }

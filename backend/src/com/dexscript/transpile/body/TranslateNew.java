@@ -38,7 +38,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
         List<DType> args = InferType.inferTypes(ts, invocation.args());
         List<DType> typeArgs = ResolveType.resolveTypes(ts, null, invocation.typeArgs());
         Invoked invoked = ts.invoke(new Invocation("New__", typeArgs, args, null));
-        if (invoked.successes().isEmpty()) {
+        if (invoked.candidates.isEmpty()) {
             ON_FUNCTION_MISSING.handle(iNewExpr);
         }
         String newF = oClass.oShim().dispatch(funcName, args.size(), invoked);
@@ -53,7 +53,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
         ).__("\"");
         for (int i = 0; i < iArgs.size(); i++) {
             g.__(", ");
-            g.__(Translate.translateExpr(oClass, iArgs.get(i), invoked.args().get(i)));
+            g.__(Translate.translateExpr(oClass, iArgs.get(i), invoked.args.get(i)));
         }
         g.__(new Line(");"));
         iNewExpr.attach(oActorField);

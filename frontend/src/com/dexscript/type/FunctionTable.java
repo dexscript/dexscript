@@ -29,7 +29,7 @@ public class FunctionTable {
         while (substituteConst.hasNext()) {
             List<DType> args = substituteConst.next();
             invoked = tryInvoke(ivc, args);
-            if (!invoked.successes().isEmpty()) {
+            if (!invoked.candidates.isEmpty()) {
                 return invoked;
             }
         }
@@ -41,33 +41,31 @@ public class FunctionTable {
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
-            return new Invoked(args, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+            return new Invoked(args);
         }
         boolean alreadyMatched = false;
-        List<FunctionSig.Invoked> successes = new ArrayList<>();
-        List<FunctionSig.Invoked> failures = new ArrayList<>();
-        List<FunctionType> ignoreds = new ArrayList<>();
+        Invoked invoked = new Invoked(args);
         for (int i = 0; i < functions.size(); i++) {
             FunctionType func = functions.get(i);
             if (alreadyMatched) {
-                ignoreds.add(func);
+                invoked.skippeds.add(func);
                 continue;
             }
-            FunctionSig.Invoked invoked = func.sig().invoke(ivc, args);
-            if (!invoked.success()) {
-                failures.add(invoked);
+            FunctionSig.Invoked candidate = func.sig().invoke(ivc, args);
+            if (!candidate.success()) {
+                invoked.failures.add(candidate);
                 continue;
             }
-            if (ivc.requireImpl() && !invoked.function().hasImpl()) {
-                failures.add(invoked);
+            if (ivc.requireImpl() && !candidate.function().hasImpl()) {
+                invoked.failures.add(candidate);
                 continue;
             }
-            successes.add(invoked);
-            if (!invoked.needRuntimeCheck()) {
+            invoked.candidates.add(candidate);
+            if (!candidate.needRuntimeCheck()) {
                 alreadyMatched = true;
             }
         }
-        return new Invoked(args, successes, failures, ignoreds);
+        return invoked;
     }
 
     public void lazyDefine(FunctionsType provider) {

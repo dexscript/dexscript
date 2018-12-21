@@ -40,7 +40,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         Invocation ivc = new Invocation(funcName, typeArgs, args, null)
                 .requireImpl(true);
         Invoked invoked = ts.invoke(ivc);
-        if (invoked.successes().size() == 0) {
+        if (invoked.candidates.size() == 0) {
             throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
                     funcName, args));
         }
@@ -54,7 +54,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         ).__("(scheduler");
         for (int i = 0; i < iArgs.size(); i++) {
             oClass.g().__(", ");
-            oClass.g().__(Translate.translateExpr(oClass, iArgs.get(i), invoked.args().get(i)));
+            oClass.g().__(Translate.translateExpr(oClass, iArgs.get(i), invoked.args.get(i)));
         }
         oClass.g().__(new Line(");"));
         boolean needToConsume = needToConsume(invoked);
@@ -74,10 +74,10 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
 
     private static boolean needToConsume(Invoked invoked) {
         boolean needToConsume = false;
-        for (FunctionSig.Invoked success : invoked.successes()) {
-            FunctionImpl impl = (FunctionImpl) success.function().impl();
+        for (FunctionSig.Invoked candidate : invoked.candidates) {
+            FunctionImpl impl = (FunctionImpl) candidate.function().impl();
             if (impl == null) {
-                throw new IllegalStateException("function type defined without impl attached: " + success.function());
+                throw new IllegalStateException("function type defined without impl attached: " + candidate.function());
             }
             if (impl.hasAwait()) {
                 needToConsume = true;

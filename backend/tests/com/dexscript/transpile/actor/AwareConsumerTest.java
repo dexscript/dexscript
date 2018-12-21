@@ -1,9 +1,10 @@
-package com.dexscript.transpile;
+package com.dexscript.transpile.actor;
 
+import com.dexscript.transpile.Transpile;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TranslateAwareConsumerTest {
+public class AwareConsumerTest {
 
     @Test
     public void resolve_integer_const_to_int32() {

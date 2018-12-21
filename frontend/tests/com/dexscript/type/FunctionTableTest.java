@@ -27,8 +27,8 @@ public class FunctionTableTest {
         FunctionType func1 = func("Hello(arg0: string)");
         FunctionType func2 = func("Hello(arg0: int64)");
         Invoked invoked = invoke("Hello", "string");
-        Assert.assertEquals(1, invoked.successes().size());
-        Assert.assertEquals(func1, invoked.successes().get(0).function());
+        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(func1, invoked.candidates.get(0).function());
     }
 
     @Test
@@ -36,7 +36,7 @@ public class FunctionTableTest {
         func("Hello(arg0: 'a')");
         func("Hello(arg0: string)");
         Invoked invoked = invoke("Hello", "string");
-        Assert.assertEquals(2, invoked.successes().size());
+        Assert.assertEquals(2, invoked.candidates.size());
     }
 
     @Test
@@ -44,16 +44,16 @@ public class FunctionTableTest {
         func("Hello(arg0: string)");
         func("Hello(arg0: 'a')");
         Invoked invoked = invoke("Hello", "string");
-        Assert.assertEquals(1, invoked.successes().size());
-        Assert.assertEquals(1, invoked.ignoreds().size());
+        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(1, invoked.skippeds.size());
     }
 
     @Test
     public void widen_const_type() {
         func("Hello(arg0: int32)");
         Invoked invoked = invoke("Hello", "(const)100");
-        Assert.assertEquals(1, invoked.successes().size());
-        Assert.assertEquals(ts.INT32, invoked.args().get(0));
+        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(ts.INT32, invoked.args.get(0));
     }
 
     private FunctionType func(String actorSrc) {

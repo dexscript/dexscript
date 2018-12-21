@@ -21,8 +21,8 @@ public class FunctionChain {
         this.funcName = funcName;
         this.paramsCount = paramsCount;
         this.functions = new ArrayList<>();
-        for (FunctionSig.Invoked success : invoked.successes()) {
-            functions.add(success.function());
+        for (FunctionSig.Invoked candidate : invoked.candidates) {
+            functions.add(candidate.function());
         }
     }
 

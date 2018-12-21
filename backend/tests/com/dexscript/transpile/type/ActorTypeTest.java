@@ -49,7 +49,7 @@ public class ActorTypeTest {
             add(new StringLiteralType(ts, "AA"));
             add(actor);
         }}, null));
-        Assert.assertEquals(1, invoked.successes().size());
+        Assert.assertEquals(1, invoked.candidates.size());
     }
 
     @Test
@@ -60,8 +60,8 @@ public class ActorTypeTest {
                 "function Hello() {\n" +
                 "}"));
         Invoked invoked = ts.invoke(new Invocation("Hello", null, new ArrayList<>(), null));
-        Assert.assertEquals(1, invoked.successes().size());
-        Assert.assertEquals(ts.VOID, invoked.successes().get(0).function().ret());
+        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(ts.VOID, invoked.candidates.get(0).function().ret());
     }
 
     @Test
@@ -72,7 +72,7 @@ public class ActorTypeTest {
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
         Invoked invoked = ts.invoke(new Invocation("Hello", null, Arrays.asList(ts.STRING), null));
-        Assert.assertEquals(1, invoked.successes().size());
+        Assert.assertEquals(1, invoked.candidates.size());
         DType type = ResolveType.$(ts, "Hello<string>");
         Assert.assertNotNull(type);
     }
@@ -88,6 +88,6 @@ public class ActorTypeTest {
         StringLiteralType a = new StringLiteralType(ts, "a");
         StringLiteralType b = new StringLiteralType(ts, "b");
         Invoked invoked = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null));
-        Assert.assertEquals(0, invoked.successes().size());
+        Assert.assertEquals(0, invoked.candidates.size());
     }
 }
