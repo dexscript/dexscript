@@ -45,12 +45,11 @@ public class FunctionTable {
         if (functions == null) {
             return new Invoked(args);
         }
-        boolean alreadyMatched = false;
         Invoked invoked = new Invoked(args);
         List<FunctionSig.Invoked> potentialCandidates = new ArrayList<>();
         for (int i = 0; i < functions.size(); i++) {
             FunctionType func = functions.get(i);
-            if (alreadyMatched) {
+            if (invoked.match != null) {
                 invoked.skippeds.add(func);
                 continue;
             }
@@ -59,17 +58,23 @@ public class FunctionTable {
                 invoked.failures.add(candidate);
                 continue;
             }
-            if (ivc.requireImpl() && !candidate.function().hasImpl()) {
-                invoked.failures.add(candidate);
-                continue;
-            }
             potentialCandidates.add(candidate);
             if (!candidate.needRuntimeCheck()) {
-                alreadyMatched = true;
+                invoked.match = candidate;
             }
         }
-        if (alreadyMatched) {
-            invoked.candidates.addAll(potentialCandidates);
+        if (invoked.match != null) {
+            for (FunctionSig.Invoked candidate : potentialCandidates) {
+                if (ivc.requireImpl() && !candidate.function().hasImpl()) {
+                    // no impl
+                    invoked.ignoreds.add(candidate);
+                } else if (!IsAssignable.$(candidate.function(), invoked.match.function())) {
+                    // not overriding the match
+                    invoked.ignoreds.add(candidate);
+                } else {
+                    invoked.candidates.add(candidate);
+                }
+            }
         } else {
             invoked.ignoreds.addAll(potentialCandidates);
         }

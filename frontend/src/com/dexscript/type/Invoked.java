@@ -9,7 +9,9 @@ public class Invoked {
     // so the invocation args may not be the same as invoked args
     public final List<DType> args;
 
-    // last candidate must be a match
+    // signature matched
+    public FunctionSig.Invoked match;
+    // last candidate may not be the match, if match is interface function without impl
     // other candidates are possible match, need runtime check
     public final List<FunctionSig.Invoked> candidates = new ArrayList<>();
     // some function is incompatible with the invocation
@@ -19,6 +21,7 @@ public class Invoked {
     public final List<FunctionSig.Invoked> ignoreds = new ArrayList<>();
     // if match found, other functions will be skipped
     public final List<FunctionType> skippeds = new ArrayList<>();
+
 
     public Invoked(List<DType> args) {
         this.args = args;

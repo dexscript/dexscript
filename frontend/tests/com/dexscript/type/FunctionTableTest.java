@@ -1,6 +1,7 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferType;
@@ -57,6 +58,41 @@ public class FunctionTableTest {
     }
 
     @Test
+    public void invoke_interface_without_impl() {
+        ts.defineInterface(new DexInterface("" +
+                "interface Hello {" +
+                "   SayHello(msg: string)\n" +
+                "}"));
+        Invoked invoked = invoke("SayHello", null, "Hello,string", true);
+        Assert.assertEquals(0, invoked.candidates.size());
+        Assert.assertEquals(1, invoked.ignoreds.size());
+    }
+
+    @Test
+    public void invoke_interface_with_impl() {
+        ts.defineInterface(new DexInterface("" +
+                "interface Hello {" +
+                "   SayHello(msg: string)\n" +
+                "}"));
+        func("SayHello(self: int64, arg0: string)");
+        Invoked invoked = invoke("SayHello", null, "Hello,string", true);
+        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(1, invoked.ignoreds.size());
+    }
+
+    @Test
+    public void ignore_candidate_wider_than_the_match() {
+        ts.defineInterface(new DexInterface("" +
+                "interface Hello {" +
+                "   SayHello(msg: string)\n" +
+                "}"));
+        func("SayHello(self: int64, arg0: interface{})");
+        Invoked invoked = invoke("SayHello", null, "Hello,string", true);
+        Assert.assertEquals(0, invoked.candidates.size());
+        Assert.assertEquals(2, invoked.ignoreds.size());
+    }
+
+    @Test
     public void widen_const_type() {
         func("Hello(arg0: int32)");
         Invoked invoked = invoke("Hello", "(const)100");
@@ -68,20 +104,21 @@ public class FunctionTableTest {
         DexActor actor = new DexActor("function " + actorSrc);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
+        funcType.setImplProvider(expandedFunc -> new Object());
         return funcType;
     }
 
     public Invoked invoke(String funcName, String argsStr) {
-        return invoke(funcName, null, argsStr);
+        return invoke(funcName, null, argsStr, false);
     }
 
-    public Invoked invoke(String funcName, String typeArgsStr, String argsStr) {
+    public Invoked invoke(String funcName, String typeArgsStr, String argsStr, boolean requiresImpl) {
         List<DType> typeArgs = Collections.emptyList();
         if (typeArgsStr != null) {
             typeArgs = resolve(typeArgsStr);
         }
         List<DType> args = resolve(argsStr);
-        return ts.invoke(new Invocation(funcName, typeArgs, args, null));
+        return ts.invoke(new Invocation(funcName, typeArgs, args, null).requireImpl(requiresImpl));
     }
 
     @NotNull
