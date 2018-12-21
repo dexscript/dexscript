@@ -87,9 +87,11 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
 
     public FunctionType callFunc(TypeTable localTypeTable) {
         DType ret = ResolveType.$(ts, localTypeTable, actor.sig().ret());
-        ArrayList<DType> params = new ArrayList<>();
+        List<FunctionParam> params = new ArrayList<>();
         for (DexParam param : actor.sig().params()) {
-            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+            String name = param.paramName().toString();
+            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
+            params.add(new FunctionParam(name, type));
         }
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType functionType = new FunctionType(ts, name(), params, ret, sig);
@@ -98,10 +100,12 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
     }
 
     public FunctionType newFunc(TypeTable localTypeTable) {
-        ArrayList<DType> params = new ArrayList<>();
-        params.add(new StringLiteralType(ts, name()));
+        List<FunctionParam> params = new ArrayList<>();
+        params.add(new FunctionParam("actor", new StringLiteralType(ts, name())));
         for (DexParam param : actor.sig().params()) {
-            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+            String name = param.paramName().toString();
+            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
+            params.add(new FunctionParam(name, type));
         }
         FunctionType functionType = new FunctionType(ts, "New__", params, this);
         functionType.setImplProvider(expandedFunc -> new NewActor(oShim, expandedFunc, actor));
@@ -110,8 +114,8 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
 
     private FunctionType consumeFunc(TypeTable localTypeTable) {
         DType ret = ResolveType.$(ts, localTypeTable, actor.sig().ret());
-        ArrayList<DType> params = new ArrayList<>();
-        params.add(this);
+        ArrayList<FunctionParam> params = new ArrayList<>();
+        params.add(new FunctionParam("self", this));
         return new FunctionType(ts, "Consume__", params, ret);
     }
 
@@ -163,13 +167,15 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
         @NotNull
         private FunctionType newFunc(DexAwaitConsumer awaitConsumer) {
             InnerActorType nestedActor = new InnerActorType(ts, awaitConsumer);
-            ArrayList<DType> params = new ArrayList<>();
+            List<FunctionParam> params = new ArrayList<>();
             String funcName = awaitConsumer.identifier().toString();
-            params.add(new StringLiteralType(ts, funcName));
-            params.add(ActorType.this);
+            params.add(new FunctionParam("actor", new StringLiteralType(ts, funcName)));
+            params.add(new FunctionParam("parent", ActorType.this));
             DexSig sig = awaitConsumer.produceSig();
             for (DexParam param : sig.params()) {
-                params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+                String paramName = param.paramName().toString();
+                DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
+                params.add(new FunctionParam(paramName, paramType));
             }
             FunctionType functionType = new FunctionType(ts, "New__", params, nestedActor);
             functionType.setImplProvider(expandedFunc -> new NewInnerActor(
@@ -182,10 +188,12 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
             DexSig sig = awaitConsumer.produceSig();
             String funcName = awaitConsumer.identifier().toString();
             DType ret = ResolveType.$(ts, localTypeTable, sig.ret());
-            ArrayList<DType> params = new ArrayList<>();
-            params.add(ActorType.this);
+            List<FunctionParam> params = new ArrayList<>();
+            params.add(new FunctionParam("parent", ActorType.this));
             for (DexParam param : sig.params()) {
-                params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+                String paramName = param.paramName().toString();
+                DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
+                params.add(new FunctionParam(paramName, paramType));
             }
             FunctionType functionType = new FunctionType(ts, funcName, params, ret);
             functionType.setImplProvider(expandedFunc -> new CallInnerActor(

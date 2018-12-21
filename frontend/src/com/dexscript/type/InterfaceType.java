@@ -64,9 +64,11 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
 
     private void addInfFunction(TypeTable localTypeTable, DexInfFunction infFunction) {
         String name = infFunction.identifier().toString();
-        List<DType> params = new ArrayList<>();
+        List<FunctionParam> params = new ArrayList<>();
         for (DexParam param : infFunction.sig().params()) {
-            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+            String paramName = param.paramName().toString();
+            DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
+            params.add(new FunctionParam(paramName, paramType));
         }
         DType ret = ResolveType.$(ts, localTypeTable, infFunction.sig().ret());
         functions.add(new FunctionType(ts, name, params, ret));
@@ -74,10 +76,12 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
 
     private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
         String name = infMethod.identifier().toString();
-        List<DType> params = new ArrayList<>();
-        params.add(this);
+        List<FunctionParam> params = new ArrayList<>();
+        params.add(new FunctionParam("self", this));
         for (DexParam param : infMethod.sig().params()) {
-            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+            String paramName = param.paramName().toString();
+            DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
+            params.add(new FunctionParam(paramName, paramType));
         }
         DType ret = ResolveType.$(ts, localTypeTable, infMethod.sig().ret());
         functions.add(new FunctionType(ts, name, params, ret));

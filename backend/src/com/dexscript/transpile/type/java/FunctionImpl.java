@@ -5,6 +5,7 @@ import com.dexscript.transpile.gen.Gen;
 import com.dexscript.transpile.gen.Indent;
 import com.dexscript.transpile.gen.Line;
 import com.dexscript.transpile.shim.OutShim;
+import com.dexscript.type.FunctionParam;
 import com.dexscript.type.FunctionType;
 import com.dexscript.type.DType;
 
@@ -47,10 +48,10 @@ public abstract class FunctionImpl {
     protected String genCanF(JavaTypes javaTypes) {
         String canF = oShim.allocateShim("can__" + functionType.name());
         Gen g = oShim.g();
-        List<DType> params = functionType.params();
+        List<FunctionParam> params = functionType.params();
         List<String> typeChecks = new ArrayList<>();
-        for (DType param : params) {
-            String typeCheck = javaTypes.genTypeCheck(param);
+        for (FunctionParam param : params) {
+            String typeCheck = javaTypes.genTypeCheck(param.type());
             typeChecks.add(typeCheck);
         }
         g.__("public static boolean "

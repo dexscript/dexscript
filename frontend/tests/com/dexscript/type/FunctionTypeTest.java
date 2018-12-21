@@ -66,11 +66,11 @@ public class FunctionTypeTest {
 
     @Test
     public void param_is_sub_type() {
-        FunctionType hello1 = new FunctionType(ts, "hello", new ArrayList<DType>() {{
-            add(ts.STRING);
+        FunctionType hello1 = new FunctionType(ts, "hello", new ArrayList<FunctionParam>() {{
+            add(new FunctionParam("arg0", ts.STRING));
         }}, ts.VOID);
-        FunctionType hello2 = new FunctionType(ts, "hello", new ArrayList<DType>() {{
-            add(new StringLiteralType(ts, "example"));
+        FunctionType hello2 = new FunctionType(ts, "hello", new ArrayList<FunctionParam>() {{
+            add(new FunctionParam("arg0", ts.literalOf("example")));
         }}, ts.VOID);
         Assert.assertFalse(IsAssignable.$(hello1, hello2));
         Assert.assertTrue(IsAssignable.$(hello2, hello1));
@@ -78,15 +78,19 @@ public class FunctionTypeTest {
 
     @Test
     public void ret_is_sub_type() {
-        FunctionType hello1 = new FunctionType(ts, "hello", new ArrayList<>(), ts.STRING);
-        FunctionType hello2 = new FunctionType(ts, "hello", new ArrayList<>(), new StringLiteralType(ts, "example"));
+        FunctionType hello1 = new FunctionType(ts, "hello",
+                new ArrayList<>(), ts.STRING);
+        FunctionType hello2 = new FunctionType(ts, "hello",
+                new ArrayList<>(), new StringLiteralType(ts, "example"));
         Assert.assertTrue(IsAssignable.$(hello1, hello2));
         Assert.assertFalse(IsAssignable.$(hello2, hello1));
     }
 
     @Test
     public void test_to_string() {
-        FunctionType func = new FunctionType(ts, "Hello", Arrays.asList(ts.STRING), ts.VOID);
-        Assert.assertEquals("Hello(string): void", func.toString());
+        FunctionType func = new FunctionType(ts, "Hello", new ArrayList<FunctionParam>(){{
+            add(new FunctionParam("arg0", ts.STRING));
+        }}, ts.VOID);
+        Assert.assertEquals("Hello(arg0: string): void", func.toString());
     }
 }

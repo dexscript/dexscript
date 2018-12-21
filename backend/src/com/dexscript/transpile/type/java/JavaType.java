@@ -6,6 +6,7 @@ import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
@@ -61,9 +62,9 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         if (!clazz.isArray()) {
             return;
         }
-        ArrayList<DType> params = new ArrayList<>();
-        params.add(this);
-        params.add(ts.INT32);
+        ArrayList<FunctionParam> params = new ArrayList<>();
+        params.add(new FunctionParam("self", this));
+        params.add(new FunctionParam("index", ts.INT32));
         DType ret = oShim.javaTypes().resolve(clazz.getComponentType());
         FunctionType func = new FunctionType(ts, "get", params, ret);
         func.setImplProvider(expandedFunc -> new CallJavaArrayGet(oShim, expandedFunc, clazz));
@@ -76,14 +77,14 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         if (dRet == null) {
             return;
         }
-        ArrayList<DType> dParams = new ArrayList<>();
-        dParams.add(this);
-        for (Type jParam : method.getGenericParameterTypes()) {
-            DType dParam = resolve(jParam);
+        List<FunctionParam> dParams = new ArrayList<>();
+        dParams.add(new FunctionParam("self", this));
+        for (Parameter jParam : method.getParameters()) {
+            DType dParam = resolve(jParam.getType());
             if (dParam == null) {
                 return;
             }
-            dParams.add(dParam);
+            dParams.add(new FunctionParam(jParam.getName(), dParam));
         }
         FunctionType func = new FunctionType(ts, method.getName(), dParams, dRet);
         func.setImplProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));

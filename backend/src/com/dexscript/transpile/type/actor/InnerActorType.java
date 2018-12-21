@@ -30,8 +30,8 @@ public class InnerActorType implements DType, FunctionsType {
 
     private FunctionType consumeFunc() {
         DType ret = ResolveType.$(ts, null, awaitConsumer.produceSig().ret());
-        ArrayList<DType> params = new ArrayList<>();
-        params.add(this);
+        ArrayList<FunctionParam> params = new ArrayList<>();
+        params.add(new FunctionParam("self", this));
         return new FunctionType(ts, "Consume__", params, ret);
     }
 

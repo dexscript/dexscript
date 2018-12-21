@@ -118,9 +118,14 @@ public class OutShim {
 
     public void importJavaFunction(Method javaFunction) {
         String funcName = javaFunction.getName();
-        List<DType> params = javaTypes.resolve(javaFunction.getParameterTypes());
+        List<FunctionParam> dParams = new ArrayList<>();
+        for (Parameter jParam : javaFunction.getParameters()) {
+            String paramName = jParam.getName();
+            DType paramType = javaTypes.resolve(jParam.getType());
+            dParams.add(new FunctionParam(paramName, paramType));
+        }
         DType ret = javaTypes.resolve(javaFunction.getReturnType());
-        FunctionType functionType = new FunctionType(ts, funcName, params, ret);
+        FunctionType functionType = new FunctionType(ts, funcName, dParams, ret);
         functionType.setImplProvider(expandedFunc -> new CallJavaFunction(this, expandedFunc, javaFunction));
     }
 
@@ -132,10 +137,10 @@ public class OutShim {
 
     public void importJavaConstructor(Constructor ctor) {
         Class clazz = ctor.getDeclaringClass();
-        ArrayList<DType> params = new ArrayList<>();
-        params.add(new StringLiteralType(ts, clazz.getSimpleName()));
-        for (Class param : ctor.getParameterTypes()) {
-            params.add(javaTypes.resolve(param));
+        List<FunctionParam> params = new ArrayList<>();
+        params.add(new FunctionParam("class", new StringLiteralType(ts, clazz.getSimpleName())));
+        for (Parameter param : ctor.getParameters()) {
+            params.add(new FunctionParam(param.getName(), javaTypes.resolve(param.getType())));
         }
         DType ret = javaTypes.resolve(clazz);
         DexSig dexSig = TranslateSig.$(javaTypes, ctor);

@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
@@ -140,12 +141,12 @@ public class FunctionSig {
     private final TypeSystem ts;
     private FunctionType func;
     private final List<PlaceholderType> typeParams;
-    private final List<DType> params;
+    private final List<FunctionParam> params;
     private final DType ret;
     private final DexSig dexSig;
     private final Map<Object, FunctionType> expandedFuncs = new HashMap<>();
 
-    public FunctionSig(TypeSystem ts, List<DType> params, DType ret) {
+    public FunctionSig(TypeSystem ts, List<FunctionParam> params, DType ret) {
         this.ts = ts;
         this.typeParams = Collections.emptyList();
         this.params = params;
@@ -153,11 +154,7 @@ public class FunctionSig {
         this.dexSig = null;
     }
 
-    public FunctionSig(TypeSystem ts, DexSig sig) {
-        this(ts, null, sig);
-    }
-
-    public FunctionSig(TypeSystem ts, DType objectType, DexSig dexSig) {
+    public FunctionSig(TypeSystem ts, DexSig dexSig) {
         this.ts = ts;
         this.dexSig = dexSig;
         typeParams = new ArrayList<>();
@@ -169,11 +166,10 @@ public class FunctionSig {
             typeParams.add(placeholder);
         }
         params = new ArrayList<>();
-        if (objectType != null) {
-            params.add(objectType);
-        }
         for (DexParam param : dexSig.params()) {
-            params.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+            String name = param.paramName().toString();
+            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
+            params.add(new FunctionParam(name, type));
         }
         ret = ResolveType.$(ts, localTypeTable, dexSig.ret());
     }
@@ -182,7 +178,7 @@ public class FunctionSig {
         this.func = functionType;
     }
 
-    public List<DType> params() {
+    public List<FunctionParam> params() {
         return params;
     }
 
@@ -207,14 +203,14 @@ public class FunctionSig {
         IsAssignable ctx = new IsAssignable(sub);
         boolean needRuntimeCheck = false;
         for (int i = 0; i < params.size(); i++) {
-            DType param = params.get(i);
+            FunctionParam param = params.get(i);
             DType arg = args.get(i);
-            IsAssignable paramArg = new IsAssignable(ctx, "#" + i + " param=arg", param, arg);
+            IsAssignable paramArg = new IsAssignable(ctx, "#" + i + " param=arg", param.type(), arg);
             IsAssignable argParam = null;
             boolean argMatched = paramArg.result();
             if (!argMatched) {
                 needRuntimeCheck = true;
-                argParam = new IsAssignable(ctx, "#" + i + " arg=param", arg, param);
+                argParam = new IsAssignable(ctx, "#" + i + " arg=param", arg, param.type());
                 argMatched = argParam.result();
             }
             if (!argMatched) {
@@ -246,9 +242,11 @@ public class FunctionSig {
                 localTypeTable.define(((NamedType) key).name(), entry.getValue());
             }
         }
-        ArrayList<DType> expandedParams = new ArrayList<>();
+        List<FunctionParam> expandedParams = new ArrayList<>();
         for (DexParam param : dexSig.params()) {
-            expandedParams.add(ResolveType.$(ts, localTypeTable, param.paramType()));
+            String name = param.paramName().toString();
+            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
+            expandedParams.add(new FunctionParam(name, type));
         }
         DType expandedRet = ResolveType.$(ts, localTypeTable, dexSig.ret());
         expanded = new FunctionType(ts, func.name(), expandedParams, expandedRet);
@@ -293,7 +291,7 @@ public class FunctionSig {
             }
             desc.append(typeParam.description());
         }
-        for (DType param : params) {
+        for (FunctionParam param : params) {
             if (isFirst) {
                 isFirst = false;
             } else {
