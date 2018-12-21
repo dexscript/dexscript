@@ -36,6 +36,8 @@ public class FunctionTable {
         return invoked;
     }
 
+    // implement polymorphism: choose candidates statically
+    // in runtime, invocation will dispatch candidate based on actual type
     public Invoked tryInvoke(Invocation ivc, List<DType> args) {
         String funcName = ivc.funcName();
         pullFromProviders();
@@ -45,6 +47,7 @@ public class FunctionTable {
         }
         boolean alreadyMatched = false;
         Invoked invoked = new Invoked(args);
+        List<FunctionSig.Invoked> potentialCandidates = new ArrayList<>();
         for (int i = 0; i < functions.size(); i++) {
             FunctionType func = functions.get(i);
             if (alreadyMatched) {
@@ -60,35 +63,21 @@ public class FunctionTable {
                 invoked.failures.add(candidate);
                 continue;
             }
-            invoked.candidates.add(candidate);
+            potentialCandidates.add(candidate);
             if (!candidate.needRuntimeCheck()) {
                 alreadyMatched = true;
             }
+        }
+        if (alreadyMatched) {
+            invoked.candidates.addAll(potentialCandidates);
+        } else {
+            invoked.ignoreds.addAll(potentialCandidates);
         }
         return invoked;
     }
 
     public void lazyDefine(FunctionsType provider) {
         providers.add(provider);
-    }
-
-    public boolean isDefined(IsAssignable ctx, FunctionType target) {
-        pullFromProviders();
-        List<FunctionType> candidates = defined.get(target.name());
-        if (candidates == null) {
-            return false;
-        }
-        for (FunctionType candidate : candidates) {
-            if (!ctx.isAvailable(candidate)) {
-                ctx.addLog("member " + target + " filter not available candidate", "candidate", candidate);
-                continue;
-            }
-            if (new IsAssignable(ctx, "member " + target + " candidate", target, candidate).result()) {
-                return true;
-            }
-        }
-        ctx.addLog("member " + target + " is not defined", "candidates_count", candidates.size());
-        return false;
     }
 
     private void pullFromProviders() {
@@ -117,4 +106,22 @@ public class FunctionTable {
         return true;
     }
 
+    private boolean isDefined(IsAssignable ctx, FunctionType target) {
+        pullFromProviders();
+        List<FunctionType> candidates = defined.get(target.name());
+        if (candidates == null) {
+            return false;
+        }
+        for (FunctionType candidate : candidates) {
+            if (!ctx.isAvailable(candidate)) {
+                ctx.addLog("member " + target + " filter not available candidate", "candidate", candidate);
+                continue;
+            }
+            if (new IsAssignable(ctx, "member " + target + " candidate", target, candidate).result()) {
+                return true;
+            }
+        }
+        ctx.addLog("member " + target + " is not defined", "candidates_count", candidates.size());
+        return false;
+    }
 }

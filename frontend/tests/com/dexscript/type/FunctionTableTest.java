@@ -40,12 +40,20 @@ public class FunctionTableTest {
     }
 
     @Test
-    public void if_matched_then_following_candidates_will_be_ignored() {
+    public void if_matched_then_following_candidates_will_be_skipped() {
         func("Hello(arg0: string)");
         func("Hello(arg0: 'a')");
         Invoked invoked = invoke("Hello", "string");
         Assert.assertEquals(1, invoked.candidates.size());
         Assert.assertEquals(1, invoked.skippeds.size());
+    }
+
+    @Test
+    public void if_not_match_then_candidate_will_be_ignored() {
+        func("Hello(arg0: 'a')"); // candidate, but not match
+        Invoked invoked = invoke("Hello", "string");
+        Assert.assertEquals(0, invoked.candidates.size());
+        Assert.assertEquals(1, invoked.ignoreds.size());
     }
 
     @Test
