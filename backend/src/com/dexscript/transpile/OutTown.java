@@ -56,9 +56,8 @@ public class OutTown {
             }
             for (DexTopLevelDecl iTopLevelDecl : iFile.topLevelDecls()) {
                 if (iTopLevelDecl.function() != null) {
-                    DexActor function = iTopLevelDecl.function();
-                    ensureTypeLoaded(function);
-                    OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, function);
+                    DexActor actor = iTopLevelDecl.function();
+                    OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, actor);
                     addSource(oClass.qualifiedClassName(), oClass.toString());
                 }
             }
@@ -71,21 +70,6 @@ public class OutTown {
             return compiler.compileAll();
         } catch (Exception e) {
             throw new DexRuntimeException(e);
-        }
-    }
-
-    private void ensureTypeLoaded(DexActor function) {
-        String funcName = function.functionName();
-        TypeTable localTypeTable = new TypeTable(ts, function.typeParams());
-        List<DType> args = new ArrayList<>();
-        for (DexParam param : function.params()) {
-            DType arg = ResolveType.$(ts, localTypeTable, param.paramType());
-            args.add(arg);
-        }
-        Invocation ivc = new Invocation(funcName, null, args, null);
-        Invoked invoked = ts.invoke(ivc);
-        for (FunctionSig.Invoked candidate : invoked.candidates) {
-            candidate.function().impl();
         }
     }
 

@@ -50,4 +50,8 @@ public class Invocation {
     public DType retHint() {
         return retHint;
     }
+
+    public int argsCount() {
+        return posArgs.size() + namedArgs.size();
+    }
 }

@@ -22,7 +22,7 @@ class MapNamedArgs {
             for (int j = 0; j < namedArgs.size(); j++) {
                 NamedArg namedArg = namedArgs.get(j);
                 if (namedArg.name().equals(param.name())) {
-                    mapNamedArgs.mapping[j] = i;
+                    mapNamedArgs.mapping[i - posArgs.size()] = j;
                     argType = namedArg.type();
                     break;
                 }

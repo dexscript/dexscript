@@ -20,12 +20,6 @@ public class DexInvocation {
         this.posArgs = posArgs;
         this.namedArgs = Collections.emptyList();
     }
-    public DexInvocation(String funcName, List<DexType> typeArgs, List<DexExpr> posArgs) {
-        this.funcName = funcName;
-        this.typeArgs = typeArgs;
-        this.posArgs = posArgs;
-        this.namedArgs = Collections.emptyList();
-    }
 
     public DexInvocation(String funcName, DexExpr arg0, DexExpr arg1) {
         this.funcName = funcName;
@@ -47,6 +41,15 @@ public class DexInvocation {
         this.funcName = funcName;
         this.typeArgs = typeArgs;
         this.posArgs = posArgs;
+        this.namedArgs = namedArgs;
+    }
+
+    public DexInvocation(String funcName, DexExpr arg0, List<DexType> typeArgs, List<DexExpr> posArgs, List<DexNamedArg> namedArgs) {
+        this.funcName = funcName;
+        this.typeArgs = typeArgs;
+        this.posArgs = new ArrayList<>();
+        this.posArgs.add(arg0);
+        this.posArgs.addAll(posArgs);
         this.namedArgs = namedArgs;
     }
 

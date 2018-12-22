@@ -4,7 +4,9 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
+import com.dexscript.ast.expr.DexNamedArg;
 import com.dexscript.ast.type.DexType;
+import com.dexscript.infer.InferInvocation;
 import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.transpile.gen.Indent;
@@ -23,38 +25,43 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
     @Override
     public void handle(OutClass oClass, E iElem) {
         DexInvocation invocation = iElem.invocation();
-        OutField oResultField = invoke(oClass, invocation.funcName(), invocation.typeArgs(), invocation.posArgs());
+        OutField oResultField = invoke(oClass, invocation);
         if (oResultField != null) {
             iElem.attach(oResultField);
         }
     }
 
-    public static OutField invoke(OutClass oClass, String funcName, List<DexType> iTypeArgs, List<DexExpr> iArgs) {
-        for (DexExpr iArg : iArgs) {
-            Translate.$(oClass, iArg);
+    public static OutField invoke(OutClass oClass, DexInvocation dexIvc) {
+        for (DexExpr iPosArg : dexIvc.posArgs()) {
+            Translate.$(oClass, iPosArg);
+        }
+        for (DexNamedArg iNamedArg : dexIvc.namedArgs()) {
+            Translate.$(oClass, iNamedArg.val());
         }
         TypeSystem ts = oClass.typeSystem();
 
-        List<DType> args = InferType.inferTypes(ts, iArgs);
-        List<DType> typeArgs = ResolveType.resolveTypes(ts, null, iTypeArgs);
-        Invocation ivc = new Invocation(funcName, typeArgs, args, null)
-                .requireImpl(true);
+        Invocation ivc = InferInvocation.$(ts, dexIvc).requireImpl(true);
         Invoked invoked = ts.invoke(ivc);
-        if (invoked.candidates.size() == 0) {
-            throw new DexRuntimeException(String.format("can not resolve implementation of function %s with %s",
-                    funcName, args));
+        if (invoked.candidates.isEmpty()) {
+            throw new DexRuntimeException("can not find candidates: " + ivc);
         }
-        String newF = oClass.oShim().dispatch(funcName, iArgs.size(), invoked);
+        String newF = oClass.oShim().dispatch(ivc.funcName(), ivc.argsCount(), invoked);
         DType retType = invoked.ret;
 
-        OutField oActorField = oClass.allocateField(funcName);
+        OutField oActorField = oClass.allocateField(ivc.funcName());
         oClass.g().__(oActorField.value()
         ).__(" = "
         ).__(newF
         ).__("(scheduler");
-        for (int i = 0; i < iArgs.size(); i++) {
+        for (int i = 0; i < dexIvc.posArgs().size(); i++) {
             oClass.g().__(", ");
-            oClass.g().__(Translate.translateExpr(oClass, iArgs.get(i), invoked.args.get(i)));
+            oClass.g().__(Translate.translateExpr(oClass, dexIvc.posArgs().get(i), invoked.args.get(i)));
+        }
+        for (int i = 0; i < invoked.namedArgsMapping.length; i++) {
+            int namedArgIndex = invoked.namedArgsMapping[i];
+            oClass.g().__(", ");
+            DType targetType = invoked.args.get(i + dexIvc.posArgs().size());
+            oClass.g().__(Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType));
         }
         oClass.g().__(new Line(");"));
         boolean needToConsume = needToConsume(invoked);

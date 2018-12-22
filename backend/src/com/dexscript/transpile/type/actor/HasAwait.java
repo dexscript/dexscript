@@ -7,6 +7,7 @@ import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexProduceStmt;
+import com.dexscript.infer.InferInvocation;
 import com.dexscript.infer.InferType;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
@@ -47,9 +48,9 @@ public class HasAwait implements DexElement.Visitor {
             }
         }
         if (elem instanceof DexInvocationExpr) {
-            DexInvocation invocation = ((DexInvocationExpr) elem).invocation();
-            List<DType> args = InferType.inferTypes(ts, invocation.posArgs());
-            Invoked invoked = ts.invoke(new Invocation(invocation.funcName(), null, args, null));
+            DexInvocation dexIvc = ((DexInvocationExpr) elem).invocation();
+            Invocation ivc = InferInvocation.$(ts, dexIvc);
+            Invoked invoked = ts.invoke(ivc);
             for (FunctionSig.Invoked candidate : invoked.candidates) {
                 FunctionImpl impl = (FunctionImpl) candidate.function().impl();
                 if (impl.hasAwait()) {

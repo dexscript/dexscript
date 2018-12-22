@@ -64,6 +64,7 @@ public class OutShim {
             throw new IllegalStateException();
         }
         finished = true;
+        actorTable.loadImpls();
         for (Map.Entry<FunctionEntry, List<FunctionImpl>> entry : entries.entrySet()) {
             entry.getKey().gen(g, entry.getValue(), javaTypes);
         }

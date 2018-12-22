@@ -1,5 +1,6 @@
 package com.dexscript.transpile.type.actor;
 
+import com.dexscript.type.FunctionType;
 import com.dexscript.type.NamedType;
 import com.dexscript.type.NamedTypesProvider;
 import com.dexscript.type.TypeSystem;
@@ -35,5 +36,18 @@ public class ActorTable implements NamedTypesProvider {
             }
         }
         return types;
+    }
+
+    public void loadImpls() {
+        for (List<ActorType> actors : defined.values()) {
+            for (ActorType actor : actors) {
+                for (FunctionType func : actor.functions()) {
+                    if (!func.hasImpl()) {
+                        continue;
+                    }
+                    func.impl();
+                }
+            }
+        }
     }
 }

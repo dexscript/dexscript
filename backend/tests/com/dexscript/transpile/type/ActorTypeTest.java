@@ -48,7 +48,7 @@ public class ActorTypeTest {
         Invoked invoked = ts.invoke(new Invocation("New__", null, new ArrayList<DType>() {{
             add(new StringLiteralType(ts, "AA"));
             add(actor);
-        }}, null));
+        }}, null, null));
         Assert.assertEquals(1, invoked.candidates.size());
     }
 
@@ -59,7 +59,8 @@ public class ActorTypeTest {
         new ActorType(oShim, new DexActor("" +
                 "function Hello() {\n" +
                 "}"));
-        Invoked invoked = ts.invoke(new Invocation("Hello", null, new ArrayList<>(), null));
+        Invoked invoked = ts.invoke(new Invocation("Hello",
+                null, new ArrayList<>(), null, null));
         Assert.assertEquals(1, invoked.candidates.size());
         Assert.assertEquals(ts.VOID, invoked.candidates.get(0).function().ret());
     }
@@ -71,7 +72,8 @@ public class ActorTypeTest {
         new ActorType(oShim, new DexActor("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
-        Invoked invoked = ts.invoke(new Invocation("Hello", null, Arrays.asList(ts.STRING), null));
+        Invoked invoked = ts.invoke(new Invocation("Hello",
+                null, Arrays.asList(ts.STRING),  null,null));
         Assert.assertEquals(1, invoked.candidates.size());
         DType type = ResolveType.$(ts, "Hello<string>");
         Assert.assertNotNull(type);
@@ -87,7 +89,7 @@ public class ActorTypeTest {
                 "}"));
         StringLiteralType a = new StringLiteralType(ts, "a");
         StringLiteralType b = new StringLiteralType(ts, "b");
-        Invoked invoked = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null));
+        Invoked invoked = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null, null));
         Assert.assertEquals(0, invoked.candidates.size());
     }
 }

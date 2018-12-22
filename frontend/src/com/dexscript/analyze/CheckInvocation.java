@@ -3,6 +3,7 @@ package com.dexscript.analyze;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
+import com.dexscript.infer.InferInvocation;
 import com.dexscript.infer.InferType;
 import com.dexscript.type.DType;
 import com.dexscript.type.Invocation;
@@ -16,9 +17,7 @@ public class CheckInvocation<E extends DexElement & DexInvocationExpr> implement
     public void handle(CheckSemanticError cse, E elem) {
         TypeSystem ts = cse.typeSystem();
         DexInvocation dexIvc = elem.invocation();
-        List<DType> posArgs = InferType.inferTypes(ts, dexIvc.posArgs());
-        List<DType> typeArgs = ResolveType.resolveTypes(ts, null, dexIvc.typeArgs());
-        Invocation ivc = new Invocation(dexIvc.funcName(), typeArgs, posArgs, null,null);
+        Invocation ivc = InferInvocation.$(ts, dexIvc);
         if (ts.invoke(ivc).candidates.isEmpty()) {
             cse.report(elem, "no matching function: " + elem);
         }
