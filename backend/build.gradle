@@ -4,7 +4,7 @@ repositories {
 
 dependencies {
     implementation project(':frontend')
-    compile group: 'org.mdkt.compiler', name: 'InMemoryJavaCompiler', version: '1.3.0'
+    compile('org.mdkt.compiler:InMemoryJavaCompiler1.3.0')
     testCompileOnly(
             'junit:junit:4.12'
     )

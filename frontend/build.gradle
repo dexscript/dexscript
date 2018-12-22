@@ -4,6 +4,7 @@ repositories {
 
 dependencies {
     compile('org.jetbrains:annotations:16.0.2')
+    testCompileOnly('com.google.jimfs:jimfs:1.1')
     testCompileOnly(
             'junit:junit:4.12'
     )
