@@ -13,18 +13,21 @@ class SubstituteConst implements Iterator<SubstituteConst.Combination> {
         public List<NamedArg> namedArgs = new ArrayList<>();
     }
 
-    private static class Column {
+    interface Column {
+
+        boolean next();
+
+        void collect(Combination collected);
+    }
+
+    static class PosColumn implements Column {
 
         int cursor;
 
         List<DType> candidates;
 
-        public Column(List<DType> candidates) {
+        PosColumn(List<DType> candidates) {
             this.candidates = candidates;
-        }
-
-        public DType current() {
-            return candidates.get(cursor);
         }
 
         public boolean next() {
@@ -35,14 +38,49 @@ class SubstituteConst implements Iterator<SubstituteConst.Combination> {
             }
             return true;
         }
+
+        @Override
+        public void collect(Combination collected) {
+            collected.posArgs.add(candidates.get(cursor));
+        }
+    }
+
+    static class NamedColumn implements Column {
+
+        int cursor;
+        String name;
+        List<DType> candidates;
+
+        NamedColumn(String name, List<DType> candidates) {
+            this.name = name;
+            this.candidates = candidates;
+        }
+
+        public boolean next() {
+            cursor += 1;
+            if (cursor >= candidates.size()) {
+                cursor = 0;
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public void collect(Combination collected) {
+            collected.namedArgs.add(new NamedArg(name, candidates.get(cursor)));
+        }
     }
 
     private Combination current;
     private List<Column> columns = new ArrayList<>();
 
-    SubstituteConst(List<DType> orig) {
-        for (DType type : orig) {
-            columns.add(new Column(widen(type.typeSystem(), type)));
+    SubstituteConst(List<DType> posArgs, List<NamedArg> namedArgs) {
+        for (DType posArg : posArgs) {
+            columns.add(new PosColumn(widen(posArg.typeSystem(), posArg)));
+        }
+        for (NamedArg namedArg : namedArgs) {
+            List<DType> candidates = widen(namedArg.type().typeSystem(), namedArg.type());
+            columns.add(new NamedColumn(namedArg.name(), candidates));
         }
         current = collect();
     }
@@ -71,7 +109,7 @@ class SubstituteConst implements Iterator<SubstituteConst.Combination> {
     private Combination collect() {
         Combination collected = new Combination();
         for (Column column : columns) {
-            collected.posArgs.add(column.current());
+            column.collect(collected);
         }
         return collected;
     }

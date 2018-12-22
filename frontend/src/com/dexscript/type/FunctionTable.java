@@ -24,7 +24,7 @@ public class FunctionTable {
     }
 
     public Invoked invoke(Invocation ivc) {
-        SubstituteConst substituteConst = new SubstituteConst(ivc.posArgs());
+        SubstituteConst substituteConst = new SubstituteConst(ivc.posArgs(), ivc.namedArgs());
         Invoked invoked = null;
         while (substituteConst.hasNext()) {
             SubstituteConst.Combination combination = substituteConst.next();

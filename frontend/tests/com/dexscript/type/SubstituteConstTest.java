@@ -22,7 +22,7 @@ public class SubstituteConstTest {
 
     @Test
     public void empty() {
-        SubstituteConst iterator = new SubstituteConst(new ArrayList<>());
+        SubstituteConst iterator = new SubstituteConst(new ArrayList<>(), new ArrayList<>());
         List<SubstituteConst.Combination> combinations = permute(iterator);
         Assert.assertEquals(1, combinations.size());
         Assert.assertTrue(combinations.get(0).posArgs.isEmpty());
@@ -31,9 +31,10 @@ public class SubstituteConstTest {
 
     @Test
     public void no_const() {
-        List<SubstituteConst.Combination> combinations = permute("string");
+        List<SubstituteConst.Combination> combinations = permute("string", "a", "int64");
         Assert.assertEquals(1, combinations.size());
         Assert.assertEquals(resolve("string"), combinations.get(0).posArgs);
+        Assert.assertEquals(resolve("a", "int64"), combinations.get(0).namedArgs);
     }
 
     @Test
@@ -72,6 +73,20 @@ public class SubstituteConstTest {
     }
 
     @Test
+    public void one_pos_const_and_one_named_const() {
+        List<SubstituteConst.Combination> combinations = permute("(const)true", "a", "(const)false");
+        Assert.assertEquals(4, combinations.size());
+        Assert.assertEquals(resolve("true"), combinations.get(0).posArgs);
+        Assert.assertEquals(resolve("a", "false"), combinations.get(0).namedArgs);
+        Assert.assertEquals(resolve("bool"), combinations.get(1).posArgs);
+        Assert.assertEquals(resolve("a", "false"), combinations.get(1).namedArgs);
+        Assert.assertEquals(resolve("true"), combinations.get(2).posArgs);
+        Assert.assertEquals(resolve("a", "bool"), combinations.get(2).namedArgs);
+        Assert.assertEquals(resolve("bool"), combinations.get(3).posArgs);
+        Assert.assertEquals(resolve("a", "bool"), combinations.get(3).namedArgs);
+    }
+
+    @Test
     public void two_bool_const() {
         List<SubstituteConst.Combination> combinations = permute("(const)true, (const)false");
         Assert.assertEquals(4, combinations.size());
@@ -95,9 +110,21 @@ public class SubstituteConstTest {
         Assert.assertEquals(resolve("bool, bool, bool"), combinations.get(7).posArgs);
     }
 
-    private List<SubstituteConst.Combination> permute(String src) {
-        List<DType> types = resolve(src);
-        return permute(new SubstituteConst(types));
+    private List<SubstituteConst.Combination> permute(String src, Object ...namedArgObjs) {
+        List<DType> posArgs = resolve(src);
+        List<NamedArg> namedArgs = resolve(namedArgObjs);
+        return permute(new SubstituteConst(posArgs, namedArgs));
+    }
+
+
+    private List<NamedArg> resolve(Object ...namedArgObjs) {
+        List<NamedArg> namedArgs = new ArrayList<>();
+        for (int i = 0; i < namedArgObjs.length; i+=2) {
+            String name = (String) namedArgObjs[i];
+            DType type = resolve((String) namedArgObjs[i+1]).get(0);
+            namedArgs.add(new NamedArg(name, type));
+        }
+        return namedArgs;
     }
 
     @NotNull
