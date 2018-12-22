@@ -24,7 +24,7 @@ public class FunctionTable {
     }
 
     public Invoked invoke(Invocation ivc) {
-        SubstituteConst substituteConst = new SubstituteConst(ivc.args());
+        SubstituteConst substituteConst = new SubstituteConst(ivc.posArgs());
         Invoked invoked = null;
         while (substituteConst.hasNext()) {
             List<DType> args = substituteConst.next();
@@ -43,9 +43,9 @@ public class FunctionTable {
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
-            return new Invoked(args);
+            return new Invoked();
         }
-        Invoked invoked = new Invoked(args);
+        Invoked invoked = new Invoked();
         List<FunctionSig.Invoked> potentialCandidates = new ArrayList<>();
         for (int i = 0; i < functions.size(); i++) {
             FunctionType func = functions.get(i);
@@ -53,13 +53,20 @@ public class FunctionTable {
                 invoked.skippeds.add(func);
                 continue;
             }
-            FunctionSig.Invoked candidate = func.sig().invoke(ivc, args);
+            MapNamedArgs mapNamedArgs = MapNamedArgs.$(func, args, ivc.namedArgs());
+            if (mapNamedArgs == null) {
+                invoked.skippeds.add(func);
+                continue;
+            }
+            FunctionSig.Invoked candidate = func.sig().invoke(ivc.typeArgs(), mapNamedArgs.args, ivc.retHint());
             if (!candidate.success()) {
                 invoked.failures.add(candidate);
                 continue;
             }
             potentialCandidates.add(candidate);
             if (!candidate.needRuntimeCheck()) {
+                invoked.args = mapNamedArgs.args;
+                invoked.namedArgsMapping = mapNamedArgs.mapping;
                 invoked.match = candidate;
             }
         }

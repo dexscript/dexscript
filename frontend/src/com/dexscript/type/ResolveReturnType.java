@@ -14,8 +14,9 @@ public interface ResolveReturnType {
         };
     }
 
+    // TODO: merge this into invoked
     static DType $(TypeSystem ts, String funcName, List<DType> typeArgs, List<DType> args, DType retHint) {
-        Invoked invoked = ts.invoke(new Invocation(funcName, typeArgs, args, retHint));
+        Invoked invoked = ts.invoke(new Invocation(funcName, typeArgs, args, null, retHint));
         if (invoked.candidates.size() == 0) {
             Events.ON_MISSING_FUNCTION.handle(ts, funcName, args);
             return ts.UNDEFINED;

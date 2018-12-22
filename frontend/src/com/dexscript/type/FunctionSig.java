@@ -190,9 +190,7 @@ public class FunctionSig {
         return typeParams;
     }
 
-    Invoked invoke(Invocation ivc, List<DType> args) {
-        List<DType> typeArgs = ivc.typeArgs();
-        DType retHint = ivc.retHint();
+    Invoked invoke(List<DType> typeArgs, List<DType> args, DType retHint) {
         if (params.size() != args.size()) {
             return new ArgumentsCountIncompatible();
         }

@@ -18,8 +18,7 @@ public class FunctionSigTest {
     }
 
     public FunctionSig.Invoked invoke(FunctionSig sig, List<DType> args) {
-        Invocation ivc = new Invocation("", null, args, null);
-        FunctionSig.Invoked invoked = sig.invoke(ivc, args);
+        FunctionSig.Invoked invoked = sig.invoke(null, args, null);
         return invoked;
     }
 
@@ -82,27 +81,24 @@ public class FunctionSigTest {
     @Test
     public void infer_with_return_value_hint() {
         FunctionSig sig = sig("(<T>: interface{}): T");
-        Invocation ivc = new Invocation("", null, resolve(), ts.STRING);
-        DType ret = sig.invoke(ivc, ivc.args()).function().ret();
+        DType ret = sig.invoke(null, resolve(), ts.STRING).function().ret();
         Assert.assertEquals(ts.STRING, ret);
     }
 
     @Test
     public void specify_type_args() {
         FunctionSig sig = sig("(<T>: interface{}, left: T, right: T): bool");
-        Invocation ivc = new Invocation("",
+        Assert.assertFalse(sig.invoke(
                 resolve("int64"),
-                resolve("string", "string"), null);
-        Assert.assertFalse(sig.invoke(ivc, ivc.args()).success());
+                resolve("string", "string"), null).success());
     }
 
     @Test
     public void invoke_non_generic_function_with_type_args() {
         FunctionSig sig = sig("(left: T, right: T): bool");
-        Invocation ivc = new Invocation("",
+        Assert.assertFalse(sig.invoke(
                 resolve("int64"),
-                resolve("string", "string"), null);
-        Assert.assertFalse(sig.invoke(ivc, ivc.args()).success());
+                resolve("string", "string"), null).success());
     }
 
     @Test

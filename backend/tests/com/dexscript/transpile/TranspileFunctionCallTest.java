@@ -18,10 +18,22 @@ public class TranspileFunctionCallTest {
     }
 
     @Test
-    public void function_with_argument() {
+    public void call_with_pos_arg() {
         Object result = Transpile.$("" +
                 "function Hello(): string {\n" +
                 "   return World('hello world')\n" +
+                "}\n" +
+                "function World(msg: string): string {\n" +
+                "   return msg\n" +
+                "}");
+        Assert.assertEquals("hello world", result);
+    }
+
+    @Test
+    public void call_with_named_arg() {
+        Object result = Transpile.$("" +
+                "function Hello(): string {\n" +
+                "   return World(msg='hello world')\n" +
                 "}\n" +
                 "function World(msg: string): string {\n" +
                 "   return msg\n" +

@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class FunctionTableTest {
@@ -100,6 +99,29 @@ public class FunctionTableTest {
         Assert.assertEquals(ts.INT32, invoked.args.get(0));
     }
 
+    @Test
+    public void call_with_named_arg() {
+        func("Hello(a: int32)");
+        Invoked invoked = invoke("Hello", null,
+                "a", "int32");
+        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(ts.INT32, invoked.args.get(0));
+        Assert.assertEquals(0, invoked.namedArgsMapping[0]);
+    }
+
+    @Test
+    public void call_with_two_named_args() {
+        func("Hello(a: int32, b: int64)");
+        Invoked invoked = invoke("Hello", null,
+                "b", "int64",
+                "a", "int32");
+        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(ts.INT32, invoked.args.get(0));
+        Assert.assertEquals(ts.INT64, invoked.args.get(1));
+        Assert.assertEquals(1, invoked.namedArgsMapping[0]);
+        Assert.assertEquals(0, invoked.namedArgsMapping[1]);
+    }
+
     private FunctionType func(String actorSrc) {
         DexActor actor = new DexActor("function " + actorSrc);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
@@ -108,17 +130,26 @@ public class FunctionTableTest {
         return funcType;
     }
 
-    public Invoked invoke(String funcName, String argsStr) {
-        return invoke(funcName, null, argsStr, false);
+    private Invoked invoke(String funcName, String argsStr, Object... namedArgs) {
+        return _invoke(funcName, null, argsStr, namedArgs, false);
     }
 
-    public Invoked invoke(String funcName, String typeArgsStr, String argsStr, boolean requiresImpl) {
-        List<DType> typeArgs = Collections.emptyList();
+    private Invoked _invoke(String funcName, String typeArgsStr, String argsStr, Object[] namedArgObjs, boolean requiresImpl) {
+        List<DType> typeArgs = new ArrayList<>();
         if (typeArgsStr != null) {
             typeArgs = resolve(typeArgsStr);
         }
-        List<DType> args = resolve(argsStr);
-        return ts.invoke(new Invocation(funcName, typeArgs, args, null).requireImpl(requiresImpl));
+        List<DType> posArgs = new ArrayList<>();
+        if (argsStr != null) {
+            posArgs = resolve(argsStr);
+        }
+        List<NamedArg> namedArgs = new ArrayList<>();
+        for (int i = 0; i < namedArgObjs.length; i += 2) {
+            String name = (String) namedArgObjs[i];
+            DType type = resolve((String) namedArgObjs[i + 1]).get(0);
+            namedArgs.add(new NamedArg(name, type));
+        }
+        return ts.invoke(new Invocation(funcName, typeArgs, posArgs, namedArgs, null).requireImpl(requiresImpl));
     }
 
     @NotNull
