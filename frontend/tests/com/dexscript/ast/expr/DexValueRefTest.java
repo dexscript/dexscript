@@ -13,5 +13,11 @@ public class DexValueRefTest {
         Assert.assertEquals("hello", new DexValueRef("\rhello\r").toString());
         Assert.assertEquals("hello", new DexValueRef("\nhello\n").toString());
         Assert.assertEquals("hello", new DexValueRef(" hello()").toString());
+        Assert.assertEquals("$", new DexValueRef(" $").toString());
+    }
+
+    @Test
+    public void unmatched() {
+        Assert.assertEquals("<unmatched>$a</unmatched>", new DexValueRef("$a").toString());
     }
 }

@@ -7,7 +7,6 @@ import com.dexscript.ast.token.Zero2Nine;
 
 public class DexValueRef extends DexLeafExpr {
 
-    private DexSyntaxError syntaxError;
     private Text matched;
 
     public DexValueRef(String src) {
@@ -38,11 +37,6 @@ public class DexValueRef extends DexLeafExpr {
     }
 
     @Override
-    public DexSyntaxError syntaxError() {
-        return syntaxError;
-    }
-
-    @Override
     public int leftRank() {
         return 0;
     }
@@ -67,12 +61,17 @@ public class DexValueRef extends DexLeafExpr {
                 if (Blank.$(b)) {
                     continue;
                 }
+                if (b == '$') {
+                    valueRefBegin = i;
+                    i += 1;
+                    return this::matchedDollar;
+                }
                 if (A2Z.$(b)) {
                     valueRefBegin = i;
                     i += 1;
                     return this::remainingChars;
                 }
-                return reportError();
+                return null;
             }
             return null;
         }
@@ -93,11 +92,15 @@ public class DexValueRef extends DexLeafExpr {
             return null;
         }
 
-        State reportError() {
-            if (syntaxError != null) {
-                return null;
+        State matchedDollar() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (A2Z.$(b) || Zero2Nine.$(b) || b == '_') {
+                    return null;
+                }
+                break;
             }
-            syntaxError = new DexSyntaxError(src, i);
+            matched = new Text(src.bytes, valueRefBegin, i);
             return null;
         }
     }

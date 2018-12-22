@@ -48,6 +48,7 @@ public final class DexIdentifier extends DexLeafElement {
             State.Play(this::firstChar);
         }
 
+        @Expect("$")
         @Expect("::")
         @Expect("blank")
         @Expect("a~z")
@@ -58,10 +59,15 @@ public final class DexIdentifier extends DexLeafElement {
                 if (Blank.$(b)) {
                     continue;
                 }
+                if (b == '$') {
+                    identifierBegin = i;
+                    i += 1;
+                    return this::end;
+                }
                 if (Keyword.$(src, i, ':', ':')) {
                     identifierBegin = i;
                     i += 2;
-                    return this::remainingChars;
+                    return this::end;
                 }
                 if (A2Z.$(b)) {
                     identifierBegin = i;
@@ -83,14 +89,21 @@ public final class DexIdentifier extends DexLeafElement {
                 if (A2Z.$(b) || Zero2Nine.$(b) || b == '_') {
                     continue;
                 }
-                if (Blank.$(b) || LineEnd.$(b) || b == '(' || b == '{' || b == ':' || b == ',' || b == '>' || b == '=') {
-                    matched = new Text(src.bytes, identifierBegin, i);
-                    return null;
-                }
-                // not matched, found invalid char
-                return null;
+                return this::end;
             }
             matched = new Text(src.bytes, identifierBegin, i);
+            return null;
+        }
+
+        State end() {
+            if (i >= src.bytes.length) {
+                matched = new Text(src.bytes, identifierBegin, i);
+                return null;
+            }
+            byte b = src.bytes[i];
+            if (Blank.$(b) || LineEnd.$(b) || b == '(' || b == '{' || b == ':' || b == ',' || b == '>' || b == '=') {
+                matched = new Text(src.bytes, identifierBegin, i);
+            }
             return null;
         }
     }

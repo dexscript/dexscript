@@ -14,6 +14,8 @@ public class DexIdentifierTest {
         Assert.assertEquals("hello", new DexIdentifier("\rhello\r").toString());
         Assert.assertEquals("hello", new DexIdentifier("\nhello\n").toString());
         Assert.assertEquals("hello", new DexIdentifier(" hello()").toString());
+        Assert.assertEquals("::", new DexIdentifier("::").toString());
+        Assert.assertEquals("$", new DexIdentifier("$").toString());
     }
 
     @Test
@@ -23,5 +25,7 @@ public class DexIdentifierTest {
         Assert.assertEquals("<unmatched>hello?</unmatched>", new DexIdentifier("hello?").toString());
         Assert.assertFalse(new DexIdentifier("0").matched());
         Assert.assertFalse(new DexIdentifier("hello+").matched());
+        Assert.assertEquals("<unmatched>::a</unmatched>", new DexIdentifier("::a").toString());
+        Assert.assertEquals("<unmatched>$a</unmatched>", new DexIdentifier("$a").toString());
     }
 }

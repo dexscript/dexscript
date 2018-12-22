@@ -186,4 +186,13 @@ public class DexFunctionCallExprTest {
         Assert.assertEquals(0, call.posArgs().size());
         Assert.assertEquals(0, call.namedArgs().size());
     }
+
+    @Test
+    public void call_with_context_argument() {
+        DexFunctionCallExpr call = (DexFunctionCallExpr) DexExpr.parse("print($=$)");
+        Assert.assertEquals("print($=$)", call.toString());
+        Assert.assertEquals(0, call.posArgs().size());
+        Assert.assertEquals(1, call.namedArgs().size());
+        Assert.assertEquals("$", call.namedArgs().get(0).name().toString());
+    }
 }
