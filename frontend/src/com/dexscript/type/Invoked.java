@@ -9,6 +9,9 @@ public class Invoked {
     // so the invocation args may not be the same as invoked args
     public List<DType> args;
 
+    // the return type of all candidates union together
+    public DType ret;
+
     // map named arg => positional arg
     public int[] namedArgsMapping;
 

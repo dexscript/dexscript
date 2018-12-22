@@ -23,7 +23,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
     @Override
     public void handle(OutClass oClass, E iElem) {
         DexInvocation invocation = iElem.invocation();
-        OutField oResultField = invoke(oClass, invocation.funcName(), invocation.typeArgs(), invocation.args());
+        OutField oResultField = invoke(oClass, invocation.funcName(), invocation.typeArgs(), invocation.posArgs());
         if (oResultField != null) {
             iElem.attach(oResultField);
         }

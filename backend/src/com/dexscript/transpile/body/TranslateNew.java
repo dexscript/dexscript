@@ -34,7 +34,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
         TypeSystem ts = oClass.typeSystem();
 
         DexInvocation invocation = iNewExpr.invocation();
-        List<DType> args = InferType.inferTypes(ts, invocation.args());
+        List<DType> args = InferType.inferTypes(ts, invocation.posArgs());
         List<DType> typeArgs = ResolveType.resolveTypes(ts, null, invocation.typeArgs());
         Invoked invoked = ts.invoke(new Invocation("New__", typeArgs, args, null));
         if (invoked.candidates.isEmpty()) {

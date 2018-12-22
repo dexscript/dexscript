@@ -11,42 +11,58 @@ public class DexInvocation {
 
     private final String funcName;
     private final List<DexType> typeArgs;
-    private final List<DexExpr> args;
+    private final List<DexExpr> posArgs;
+    private final List<DexNamedArg> namedArgs;
 
-    public DexInvocation(String funcName, List<DexExpr> args) {
+    public DexInvocation(String funcName, List<DexExpr> posArgs) {
         this.funcName = funcName;
         this.typeArgs = Collections.emptyList();
-        this.args = args;
+        this.posArgs = posArgs;
+        this.namedArgs = Collections.emptyList();
     }
-    public DexInvocation(String funcName, List<DexType> typeArgs, List<DexExpr> args) {
+    public DexInvocation(String funcName, List<DexType> typeArgs, List<DexExpr> posArgs) {
         this.funcName = funcName;
         this.typeArgs = typeArgs;
-        this.args = args;
+        this.posArgs = posArgs;
+        this.namedArgs = Collections.emptyList();
     }
 
     public DexInvocation(String funcName, DexExpr arg0, DexExpr arg1) {
         this.funcName = funcName;
         this.typeArgs = Collections.emptyList();
-        this.args = Arrays.asList(arg0, arg1);
+        this.posArgs = Arrays.asList(arg0, arg1);
+        this.namedArgs = Collections.emptyList();
     }
 
-    public DexInvocation(String funcName, DexExpr arg0, List<DexType> typeArgs, List<DexExpr> args) {
+    public DexInvocation(String funcName, DexExpr arg0, List<DexType> typeArgs, List<DexExpr> posArgs) {
         this.funcName = funcName;
         this.typeArgs = typeArgs;
-        this.args = new ArrayList<>();
-        this.args.add(arg0);
-        this.args.addAll(args);
+        this.posArgs = new ArrayList<>();
+        this.posArgs.add(arg0);
+        this.posArgs.addAll(posArgs);
+        this.namedArgs = Collections.emptyList();
+    }
+
+    public DexInvocation(String funcName, List<DexType> typeArgs, List<DexExpr> posArgs, List<DexNamedArg> namedArgs) {
+        this.funcName = funcName;
+        this.typeArgs = typeArgs;
+        this.posArgs = posArgs;
+        this.namedArgs = namedArgs;
     }
 
     public String funcName() {
         return funcName;
     }
 
-    public List<DexExpr> args() {
-        return args;
+    public List<DexExpr> posArgs() {
+        return posArgs;
     }
 
     public List<DexType> typeArgs() {
         return typeArgs;
+    }
+
+    public List<DexNamedArg> namedArgs() {
+        return namedArgs;
     }
 }

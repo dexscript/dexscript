@@ -16,7 +16,7 @@ public class CheckInvocation<E extends DexElement & DexInvocationExpr> implement
     public void handle(CheckSemanticError cse, E elem) {
         TypeSystem ts = cse.typeSystem();
         DexInvocation dexIvc = elem.invocation();
-        List<DType> posArgs = InferType.inferTypes(ts, dexIvc.args());
+        List<DType> posArgs = InferType.inferTypes(ts, dexIvc.posArgs());
         List<DType> typeArgs = ResolveType.resolveTypes(ts, null, dexIvc.typeArgs());
         Invocation ivc = new Invocation(dexIvc.funcName(), typeArgs, posArgs, null,null);
         if (ts.invoke(ivc).candidates.isEmpty()) {

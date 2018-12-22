@@ -11,6 +11,6 @@ public class DexIndexExprTest {
         Assert.assertEquals("a[b]", expr.toString());
         Assert.assertEquals(1, expr.args().size());
         DexInvocation invocation = expr.invocation();
-        Assert.assertEquals("a", invocation.args().get(0).toString());
+        Assert.assertEquals("a", invocation.posArgs().get(0).toString());
     }
 }

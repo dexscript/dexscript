@@ -28,7 +28,7 @@ public class FunctionTable {
         Invoked invoked = null;
         while (substituteConst.hasNext()) {
             SubstituteConst.Combination combination = substituteConst.next();
-            invoked = tryInvoke(ivc, combination.posArgs);
+            invoked = tryInvoke(ivc, combination.posArgs, combination.namedArgs);
             if (!invoked.candidates.isEmpty()) {
                 return invoked;
             }
@@ -38,7 +38,7 @@ public class FunctionTable {
 
     // implement polymorphism: choose candidates statically
     // in runtime, invocation will dispatch candidate based on actual type
-    public Invoked tryInvoke(Invocation ivc, List<DType> args) {
+    public Invoked tryInvoke(Invocation ivc, List<DType> args, List<NamedArg> namedArgs) {
         String funcName = ivc.funcName();
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
@@ -53,7 +53,7 @@ public class FunctionTable {
                 invoked.skippeds.add(func);
                 continue;
             }
-            MapNamedArgs mapNamedArgs = MapNamedArgs.$(func, args, ivc.namedArgs());
+            MapNamedArgs mapNamedArgs = MapNamedArgs.$(func, args, namedArgs);
             if (mapNamedArgs == null) {
                 invoked.skippeds.add(func);
                 continue;
@@ -85,7 +85,19 @@ public class FunctionTable {
         } else {
             invoked.ignoreds.addAll(potentialCandidates);
         }
+        invoked.ret = unionRet(invoked.candidates);
         return invoked;
+    }
+
+    private DType unionRet(List<FunctionSig.Invoked> candidates) {
+        if (candidates.size() == 1) {
+            return candidates.get(0).function().ret();
+        }
+        DType ret = candidates.get(0).function().ret();
+        for (int i = 1; i < candidates.size(); i++) {
+            ret = ret.union(candidates.get(i).function().ret());
+        }
+        return ret;
     }
 
     public void lazyDefine(FunctionsType provider) {

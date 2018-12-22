@@ -60,4 +60,11 @@ public class InferFunctionCallTest {
         DType type = InferType.$(ts, DexExpr.parse("Hello<int64>(1)"));
         Assert.assertEquals(ts.INT64, type);
     }
+
+    @Test
+    public void infer_call_with_named_arg() {
+        func("Hello(msg: string): string");
+        DType type = InferType.$(ts, DexExpr.parse("Hello(msg='hello')"));
+        Assert.assertEquals(ts.STRING, type);
+    }
 }
