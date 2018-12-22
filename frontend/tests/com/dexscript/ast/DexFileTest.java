@@ -50,4 +50,12 @@ public class DexFileTest {
         Assert.assertEquals("hello", function0.identifier().toString());
         Assert.assertEquals("world", function1.identifier().toString());
     }
+
+    @Test
+    public void leaving_src_unparsed() {
+        String src = "f hello() {}";
+        DexFile file = new DexFile(src);
+        file.topLevelDecls();
+        Assert.assertEquals("<error/>f hello() {}", file.toString());
+    }
 }

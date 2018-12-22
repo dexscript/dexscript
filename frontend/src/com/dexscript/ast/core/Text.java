@@ -12,6 +12,12 @@ public class Text {
         this.end = end;
     }
 
+    public Text(byte[] bytes) {
+        this.bytes = bytes;
+        this.begin = 0;
+        this.end = bytes.length;
+    }
+
     public Text slice(int newBegin) {
         return new Text(bytes, newBegin, end);
     }

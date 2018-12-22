@@ -1,6 +1,7 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 public final class DexFile extends DexElement {
 
+    private DexSyntaxError syntaxError;
     private final String fileName;
     private DexPackageClause packageClause;
     private List<DexTopLevelDecl> rootDecls;
@@ -43,9 +45,6 @@ public final class DexFile extends DexElement {
             return rootDecls;
         }
         Text remaining = src;
-        if (packageClause().matched()) {
-            remaining = src.slice(packageClause().end());
-        }
         rootDecls = new ArrayList<>();
         while (true) {
             DexTopLevelDecl rootDecl = new DexTopLevelDecl(remaining);
@@ -53,6 +52,9 @@ public final class DexFile extends DexElement {
             if (rootDecl.matched()) {
                 rootDecls.add(rootDecl);
             } else {
+                if (rootDecls.isEmpty()) {
+                    syntaxError = new DexSyntaxError(src, 0);
+                }
                 return rootDecls;
             }
             remaining = src.slice(rootDecl.end());
@@ -76,13 +78,15 @@ public final class DexFile extends DexElement {
 
     @Override
     public void walkDown(Visitor visitor) {
-        if (packageClause() != null) {
-            visitor.visit(packageClause());
-        }
         if (topLevelDecls() != null) {
             for (DexTopLevelDecl rootDecl : topLevelDecls()) {
                 visitor.visit(rootDecl);
             }
         }
+    }
+
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 }
