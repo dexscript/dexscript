@@ -45,7 +45,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
                     funcName, args));
         }
         String newF = oClass.oShim().dispatch(funcName, iArgs.size(), invoked);
-        DType retType = ResolveReturnType.$(invoked);
+        DType retType = invoked.ret;
 
         OutField oActorField = oClass.allocateField(funcName);
         oClass.g().__(oActorField.value()
