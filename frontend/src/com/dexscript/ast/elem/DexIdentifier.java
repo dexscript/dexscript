@@ -1,10 +1,7 @@
 package com.dexscript.ast.elem;
 
 import com.dexscript.ast.core.*;
-import com.dexscript.ast.token.A2Z;
-import com.dexscript.ast.token.Blank;
-import com.dexscript.ast.token.LineEnd;
-import com.dexscript.ast.token.Zero2Nine;
+import com.dexscript.ast.token.*;
 
 public final class DexIdentifier extends DexLeafElement {
 
@@ -51,6 +48,7 @@ public final class DexIdentifier extends DexLeafElement {
             State.Play(this::firstChar);
         }
 
+        @Expect("::")
         @Expect("blank")
         @Expect("a~z")
         @Expect("A~Z")
@@ -59,6 +57,11 @@ public final class DexIdentifier extends DexLeafElement {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
+                }
+                if (Keyword.$(src, i, ':', ':')) {
+                    identifierBegin = i;
+                    i += 2;
+                    return this::remainingChars;
                 }
                 if (A2Z.$(b)) {
                     identifierBegin = i;

@@ -148,18 +148,18 @@ public class DexInterfaceBody extends DexElement {
                 }
                 break;
             }
-            DexInfMethod method = new DexInfMethod(src.slice(i));
-            method.reparent(DexInterfaceBody.this);
-            if (method.matched()) {
-                methods.add(method);
-                i = method.end();
-                return this::methodOrFunctionOrRightBrace;
-            }
             DexInfFunction func = new DexInfFunction(src.slice(i));
             func.reparent(DexInterfaceBody.this);
             if (func.matched()) {
                 functions.add(func);
                 i = func.end();
+                return this::methodOrFunctionOrRightBrace;
+            }
+            DexInfMethod method = new DexInfMethod(src.slice(i));
+            method.reparent(DexInterfaceBody.this);
+            if (method.matched()) {
+                methods.add(method);
+                i = method.end();
                 return this::methodOrFunctionOrRightBrace;
             }
             return this::missingMethodOrFunction;

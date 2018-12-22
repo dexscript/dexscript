@@ -13,6 +13,13 @@ public class DexInterfaceTest {
     }
 
     @Test
+    public void global_interface() {
+        DexInterface inf = new DexInterface("interface :: {}");
+        Assert.assertEquals("interface :: {}", inf.toString());
+        Assert.assertEquals("::", inf.identifier().toString());
+    }
+
+    @Test
     public void no_space_between_interface_keyword_and_identifier() {
         DexInterface inf = new DexInterface("interfaceDuck {}");
         Assert.assertEquals("<unmatched>interfaceDuck {}</unmatched>", inf.toString());
