@@ -5,7 +5,13 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-class SubstituteConst implements Iterator<List<DType>> {
+class SubstituteConst implements Iterator<SubstituteConst.Combination> {
+
+    public static class Combination {
+
+        public List<DType> posArgs = new ArrayList<>();
+        public List<NamedArg> namedArgs = new ArrayList<>();
+    }
 
     private static class Column {
 
@@ -31,7 +37,7 @@ class SubstituteConst implements Iterator<List<DType>> {
         }
     }
 
-    private List<DType> current;
+    private Combination current;
     private List<Column> columns = new ArrayList<>();
 
     SubstituteConst(List<DType> orig) {
@@ -47,8 +53,8 @@ class SubstituteConst implements Iterator<List<DType>> {
     }
 
     @Override
-    public List<DType> next() {
-        List<DType> next = null;
+    public Combination next() {
+        Combination next = null;
         for (Column column : columns) {
             if (column.next()) {
                 next = collect();
@@ -62,10 +68,10 @@ class SubstituteConst implements Iterator<List<DType>> {
         }
     }
 
-    private List<DType> collect() {
-        List<DType> collected = new ArrayList<>();
+    private Combination collect() {
+        Combination collected = new Combination();
         for (Column column : columns) {
-            collected.add(column.current());
+            collected.posArgs.add(column.current());
         }
         return collected;
     }

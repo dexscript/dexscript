@@ -27,8 +27,8 @@ public class FunctionTable {
         SubstituteConst substituteConst = new SubstituteConst(ivc.posArgs());
         Invoked invoked = null;
         while (substituteConst.hasNext()) {
-            List<DType> args = substituteConst.next();
-            invoked = tryInvoke(ivc, args);
+            SubstituteConst.Combination combination = substituteConst.next();
+            invoked = tryInvoke(ivc, combination.posArgs);
             if (!invoked.candidates.isEmpty()) {
                 return invoked;
             }
