@@ -44,7 +44,7 @@ public class OutShim {
                 "   Consume__(): T\n" +
                 "}"));
         javaTypes = new JavaTypes(this);
-        g.__("package com.dexscript.runtime.gen"
+        g.__("package com.dexscript.transpiled"
         ).__(new Line(";"));
         g.__(new Line("import com.dexscript.runtime.*;"));
         g.__("public final class "

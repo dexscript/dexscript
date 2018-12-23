@@ -11,7 +11,6 @@ public final class DexFile extends DexElement {
 
     private DexSyntaxError syntaxError;
     private final String fileName;
-    private DexPackageClause packageClause;
     private List<DexTopLevelDecl> rootDecls;
 
     public DexFile(Text src, String fileName) {
@@ -29,15 +28,6 @@ public final class DexFile extends DexElement {
 
     public String fileName() {
         return fileName;
-    }
-
-    public DexPackageClause packageClause() {
-        if (packageClause != null) {
-            return packageClause;
-        }
-        packageClause = new DexPackageClause(src);
-        packageClause.reparent(this);
-        return packageClause;
     }
 
     public List<DexTopLevelDecl> topLevelDecls() {

@@ -1,5 +1,7 @@
 package com.dexscript.transpile;
 
+import com.dexscript.shim.OutShim;
+
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
@@ -26,9 +28,9 @@ public interface Transpile {
                 writeToFile(className, classSrc);
             };
             Map<String, Class<?>> classes = oTown
-                    .addFile("hello.ds", "package example\n" + src)
+                    .addFile("hello.ds", src)
                     .transpile();
-            Class<?> shimClass = classes.get("com.dexscript.runtime.gen.Shim__");
+            Class<?> shimClass = classes.get(OutShim.QUALIFIED_CLASSNAME);
             Method newHello = shimClass.getMethod("Hello");
             return newHello.invoke(null, args);
         } catch (RuntimeException e) {

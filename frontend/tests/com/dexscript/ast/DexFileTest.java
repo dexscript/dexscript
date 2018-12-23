@@ -6,13 +6,6 @@ import org.junit.Test;
 public class DexFileTest {
 
     @Test
-    public void package_clause() {
-        DexFile file = new DexFile("package example\n");
-        DexPackageClause pkgClause = file.packageClause();
-        Assert.assertEquals("example", pkgClause.identifier().toString());
-    }
-
-    @Test
     public void function_without_package() {
         String src = "" +
                 "function hello() {\n" +

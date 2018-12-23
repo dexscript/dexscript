@@ -21,11 +21,8 @@ public class OutTopLevelClass implements OutClass {
         this.ts = ts;
         this.oShim = oShim;
         this.iFunc = iFunc;
-        g.__("package "
-        ).__(packageName()
-        ).__(new Line(";"));
+        g.__(new Line("package com.dexscript.transpiled;"));
         g.__(new Line("import com.dexscript.runtime.*;"));
-        g.__(new Line("import com.dexscript.runtime.gen.*;"));
         g.__("public class "
         ).__(className()
         ).__(" extends Actor {"
@@ -46,16 +43,12 @@ public class OutTopLevelClass implements OutClass {
         }
     }
 
-    public String packageName() {
-        return iFunc.file().packageClause().identifier().toString();
-    }
-
     public String className() {
         return iFunc.actorName();
     }
 
     public String qualifiedClassName() {
-        return packageName() + "." + className();
+        return "com.dexscript.transpiled." + className();
     }
 
     @Override
