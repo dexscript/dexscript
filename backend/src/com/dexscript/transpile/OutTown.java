@@ -6,11 +6,10 @@ import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.elem.DexParam;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.std.BasicOperators;
-import com.dexscript.transpile.shim.GeneratedSubClass;
-import com.dexscript.transpile.shim.OutShim;
+import com.dexscript.shim.GeneratedSubClass;
+import com.dexscript.shim.OutShim;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.*;
 import org.mdkt.compiler.InMemoryJavaCompiler;
@@ -55,8 +54,8 @@ public class OutTown {
                 throw new DexRuntimeException();
             }
             for (DexTopLevelDecl iTopLevelDecl : iFile.topLevelDecls()) {
-                if (iTopLevelDecl.function() != null) {
-                    DexActor actor = iTopLevelDecl.function();
+                if (iTopLevelDecl.actor() != null) {
+                    DexActor actor = iTopLevelDecl.actor();
                     OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, actor);
                     addSource(oClass.qualifiedClassName(), oClass.toString());
                 }

@@ -19,7 +19,7 @@ public class DexFileTest {
                 "}";
         DexFile file = new DexFile(src);
         Assert.assertEquals(1, file.topLevelDecls().size());
-        DexActor rootDecl = file.topLevelDecls().get(0).function();
+        DexActor rootDecl = file.topLevelDecls().get(0).actor();
         Assert.assertEquals("hello", rootDecl.identifier().toString());
     }
 
@@ -31,7 +31,7 @@ public class DexFileTest {
                 "}";
         DexFile file = new DexFile(src);
         Assert.assertEquals(1, file.topLevelDecls().size());
-        DexActor rootDecl = file.topLevelDecls().get(0).function();
+        DexActor rootDecl = file.topLevelDecls().get(0).actor();
         Assert.assertEquals("hello", rootDecl.identifier().toString());
     }
 
@@ -45,8 +45,8 @@ public class DexFileTest {
                 "}";
         DexFile file = new DexFile(src);
         Assert.assertEquals(2, file.topLevelDecls().size());
-        DexActor function0 = file.topLevelDecls().get(0).function();
-        DexActor function1 = file.topLevelDecls().get(1).function();
+        DexActor function0 = file.topLevelDecls().get(0).actor();
+        DexActor function1 = file.topLevelDecls().get(1).actor();
         Assert.assertEquals("hello", function0.identifier().toString());
         Assert.assertEquals("world", function1.identifier().toString());
     }

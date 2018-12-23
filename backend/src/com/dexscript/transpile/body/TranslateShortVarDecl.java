@@ -3,8 +3,7 @@ package com.dexscript.transpile.body;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.stmt.DexShortVarDecl;
-import com.dexscript.infer.InferType;
-import com.dexscript.transpile.gen.Line;
+import com.dexscript.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 

@@ -4,7 +4,7 @@ import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.stmt.DexIncrStmt;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
-import com.dexscript.transpile.gen.Line;
+import com.dexscript.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 

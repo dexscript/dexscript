@@ -8,13 +8,11 @@ import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.ast.type.DexVoidType;
 import com.dexscript.transpile.body.Translate;
-import com.dexscript.transpile.gen.DeclareParams;
-import com.dexscript.transpile.gen.Gen;
-import com.dexscript.transpile.gen.Indent;
-import com.dexscript.transpile.gen.Line;
-import com.dexscript.type.ResolveType;
+import com.dexscript.gen.DeclareParams;
+import com.dexscript.gen.Gen;
+import com.dexscript.gen.Indent;
+import com.dexscript.gen.Line;
 import com.dexscript.type.TypeSystem;
-import com.dexscript.type.TypeTable;
 
 import java.util.List;
 

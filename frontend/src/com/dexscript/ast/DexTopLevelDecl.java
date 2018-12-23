@@ -43,7 +43,7 @@ public class DexTopLevelDecl extends DexElement {
         return syntaxError;
     }
 
-    public DexActor function() {
+    public DexActor actor() {
         if (matched instanceof DexActor) {
             return (DexActor) matched;
         }
@@ -59,8 +59,8 @@ public class DexTopLevelDecl extends DexElement {
 
     public void reparent(DexFile parent) {
         this.parent = parent;
-        if (function() != null) {
-            function().reparent(parent);
+        if (actor() != null) {
+            actor().reparent(parent);
         } else if (inf() != null) {
             inf().reparent(parent);
         }

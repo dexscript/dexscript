@@ -5,20 +5,16 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.ast.expr.DexNamedArg;
-import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferInvocation;
-import com.dexscript.infer.InferType;
 import com.dexscript.runtime.DexRuntimeException;
-import com.dexscript.transpile.gen.Indent;
-import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.type.java.FunctionImpl;
+import com.dexscript.gen.Indent;
+import com.dexscript.gen.Line;
+import com.dexscript.shim.java.FunctionImpl;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;
 import com.dexscript.transpile.skeleton.OutStateMethod;
 import com.dexscript.type.*;
-
-import java.util.List;
 
 public class TranslateInvocation<E extends DexElement & DexInvocationExpr> implements Translate<E> {
 

@@ -1,7 +1,7 @@
 package com.dexscript.transpile.body;
 
 import com.dexscript.ast.stmt.DexProduceStmt;
-import com.dexscript.transpile.gen.Line;
+import com.dexscript.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.type.DType;
 import com.dexscript.type.ResolveType;

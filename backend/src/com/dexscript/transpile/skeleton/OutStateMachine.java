@@ -1,8 +1,8 @@
 package com.dexscript.transpile.skeleton;
 
-import com.dexscript.transpile.gen.Gen;
-import com.dexscript.transpile.gen.Indent;
-import com.dexscript.transpile.gen.Line;
+import com.dexscript.gen.Gen;
+import com.dexscript.gen.Indent;
+import com.dexscript.gen.Line;
 
 import java.util.HashMap;
 import java.util.HashSet;

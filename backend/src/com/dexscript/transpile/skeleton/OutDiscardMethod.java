@@ -1,6 +1,6 @@
 package com.dexscript.transpile.skeleton;
 
-import com.dexscript.transpile.gen.Gen;
+import com.dexscript.gen.Gen;
 
 public class OutDiscardMethod implements OutMethod {
 

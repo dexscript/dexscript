@@ -1,11 +1,10 @@
 package com.dexscript.transpile.skeleton;
 
 import com.dexscript.ast.DexActor;
-import com.dexscript.transpile.gen.Gen;
-import com.dexscript.transpile.gen.Indent;
-import com.dexscript.transpile.gen.Line;
-import com.dexscript.transpile.shim.OutShim;
-import com.dexscript.type.DType;
+import com.dexscript.gen.Gen;
+import com.dexscript.gen.Indent;
+import com.dexscript.gen.Line;
+import com.dexscript.shim.OutShim;
 import com.dexscript.type.TypeSystem;
 
 public class OutTopLevelClass implements OutClass {
