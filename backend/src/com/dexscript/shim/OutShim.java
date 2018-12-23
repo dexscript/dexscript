@@ -63,7 +63,6 @@ public class OutShim {
             throw new IllegalStateException();
         }
         finished = true;
-        actorTable.loadImpls();
         for (Map.Entry<FunctionEntry, List<FunctionImpl>> entry : entries.entrySet()) {
             entry.getKey().gen(g, entry.getValue(), javaTypes);
         }
@@ -88,6 +87,10 @@ public class OutShim {
 
     public void defineActor(DexActor actor) {
         actorTable.define(new ActorType(this, actor));
+    }
+
+    public List<ActorType> actors() {
+        return actorTable.actors();
     }
 
     public String allocateShim(String shimName) {

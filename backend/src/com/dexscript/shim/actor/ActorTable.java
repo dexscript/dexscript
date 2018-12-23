@@ -38,16 +38,11 @@ public class ActorTable implements NamedTypesProvider {
         return types;
     }
 
-    public void loadImpls() {
+    public List<ActorType> actors() {
+        List<ActorType> allActors = new ArrayList<>();
         for (List<ActorType> actors : defined.values()) {
-            for (ActorType actor : actors) {
-                for (FunctionType func : actor.functions()) {
-                    if (!func.hasImpl()) {
-                        continue;
-                    }
-                    func.impl();
-                }
-            }
+            allActors.addAll(actors);
         }
+        return allActors;
     }
 }

@@ -1,21 +1,18 @@
 package com.dexscript.transpile;
 
-import com.dexscript.analyze.CheckSemanticError;
 import com.dexscript.analyze.CheckSyntaxError;
-import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.shim.GeneratedSubClass;
 import com.dexscript.shim.OutShim;
+import com.dexscript.shim.actor.ActorType;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
-import com.dexscript.type.*;
+import com.dexscript.type.FunctionType;
+import com.dexscript.type.TypeSystem;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class OutTown {
@@ -30,7 +27,6 @@ public class OutTown {
     private final InMemoryJavaCompiler compiler = InMemoryJavaCompiler
             .newInstance()
             .ignoreWarnings();
-    private final List<DexFile> iFiles = new ArrayList<>();
     private final TypeSystem ts = new TypeSystem();
     private final OutShim oShim = new OutShim(ts);
 
@@ -44,22 +40,14 @@ public class OutTown {
             throw new DexRuntimeException();
         }
         oShim.defineFile(iFile);
-        iFiles.add(iFile);
         return this;
     }
 
     public Map<String, Class<?>> transpile() {
-        for (DexFile iFile : iFiles) {
-            if (new CheckSemanticError(ts, iFile).hasError()) {
-                throw new DexRuntimeException();
-            }
-            for (DexTopLevelDecl iTopLevelDecl : iFile.topLevelDecls()) {
-                if (iTopLevelDecl.actor() != null) {
-                    DexActor actor = iTopLevelDecl.actor();
-                    OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, actor);
-                    addSource(oClass.qualifiedClassName(), oClass.toString());
-                }
-            }
+        for (ActorType actor : oShim.actors()) {
+            OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, actor.elem());
+            addSource(oClass.qualifiedClassName(), oClass.toString());
+            ensureActorImplLoaded(actor);
         }
         try {
             addSource(OutShim.QUALIFIED_CLASSNAME, oShim.finish());
@@ -69,6 +57,15 @@ public class OutTown {
             return compiler.compileAll();
         } catch (Exception e) {
             throw new DexRuntimeException(e);
+        }
+    }
+
+    private static void ensureActorImplLoaded(ActorType actor) {
+        for (FunctionType func : actor.functions()) {
+            if (!func.hasImpl()) {
+                continue;
+            }
+            func.impl();
         }
     }
 
