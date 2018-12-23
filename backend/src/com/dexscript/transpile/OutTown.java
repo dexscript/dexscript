@@ -1,8 +1,6 @@
 package com.dexscript.transpile;
 
-import com.dexscript.analyze.CheckSyntaxError;
-import com.dexscript.ast.DexFile;
-import com.dexscript.ast.core.Text;
+import com.dexscript.pkg.ImportPackage;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.shim.GeneratedSubClass;
@@ -34,12 +32,8 @@ public class OutTown {
         oShim.importJavaFunctions(BasicOperators.class);
     }
 
-    public OutTown addFile(String fileName, String src) {
-        DexFile iFile = new DexFile(new Text(src), fileName);
-        if (new CheckSyntaxError(iFile).hasError()) {
-            throw new DexRuntimeException();
-        }
-        oShim.defineFile(iFile);
+    public OutTown importPackage(String path) {
+        ImportPackage.$(oShim, path);
         return this;
     }
 

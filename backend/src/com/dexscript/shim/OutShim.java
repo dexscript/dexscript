@@ -85,6 +85,10 @@ public class OutShim {
         }
     }
 
+    public void defineInterface(DexInterface inf) {
+        ts.defineInterface(inf);
+    }
+
     public void defineActor(DexActor actor) {
         actorTable.define(new ActorType(this, actor));
     }

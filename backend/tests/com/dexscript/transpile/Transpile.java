@@ -1,6 +1,9 @@
 package com.dexscript.transpile;
 
+import com.dexscript.pkg.FS;
 import com.dexscript.shim.OutShim;
+import com.google.common.jimfs.Configuration;
+import com.google.common.jimfs.Jimfs;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -8,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
+
+import static com.dexscript.pkg.FS.$p;
 
 public interface Transpile {
 
@@ -27,8 +32,14 @@ public interface Transpile {
                 }
                 writeToFile(className, classSrc);
             };
+            FS.fs = Jimfs.newFileSystem(Configuration.unix());
+            Files.createDirectory($p("/pkg1"));
+            Files.write($p("/pkg1/__spi__.ds"), ("" +
+                    "interface :: {\n" +
+                    "}").getBytes());
+            Files.write($p("/pkg1/hello.ds"), src.getBytes());
             Map<String, Class<?>> classes = oTown
-                    .addFile("hello.ds", src)
+                    .importPackage("/pkg1")
                     .transpile();
             Class<?> shimClass = classes.get(OutShim.QUALIFIED_CLASSNAME);
             Method newHello = shimClass.getMethod("Hello");

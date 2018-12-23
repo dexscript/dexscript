@@ -26,31 +26,39 @@ public class CheckPackage {
     static class Failed extends RuntimeException {
     }
 
-    public static boolean $(String pathStr) throws IOException {
+    public static boolean $(String pathStr) {
+        return $(pathStr, new ArrayList<>());
+    }
+
+    public static boolean $(String pathStr, List<DexFile> dexFiles) {
         try {
-            return check(pathStr);
+            return check(pathStr, dexFiles);
         } catch (Failed e) {
             return false;
         }
     }
 
-    public static boolean check(String pathStr) throws IOException {
+    private static boolean check(String pathStr, List<DexFile> dexFiles) {
         Path pkgPath = $p(pathStr);
         if (!Files.isDirectory(pkgPath)) {
             System.out.println("package directory not found: " + pkgPath);
             return false;
         }
-        List<DexFile> dexFiles = new ArrayList<>();
-        Files.list(pkgPath).forEach(path -> {
-            try {
-                Text src = new Text(Files.readAllBytes(path));
-                DexFile dexFile = new DexFile(src, path.getFileName().toString());
-                dexFiles.add(dexFile);
-            } catch (IOException e) {
-                System.out.println("failed to read file: " + path);
-                throw new Failed();
-            }
-        });
+        try {
+            Files.list(pkgPath).forEach(path -> {
+                try {
+                    Text src = new Text(Files.readAllBytes(path));
+                    DexFile dexFile = new DexFile(src, path.getFileName().toString());
+                    dexFiles.add(dexFile);
+                } catch (IOException e) {
+                    System.out.println("failed to read file: " + path);
+                    throw new Failed();
+                }
+            });
+        } catch (IOException e) {
+            System.out.println("failed to list package dir: " + pkgPath);
+            throw new Failed();
+        }
         if (hasSyntaxError(dexFiles)) {
             return false;
         }
