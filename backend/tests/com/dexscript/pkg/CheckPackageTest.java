@@ -65,7 +65,7 @@ public class CheckPackageTest {
     }
 
     @Test
-    public void reference_function_defined_by_spi() throws IOException {
+    public void reference_function_defined_by_global_spi() throws IOException {
         Files.createDirectory($p("/pkg1"));
         Files.write($p("/pkg1/__spi__.ds"), ("" +
                 "interface :: {\n" +
@@ -76,5 +76,17 @@ public class CheckPackageTest {
                 "   World()\n" +
                 "}").getBytes());
         Assert.assertTrue(CheckPackage.$("/pkg1"));
+    }
+
+    @Test
+    public void global_spi_must_be_defined_in_spi_file() throws IOException {
+        Files.createDirectory($p("/pkg1"));
+        Files.write($p("/pkg1/__spi__.ds"), ("" +
+                "interface abc {\n" +
+                "}").getBytes());
+        Files.write($p("/pkg1/123.ds"), ("" +
+                "interface :: {\n" +
+                "}").getBytes());
+        Assert.assertFalse(CheckPackage.$("/pkg1"));
     }
 }
