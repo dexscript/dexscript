@@ -17,8 +17,8 @@ import java.util.*;
 
 public class OutShim {
 
-    public static final String CLASSNAME = "Shim__";
-    public static final String PACKAGE_NAME = "com.dexscript.runtime.gen.";
+    public static final String CLASSNAME = "Shim";
+    public static final String PACKAGE_NAME = "com.dexscript.transpiled.";
     public static final String QUALIFIED_CLASSNAME = PACKAGE_NAME + CLASSNAME;
     private boolean finished;
     private final TypeSystem ts;

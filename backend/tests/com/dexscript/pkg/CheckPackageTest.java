@@ -21,7 +21,9 @@ public class CheckPackageTest {
     @Test
     public void no_error() throws Exception {
         Files.createDirectory($p("/pkg1"));
-        Files.write($p("/pkg1/__spi__.ds"), "".getBytes());
+        Files.write($p("/pkg1/__spi__.ds"), ("" +
+                "interface :: {\n" +
+                "}").getBytes());
         Assert.assertTrue(CheckPackage.$("/pkg1"));
     }
 
@@ -73,6 +75,6 @@ public class CheckPackageTest {
                 "function Hello() {\n" +
                 "   World()\n" +
                 "}").getBytes());
-        Assert.assertFalse(CheckPackage.$("/pkg1"));
+        Assert.assertTrue(CheckPackage.$("/pkg1"));
     }
 }

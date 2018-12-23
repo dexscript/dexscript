@@ -90,6 +90,9 @@ public class FunctionTable {
     }
 
     private DType unionRet(List<FunctionSig.Invoked> candidates) {
+        if (candidates.isEmpty()) {
+            return null;
+        }
         if (candidates.size() == 1) {
             return candidates.get(0).function().ret();
         }

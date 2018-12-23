@@ -39,11 +39,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
     }
 
     public static String qualifiedClassNameOf(DexActor actor) {
-        String packageName = "";
-        if (actor.file() != null) {
-            packageName = actor.file().packageClause().identifier().toString();
-        }
-        return packageName + "." + actor.actorName();
+        return "com.dexscript.transpiled." + actor.actorName();
     }
 
     @Override

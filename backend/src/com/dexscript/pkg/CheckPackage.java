@@ -6,6 +6,8 @@ import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.Text;
+import com.dexscript.shim.OutShim;
+import com.dexscript.shim.actor.ActorType;
 import com.dexscript.type.TypeSystem;
 
 import java.io.IOException;
@@ -41,9 +43,10 @@ public interface CheckPackage {
         Path spiPath = $p(pkgPath.toString(), "__spi__.ds");
         if (!Files.isRegularFile(spiPath)) {
             System.out.println("package __spi__.ds not found: " + spiPath);
-            return false;
+            return true;
         }
         TypeSystem ts = new TypeSystem();
+        OutShim oShim = new OutShim(ts);
         List<DexFile> dexFiles = new ArrayList<>();
         Files.list(pkgPath).forEach(path -> {
             try {
@@ -52,8 +55,9 @@ public interface CheckPackage {
                 dexFiles.add(dexFile);
                 for (DexTopLevelDecl topLevelDecl : dexFile.topLevelDecls()) {
                     if (topLevelDecl.inf() != null) {
-                        ts.defineInterface(topLevelDecl.inf());
+                        SPI.define(ts, topLevelDecl.inf());
                     } else if (topLevelDecl.actor() != null) {
+                        ts.defineType(new ActorType(oShim, topLevelDecl.actor()));
                     }
                 }
             } catch (IOException e) {
