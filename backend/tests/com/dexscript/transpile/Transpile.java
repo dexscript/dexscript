@@ -1,7 +1,6 @@
 package com.dexscript.transpile;
 
 import com.dexscript.pkg.Package;
-import com.dexscript.shim.OutShim;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
@@ -38,10 +37,9 @@ public interface Transpile {
                     "interface :: {\n" +
                     "}").getBytes());
             Files.write($p("/pkg1/hello.ds"), src.getBytes());
-            Map<String, Class<?>> classes = oTown
+            Class shimClass = oTown
                     .importPackage("/pkg1")
                     .transpile();
-            Class<?> shimClass = classes.get(OutShim.QUALIFIED_CLASSNAME);
             Method newHello = shimClass.getMethod("Hello");
             return newHello.invoke(null, args);
         } catch (RuntimeException e) {

@@ -9,6 +9,7 @@ import com.dexscript.type.TypeSystem;
 class CheckReturn implements CheckSemanticError.Handler<DexReturnStmt> {
     @Override
     public void handle(CheckSemanticError cse, DexReturnStmt elem) {
+        elem.walkDown(cse);
         TypeSystem ts = cse.typeSystem();
         DType from = InferType.$(ts, elem.expr());
         if (ts.UNDEFINED.equals(from)) {

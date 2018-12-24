@@ -37,7 +37,7 @@ public class OutTown {
         return this;
     }
 
-    public Map<String, Class<?>> transpile() {
+    public Class transpile() {
         for (ActorType actor : oShim.actors()) {
             OutTopLevelClass oClass = new OutTopLevelClass(ts, oShim, actor.elem());
             addSource(oClass.qualifiedClassName(), oClass.toString());
@@ -48,7 +48,7 @@ public class OutTown {
             for (GeneratedSubClass generatedSubClass : oShim.generatedSubClasses()) {
                 addSource(generatedSubClass.qualifiedClassName(), generatedSubClass.gen());
             }
-            return compiler.compileAll();
+            return compiler.compileAll().get(OutShim.QUALIFIED_CLASSNAME);
         } catch (Exception e) {
             throw new DexRuntimeException(e);
         }

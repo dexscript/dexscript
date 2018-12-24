@@ -1,6 +1,7 @@
 package com.dexscript.shim;
 
 import com.dexscript.ast.*;
+import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
@@ -42,18 +43,18 @@ public class OutShim {
     }
 
     public void definePackage(DexPackage pkg) {
-        DexInterface taskInf = DexInterface.$("" +
+        DexInterface taskInf = new DexInterface(new Text("" +
                 "interface Task {\n" +
                 "   <T>: interface{}\n" +
                 "   Resolve__(value: T)\n" +
-                "}");
+                "}"));
         taskInf.attach(pkg);
         ts.defineInterface(taskInf);
-        DexInterface promiseInf = DexInterface.$("" +
+        DexInterface promiseInf = new DexInterface(new Text("" +
                 "interface Promise {\n" +
                 "   <T>: interface{}\n" +
                 "   Consume__(): T\n" +
-                "}");
+                "}"));
         promiseInf.attach(pkg);
         ts.defineInterface(promiseInf);
         ts.defineBuiltinTypes(pkg);
