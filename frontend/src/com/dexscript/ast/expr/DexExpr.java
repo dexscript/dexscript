@@ -1,5 +1,6 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.stmt.DexStatement;
@@ -32,8 +33,10 @@ public abstract class DexExpr extends DexElement {
         }
     }
 
-    public static DexExpr parse(String src) {
-        return parse(new Text(src), 0);
+    public static DexExpr $parse(String src) {
+        DexExpr elem = parse(new Text(src));
+        elem.attach(DexPackage.DUMMY);
+        return elem;
     }
 
     public static DexExpr parse(Text src) {

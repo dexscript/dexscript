@@ -16,6 +16,9 @@ public final class FunctionType implements DType {
     private final String name;
 
     @NotNull
+    private DType context;
+
+    @NotNull
     private final List<FunctionParam> params;
 
     @NotNull
@@ -28,13 +31,17 @@ public final class FunctionType implements DType {
 
     private FunctionImplProvider implProvider;
 
-    public FunctionType(TypeSystem ts, @NotNull String name, @NotNull List<FunctionParam> params, @NotNull DType ret) {
+    public FunctionType(TypeSystem ts, @NotNull String name,
+                        @NotNull List<FunctionParam> params, @NotNull DType ret) {
         this(ts, name, params, ret, null);
     }
 
-    public FunctionType(TypeSystem ts, @NotNull String name, @NotNull List<FunctionParam> params, @NotNull DType ret, FunctionSig sig) {
+    public FunctionType(TypeSystem ts, @NotNull String name,
+                        @NotNull List<FunctionParam> params, @NotNull DType ret,
+                        FunctionSig sig) {
         this.ts = ts;
         this.name = name;
+        this.context = ts.ANY;
         this.params = params;
         this.ret = ret;
         if (sig == null) {
@@ -43,6 +50,10 @@ public final class FunctionType implements DType {
         sig.reparent(this);
         this.sig = sig;
         ts.defineFunction(this);
+    }
+
+    public void setContext(DType context) {
+        this.context = context;
     }
 
     public void setImplProvider(FunctionImplProvider implProvider) {
@@ -101,6 +112,9 @@ public final class FunctionType implements DType {
             if (!new IsAssignable(ctx, "#" + i + " param", thatParam.type(), thisParam.type()).result()) {
                 return false;
             }
+        }
+        if (!new IsAssignable(ctx, "context", that.context, this.context).result()) {
+            return false;
         }
         if (!new IsAssignable(ctx, "ret", this.ret, that.ret).result()) {
             return false;

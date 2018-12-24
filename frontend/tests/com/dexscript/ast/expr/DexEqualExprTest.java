@@ -7,6 +7,6 @@ public class DexEqualExprTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("a==b", DexExpr.parse("a==b").toString());
+        Assert.assertEquals("a==b", DexExpr.$parse("a==b").toString());
     }
 }

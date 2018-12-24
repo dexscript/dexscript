@@ -18,25 +18,25 @@ public class InferConstTest {
 
     @Test
     public void string_const() {
-        DType type = InferType.$(ts, DexExpr.parse("'hello'"));
+        DType type = InferType.$(ts, DexExpr.$parse("'hello'"));
         Assert.assertEquals(ts.constOf("hello"), type);
     }
 
     @Test
     public void integer_const() {
-        DType type = InferType.$(ts, DexExpr.parse("100"));
+        DType type = InferType.$(ts, DexExpr.$parse("100"));
         Assert.assertEquals(ts.constOf(100), type);
     }
 
     @Test
     public void float_const() {
-        DType type = InferType.$(ts, DexExpr.parse("100.0"));
+        DType type = InferType.$(ts, DexExpr.$parse("100.0"));
         Assert.assertEquals(ts.constOf(100.0), type);
     }
 
     @Test
     public void bool_const() {
-        DType type = InferType.$(ts, DexExpr.parse("true"));
+        DType type = InferType.$(ts, DexExpr.$parse("true"));
         Assert.assertEquals(ts.constOf(true), type);
     }
 }

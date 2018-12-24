@@ -158,7 +158,7 @@ public class FunctionTableTest {
         for (String typeSrc : src.split(",")) {
             typeSrc = typeSrc.trim();
             if (typeSrc.startsWith("(const)")) {
-                DexExpr expr = DexExpr.parse(typeSrc.substring("(const)".length()));
+                DexExpr expr = DexExpr.$parse(typeSrc.substring("(const)".length()));
                 types.add(InferType.$(ts, expr));
             } else {
                 types.add(ResolveType.$(ts, null, DexType.parse(typeSrc)));

@@ -55,6 +55,15 @@ public class FunctionTypeTest {
     }
 
     @Test
+    public void context_not_assignable() {
+        FunctionType func1 = func("hello()");
+        FunctionType func2 = func("hello()");
+        func2.setContext(ts.STRING);
+        TestAssignable.$(false, func1, func2);
+        TestAssignable.$(true, func2, func1);
+    }
+
+    @Test
     public void param_is_sub_type() {
         FunctionType hello1 = func("hello(arg0: string)");
         FunctionType hello2 = func("hello(arg0: 'example')");

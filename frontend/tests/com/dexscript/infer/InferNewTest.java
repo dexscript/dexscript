@@ -28,14 +28,14 @@ public class InferNewTest {
     @Test
     public void match_one() {
         func("New__(arg0: 'Hello', arg1: int64): string");
-        DType type = InferType.$(ts, DexExpr.parse("new Hello(100)"));
+        DType type = InferType.$(ts, DexExpr.$parse("new Hello(100)"));
         Assert.assertEquals(ts.STRING, type);
     }
 
     @Test
     public void invoke_non_generic_with_type_args() {
         func("New__(arg0: 'Hello', arg1: int64): string");
-        DType type = InferType.$(ts, DexExpr.parse("new Hello<int64>(100)"));
+        DType type = InferType.$(ts, DexExpr.$parse("new Hello<int64>(100)"));
         Assert.assertEquals(ts.UNDEFINED, type);
     }
 }

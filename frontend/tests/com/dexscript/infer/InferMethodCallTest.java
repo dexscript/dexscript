@@ -18,7 +18,7 @@ public class InferMethodCallTest {
         ts.defineFunction(new FunctionType(ts, "Hello", new ArrayList<FunctionParam>() {{
             add(new FunctionParam("arg0", ts.STRING));
         }}, ts.STRING));
-        DType type = InferType.$(ts, DexExpr.parse("'hello'.Hello()"));
+        DType type = InferType.$(ts, DexExpr.$parse("'hello'.Hello()"));
         Assert.assertEquals(ts.STRING, type);
     }
 }
