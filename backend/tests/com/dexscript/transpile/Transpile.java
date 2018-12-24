@@ -13,26 +13,26 @@ import java.util.Map;
 
 import static com.dexscript.pkg.Package.$p;
 
-public class Transpile {
+public interface Transpile {
 
-    public static Object $(String src, Object... args) {
+    static Object $(String src) {
         OutTown oTown = new OutTown();
-        return Transpile.$(oTown, src, args);
+        return Transpile.$(oTown, "" +
+                "interface :: {\n" +
+                "}", src);
     }
 
-    public static Object $(OutTown oTown, String src, Object... args) {
+    static Object $(OutTown oTown, String spiSrc, String implSrc) {
         try {
             setup();
             Files.createDirectory($p("/pkg1"));
-            Files.write($p("/pkg1/__spi__.ds"), ("" +
-                    "interface :: {\n" +
-                    "}").getBytes());
-            Files.write($p("/pkg1/hello.ds"), src.getBytes());
+            Files.write($p("/pkg1/__spi__.ds"), spiSrc.getBytes());
+            Files.write($p("/pkg1/hello.ds"), implSrc.getBytes());
             Class shimClass = oTown
                     .importPackage("/pkg1")
                     .transpile();
             Method newHello = shimClass.getMethod("Hello");
-            return newHello.invoke(null, args);
+            return newHello.invoke(null);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -40,7 +40,7 @@ public class Transpile {
         }
     }
 
-    public static void setup() {
+    static void setup() {
         OutTown.ON_SOURCE_ADDED = (className, classSrc) -> {
             System.out.println(">>> " + className);
             String lines[] = classSrc.split("\\r?\\n");
@@ -53,7 +53,7 @@ public class Transpile {
         Package.fs = Jimfs.newFileSystem(Configuration.unix());
     }
 
-    private static void writeToFile(String className, String classSrc) {
+    static void writeToFile(String className, String classSrc) {
         try {
             Path path = Paths.get("/tmp/dexscript/" + className.replace(".", "/") + ".java");
             Files.createDirectories(path.getParent());

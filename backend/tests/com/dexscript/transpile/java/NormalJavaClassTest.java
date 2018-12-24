@@ -1,5 +1,6 @@
 package com.dexscript.transpile.java;
 
+import com.dexscript.transpile.OutTown;
 import com.dexscript.transpile.Transpile;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +11,12 @@ public class NormalJavaClassTest {
 
     @Test
     public void new_java_class() {
-        File result = (File) Transpile.$("" +
+        OutTown oTown = new OutTown();
+        oTown.oShim().importJavaConstructors(File.class);
+        File result = (File) Transpile.$(oTown, "" +
+                "interface :: {" +
+                "   New__(class: 'File', path: string): interface{}" +
+                "}", "" +
                 "function Hello(): interface{} {" +
                 "   return new File('/tmp/test.txt')\n" +
                 "}");

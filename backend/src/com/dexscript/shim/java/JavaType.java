@@ -18,7 +18,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
 
     private static class InteropPackage implements DexPackage {
     }
-    private static InteropPackage INTEROP_PACKAGE = new InteropPackage();
+    public static InteropPackage INTEROP_PACKAGE = new InteropPackage();
 
     private final OutShim oShim;
     private final Class clazz;
@@ -100,7 +100,9 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     private DType resolve(Type jTypeObj) {
         String src = TranslateSig.translateType(oShim.javaTypes(), jTypeObj);
         TypeTable localTypeTable = localTypeTable();
-        return ResolveType.$(ts, localTypeTable, DexType.parse(new Text(src)));
+        DexType type = DexType.parse(new Text(src));
+        type.attach(INTEROP_PACKAGE);
+        return ResolveType.$(ts, localTypeTable, type);
     }
 
     @Override

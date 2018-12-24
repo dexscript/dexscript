@@ -8,6 +8,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.token.Blank;
 import com.dexscript.shim.OutShim;
 import com.dexscript.shim.actor.ActorType;
 import com.dexscript.type.*;
@@ -50,6 +51,7 @@ public class CheckPackage {
             Files.list(pkgPath).forEach(path -> {
                 try {
                     Text src = new Text(Files.readAllBytes(path));
+                    assertNotBlank(path, src);
                     DexFile dexFile = new DexFile(src, path.getFileName().toString());
                     dexFile.attach(pkg);
                     dexFiles.add(dexFile);
@@ -69,6 +71,17 @@ public class CheckPackage {
             return false;
         }
         return true;
+    }
+
+    private static void assertNotBlank(Path path, Text src) {
+        for (int i = 0; i < src.end; i++) {
+            if (Blank.$(src.bytes[i])) {
+                continue;
+            }
+            return;
+        }
+        System.out.println(path + " is blank");
+        throw new Failed();
     }
 
     private static boolean hasSemanticError(OutShim oShim, List<DexFile> dexFiles) {

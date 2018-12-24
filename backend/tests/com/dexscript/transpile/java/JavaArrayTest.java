@@ -17,7 +17,7 @@ public class JavaArrayTest {
     public void return_array() {
         OutTown oTown = new OutTown();
         oTown.oShim().importJavaFunctions(Class1.class);
-        Object ret = Transpile.$(oTown, "" +
+        Object ret = Transpile.$(oTown, "", "" +
                 "function Hello(): interface{} {\n" +
                 "   return newArray()\n" +
                 "}");
@@ -34,7 +34,7 @@ public class JavaArrayTest {
     public void get_element_from_array() {
         OutTown oTown = new OutTown();
         oTown.oShim().importJavaFunctions(Class2.class);
-        String ret = (String) Transpile.$(oTown, "" +
+        String ret = (String) Transpile.$(oTown, "", "" +
                 "function Hello(): string {\n" +
                 "   arr := newArray()\n" +
                 "   return arr[0]\n" +

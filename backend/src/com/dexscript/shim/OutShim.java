@@ -157,6 +157,7 @@ public class OutShim {
         }
         DType ret = javaTypes.resolve(clazz);
         DexSig dexSig = TranslateSig.$(javaTypes, ctor);
+        dexSig.attach(JavaType.INTEROP_PACKAGE);
         FunctionSig sig = new FunctionSig(ts, dexSig);
         FunctionType functionType = new FunctionType(ts, "New__", params, ret, sig);
         functionType.implProvider(expandedFunc -> {

@@ -11,8 +11,6 @@ import com.dexscript.type.FunctionType;
 import com.dexscript.type.TypeSystem;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
-import java.util.Map;
-
 public class OutTown {
 
     public interface OnSourceAdded {
