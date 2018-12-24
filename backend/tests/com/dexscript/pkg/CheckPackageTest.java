@@ -119,4 +119,24 @@ public class CheckPackageTest {
                 "}").getBytes());
         Assert.assertFalse(CheckPackage.$("/pkg1"));
     }
+
+    @Test
+    public void context_type_is_added_to_function_signature() throws IOException {
+        Files.createDirectory($p("/pkg1"));
+        Files.write($p("/pkg1/__spi__.ds"), ("" +
+                "interface :: {\n" +
+                "}\n" +
+                "interface $ {\n" +
+                "   GetPid(): string" +
+                "}\n").getBytes());
+        Files.write($p("/pkg1/123.ds"), ("" +
+                "function Hello() {\n" +
+                "   World($=new Context())\n" +
+                "}\n" +
+                "function World() {\n" +
+                "}\n" +
+                "function Context() {\n" +
+                "}\n").getBytes());
+        Assert.assertFalse(CheckPackage.$("/pkg1"));
+    }
 }

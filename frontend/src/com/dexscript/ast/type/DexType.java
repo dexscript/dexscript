@@ -1,5 +1,6 @@
 package com.dexscript.ast.type;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 
@@ -11,8 +12,10 @@ public abstract class DexType extends DexElement {
 
     public abstract int leftRank();
 
-    public static DexType parse(String src) {
-        return parse(new Text(src));
+    public static DexType $parse(String src) {
+        DexType elem = parse(new Text(src));
+        elem.attach(DexPackage.DUMMY);
+        return elem;
     }
 
     public static DexType parse(Text src) {

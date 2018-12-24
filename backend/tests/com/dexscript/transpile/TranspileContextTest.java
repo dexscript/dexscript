@@ -1,8 +1,5 @@
 package com.dexscript.transpile;
 
-import com.dexscript.pkg.Package;
-import com.google.common.jimfs.Configuration;
-import com.google.common.jimfs.Jimfs;
 import org.junit.Assert;
 import org.junit.Test;
 

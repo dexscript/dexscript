@@ -1,5 +1,6 @@
 package com.dexscript.ast.elem;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
@@ -22,8 +23,10 @@ public class DexSig extends DexElement {
         new Parser();
     }
 
-    public DexSig(String src) {
-        this(new Text(src));
+    public static DexSig $(String src) {
+        DexSig elem = new DexSig(new Text(src));
+        elem.attach(DexPackage.DUMMY);
+        return elem;
     }
 
     public List<DexTypeParam> typeParams() {

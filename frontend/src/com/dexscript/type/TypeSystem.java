@@ -178,7 +178,11 @@ public class TypeSystem {
     }
 
     public DType context(DexPackage pkg) {
-        return typeTable.resolveType(pkg, "$");
+        DType context = typeTable.resolveType(pkg, "$");
+        if (context instanceof UndefinedType) {
+            return ANY;
+        }
+        return context;
     }
 
     public boolean isConst(DType type) {

@@ -58,7 +58,7 @@ public class FunctionTable {
                 invoked.skippeds.add(func);
                 continue;
             }
-            FunctionSig.Invoked candidate = func.sig().invoke(ivc.typeArgs(), mapNamedArgs.args, ivc.retHint());
+            FunctionSig.Invoked candidate = func.sig().invoke(ivc.typeArgs(), mapNamedArgs.args, ivc.context(), ivc.retHint());
             if (!candidate.success()) {
                 invoked.failures.add(candidate);
                 continue;

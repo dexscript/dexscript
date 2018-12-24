@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 public class FunctionSigTest {
@@ -18,7 +19,7 @@ public class FunctionSigTest {
     }
 
     public FunctionSig.Invoked invoke(FunctionSig sig, List<DType> args) {
-        FunctionSig.Invoked invoked = sig.invoke(null, args, null);
+        FunctionSig.Invoked invoked = sig.invoke(Collections.emptyList(), args, ts.ANY, null);
         return invoked;
     }
 
@@ -35,7 +36,7 @@ public class FunctionSigTest {
         FunctionSig sig = sig("(<T>: string, arg0: T): T");
         FunctionType func = invoke(sig, resolve("string")).function();
         Assert.assertEquals(ts.STRING, func.ret());
-        Assert.assertEquals(ts.STRING, func.params().get(0));
+        Assert.assertEquals(ts.STRING, func.params().get(0).type());
     }
 
     @Test
@@ -81,7 +82,7 @@ public class FunctionSigTest {
     @Test
     public void infer_with_return_value_hint() {
         FunctionSig sig = sig("(<T>: interface{}): T");
-        DType ret = sig.invoke(null, resolve(), ts.STRING).function().ret();
+        DType ret = sig.invoke(Collections.emptyList(), resolve(), ts.ANY, ts.STRING).function().ret();
         Assert.assertEquals(ts.STRING, ret);
     }
 
@@ -90,7 +91,7 @@ public class FunctionSigTest {
         FunctionSig sig = sig("(<T>: interface{}, left: T, right: T): bool");
         Assert.assertFalse(sig.invoke(
                 resolve("int64"),
-                resolve("string", "string"), null).success());
+                resolve("string", "string"), ts.ANY, null).success());
     }
 
     @Test
@@ -98,14 +99,27 @@ public class FunctionSigTest {
         FunctionSig sig = sig("(left: T, right: T): bool");
         Assert.assertFalse(sig.invoke(
                 resolve("int64"),
-                resolve("string", "string"), null).success());
+                resolve("string", "string"), ts.ANY, null).success());
+    }
+
+    @Test
+    public void invoke_with_incompatible_context() {
+        ts.defineInterface(DexInterface.$("" +
+                "interface $ {\n" +
+                "   GetPid(): string\n" +
+                "}"));
+        FunctionSig sig = sig("(): bool");
+        FunctionSig.Invoked invoked = sig.invoke(
+                Collections.emptyList(),
+                Collections.emptyList(), ts.STRING, null);
+        Assert.assertFalse(invoked.success());
     }
 
     @Test
     public void test_to_string() {
-        Assert.assertEquals("(string): string", sig("(arg0: string) :string").toString());
-        Assert.assertEquals("(string): void", sig("(arg0: string)").toString());
-        Assert.assertEquals("(<T>: string, T): T", sig("(<T>: string, arg0: T): T").toString());
+        Assert.assertEquals("(arg0: string): string", sig("(arg0: string) :string").toString());
+        Assert.assertEquals("(arg0: string): void", sig("(arg0: string)").toString());
+        Assert.assertEquals("(<T>: string, arg0: T): T", sig("(<T>: string, arg0: T): T").toString());
     }
 
     private void defineInterface(String src) {
@@ -113,7 +127,7 @@ public class FunctionSigTest {
     }
 
     private FunctionSig sig(String src) {
-        FunctionSig sig = new FunctionSig(ts, new DexSig(src));
+        FunctionSig sig = new FunctionSig(ts, DexSig.$(src));
         sig.reparent(new FunctionType(ts, "", sig.params(), sig.ret(), sig));
         return sig;
     }

@@ -5,6 +5,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 public class FunctionTypeTest {
 
     private TypeSystem ts;
@@ -57,8 +60,8 @@ public class FunctionTypeTest {
     @Test
     public void context_not_assignable() {
         FunctionType func1 = func("hello()");
-        FunctionType func2 = func("hello()");
-        func2.context(ts.STRING);
+        FunctionSig sig = new FunctionSig(ts, Collections.emptyList(), ts.STRING, ts.VOID);
+        FunctionType func2 = new FunctionType(ts, "hello", Collections.emptyList(), ts.VOID, sig);
         TestAssignable.$(false, func1, func2);
         TestAssignable.$(true, func2, func1);
     }

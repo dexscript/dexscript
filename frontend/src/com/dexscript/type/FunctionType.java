@@ -1,6 +1,5 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.core.DexSyntaxException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,7 +15,8 @@ public final class FunctionType implements DType {
     @NotNull
     private final String name;
 
-    private DType context;
+    @NotNull
+    private final DType context;
 
     @NotNull
     private final List<FunctionParam> params;
@@ -41,19 +41,15 @@ public final class FunctionType implements DType {
                         FunctionSig sig) {
         this.ts = ts;
         this.name = name;
-        this.context = ts.ANY;
         this.params = params;
         this.ret = ret;
         if (sig == null) {
-            sig = new FunctionSig(ts, params, ret);
+            sig = new FunctionSig(ts, params, ts.ANY, ret);
         }
+        this.context = sig.contextParam();
         sig.reparent(this);
         this.sig = sig;
         ts.defineFunction(this);
-    }
-
-    public void context(DType context) {
-        this.context = context;
     }
 
     public void implProvider(FunctionImplProvider implProvider) {

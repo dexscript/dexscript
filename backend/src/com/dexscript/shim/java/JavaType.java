@@ -1,6 +1,7 @@
 package com.dexscript.shim.java;
 
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.core.Text;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.*;
@@ -99,7 +100,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     private DType resolve(Type jTypeObj) {
         String src = TranslateSig.translateType(oShim.javaTypes(), jTypeObj);
         TypeTable localTypeTable = localTypeTable();
-        return ResolveType.$(ts, localTypeTable, DexType.parse(src));
+        return ResolveType.$(ts, localTypeTable, DexType.parse(new Text(src)));
     }
 
     @Override

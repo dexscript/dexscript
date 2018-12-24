@@ -61,7 +61,7 @@ public interface ResolveType<E extends DexType> {
     DType handle(TypeSystem ts, TypeTable localTypeTable, E elem);
 
     static DType $(TypeSystem ts, String typeDef) {
-        return ResolveType.$(ts, null, DexType.parse(typeDef));
+        return ResolveType.$(ts, null, DexType.$parse(typeDef));
     }
 
     static DType $(TypeSystem ts, TypeTable localTypeTable, DexType elem) {

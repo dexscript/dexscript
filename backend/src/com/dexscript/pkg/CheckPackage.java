@@ -4,10 +4,12 @@ package com.dexscript.pkg;
 import com.dexscript.analyze.CheckSemanticError;
 import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
 import com.dexscript.shim.OutShim;
+import com.dexscript.shim.actor.ActorType;
 import com.dexscript.type.*;
 
 import java.io.IOException;
@@ -70,16 +72,16 @@ public class CheckPackage {
     }
 
     private static boolean hasSemanticError(OutShim oShim, List<DexFile> dexFiles) {
-        boolean foundSpiFile = false;
+        boolean foundSpi = false;
         for (DexFile dexFile : dexFiles) {
             if (dexFile.fileName().equals("__spi__.ds")) {
                 defineSpiFile(oShim, dexFile);
-                foundSpiFile = true;
+                foundSpi = true;
             } else {
                 defineNormalFile(oShim, dexFile);
             }
         }
-        if (!foundSpiFile) {
+        if (!foundSpi) {
             System.out.println("missing __spi__.ds");
             return true;
         }
@@ -112,11 +114,12 @@ public class CheckPackage {
                 System.out.println("can not define function in __spi__.ds");
                 throw new Failed();
             }
-            if (topLevelDecl.inf() != null) {
-                if (topLevelDecl.inf().isGlobalSPI()) {
-                    ts.defineGlobalSPI(topLevelDecl.inf());
+            DexInterface inf = topLevelDecl.inf();
+            if (inf != null) {
+                if (inf.isGlobalSPI()) {
+                    ts.defineGlobalSPI(inf);
                 } else {
-                    ts.defineInterface(topLevelDecl.inf());
+                    ts.defineInterface(inf);
                 }
             }
         }

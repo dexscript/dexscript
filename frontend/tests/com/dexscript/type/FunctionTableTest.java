@@ -161,7 +161,7 @@ public class FunctionTableTest {
                 DexExpr expr = DexExpr.$parse(typeSrc.substring("(const)".length()));
                 types.add(InferType.$(ts, expr));
             } else {
-                types.add(ResolveType.$(ts, null, DexType.parse(typeSrc)));
+                types.add(ResolveType.$(ts, null, DexType.$parse(typeSrc)));
             }
         }
         return types;
