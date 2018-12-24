@@ -25,13 +25,15 @@ public final class DexActor extends DexElement {
     private DexActorBody body;
     private String actorName;
 
-    public DexActor(String src) {
-        this(new Text(src));
-    }
-
     public DexActor(Text src) {
         super(src);
         new Parser();
+    }
+
+    public static DexActor $(String src) {
+        DexActor elem = new DexActor(new Text(src));
+        elem.attach(DexPackage.DUMMY);
+        return elem;
     }
 
     public boolean matched() {

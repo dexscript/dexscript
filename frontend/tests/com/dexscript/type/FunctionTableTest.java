@@ -58,7 +58,7 @@ public class FunctionTableTest {
 
     @Test
     public void invoke_interface_without_impl() {
-        ts.defineInterface(new DexInterface("" +
+        ts.defineInterface(DexInterface.$("" +
                 "interface Hello {" +
                 "   SayHello(msg: string)\n" +
                 "}"));
@@ -69,7 +69,7 @@ public class FunctionTableTest {
 
     @Test
     public void invoke_interface_with_impl() {
-        ts.defineInterface(new DexInterface("" +
+        ts.defineInterface(DexInterface.$("" +
                 "interface Hello {" +
                 "   SayHello(msg: string)\n" +
                 "}"));
@@ -81,7 +81,7 @@ public class FunctionTableTest {
 
     @Test
     public void ignore_candidate_wider_than_the_match() {
-        ts.defineInterface(new DexInterface("" +
+        ts.defineInterface(DexInterface.$("" +
                 "interface Hello {" +
                 "   SayHello(msg: string)\n" +
                 "}"));
@@ -123,7 +123,7 @@ public class FunctionTableTest {
     }
 
     private FunctionType func(String actorSrc) {
-        DexActor actor = new DexActor("function " + actorSrc);
+        DexActor actor = DexActor.$("function " + actorSrc);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
         funcType.setImplProvider(expandedFunc -> new Object());

@@ -4,12 +4,9 @@ package com.dexscript.pkg;
 import com.dexscript.analyze.CheckSemanticError;
 import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.elem.DexParam;
-import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.*;
 
@@ -97,7 +94,7 @@ public class CheckPackage {
     private static void defineNormalFile(OutShim oShim, DexFile dexFile) {
         for (DexTopLevelDecl topLevelDecl : dexFile.topLevelDecls()) {
             if (topLevelDecl.inf() != null) {
-                if (isGlobalSpi(topLevelDecl)) {
+                if (topLevelDecl.inf().isGlobalSPI()) {
                     System.out.println("can not define interface :: in file other than __spi__.ds");
                     throw new Failed();
                 }
@@ -116,30 +113,12 @@ public class CheckPackage {
                 throw new Failed();
             }
             if (topLevelDecl.inf() != null) {
-                if (isGlobalSpi(topLevelDecl)) {
-                    defineGlobalSPI(ts, topLevelDecl.inf());
+                if (topLevelDecl.inf().isGlobalSPI()) {
+                    ts.defineGlobalSPI(topLevelDecl.inf());
                 } else {
                     ts.defineInterface(topLevelDecl.inf());
                 }
             }
-        }
-    }
-
-    static boolean isGlobalSpi(DexTopLevelDecl topLevelDecl) {
-        return "::".equals(topLevelDecl.inf().identifier().toString());
-    }
-
-    private static void defineGlobalSPI(TypeSystem ts, DexInterface inf) {
-        for (DexInfMethod infMethod : inf.methods()) {
-            String name = infMethod.identifier().toString();
-            List<FunctionParam> params = new ArrayList<>();
-            for (DexParam param : infMethod.sig().params()) {
-                String paramName = param.paramName().toString();
-                DType paramType = ResolveType.$(ts, null, param.paramType());
-                params.add(new FunctionParam(paramName, paramType));
-            }
-            DType ret = ResolveType.$(ts, null, infMethod.sig().ret());
-            ts.defineFunction(new FunctionType(ts, name, params, ret));
         }
     }
 

@@ -2,7 +2,11 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.elem.DexParam;
+import com.dexscript.ast.inf.DexInfMethod;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,6 +26,10 @@ public class TypeSystem {
     public final NamedType UINT8 = new UInt8Type(this);
     public final NamedType VOID = new VoidType(this);
     public final NamedType UNDEFINED = new UndefinedType(this);
+
+    public TypeSystem() {
+        defineBuiltinTypes(DexPackage.DUMMY);
+    }
 
     public TypeTable typeTable() {
         return typeTable;
@@ -45,6 +53,20 @@ public class TypeSystem {
 
     public void defineFunction(FunctionType function) {
         functionTable.define(function);
+    }
+
+    public void defineGlobalSPI(DexInterface inf) {
+        for (DexInfMethod infMethod : inf.methods()) {
+            String name = infMethod.identifier().toString();
+            List<FunctionParam> params = new ArrayList<>();
+            for (DexParam param : infMethod.sig().params()) {
+                String paramName = param.paramName().toString();
+                DType paramType = ResolveType.$(this, null, param.paramType());
+                params.add(new FunctionParam(paramName, paramType));
+            }
+            DType ret = ResolveType.$(this, null, infMethod.sig().ret());
+            this.defineFunction(new FunctionType(this, name, params, ret));
+        }
     }
 
     public InterfaceType defineInterface(DexInterface inf) {

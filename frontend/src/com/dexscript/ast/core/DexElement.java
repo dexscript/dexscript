@@ -12,19 +12,6 @@ public abstract class DexElement {
         void visit(DexElement elem);
     }
 
-    public static class Collector implements Visitor {
-
-        public final List<DexElement> collected = new ArrayList<>();
-
-        @Override
-        public void visit(DexElement elem) {
-            if (elem == null) {
-                throw new NullPointerException("expect not null element");
-            }
-            collected.add(elem);
-        }
-    }
-
     private List<Object> attachments;
     protected DexElement parent;
     protected Text src;

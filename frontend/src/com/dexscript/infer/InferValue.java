@@ -1,15 +1,16 @@
 package com.dexscript.infer;
 
-import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexActorBody;
+import com.dexscript.ast.DexFile;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexLessThanExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.*;
+import com.dexscript.type.DType;
 import com.dexscript.type.JavaSuperTypeArgs;
 import com.dexscript.type.TypeSystem;
+import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,6 +69,22 @@ public interface InferValue<E extends DexElement> {
     void handle(TypeSystem ts, E elem, ValueTable table);
 
     static Value $(TypeSystem ts, DexValueRef ref) {
+        String refName = ref.toString();
+        if (refName.equals("$")) {
+            DType contextType = ts.typeTable().resolveType(ref.pkg(), "$");
+            return new Value("$", contextType, null);
+        }
+        List<DexElement> prevElems = collectPrevElems(ref);
+        ValueTable parentTable = new ValueTable();
+        for (int i = prevElems.size() - 1; i >= 0; i--) {
+            DexElement elem = prevElems.get(i);
+            parentTable = loadTable(ts, elem, parentTable);
+        }
+        return parentTable.resolveValue(refName);
+    }
+
+    @NotNull
+    static List<DexElement> collectPrevElems(DexValueRef ref) {
         List<DexElement> prevElems = new ArrayList<>();
         DexElement current = ref;
         while (true) {
@@ -77,12 +94,7 @@ public interface InferValue<E extends DexElement> {
             }
             prevElems.add(current);
         }
-        ValueTable parentTable = new ValueTable();
-        for (int i = prevElems.size() - 1; i >= 0; i--) {
-            DexElement elem = prevElems.get(i);
-            parentTable = loadTable(ts, elem, parentTable);
-        }
-        return parentTable.resolveValue(ref.toString());
+        return prevElems;
     }
 
     static ValueTable loadTable(TypeSystem ts, DexElement elem, ValueTable parentTable) {

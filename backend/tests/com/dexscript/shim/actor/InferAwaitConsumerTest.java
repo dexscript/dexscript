@@ -26,7 +26,7 @@ public class InferAwaitConsumerTest {
         DexAwaitConsumer awaitConsumer = awaitStmt.cases().get(0).asAwaitConsumer();
         DexValueRef target = awaitConsumer.stmts().get(0).asProduce().target();
         DType hello = InferType.$(ts, target);
-        InterfaceType inf = ts.defineInterface(new DexInterface("" +
+        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
                 "}"));

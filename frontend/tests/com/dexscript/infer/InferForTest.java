@@ -10,7 +10,7 @@ public class InferForTest {
 
     @Test
     public void short_var_decl() {
-        DexActor func = new DexActor("" +
+        DexActor func = DexActor.$("" +
                 "function Hello(): int64 {\n" +
                 "   var total: int64\n" +
                 "   for i := 0; i < 100; i++ {" +

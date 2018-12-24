@@ -17,11 +17,11 @@ public class ActorTypeTest {
     public void can_consume_from_actor() {
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
-        ActorType actor = new ActorType(oShim, new DexActor("" +
+        ActorType actor = new ActorType(oShim, DexActor.$("" +
                 "function Hello(): string {\n" +
                 "   return 'hello'\n" +
                 "}"));
-        InterfaceType inf = ts.defineInterface(new DexInterface("" +
+        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
@@ -32,14 +32,14 @@ public class ActorTypeTest {
     public void await_consumer() {
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
-        ActorType actor = new ActorType(oShim, new DexActor("" +
+        ActorType actor = new ActorType(oShim, DexActor.$("" +
                 "function Hello() {\n" +
                 "   await {\n" +
                 "   case AA(): string{\n" +
                 "       return 'hello'\n" +
                 "   }}\n" +
                 "}"));
-        InterfaceType inf = ts.defineInterface(new DexInterface("" +
+        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
                 "interface HasAA {\n" +
                 "   AA(): string\n" +
                 "}"));
@@ -55,7 +55,7 @@ public class ActorTypeTest {
     public void return_void() {
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
-        new ActorType(oShim, new DexActor("" +
+        new ActorType(oShim, DexActor.$("" +
                 "function Hello() {\n" +
                 "}"));
         Invoked invoked = ts.invoke(new Invocation("Hello",
@@ -68,7 +68,7 @@ public class ActorTypeTest {
     public void generic_type_substitution() {
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
-        new ActorType(oShim, new DexActor("" +
+        new ActorType(oShim, DexActor.$("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
         Invoked invoked = ts.invoke(new Invocation("Hello",
@@ -82,7 +82,7 @@ public class ActorTypeTest {
     public void generic_function_need_expansion() {
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
-        new ActorType(oShim, new DexActor("" +
+        new ActorType(oShim, DexActor.$("" +
                 "function Equals(<T>: interface{}, left: T, right: T): bool {\n" +
                 "   return true\n" +
                 "}"));

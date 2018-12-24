@@ -7,27 +7,27 @@ public class DexInterfaceTest {
 
     @Test
     public void empty() {
-        DexInterface inf = new DexInterface("interface Duck {}");
+        DexInterface inf = DexInterface.$("interface Duck {}");
         Assert.assertEquals("interface Duck {}", inf.toString());
         Assert.assertEquals("Duck", inf.identifier().toString());
     }
 
     @Test
     public void global_interface() {
-        DexInterface inf = new DexInterface("interface :: {}");
+        DexInterface inf = DexInterface.$("interface :: {}");
         Assert.assertEquals("interface :: {}", inf.toString());
         Assert.assertEquals("::", inf.identifier().toString());
     }
 
     @Test
     public void no_space_between_interface_keyword_and_identifier() {
-        DexInterface inf = new DexInterface("interfaceDuck {}");
+        DexInterface inf = DexInterface.$("interfaceDuck {}");
         Assert.assertEquals("<unmatched>interfaceDuck {}</unmatched>", inf.toString());
     }
 
     @Test
     public void no_space_between_identifier_and_left_brace() {
-        DexInterface inf = new DexInterface("interface Duck{}");
+        DexInterface inf = DexInterface.$("interface Duck{}");
         Assert.assertEquals("interface Duck{}", inf.toString());
     }
 
@@ -37,7 +37,7 @@ public class DexInterfaceTest {
                 "interface Duck {\n" +
                 "   Quack(): string\n" +
                 "}";
-        DexInterface inf = new DexInterface(src);
+        DexInterface inf = DexInterface.$(src);
         inf.methods();
         Assert.assertEquals("{\n" +
                 "   Quack(): string\n" +
@@ -52,7 +52,7 @@ public class DexInterfaceTest {
                 "interface Duck {\n" +
                 "   ::Quack(duck: Duck): string\n" +
                 "}";
-        DexInterface inf = new DexInterface(src);
+        DexInterface inf = DexInterface.$(src);
         inf.functions();
         Assert.assertEquals("{\n" +
                 "   ::Quack(duck: Duck): string\n" +
@@ -68,7 +68,7 @@ public class DexInterfaceTest {
                 "   ??;" +
                 "   Quack(): string\n" +
                 "}";
-        DexInterface inf = new DexInterface(src);
+        DexInterface inf = DexInterface.$(src);
         inf.methods();
         Assert.assertEquals("{\n" +
                 "   <error/>??;   Quack(): string\n" +
@@ -84,7 +84,7 @@ public class DexInterfaceTest {
                 "   <T>: string\n" +
                 "   Get__(index: int64): T\n" +
                 "}";
-        DexInterface inf = new DexInterface(src);
+        DexInterface inf = DexInterface.$(src);
         inf.methods();
         Assert.assertEquals("{\n" +
                 "   <T>: string\n" +
@@ -104,7 +104,7 @@ public class DexInterfaceTest {
                 "   Get__(index: '1', arg: E2)\n" +
                 "}";
 
-        DexInterface inf = new DexInterface(src);
+        DexInterface inf = DexInterface.$(src);
         inf.methods();
         Assert.assertEquals("{\n" +
                 "   <E1>: interface{};\n" +

@@ -109,7 +109,7 @@ public class FunctionSigTest {
     }
 
     private void defineInterface(String src) {
-        new InterfaceType(ts, new DexInterface(src));
+        new InterfaceType(ts, DexInterface.$(src));
     }
 
     private FunctionSig sig(String src) {

@@ -20,7 +20,7 @@ public class TaskTypeTest {
     @Test
     public void resolve_any() {
         DType taskType = ResolveType.$(ts, "Task");
-        InterfaceType inf = ts.defineInterface(new DexInterface("" +
+        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
                 "}"));
@@ -30,12 +30,12 @@ public class TaskTypeTest {
     @Test
     public void resolve_string() {
         DType taskType = ResolveType.$(ts, "Task<string>");
-        InterfaceType resolveString = ts.defineInterface(new DexInterface("" +
+        InterfaceType resolveString = ts.defineInterface(DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
                 "}"));
         Assert.assertTrue(IsAssignable.$(resolveString, taskType));
-        InterfaceType resolveInt64 = ts.defineInterface(new DexInterface("" +
+        InterfaceType resolveInt64 = ts.defineInterface(DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: int64)\n" +
                 "}"));

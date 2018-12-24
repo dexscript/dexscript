@@ -25,8 +25,10 @@ public class DexInterface extends DexElement {
         new Parser();
     }
 
-    public DexInterface(String src) {
-        this(new Text(src));
+    public static DexInterface $(String src) {
+        DexInterface elem = new DexInterface(new Text(src));
+        elem.attach(DexPackage.DUMMY);
+        return elem;
     }
 
     @Override
@@ -78,6 +80,10 @@ public class DexInterface extends DexElement {
 
     public void reparent(DexFile parent) {
         this.parent = parent;
+    }
+
+    public boolean isGlobalSPI() {
+        return "::".equals(identifier().toString());
     }
 
     private class Parser {

@@ -15,7 +15,7 @@ public class FunctionTypeTest {
     }
 
     private FunctionType func(String src) {
-        DexActor actor = new DexActor("function " + src);
+        DexActor actor = DexActor.$("function " + src);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         return new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
     }

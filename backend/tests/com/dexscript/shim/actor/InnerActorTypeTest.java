@@ -12,7 +12,7 @@ public class InnerActorTypeTest {
 
     @Test
     public void can_consume_from_actor() {
-        DexActor function = new DexActor("" +
+        DexActor function = DexActor.$("" +
                 "function Hello() {\n" +
                 "   await {\n" +
                 "   case AA(): string{\n" +
@@ -22,7 +22,7 @@ public class InnerActorTypeTest {
         DexAwaitConsumer awaitConsumer = (DexAwaitConsumer) function.stmts().get(0).asAwait().cases().get(0);
         TypeSystem ts = new TypeSystem();
         InnerActorType innerActorType = new InnerActorType(ts, awaitConsumer);
-        InterfaceType inf = ts.defineInterface(new DexInterface("" +
+        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));

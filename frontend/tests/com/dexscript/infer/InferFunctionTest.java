@@ -18,7 +18,7 @@ public class InferFunctionTest {
 
     @Test
     public void argument_can_be_referenced() {
-        DexActor func = new DexActor("" +
+        DexActor func = DexActor.$("" +
                 "function Hello(arg: string): string {\n" +
                 "   return arg\n" +
                 "}");
@@ -30,7 +30,7 @@ public class InferFunctionTest {
 
     @Test
     public void generic_argument_can_be_referenced() {
-        DexActor func = new DexActor("" +
+        DexActor func = DexActor.$("" +
                 "function Hello(<T>: string, arg: T): T {\n" +
                 "   return arg\n" +
                 "}");

@@ -10,7 +10,7 @@ public class DexActorTest {
         String src = "" +
                 " function hello() {\n" +
                 "}\n";
-        DexActor function = new DexActor(src);
+        DexActor function = DexActor.$(src);
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
         Assert.assertEquals("()", function.sig().toString());
@@ -20,7 +20,7 @@ public class DexActorTest {
 
     @Test
     public void no_space_between_function_keyword_and_identifier() {
-        Assert.assertEquals("<unmatched>functionhello() {}</unmatched>", new DexActor("functionhello() {}").toString());
+        Assert.assertEquals("<unmatched>functionhello() {}</unmatched>", DexActor.$("functionhello() {}").toString());
     }
 
     @Test
@@ -28,7 +28,7 @@ public class DexActorTest {
         String src = "" +
                 " function hello(msg:string) {\n" +
                 "}\n";
-        DexActor function = new DexActor(src);
+        DexActor function = DexActor.$(src);
         Assert.assertTrue(function.matched());
         Assert.assertEquals("hello", function.identifier().toString());
         Assert.assertEquals("(msg:string)", function.sig().toString());
@@ -44,7 +44,7 @@ public class DexActorTest {
         Assert.assertEquals("" +
                 "<unmatched>function hello ) {\n" +
                 "}\n" +
-                "</unmatched>", new DexActor(src).toString());
+                "</unmatched>", DexActor.$(src).toString());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class DexActorTest {
         Assert.assertEquals("" +
                 "<unmatched> example function hello () {\n" +
                 "}\n" +
-                "</unmatched>", new DexActor(src).toString());
+                "</unmatched>", DexActor.$(src).toString());
     }
 
     @Test
@@ -63,7 +63,7 @@ public class DexActorTest {
         String src = "" +
                 "function hello () \n" +
                 "}\n";
-        DexActor function = new DexActor(src);
+        DexActor function = DexActor.$(src);
         function.body().blk();
         Assert.assertEquals("()<error/> \n" +
                 "}\n", function.body().toString());

@@ -16,7 +16,7 @@ public class InferConsumeTest {
     public void consume_string() {
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
-        new ActorType(oShim, new DexActor("" +
+        new ActorType(oShim, DexActor.$("" +
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
                 "}"), null);

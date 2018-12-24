@@ -42,14 +42,14 @@ public class OutShim {
     }
 
     public void definePackage(DexPackage pkg) {
-        DexInterface taskInf = new DexInterface("" +
+        DexInterface taskInf = DexInterface.$("" +
                 "interface Task {\n" +
                 "   <T>: interface{}\n" +
                 "   Resolve__(value: T)\n" +
                 "}");
         taskInf.attach(pkg);
         ts.defineInterface(taskInf);
-        DexInterface promiseInf = new DexInterface("" +
+        DexInterface promiseInf = DexInterface.$("" +
                 "interface Promise {\n" +
                 "   <T>: interface{}\n" +
                 "   Consume__(): T\n" +

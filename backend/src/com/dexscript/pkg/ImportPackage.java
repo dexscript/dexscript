@@ -41,7 +41,7 @@ public class ImportPackage {
                 if (topLevelDecl.actor() != null) {
                     oShim.defineActor(topLevelDecl.actor());
                 } else if (topLevelDecl.inf() != null) {
-                    if (CheckPackage.isGlobalSpi(topLevelDecl)) {
+                    if (topLevelDecl.inf().isGlobalSPI()) {
                         continue;
                     }
                     oShim.defineInterface(topLevelDecl.inf());

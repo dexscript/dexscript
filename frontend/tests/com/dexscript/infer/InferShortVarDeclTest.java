@@ -1,6 +1,7 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
@@ -18,11 +19,12 @@ public class InferShortVarDeclTest {
 
     @Test
     public void local_variable_can_be_referenced() {
-        DexActor func = new DexActor("" +
+        DexActor func = DexActor.$("" +
                 "function Hello(arg: string): string {\n" +
                 "   local := arg\n" +
                 "   return local\n" +
                 "}");
+        func.attach(DexPackage.DUMMY);
         DexValueRef ref = func.stmts().get(1).asReturn().expr().asRef();
         Value value = InferValue.$(ts, ref);
         Assert.assertEquals("local", value.definedBy().toString());
@@ -31,13 +33,14 @@ public class InferShortVarDeclTest {
 
     @Test
     public void local_variable_does_not_leak_out_block() {
-        DexActor func = new DexActor("" +
+        DexActor func = DexActor.$("" +
                 "function Hello(arg: string): string {\n" +
                 "   {\n" +
                 "       local := arg\n" +
                 "   }\n" +
                 "   return local\n" +
                 "}");
+        func.attach(DexPackage.DUMMY);
         DexValueRef ref = func.stmts().get(1).asReturn().expr().asRef();
         Value value = InferValue.$(ts, ref);
         Assert.assertNull(value);

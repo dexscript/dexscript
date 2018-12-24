@@ -19,7 +19,7 @@ public class PromiseTypeTest {
     @Test
     public void consume_any() {
         DType promiseType = ResolveType.$(ts, "Promise");
-        InterfaceType inf = ts.defineInterface(new DexInterface("" +
+        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
@@ -30,12 +30,12 @@ public class PromiseTypeTest {
     @Test
     public void consume_string() {
         DType promiseType = ResolveType.$(ts, "Promise<string>");
-        InterfaceType consumeString = ts.defineInterface(new DexInterface("" +
+        InterfaceType consumeString = ts.defineInterface(DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
         Assert.assertTrue(IsAssignable.$(consumeString, promiseType));
-        InterfaceType consumeInt64 = ts.defineInterface(new DexInterface("" +
+        InterfaceType consumeInt64 = ts.defineInterface(DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Consume__(): int64\n" +
                 "}"));
