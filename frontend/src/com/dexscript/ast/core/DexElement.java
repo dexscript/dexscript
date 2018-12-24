@@ -1,5 +1,6 @@
 package com.dexscript.ast.core;
 
+import com.dexscript.ast.DexPackage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -74,6 +75,22 @@ public abstract class DexElement {
     public abstract void walkDown(Visitor visitor);
     public DexElement prev() {
         return parent();
+    }
+
+    public DexPackage pkg() {
+        DexPackage pkg = attachmentOfType(DexPackage.class);
+        if (pkg != null) {
+            return pkg;
+        }
+        if (parent() == null) {
+            throw new DexSyntaxException("pkg not attached to dex element");
+        }
+        pkg = parent().pkg();
+        if (pkg == null) {
+            throw new DexSyntaxException("pkg not attached to dex element");
+        }
+        attach(pkg);
+        return pkg;
     }
 
     @Override

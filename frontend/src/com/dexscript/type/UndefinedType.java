@@ -8,7 +8,6 @@ public class UndefinedType implements NamedType {
 
     public UndefinedType(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

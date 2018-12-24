@@ -25,12 +25,12 @@ public interface ResolveType<E extends DexType> {
         put(DexTypeRef.class, (ts, localTypeTable, elem) -> {
             String name = elem.toString();
             if (localTypeTable != null) {
-                DType type = localTypeTable.resolveType(name);
+                DType type = localTypeTable.resolveType(elem.pkg(), name);
                 if (!(type instanceof UndefinedType)) {
                     return type;
                 }
             }
-            return ts.typeTable().resolveType(name);
+            return ts.typeTable().resolveType(elem.pkg(), name);
         });
         put(DexStringLiteralType.class, (ts, localTypeTable, elem) -> {
             String literalValue = ((DexStringLiteralType) (elem)).literalValue();
@@ -47,7 +47,7 @@ public interface ResolveType<E extends DexType> {
                 typeArgs.add(ResolveType.$(ts, localTypeTable, typeArg));
             }
             String genericTypeName = genericExpansionType.genericType().toString();
-            return ts.typeTable().resolveType(genericTypeName, typeArgs);
+            return ts.typeTable().resolveType(elem.pkg(), genericTypeName, typeArgs);
         });
         put(DexInterfaceType.class, (ts, localTypeTable, elem) -> {
             DexInterfaceType infType = (DexInterfaceType) elem;

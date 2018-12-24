@@ -1,5 +1,6 @@
 package com.dexscript.shim.java;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.*;
@@ -13,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JavaType implements NamedType, FunctionsType, GenericType {
+
+    private static class FakePackage implements DexPackage {
+    }
+    private static FakePackage FAKE_PACKAGE = new FakePackage();
 
     private final OutShim oShim;
     private final Class clazz;
@@ -35,7 +40,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         this.dTypeArgs = dTypeArgs;
         this.runtimeClassName = runtimeClassName;
         if (dTypeArgs == null) {
-            ts.defineType(this);
+            ts.defineType(FAKE_PACKAGE, this);
         }
         oShim.javaTypes().add(runtimeClassName, this);
         ts.lazyDefineFunctions(this);
@@ -160,7 +165,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         }
         for (int i = 0; i < clazz.getTypeParameters().length; i++) {
             TypeVariable jTypeParam = clazz.getTypeParameters()[i];
-            localTypeTable.define(jTypeParam.getName(), dTypeArgs.get(i));
+            localTypeTable.define(FAKE_PACKAGE, jTypeParam.getName(), dTypeArgs.get(i));
         }
         return localTypeTable;
     }

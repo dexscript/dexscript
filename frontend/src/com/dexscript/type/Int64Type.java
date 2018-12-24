@@ -10,7 +10,6 @@ public class Int64Type implements NamedType {
 
     public Int64Type(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

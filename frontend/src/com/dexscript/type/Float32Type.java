@@ -10,7 +10,6 @@ class Float32Type implements NamedType {
 
     Float32Type(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

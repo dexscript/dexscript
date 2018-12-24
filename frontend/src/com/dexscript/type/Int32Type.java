@@ -10,7 +10,6 @@ public class Int32Type implements NamedType {
 
     public Int32Type(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

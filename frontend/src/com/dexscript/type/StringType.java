@@ -10,7 +10,6 @@ public class StringType implements NamedType {
 
     public StringType(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

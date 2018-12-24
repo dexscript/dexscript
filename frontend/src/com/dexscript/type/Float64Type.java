@@ -10,7 +10,6 @@ class Float64Type implements NamedType {
 
     Float64Type(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

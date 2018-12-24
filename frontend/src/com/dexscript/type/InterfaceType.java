@@ -28,7 +28,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
         this.typeArgs = typeArgs;
         this.inf = inf;
         if (typeArgs == null) {
-            ts.defineType(this);
+            ts.defineType(inf.pkg(), this);
         }
         ts.lazyDefineFunctions(this);
     }
@@ -51,7 +51,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
         for (int i = 0; i < inf.typeParams().size(); i++) {
             DexInfTypeParam typeParam = inf.typeParams().get(i);
             String typeParamName = typeParam.paramName().toString();
-            localTypeTable.define(typeParamName, typeArgs.get(i));
+            localTypeTable.define(inf.pkg(), typeParamName, typeArgs.get(i));
         }
         for (DexInfMethod method : inf.methods()) {
             addInfMethod(localTypeTable, method);

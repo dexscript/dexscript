@@ -162,7 +162,7 @@ public class FunctionSig {
         for (DexTypeParam typeParam : dexSig.typeParams()) {
             DType constraint = ResolveType.$(ts, null, typeParam.paramType());
             PlaceholderType placeholder = new PlaceholderType(ts, typeParam.paramName().toString(), constraint);
-            localTypeTable.define(placeholder);
+            localTypeTable.define(dexSig.pkg(), placeholder);
             typeParams.add(placeholder);
         }
         params = new ArrayList<>();
@@ -237,7 +237,7 @@ public class FunctionSig {
         for (Map.Entry<DType, DType> entry : sub.entrySet()) {
             DType key = entry.getKey();
             if (key instanceof NamedType) {
-                localTypeTable.define(((NamedType) key).name(), entry.getValue());
+                localTypeTable.define(dexSig.pkg(), ((NamedType) key).name(), entry.getValue());
             }
         }
         List<FunctionParam> expandedParams = new ArrayList<>();

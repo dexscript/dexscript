@@ -1,6 +1,6 @@
 package com.dexscript.transpile;
 
-import com.dexscript.pkg.FS;
+import com.dexscript.pkg.Package;
 import com.dexscript.shim.OutShim;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import static com.dexscript.pkg.FS.$p;
+import static com.dexscript.pkg.Package.$p;
 
 public interface Transpile {
 
@@ -32,7 +32,7 @@ public interface Transpile {
                 }
                 writeToFile(className, classSrc);
             };
-            FS.fs = Jimfs.newFileSystem(Configuration.unix());
+            Package.fs = Jimfs.newFileSystem(Configuration.unix());
             Files.createDirectory($p("/pkg1"));
             Files.write($p("/pkg1/__spi__.ds"), ("" +
                     "interface :: {\n" +

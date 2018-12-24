@@ -1,9 +1,6 @@
 package com.dexscript.shim;
 
-import com.dexscript.ast.DexActor;
-import com.dexscript.ast.DexFile;
-import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.DexTopLevelDecl;
+import com.dexscript.ast.*;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
@@ -33,16 +30,6 @@ public class OutShim {
     public OutShim(TypeSystem ts) {
         this.ts = ts;
         actorTable = new ActorTable(ts);
-        ts.defineInterface(new DexInterface("" +
-                "interface Task {\n" +
-                "   <T>: interface{}\n" +
-                "   Resolve__(value: T)\n" +
-                "}"));
-        ts.defineInterface(new DexInterface("" +
-                "interface Promise {\n" +
-                "   <T>: interface{}\n" +
-                "   Consume__(): T\n" +
-                "}"));
         javaTypes = new JavaTypes(this);
         g.__("package com.dexscript.transpiled"
         ).__(new Line(";"));
@@ -52,6 +39,24 @@ public class OutShim {
         ).__(" {");
         g.indention("  ");
         g.__(new Line());
+    }
+
+    public void definePackage(DexPackage pkg) {
+        DexInterface taskInf = new DexInterface("" +
+                "interface Task {\n" +
+                "   <T>: interface{}\n" +
+                "   Resolve__(value: T)\n" +
+                "}");
+        taskInf.attach(pkg);
+        ts.defineInterface(taskInf);
+        DexInterface promiseInf = new DexInterface("" +
+                "interface Promise {\n" +
+                "   <T>: interface{}\n" +
+                "   Consume__(): T\n" +
+                "}");
+        promiseInf.attach(pkg);
+        ts.defineInterface(promiseInf);
+        ts.defineBuiltinTypes(pkg);
     }
 
     public List<GeneratedSubClass> generatedSubClasses() {

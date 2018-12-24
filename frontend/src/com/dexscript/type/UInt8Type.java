@@ -8,7 +8,6 @@ public class UInt8Type implements NamedType {
 
     public UInt8Type(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

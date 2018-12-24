@@ -8,7 +8,6 @@ public class VoidType implements NamedType {
 
     public VoidType(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

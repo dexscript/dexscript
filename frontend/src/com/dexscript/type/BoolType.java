@@ -10,7 +10,6 @@ public class BoolType implements NamedType {
 
     public BoolType(TypeSystem ts) {
         this.ts = ts;
-        ts.defineType(this);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class InferAwaitConsumer implements InferValue<DexAwaitConsumer> {
     public void handle(TypeSystem ts, DexAwaitConsumer awaitConsumer, ValueTable table) {
         String taskName = awaitConsumer.identifier().toString();
         DType ret = ResolveType.$(ts, null, awaitConsumer.ret());
-        DType taskType = ts.typeTable().resolveType("Task", Arrays.asList(ret));
+        DType taskType = ts.typeTable().resolveType(awaitConsumer.pkg(), "Task", Arrays.asList(ret));
         table.define(new Value(taskName, taskType, awaitConsumer));
     }
 }

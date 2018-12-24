@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.elem.DexTypeParam;
 
@@ -39,10 +40,11 @@ public class TypeTable {
             };
 
     private final TypeSystem ts;
-    private final Map<String, DType> defined = new HashMap<>();
+    // package => type name => type
+    private final Map<DexPackage, Map<String, DType>> defined = new HashMap<>();
+    // package => providers
+    private final Map<DexPackage, List<NamedTypesProvider>> providers = new HashMap<>();
     private final Map<Expansion, DType> expanded = new HashMap<>();
-    private final List<NamedTypesProvider> providers = new ArrayList<>();
-    private final TypeComparisonCache cache = new TypeComparisonCache();
 
     public TypeTable(TypeSystem ts) {
         this.ts = ts;
@@ -52,22 +54,25 @@ public class TypeTable {
         this.ts = ts;
         for (DexTypeParam typeParam : typeParams) {
             DType type = ResolveType.$(ts, null, typeParam.paramType());
-            define(typeParam.paramName().toString(), type);
+            define(typeParam.pkg(), typeParam.paramName().toString(), type);
         }
     }
 
-    public DType resolveType(String name) {
-        pullFromProviders();
-        DType type = defined.get(name);
+    public DType resolveType(DexPackage pkg, String name) {
+        pullFromProviders(pkg);
+        Map<String, DType> pkgTypes = defined.get(pkg);
+        if (pkgTypes == null) {
+            return ts.UNDEFINED;
+        }
+        DType type = pkgTypes.get(name);
         if (type == null) {
-            ON_NO_SUCH_TYPE.handle(name);
             return ts.UNDEFINED;
         }
         return type;
     }
 
-    public DType resolveType(String name, List<DType> typeArgs) {
-        DType type = this.resolveType(name);
+    public DType resolveType(DexPackage pkg, String name, List<DType> typeArgs) {
+        DType type = this.resolveType(pkg, name);
         if (type == null) {
             ON_NO_SUCH_TYPE.handle(name);
             return ts.UNDEFINED;
@@ -100,31 +105,34 @@ public class TypeTable {
         return expandedType;
     }
 
-    private void pullFromProviders() {
-        if (providers.isEmpty()) {
+    private void pullFromProviders(DexPackage pkg) {
+        List<NamedTypesProvider> pkgTypeProviders = providers.get(pkg);
+        if (pkgTypeProviders == null) {
             return;
         }
-        for (NamedTypesProvider provider : providers) {
+        for (NamedTypesProvider provider : pkgTypeProviders) {
             for (NamedType type : provider.namedTypes()) {
-                define(type);
+                define(pkg, type);
             }
         }
-        providers.clear();
+        pkgTypeProviders.clear();
     }
 
-    public void define(NamedType type) {
-        define(type.name(), type);
+    public void define(DexPackage pkg, NamedType type) {
+        define(pkg, type.name(), type);
     }
 
-    public void define(String typeName, DType type) {
-        if (defined.containsKey(typeName)) {
+    public void define(DexPackage pkg, String typeName, DType type) {
+        Map<String, DType> pkgTypes = defined.computeIfAbsent(pkg, k -> new HashMap<>());
+        if (pkgTypes.containsKey(typeName)) {
             throw new DexSyntaxException("redefine type: " + typeName);
         }
-        defined.put(typeName, type);
+        pkgTypes.put(typeName, type);
     }
 
-    public void lazyDefine(NamedTypesProvider provider) {
-        providers.add(provider);
+    public void lazyDefine(DexPackage pkg, NamedTypesProvider provider) {
+        List<NamedTypesProvider> pkgTypeProviders = providers.computeIfAbsent(pkg, k -> new ArrayList<>());
+        pkgTypeProviders.add(provider);
     }
 
     private static class Expansion {
@@ -152,7 +160,4 @@ public class TypeTable {
         }
     }
 
-    public TypeComparisonCache comparisonCache() {
-        return cache;
-    }
 }

@@ -11,7 +11,6 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.shim.OutShim;
-import com.dexscript.shim.actor.ActorType;
 import com.dexscript.type.*;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dexscript.pkg.FS.$p;
+import static com.dexscript.pkg.Package.$p;
 
 public class CheckPackage {
 
@@ -28,12 +27,8 @@ public class CheckPackage {
     }
 
     public static boolean $(String pathStr) {
-        return $(pathStr, new ArrayList<>());
-    }
-
-    public static boolean $(String pathStr, List<DexFile> dexFiles) {
         try {
-            return check(pathStr, dexFiles);
+            return check(pathStr);
         } catch (DexSyntaxException e) {
             System.out.println(e.getMessage());
             return false;
@@ -42,17 +37,22 @@ public class CheckPackage {
         }
     }
 
-    private static boolean check(String pathStr, List<DexFile> dexFiles) {
+    private static boolean check(String pathStr) {
+        List<DexFile> dexFiles = new ArrayList<>();
         Path pkgPath = $p(pathStr);
         if (!Files.isDirectory(pkgPath)) {
             System.out.println("package directory not found: " + pkgPath);
             return false;
         }
+        TypeSystem ts = new TypeSystem();
+        OutShim oShim = new OutShim(ts);
+        Package pkg = new Package(oShim);
         try {
             Files.list(pkgPath).forEach(path -> {
                 try {
                     Text src = new Text(Files.readAllBytes(path));
                     DexFile dexFile = new DexFile(src, path.getFileName().toString());
+                    dexFile.attach(pkg);
                     dexFiles.add(dexFile);
                 } catch (IOException e) {
                     System.out.println("failed to read file: " + path);
@@ -66,16 +66,14 @@ public class CheckPackage {
         if (hasSyntaxError(dexFiles)) {
             return false;
         }
-        if (hasSemanticError(dexFiles)) {
+        if (hasSemanticError(oShim, dexFiles)) {
             return false;
         }
         return true;
     }
 
-    private static boolean hasSemanticError(List<DexFile> dexFiles) {
+    private static boolean hasSemanticError(OutShim oShim, List<DexFile> dexFiles) {
         boolean foundSpiFile = false;
-        TypeSystem ts = new TypeSystem();
-        OutShim oShim = new OutShim(ts);
         for (DexFile dexFile : dexFiles) {
             if (dexFile.fileName().equals("__spi__.ds")) {
                 defineSpiFile(oShim, dexFile);
@@ -89,7 +87,7 @@ public class CheckPackage {
             return true;
         }
         for (DexFile dexFile : dexFiles) {
-            if (new CheckSemanticError(ts, dexFile).hasError()) {
+            if (new CheckSemanticError(oShim.typeSystem(), dexFile).hasError()) {
                 return true;
             }
         }
@@ -127,7 +125,7 @@ public class CheckPackage {
         }
     }
 
-    private static boolean isGlobalSpi(DexTopLevelDecl topLevelDecl) {
+    static boolean isGlobalSpi(DexTopLevelDecl topLevelDecl) {
         return "::".equals(topLevelDecl.inf().identifier().toString());
     }
 
