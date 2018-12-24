@@ -28,15 +28,18 @@ public class FunctionEntry {
         g.__(" {");
         g.__(new Indent(() -> {
             g.__(new Line("Scheduler scheduler = new Scheduler();"));
+            g.__("Object arg"
+            ).__(paramsCount // the context
+            ).__(new Line(" = null;"));
             for (FunctionImpl impl : impls) {
                 g.__("if ("
                 ).__(impl.canF(javaTypes));
-                InvokeParams.$(g, paramsCount, false);
+                InvokeParams.$(g, paramsCount + 1, false);
                 g.__(") {");
                 g.__(new Indent(() -> {
                     g.__("Promise result = (Promise)"
                     ).__(impl.callF());
-                    InvokeParams.$(g, paramsCount, true);
+                    InvokeParams.$(g, paramsCount + 1, true);
                     g.__(new Line(";"));
                     g.__(new Line("scheduler.schedule();"));
                     g.__(new Line("if (!result.finished()) {"));

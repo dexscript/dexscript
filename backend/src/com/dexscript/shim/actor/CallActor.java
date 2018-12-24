@@ -34,14 +34,15 @@ class CallActor extends FunctionImpl {
         String newF = oShim.allocateShim("call__" + actor.actorName());
         g.__("public static Promise "
         ).__(newF);
-        DeclareParams.$(g, functionType.params().size(), true);
+        int paramsCount = functionType.params().size() + 1; // context param
+        DeclareParams.$(g, paramsCount, true);
         g.__(" {");
         g.__(new Indent(() -> {
             String className = ActorType.qualifiedClassNameOf(actor);
             g.__("return new "
             ).__(className
             ).__("(scheduler");
-            for (int i = 0; i < functionType.params().size(); i++) {
+            for (int i = 0; i < paramsCount; i++) {
                 g.__(", ");
                 g.__("arg"
                 ).__(i);

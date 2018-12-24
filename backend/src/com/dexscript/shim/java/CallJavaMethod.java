@@ -24,12 +24,12 @@ class CallJavaMethod extends FunctionImpl {
         String callF = oShim.allocateShim("call__" + javaMethod.getName());
         g.__("public static Promise "
         ).__(callF);
-        DeclareParams.$(g, functionType.params().size() + 1, false);
+        DeclareParams.$(g, functionType.params().size(), true);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__("return new ImmediateResult((("
             ).__(javaMethod.getDeclaringClass().getCanonicalName()
-            ).__(")arg1)."
+            ).__(")arg0)."
             ).__(javaMethod.getName()
             ).__('(');
             Class<?>[] paramTypes = javaMethod.getParameterTypes();
@@ -41,7 +41,7 @@ class CallJavaMethod extends FunctionImpl {
                 g.__("(("
                 ).__(paramType.getCanonicalName()
                 ).__(")arg"
-                ).__(i + 1
+                ).__(i+1
                 ).__(')');
             }
             g.__("));");

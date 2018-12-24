@@ -58,7 +58,7 @@ public class FunctionTypeTest {
     public void context_not_assignable() {
         FunctionType func1 = func("hello()");
         FunctionType func2 = func("hello()");
-        func2.setContext(ts.STRING);
+        func2.context(ts.STRING);
         TestAssignable.$(false, func1, func2);
         TestAssignable.$(true, func2, func1);
     }

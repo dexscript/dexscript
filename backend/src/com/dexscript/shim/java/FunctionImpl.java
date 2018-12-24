@@ -53,9 +53,10 @@ public abstract class FunctionImpl {
             String typeCheck = javaTypes.genTypeCheck(param.type());
             typeChecks.add(typeCheck);
         }
+        typeChecks.add(javaTypes.genTypeCheck(functionType.context()));
         g.__("public static boolean "
         ).__(canF);
-        DeclareParams.$(g, params.size(), false);
+        DeclareParams.$(g, typeChecks.size(), false);
         g.__(" {");
         g.__(new Indent(() -> {
             for (int i = 0; i < typeChecks.size(); i++) {

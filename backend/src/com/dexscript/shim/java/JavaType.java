@@ -72,7 +72,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         params.add(new FunctionParam("index", ts.INT32));
         DType ret = oShim.javaTypes().resolve(clazz.getComponentType());
         FunctionType func = new FunctionType(ts, "get", params, ret);
-        func.setImplProvider(expandedFunc -> new CallJavaArrayGet(oShim, expandedFunc, clazz));
+        func.implProvider(expandedFunc -> new CallJavaArrayGet(oShim, expandedFunc, clazz));
         collector.add(func);
     }
 
@@ -92,7 +92,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             dParams.add(new FunctionParam(jParam.getName(), dParam));
         }
         FunctionType func = new FunctionType(ts, method.getName(), dParams, dRet);
-        func.setImplProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));
+        func.implProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));
         collector.add(func);
     }
 

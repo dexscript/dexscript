@@ -60,7 +60,8 @@ public class Invocation {
     }
 
     public int argsCount() {
-        return posArgs.size() + namedArgs.size();
+        // context argument
+        return posArgs.size() + namedArgs.size() + 1;
     }
 
     @Override

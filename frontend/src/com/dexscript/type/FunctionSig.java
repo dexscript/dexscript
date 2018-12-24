@@ -1,6 +1,5 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
@@ -248,7 +247,7 @@ public class FunctionSig {
         }
         DType expandedRet = ResolveType.$(ts, localTypeTable, dexSig.ret());
         expanded = new FunctionType(ts, func.name(), expandedParams, expandedRet);
-        expanded.setImplProvider(func.implProvider());
+        expanded.implProvider(func.implProvider());
         expandedFuncs.put(sub, expanded);
         return expanded;
     }

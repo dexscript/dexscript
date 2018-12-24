@@ -126,7 +126,7 @@ public class FunctionTableTest {
         DexActor actor = DexActor.$("function " + actorSrc);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
-        funcType.setImplProvider(expandedFunc -> new Object());
+        funcType.implProvider(expandedFunc -> new Object());
         return funcType;
     }
 

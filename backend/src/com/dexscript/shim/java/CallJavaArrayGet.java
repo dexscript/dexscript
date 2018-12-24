@@ -22,12 +22,12 @@ public class CallJavaArrayGet extends FunctionImpl {
         Gen g = oShim.g();
         g.__("public static Promise "
         ).__(callF);
-        DeclareParams.$(g, functionType.params().size() + 1, false);
+        DeclareParams.$(g, functionType.params().size(), true);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__("return new ImmediateResult((("
             ).__(clazz.getCanonicalName()
-            ).__(")arg1)[(Integer)arg2]);");
+            ).__(")arg0)[(Integer)arg1]);");
         }));
         g.__(new Line("}"));
         return callF;

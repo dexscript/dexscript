@@ -16,7 +16,6 @@ public final class FunctionType implements DType {
     @NotNull
     private final String name;
 
-    @NotNull
     private DType context;
 
     @NotNull
@@ -53,11 +52,11 @@ public final class FunctionType implements DType {
         ts.defineFunction(this);
     }
 
-    public void setContext(DType context) {
+    public void context(DType context) {
         this.context = context;
     }
 
-    public void setImplProvider(FunctionImplProvider implProvider) {
+    public void implProvider(FunctionImplProvider implProvider) {
         this.implProvider = implProvider;
     }
 
@@ -146,5 +145,9 @@ public final class FunctionType implements DType {
 
     public boolean hasImpl() {
         return implProvider != null;
+    }
+
+    public DType context() {
+        return context == null ? ts.ANY : context;
     }
 }

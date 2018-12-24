@@ -91,7 +91,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
         }
         FunctionSig sig = new FunctionSig(ts, actor.sig());
         FunctionType functionType = new FunctionType(ts, name(), params, ret, sig);
-        functionType.setImplProvider(expandedFunc -> new CallActor(oShim, expandedFunc, actor));
+        functionType.implProvider(expandedFunc -> new CallActor(oShim, expandedFunc, actor));
         return functionType;
     }
 
@@ -104,7 +104,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
             params.add(new FunctionParam(name, type));
         }
         FunctionType functionType = new FunctionType(ts, "New__", params, this);
-        functionType.setImplProvider(expandedFunc -> new NewActor(oShim, expandedFunc, actor));
+        functionType.implProvider(expandedFunc -> new NewActor(oShim, expandedFunc, actor));
         return functionType;
     }
 
@@ -174,7 +174,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
                 params.add(new FunctionParam(paramName, paramType));
             }
             FunctionType functionType = new FunctionType(ts, "New__", params, nestedActor);
-            functionType.setImplProvider(expandedFunc -> new NewInnerActor(
+            functionType.implProvider(expandedFunc -> new NewInnerActor(
                     oShim, expandedFunc, outerClassName, awaitConsumer));
             return functionType;
         }
@@ -192,7 +192,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
                 params.add(new FunctionParam(paramName, paramType));
             }
             FunctionType functionType = new FunctionType(ts, funcName, params, ret);
-            functionType.setImplProvider(expandedFunc -> new CallInnerActor(
+            functionType.implProvider(expandedFunc -> new CallInnerActor(
                     oShim, expandedFunc, outerClassName, awaitConsumer));
             return functionType;
         }

@@ -59,7 +59,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
             DType targetType = invoked.args.get(i + dexIvc.posArgs().size());
             oClass.g().__(Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType));
         }
-        oClass.g().__(new Line(");"));
+        oClass.g().__(new Line(", context);"));
         boolean needToConsume = needToConsume(invoked);
         if (needToConsume) {
             return consume(oClass, retType, oActorField.value());

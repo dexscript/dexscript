@@ -25,8 +25,7 @@ public interface DeclareParams {
         g.__(')');
     }
 
-    static void $(Gen g, TypeSystem ts, DexSig sig) {
-        TypeTable localTypeTable = new TypeTable(ts, sig.typeParams());
+    static void $(Gen g, DexSig sig) {
         g.__("(Scheduler scheduler");
         for (int i = 0; i < sig.params().size(); i++) {
             g.__(", ");
@@ -34,6 +33,6 @@ public interface DeclareParams {
             g.__("Object "
             ).__(param.paramName());
         }
-        g.__(')');
+        g.__(", Object context)");
     }
 }

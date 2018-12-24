@@ -29,10 +29,10 @@ public class OutInitMethod implements OutMethod {
         g = new Gen(oClass.indention());
         g.__("public "
         ).__(iFunc.actorName());
-        DeclareParams.$(g, ts, iFunc.sig());
+        DeclareParams.$(g, iFunc.sig());
         g.__(" {"
         ).__(new Indent(() -> {
-            g.__(new Line("super(scheduler);"));
+            g.__(new Line("super(scheduler, context);"));
             genBody(iFunc.sig(), iFunc.stmts());
         }));
     }
@@ -44,10 +44,10 @@ public class OutInitMethod implements OutMethod {
         g = new Gen(oClass.indention());
         g.__("public "
         ).__(iAwaitConsumer.identifier().toString());
-        DeclareParams.$(g, ts, iAwaitConsumer.produceSig());
+        DeclareParams.$(g, iAwaitConsumer.produceSig());
         g.__(" {"
         ).__(new Indent(() -> {
-            g.__(new Line("super(scheduler);"));
+            g.__(new Line("super(scheduler, context);"));
             OutField thisTask = oClass.allocateField(
                     "TaskOf" + iAwaitConsumer.identifier().toString());
             iAwaitConsumer.attach(thisTask);

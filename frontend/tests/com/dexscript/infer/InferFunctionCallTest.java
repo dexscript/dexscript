@@ -7,8 +7,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 public class InferFunctionCallTest {
 
     private TypeSystem ts;
@@ -72,7 +70,7 @@ public class InferFunctionCallTest {
     @Test
     public void infer_call_with_context() {
         func("World()");
-        func("Hello(): string").setContext(ts.ANY);
+        func("Hello(): string").context(ts.ANY);
         DType type = InferType.$(ts, DexExpr.$parse("Hello($=new World())"));
         Assert.assertEquals(ts.STRING, type);
     }

@@ -139,7 +139,7 @@ public class OutShim {
         }
         DType ret = javaTypes.resolve(javaFunction.getReturnType());
         FunctionType functionType = new FunctionType(ts, funcName, dParams, ret);
-        functionType.setImplProvider(expandedFunc -> new CallJavaFunction(this, expandedFunc, javaFunction));
+        functionType.implProvider(expandedFunc -> new CallJavaFunction(this, expandedFunc, javaFunction));
     }
 
     public void importJavaConstructors(Class clazz) {
@@ -159,7 +159,7 @@ public class OutShim {
         DexSig dexSig = TranslateSig.$(javaTypes, ctor);
         FunctionSig sig = new FunctionSig(ts, dexSig);
         FunctionType functionType = new FunctionType(ts, "New__", params, ret, sig);
-        functionType.setImplProvider(expandedFunc -> {
+        functionType.implProvider(expandedFunc -> {
             JavaType type = (JavaType) expandedFunc.ret();
             return new NewJavaClass(this, expandedFunc, ctor, type.runtimeClassName());
         });
