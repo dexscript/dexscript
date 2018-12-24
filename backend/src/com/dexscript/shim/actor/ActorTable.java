@@ -1,6 +1,6 @@
 package com.dexscript.shim.actor;
 
-import com.dexscript.type.FunctionType;
+import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.type.NamedType;
 import com.dexscript.type.NamedTypesProvider;
 import com.dexscript.type.TypeSystem;
@@ -22,6 +22,13 @@ public class ActorTable implements NamedTypesProvider {
 
     public void define(ActorType actor) {
         List<ActorType> actors = defined.computeIfAbsent(actor.name(), k -> new ArrayList<>());
+        if (!actors.isEmpty()) {
+            String expectedFileName = actors.get(0).elem().file().fileName();
+            String actualFileName = actor.elem().file().fileName();
+            if (!actualFileName.equals(expectedFileName)) {
+                throw new DexSyntaxException("actor of same name should be defined in same file: " + actor.name());
+            }
+        }
         actors.add(actor);
     }
 

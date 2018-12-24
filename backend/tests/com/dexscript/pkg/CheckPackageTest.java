@@ -89,4 +89,34 @@ public class CheckPackageTest {
                 "}").getBytes());
         Assert.assertFalse(CheckPackage.$("/pkg1"));
     }
+
+    @Test
+    public void can_not_define_type_with_same_name() throws IOException {
+        Files.createDirectory($p("/pkg1"));
+        Files.write($p("/pkg1/__spi__.ds"), ("" +
+                "interface :: {\n" +
+                "}").getBytes());
+        Files.write($p("/pkg1/123.ds"), ("" +
+                "interface abc {\n" +
+                "}").getBytes());
+        Files.write($p("/pkg1/456.ds"), ("" +
+                "interface abc {\n" +
+                "}").getBytes());
+        Assert.assertFalse(CheckPackage.$("/pkg1"));
+    }
+
+    @Test
+    public void can_not_define_same_name_function_in_different_file() throws IOException {
+        Files.createDirectory($p("/pkg1"));
+        Files.write($p("/pkg1/__spi__.ds"), ("" +
+                "interface :: {\n" +
+                "}").getBytes());
+        Files.write($p("/pkg1/123.ds"), ("" +
+                "function abc() {\n" +
+                "}").getBytes());
+        Files.write($p("/pkg1/456.ds"), ("" +
+                "function abc() {\n" +
+                "}").getBytes());
+        Assert.assertFalse(CheckPackage.$("/pkg1"));
+    }
 }

@@ -6,6 +6,7 @@ import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexTopLevelDecl;
+import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.inf.DexInfMethod;
@@ -33,6 +34,9 @@ public class CheckPackage {
     public static boolean $(String pathStr, List<DexFile> dexFiles) {
         try {
             return check(pathStr, dexFiles);
+        } catch (DexSyntaxException e) {
+            System.out.println(e.getMessage());
+            return false;
         } catch (Failed e) {
             return false;
         }
@@ -93,16 +97,15 @@ public class CheckPackage {
     }
 
     private static void defineNormalFile(OutShim oShim, DexFile dexFile) {
-        TypeSystem ts = oShim.typeSystem();
         for (DexTopLevelDecl topLevelDecl : dexFile.topLevelDecls()) {
             if (topLevelDecl.inf() != null) {
                 if (isGlobalSpi(topLevelDecl)) {
                     System.out.println("can not define interface :: in file other than __spi__.ds");
                     throw new Failed();
                 }
-                ts.defineInterface(topLevelDecl.inf());
+                oShim.defineInterface(topLevelDecl.inf());
             } else if (topLevelDecl.actor() != null) {
-                ts.defineType(new ActorType(oShim, topLevelDecl.actor()));
+                oShim.defineActor(topLevelDecl.actor());
             }
         }
     }

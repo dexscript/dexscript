@@ -113,10 +113,13 @@ public class TypeTable {
     }
 
     public void define(NamedType type) {
-        defined.put(type.name(), type);
+        define(type.name(), type);
     }
 
     public void define(String typeName, DType type) {
+        if (defined.containsKey(typeName)) {
+            throw new DexSyntaxException("redefine type: " + typeName);
+        }
         defined.put(typeName, type);
     }
 
