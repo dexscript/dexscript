@@ -141,4 +141,12 @@ public interface Translate<E extends DexElement> {
         }
         return val;
     }
+
+    static String translateContext(DexInvocation ivc) {
+        DexExpr context = ivc.context();
+        if (context == null) {
+            return "context";
+        }
+        return OutValue.of(context);
+    }
 }

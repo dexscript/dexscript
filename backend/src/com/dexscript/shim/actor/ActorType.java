@@ -166,7 +166,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
             List<FunctionParam> params = new ArrayList<>();
             String funcName = awaitConsumer.identifier().toString();
             params.add(new FunctionParam("actor", new StringLiteralType(ts, funcName)));
-            params.add(new FunctionParam("parent", ActorType.this));
+            params.add(new FunctionParam("self", ActorType.this));
             DexSig sig = awaitConsumer.produceSig();
             for (DexParam param : sig.params()) {
                 String paramName = param.paramName().toString();
@@ -185,7 +185,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
             String funcName = awaitConsumer.identifier().toString();
             DType ret = ResolveType.$(ts, localTypeTable, sig.ret());
             List<FunctionParam> params = new ArrayList<>();
-            params.add(new FunctionParam("parent", ActorType.this));
+            params.add(new FunctionParam("self", ActorType.this));
             for (DexParam param : sig.params()) {
                 String paramName = param.paramName().toString();
                 DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());

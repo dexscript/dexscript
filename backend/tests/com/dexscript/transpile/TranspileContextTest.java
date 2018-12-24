@@ -15,7 +15,7 @@ public class TranspileContextTest {
 
     @Test
     public void use_context() throws Exception {
-        Package.fs = Jimfs.newFileSystem(Configuration.unix());
+        Transpile.setup();
         Files.createDirectory($p("/pkg1"));
         Files.write($p("/pkg1/__spi__.ds"), ("" +
                 "interface :: {\n" +

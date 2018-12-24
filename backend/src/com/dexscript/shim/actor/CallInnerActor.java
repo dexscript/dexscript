@@ -36,7 +36,7 @@ class CallInnerActor extends FunctionImpl {
         String newF = oShim.allocateShim("call__" + functionType.name());
         g.__("public static Promise "
         ).__(newF);
-        DeclareParams.$(g, awaitConsumer.params().size() + 1, true);
+        DeclareParams.$(g, awaitConsumer.params().size() + 2, true);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__(outerClassName
@@ -46,7 +46,7 @@ class CallInnerActor extends FunctionImpl {
             g.__("return obj.new "
             ).__(awaitConsumer.identifier().toString()
             ).__("(scheduler");
-            for (int i = 1; i < functionType.params().size(); i++) {
+            for (int i = 1; i < functionType.params().size() + 1; i++) {
                 g.__(", ");
                 g.__("arg"
                 ).__(i);

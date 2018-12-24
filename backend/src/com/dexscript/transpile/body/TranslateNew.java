@@ -59,7 +59,9 @@ public class TranslateNew implements Translate<DexNewExpr> {
             DType targetType = invoked.args.get(i + dexIvc.posArgs().size());
             oClass.g().__(Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType));
         }
-        g.__(new Line(");"));
+        oClass.g().__(", "
+        ).__(Translate.translateContext(dexIvc)
+        ).__(new Line(");"));
         iNewExpr.attach(oActorField);
     }
 }

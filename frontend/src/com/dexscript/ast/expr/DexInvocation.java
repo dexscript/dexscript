@@ -79,4 +79,15 @@ public class DexInvocation {
     public List<DexNamedArg> namedArgs() {
         return namedArgs;
     }
+
+    public DexExpr context() {
+        if (namedArgs.isEmpty()) {
+            return null;
+        }
+        DexNamedArg lastNamedArg = namedArgs.get(namedArgs.size() - 1);
+        if (!lastNamedArg.name().toString().equals("$")) {
+            return null;
+        }
+        return lastNamedArg.val();
+    }
 }
