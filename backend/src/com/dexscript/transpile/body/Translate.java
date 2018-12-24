@@ -44,6 +44,10 @@ public interface Translate<E extends DexElement> {
                 iElem.attach(new OutValue(iFloatConst.toString() + "D"));
             });
             put(DexValueRef.class, (oClass, iElem) -> {
+                if (iElem.toString().equals("$")) {
+                    iElem.attach(new OutValue("context"));
+                    return;
+                }
                 Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
                 if (refValue.definedBy() == null) {
                     throw new IllegalStateException("referenced value not found: " + iElem);

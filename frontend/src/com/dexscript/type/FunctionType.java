@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.core.DexSyntaxException;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -61,6 +62,9 @@ public final class FunctionType implements DType {
     }
 
     public final Object impl() {
+        if (implProvider == null) {
+            throw new IllegalStateException();
+        }
         if (impl == null) {
             impl = implProvider.implOf(this);
         }

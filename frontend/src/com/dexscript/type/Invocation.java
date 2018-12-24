@@ -62,4 +62,50 @@ public class Invocation {
     public int argsCount() {
         return posArgs.size() + namedArgs.size();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder desc = new StringBuilder();
+        desc.append(funcName);
+        if (!typeArgs.isEmpty()) {
+            desc.append('<');
+            for (int i = 0; i < typeArgs.size(); i++) {
+                if (i > 0) {
+                    desc.append(", ");
+                }
+                desc.append(typeArgs.get(i).toString());
+            }
+            desc.append('>');
+        }
+        desc.append('(');
+        boolean isFirst = true;
+        for (DType posArg : posArgs) {
+            isFirst = appendMore(desc, isFirst);
+            desc.append(posArg.toString());
+        }
+        for (NamedArg namedArg : namedArgs) {
+            isFirst = appendMore(desc, isFirst);
+            desc.append(namedArg.name());
+            desc.append('=');
+            desc.append(namedArg.type().toString());
+        }
+        isFirst = appendMore(desc, isFirst);
+        desc.append("$=");
+        desc.append(context.toString());
+        desc.append(")");
+        if (retHint != null) {
+            desc.append(": ");
+            desc.append(retHint.toString());
+        }
+        return desc.toString();
+    }
+
+    public boolean appendMore(StringBuilder desc, boolean isFirst) {
+        if (isFirst) {
+            isFirst = false;
+        } else {
+            desc.append(", ");
+        }
+        return isFirst;
+    }
 }

@@ -6,14 +6,16 @@ import java.util.List;
 public abstract class Actor implements Promise, Task {
 
     protected final Scheduler scheduler;
+    protected final Object context;
     private boolean finished;
     private Object ret;
     private List<Actor> consumers;
     private int state;
     private int yieldToState = -1;
 
-    public Actor(Scheduler scheduler) {
+    public Actor(Scheduler scheduler, Object context) {
         this.scheduler = scheduler;
+        this.context = context;
     }
 
     @Override
