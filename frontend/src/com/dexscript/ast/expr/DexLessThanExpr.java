@@ -34,7 +34,7 @@ public class DexLessThanExpr extends DexBinaryOperator implements DexInvocationE
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation("LessThan__", left(), right());
+            invocation = new DexInvocation(pkg(), "LessThan__", left(), right());
         }
         return invocation;
     }

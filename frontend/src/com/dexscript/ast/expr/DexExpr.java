@@ -36,6 +36,7 @@ public abstract class DexExpr extends DexElement {
     public static DexExpr $parse(String src) {
         DexExpr elem = parse(new Text(src));
         elem.attach(DexPackage.DUMMY);
+        elem.reparent(null, null);
         return elem;
     }
 

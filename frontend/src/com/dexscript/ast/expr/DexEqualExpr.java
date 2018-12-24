@@ -34,7 +34,7 @@ public class DexEqualExpr extends DexBinaryOperator implements DexInvocationExpr
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation("Equal__", left(), right());
+            invocation = new DexInvocation(pkg(), "Equal__", left(), right());
         }
         return invocation;
     }

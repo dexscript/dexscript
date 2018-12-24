@@ -117,7 +117,7 @@ public class DexMethodCallExpr extends DexExpr implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation(method().toString(), obj(), typeArgs(), posArgs(), namedArgs());
+            invocation = new DexInvocation(pkg(), method().toString(), obj(), typeArgs(), posArgs(), namedArgs());
         }
         return invocation;
     }

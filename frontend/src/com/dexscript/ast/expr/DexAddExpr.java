@@ -33,7 +33,7 @@ public class DexAddExpr extends DexBinaryOperator implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation("Add__", left(), right());
+            invocation = new DexInvocation(pkg(), "Add__", left(), right());
         }
         return invocation;
     }

@@ -70,9 +70,9 @@ public class DexProduceStmt extends DexStatement implements DexInvocationExpr  {
     public DexInvocation invocation() {
         if (invocation == null) {
             if (produced == null) {
-                invocation = new DexInvocation("Resolve__", Arrays.asList(target));
+                invocation = new DexInvocation(pkg(), "Resolve__", Arrays.asList(target));
             } else {
-                invocation = new DexInvocation("Resolve__", target, produced);
+                invocation = new DexInvocation(pkg(), "Resolve__", target, produced);
             }
         }
         return invocation;

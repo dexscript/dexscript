@@ -176,4 +176,12 @@ public class TypeSystem {
     public boolean isStringConst(DType type) {
         return type instanceof StringConstType && type.typeSystem().equals(this);
     }
+
+    public DType context(DexPackage pkg) {
+        return typeTable.resolveType(pkg, "$");
+    }
+
+    public boolean isConst(DType type) {
+        return isBoolConst(type) || isStringConst(type) || isFloatConst(type) || isIntegerConst(type);
+    }
 }

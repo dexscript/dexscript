@@ -149,7 +149,7 @@ public class FunctionTableTest {
             DType type = resolve((String) namedArgObjs[i + 1]).get(0);
             namedArgs.add(new NamedArg(name, type));
         }
-        return ts.invoke(new Invocation(funcName, typeArgs, posArgs, namedArgs, null).requireImpl(requiresImpl));
+        return ts.invoke(new Invocation(funcName, typeArgs, posArgs, namedArgs, ts.ANY, null).requireImpl(requiresImpl));
     }
 
     @NotNull

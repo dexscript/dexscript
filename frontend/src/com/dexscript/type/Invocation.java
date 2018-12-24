@@ -9,14 +9,18 @@ public class Invocation {
     private final List<DType> typeArgs;
     private final List<DType> posArgs;
     private final List<NamedArg> namedArgs;
+    private final DType context;
     private final DType retHint;
     private boolean requireImpl;
 
-    public Invocation(String funcName, List<DType> typeArgs, List<DType> posArgs, List<NamedArg> namedArgs, DType retHint) {
+    public Invocation(String funcName, List<DType> typeArgs,
+                      List<DType> posArgs, List<NamedArg> namedArgs, DType context,
+                      DType retHint) {
         this.funcName = funcName;
         this.typeArgs = typeArgs == null ? Collections.emptyList() : typeArgs;
         this.posArgs = posArgs == null ? Collections.emptyList() : posArgs;
         this.namedArgs = namedArgs == null ? Collections.emptyList() : namedArgs;
+        this.context = context;
         this.retHint = retHint;
     }
 
@@ -45,6 +49,10 @@ public class Invocation {
 
     public List<NamedArg> namedArgs() {
         return namedArgs;
+    }
+
+    public DType context() {
+        return context;
     }
 
     public DType retHint() {

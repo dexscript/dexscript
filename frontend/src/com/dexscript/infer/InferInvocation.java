@@ -1,5 +1,6 @@
 package com.dexscript.infer;
 
+import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
@@ -23,12 +24,26 @@ public class InferInvocation<E extends DexExpr & DexInvocationExpr> implements I
         List<DType> posArgs = InferType.inferTypes(ts, dexIvc.posArgs());
         List<DType> typeArgs = ResolveType.resolveTypes(ts, null, dexIvc.typeArgs());
         List<NamedArg> namedArgs = new ArrayList<>();
+        DType context = null;
         for (DexNamedArg dexNamedArg : dexIvc.namedArgs()) {
             String argName = dexNamedArg.name().toString();
             DType argType = InferType.$(ts, dexNamedArg.val());
-            namedArgs.add(new NamedArg(argName, argType));
+            if (argName.equals("$")) {
+                context = argType;
+            } else {
+                if (context != null) {
+                    throw new DexSyntaxException("context argument $ must be the last argument");
+                }
+                namedArgs.add(new NamedArg(argName, argType));
+            }
         }
-        Invocation ivc = new Invocation(dexIvc.funcName(), typeArgs, posArgs, namedArgs, null);
+        if (context == null) {
+            context = ts.context(dexIvc.pkg());
+        }
+        if (ts.isConst(context)) {
+            throw new DexSyntaxException("context argument $ must not be const value");
+        }
+        Invocation ivc = new Invocation(dexIvc.funcName(), typeArgs, posArgs, namedArgs, context, null);
         return ivc;
     }
 }

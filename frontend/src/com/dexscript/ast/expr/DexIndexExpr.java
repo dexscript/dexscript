@@ -61,7 +61,7 @@ public class DexIndexExpr extends DexExpr implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation("get", obj, new ArrayList<>(), args());
+            invocation = new DexInvocation(pkg(), "get", obj, new ArrayList<>(), args());
         }
         return invocation;
     }

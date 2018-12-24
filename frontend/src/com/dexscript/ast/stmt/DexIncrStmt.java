@@ -53,7 +53,7 @@ public class DexIncrStmt extends DexSimpleStatement {
     }
 
     public DexInvocation invocation() {
-        return new DexInvocation("Add__", target, new DexIntegerConst("1"));
+        return new DexInvocation(pkg(), "Add__", target, new DexIntegerConst("1"));
     }
 
     private class Parser {

@@ -20,7 +20,7 @@ public class InferConsumeTest {
                 "function Hello(arg: int64): string {\n" +
                 "   return 'hello'\n" +
                 "}"), null);
-        DType type = InferType.$(ts, DexExpr.parse("<-Hello{100}"));
+        DType type = InferType.$(ts, DexExpr.$parse("<-Hello{100}"));
         Assert.assertEquals(ts.STRING, type);
     }
 }

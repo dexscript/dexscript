@@ -3,9 +3,9 @@ package com.dexscript.shim.actor;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.shim.OutShim;
-import com.dexscript.shim.actor.ActorType;
 import com.dexscript.type.*;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -13,10 +13,17 @@ import java.util.Arrays;
 
 public class ActorTypeTest {
 
+    private TypeSystem ts;
+    private OutShim oShim;
+
+    @Before
+    public void setup() {
+        ts = new TypeSystem();
+        oShim = new OutShim(ts);
+    }
+
     @Test
     public void can_consume_from_actor() {
-        TypeSystem ts = new TypeSystem();
-        OutShim oShim = new OutShim(ts);
         ActorType actor = new ActorType(oShim, DexActor.$("" +
                 "function Hello(): string {\n" +
                 "   return 'hello'\n" +
@@ -30,8 +37,6 @@ public class ActorTypeTest {
 
     @Test
     public void await_consumer() {
-        TypeSystem ts = new TypeSystem();
-        OutShim oShim = new OutShim(ts);
         ActorType actor = new ActorType(oShim, DexActor.$("" +
                 "function Hello() {\n" +
                 "   await {\n" +
@@ -47,7 +52,7 @@ public class ActorTypeTest {
         Invoked invoked = ts.invoke(new Invocation("New__", null, new ArrayList<DType>() {{
             add(new StringLiteralType(ts, "AA"));
             add(actor);
-        }}, null, null));
+        }}, null, ts.ANY, null));
         Assert.assertEquals(1, invoked.candidates.size());
     }
 
@@ -59,20 +64,18 @@ public class ActorTypeTest {
                 "function Hello() {\n" +
                 "}"));
         Invoked invoked = ts.invoke(new Invocation("Hello",
-                null, new ArrayList<>(), null, null));
+                null, new ArrayList<>(), null, ts.ANY, null));
         Assert.assertEquals(1, invoked.candidates.size());
         Assert.assertEquals(ts.VOID, invoked.candidates.get(0).function().ret());
     }
 
     @Test
     public void generic_type_substitution() {
-        TypeSystem ts = new TypeSystem();
-        OutShim oShim = new OutShim(ts);
         new ActorType(oShim, DexActor.$("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
         Invoked invoked = ts.invoke(new Invocation("Hello",
-                null, Arrays.asList(ts.STRING),  null,null));
+                null, Arrays.asList(ts.STRING), null, ts.ANY, null));
         Assert.assertEquals(1, invoked.candidates.size());
         DType type = ResolveType.$(ts, "Hello<string>");
         Assert.assertNotNull(type);
@@ -80,15 +83,14 @@ public class ActorTypeTest {
 
     @Test
     public void generic_function_need_expansion() {
-        TypeSystem ts = new TypeSystem();
-        OutShim oShim = new OutShim(ts);
         new ActorType(oShim, DexActor.$("" +
                 "function Equals(<T>: interface{}, left: T, right: T): bool {\n" +
                 "   return true\n" +
                 "}"));
         StringLiteralType a = new StringLiteralType(ts, "a");
         StringLiteralType b = new StringLiteralType(ts, "b");
-        Invoked invoked = ts.invoke(new Invocation("Equals", null, Arrays.asList(a, b), null, null));
+        Invoked invoked = ts.invoke(new Invocation("Equals", null,
+                Arrays.asList(a, b), null, ts.ANY, null));
         Assert.assertEquals(0, invoked.candidates.size());
     }
 }

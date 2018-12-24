@@ -35,7 +35,7 @@ public class DexConsumeExpr extends DexUnaryOperator implements DexInvocationExp
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            invocation = new DexInvocation("Consume__", Arrays.asList(right()));
+            invocation = new DexInvocation(pkg(), "Consume__", Arrays.asList(right()));
         }
         return invocation;
     }

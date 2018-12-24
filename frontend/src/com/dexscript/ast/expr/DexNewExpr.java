@@ -123,7 +123,7 @@ public class DexNewExpr extends DexExpr implements DexInvocationExpr {
     public DexInvocation invocation() {
         if (invocation == null) {
             DexStringConst targetAsStr = new DexStringConst("'" + target.toString() + "'");
-            invocation = new DexInvocation("New__", targetAsStr, typeArgs(), posArgs(), namedArgs());
+            invocation = new DexInvocation(pkg(), "New__", targetAsStr, typeArgs(), posArgs(), namedArgs());
         }
         return invocation;
     }

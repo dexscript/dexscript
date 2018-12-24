@@ -71,8 +71,9 @@ public class InferFunctionCallTest {
 
     @Test
     public void infer_call_with_context() {
-        func("Hello(): string").setContext(ts.STRING);
-        DType type = InferType.$(ts, DexExpr.$parse("Hello($='hello')"));
+        func("World()");
+        func("Hello(): string").setContext(ts.ANY);
+        DType type = InferType.$(ts, DexExpr.$parse("Hello($=new World())"));
         Assert.assertEquals(ts.STRING, type);
     }
 }

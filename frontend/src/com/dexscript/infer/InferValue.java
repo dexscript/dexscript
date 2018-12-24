@@ -71,7 +71,7 @@ public interface InferValue<E extends DexElement> {
     static Value $(TypeSystem ts, DexValueRef ref) {
         String refName = ref.toString();
         if (refName.equals("$")) {
-            DType contextType = ts.typeTable().resolveType(ref.pkg(), "$");
+            DType contextType = ts.context(ref.pkg());
             return new Value("$", contextType, null);
         }
         List<DexElement> prevElems = collectPrevElems(ref);
