@@ -53,14 +53,27 @@ public class FluentAPI {
     public void assertParsedAST(String expectedHeading, Function<String, Object> parse) {
         FluentAPI selected = select(selectSection(expectedHeading));
         List<String> codes = selected.code();
-        if (codes.size() != 1) {
-            Assert.fail("missing code from test data");
+        if (codes.isEmpty()) {
+            Assert.fail("no code found in section: " + expectedHeading);
         }
-        Object obj = parse.apply(codes.get(0));
+        String code = stripCode(codes.get(0));
+        Object obj = parse.apply(code);
+        String expectedToString = code;
+        if (codes.size() >= 2) {
+            expectedToString = stripCode(codes.get(1));
+        }
+        Assert.assertEquals(expectedToString, obj.toString());
         Visitor visitor = new AssertObject(obj);
         for (Node node : selected.nodes) {
             node.accept(visitor);
         }
+    }
+
+    private String stripCode(String code) {
+        if (code.charAt(code.length() - 1) != '\n') {
+            throw new RuntimeException("code not ends with newline");
+        }
+        return code.substring(0, code.length() - 1);
     }
 
 }
