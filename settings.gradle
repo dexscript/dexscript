@@ -1,2 +1,2 @@
 rootProject.name = 'dexscript'
-include 'frontend', 'backend', 'debug'
+include 'frontend', 'backend', 'debug', 'test-framework'

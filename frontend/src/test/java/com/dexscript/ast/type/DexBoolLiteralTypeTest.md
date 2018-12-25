@@ -1,3 +1,14 @@
+# Overview
+
+For example
+
+```dexscript
+function Hello(): true {
+}
+```
+
+The "true" is parsed as DexBoolLiteralType element.
+
 # Matched
 
 * true

@@ -1,4 +1,4 @@
-package com.dexscript.ast.type;
+package com.dexscript.test.framework;
 
 import org.commonmark.node.Node;
 
@@ -25,9 +25,5 @@ public class FluentSelectNode implements SelectNode {
             nodes = selector.select(nodes);
         }
         return nodes;
-    }
-
-    public static FluentSelectNode selectSection(String... expectedHeadings) {
-        return new FluentSelectNode().section(expectedHeadings);
     }
 }

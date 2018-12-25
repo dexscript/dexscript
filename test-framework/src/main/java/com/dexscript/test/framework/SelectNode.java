@@ -1,4 +1,4 @@
-package com.dexscript.ast.type;
+package com.dexscript.test.framework;
 
 import org.commonmark.node.Node;
 

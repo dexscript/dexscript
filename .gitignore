@@ -8,4 +8,6 @@
 /backend/build
 /debug/out
 /debug/build
+/test-framework/out
+/test-framework/build
 *.java~

@@ -2,7 +2,7 @@ package com.dexscript.ast.type;
 
 import org.junit.Test;
 
-import static com.dexscript.ast.type.TestDatas.testDataFrom;
+import static com.dexscript.test.framework.TestFramework.testDataFrom;
 
 public class DexBoolLiteralTypeTest {
 
