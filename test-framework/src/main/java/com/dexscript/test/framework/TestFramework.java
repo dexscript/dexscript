@@ -2,7 +2,10 @@ package com.dexscript.test.framework;
 
 import org.commonmark.node.Node;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 // entry point, import static
 public interface TestFramework {
@@ -14,5 +17,20 @@ public interface TestFramework {
 
     static FluentSelectNode selectSection(String... expectedHeadings) {
         return new FluentSelectNode().section(expectedHeadings);
+    }
+
+    static void assertMatched(Predicate<String> predicate) {
+        Method method = InspectTestingMethod.$();
+        testDataFrom(method.getDeclaringClass()).assertMatched(method.getName(), predicate);
+    }
+
+    static void assertNotMatched(Predicate<String> predicate) {
+        Method method = InspectTestingMethod.$();
+        testDataFrom(method.getDeclaringClass()).assertNotMatched(method.getName(), predicate);
+    }
+
+    static void assertParsedAST(Function<String, Object> parse) {
+        Method method = InspectTestingMethod.$();
+        testDataFrom(method.getDeclaringClass()).assertParsedAST(method.getName(), parse);
     }
 }

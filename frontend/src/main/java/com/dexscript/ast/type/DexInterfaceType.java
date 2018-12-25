@@ -25,8 +25,8 @@ public class DexInterfaceType extends DexType {
         new Parser();
     }
 
-    public DexInterfaceType(String src) {
-        this(new Text(src));
+    public static DexInterfaceType $(String src) {
+        return new DexInterfaceType(new Text(src));
     }
 
     @Override

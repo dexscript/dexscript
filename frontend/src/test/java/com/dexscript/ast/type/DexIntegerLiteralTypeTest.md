@@ -9,12 +9,12 @@ function Hello(): 100 {
 
 The "100" is parsed as DexIntegerLiteralType element.
 
-# Matched
+# matched
 
 * 1
 * 100
 
-# Unmatched
+# unmatched
 
 * 01
 * 0.1

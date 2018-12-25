@@ -3,7 +3,6 @@ package com.dexscript.test.framework;
 import org.commonmark.node.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class SelectSection implements SelectNode {
@@ -37,14 +36,21 @@ public class SelectSection implements SelectNode {
             }
 
             @Override
+            public void visit(FencedCodeBlock fencedCodeBlock) {
+                if (shouldSelect) {
+                    selected.add(fencedCodeBlock);
+                }
+            }
+
+            @Override
             public void visit(Heading heading) {
                 if (heading.getLevel() == headings.size() + 1) {
-                    headings.add(getText(heading));
+                    headings.add(SelectText.getText(heading));
                     shouldSelect = shouldSelect(headings);
                     return;
                 }
                 List<String> newHeadings = new ArrayList<>(headings.subList(0, heading.getLevel() - 1));
-                newHeadings.add(getText(heading));
+                newHeadings.add(SelectText.getText(heading));
                 headings.clear();
                 headings.addAll(newHeadings);
                 shouldSelect = shouldSelect(headings);
@@ -69,15 +75,4 @@ public class SelectSection implements SelectNode {
         return true;
     }
 
-    private static String getText(Heading heading) {
-        List<String> texts = new SelectText().select(Arrays.asList(heading));
-        if (texts.size() == 1) {
-            return texts.get(0);
-        }
-        StringBuilder concat = new StringBuilder();
-        for (String text : texts) {
-            concat.append(text);
-        }
-        return concat.toString();
-    }
 }

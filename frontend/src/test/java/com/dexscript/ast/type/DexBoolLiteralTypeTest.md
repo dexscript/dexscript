@@ -9,12 +9,12 @@ function Hello(): true {
 
 The "true" is parsed as DexBoolLiteralType element.
 
-# Matched
+# matched
 
 * true
 * false
 
-# Unmatched
+# unmatched
 
 * true2
 * false3
