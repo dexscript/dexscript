@@ -4,7 +4,8 @@ repositories {
 
 dependencies {
     compile('org.jetbrains:annotations:16.0.2')
-    testCompileOnly(
-            'junit:junit:4.12'
+    testCompile(
+            'junit:junit:4.12',
+            'com.atlassian.commonmark:commonmark:0.12.1'
     )
 }

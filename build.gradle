@@ -4,9 +4,6 @@ idea {
         jdkName = javaVersion
         languageLevel = javaVersion
     }
-    module {
-        generatedSourceDirs += file('gen')
-    }
 }
 
 allprojects {
@@ -18,32 +15,4 @@ allprojects {
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
-
-    sourceSets {
-        main {
-            java.srcDirs 'src', 'gen'
-            resources.srcDirs 'resources', 'plugin/resources'
-        }
-        test {
-            java.srcDir 'tests'
-        }
-    }
-
-    test {
-        useJUnit {
-        }
-        testLogging {
-            exceptionFormat = 'full'
-        }
-    }
-
-    task testCompilation(type: Test, group: 'Verification', dependsOn: [classes, testClasses]) {
-        useJUnit {
-        }
-        testLogging {
-            exceptionFormat = 'full'
-        }
-    }
-    
-    
 }
