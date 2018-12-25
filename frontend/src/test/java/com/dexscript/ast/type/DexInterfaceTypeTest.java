@@ -15,9 +15,13 @@ public class DexInterfaceTypeTest {
 
     @Test
     public void one_function() {
+        System.out.println("interface {\n" +
+                "   ::Hello(msg: string): string\n" +
+                "}");
         DexInterfaceType inf = new DexInterfaceType("interface {\n" +
                 "   ::Hello(msg: string): string\n" +
                 "}");
+        inf.functions().get(0).identifier()
         Assert.assertEquals(1, inf.functions().size());
     }
 
