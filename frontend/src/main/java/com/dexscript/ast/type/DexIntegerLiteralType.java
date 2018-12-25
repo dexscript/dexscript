@@ -1,6 +1,7 @@
 package com.dexscript.ast.type;
 
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.expr.DexFloatConst;
 import com.dexscript.ast.expr.DexIntegerConst;
 
 public class DexIntegerLiteralType extends DexType {
@@ -9,14 +10,18 @@ public class DexIntegerLiteralType extends DexType {
 
     public DexIntegerLiteralType(Text src) {
         super(src);
-        DexIntegerConst integerConst = new DexIntegerConst(src);
-        if (integerConst.matched()) {
+        DexFloatConst floatConst = new DexFloatConst(src);
+        if (!floatConst.matched()) {
+            return;
+        }
+        DexIntegerConst integerConst = new DexIntegerConst(src.slice(floatConst.begin(), floatConst.end()));
+        if (integerConst.end() == floatConst.end()) {
             matched = src.slice(integerConst.begin(), integerConst.end());
         }
     }
 
-    public DexIntegerLiteralType(String src) {
-        this(new Text(src));
+    public static DexIntegerLiteralType $(String src) {
+        return new DexIntegerLiteralType(new Text(src));
     }
 
     @Override

@@ -3,10 +3,7 @@ package com.dexscript.ast.expr;
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.token.Blank;
-import com.dexscript.ast.token.Keyword;
-import com.dexscript.ast.token.One2Nine;
-import com.dexscript.ast.token.Zero2Nine;
+import com.dexscript.ast.token.*;
 
 public class DexFloatConst extends DexLeafExpr {
 
@@ -68,8 +65,9 @@ public class DexFloatConst extends DexLeafExpr {
                         i += 2;
                         return this::dotFound;
                     }
-                    matched = new Text(src.bytes, i, i+1);
-                    return null;
+                    floatConstBegin = i;
+                    i += 1;
+                    return this::separator;
                 }
                 if (One2Nine.$(b)) {
                     floatConstBegin = i;
@@ -110,8 +108,7 @@ public class DexFloatConst extends DexLeafExpr {
                     i += 1;
                     return this::eFound;
                 }
-                matched = new Text(src.bytes, floatConstBegin, i);
-                return null;
+                return this::separator;
             }
             matched = new Text(src.bytes, floatConstBegin, i);
             return null;
@@ -145,6 +142,13 @@ public class DexFloatConst extends DexLeafExpr {
             matched = new Text(src.bytes, floatConstBegin, i);
             if (j == 0) {
                 return reportError();
+            }
+            return null;
+        }
+
+        State separator() {
+            if (Separator.$(src, i)) {
+                matched = new Text(src.bytes, floatConstBegin, i);
             }
             return null;
         }

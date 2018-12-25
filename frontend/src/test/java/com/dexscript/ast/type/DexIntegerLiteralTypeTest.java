@@ -1,12 +1,20 @@
 package com.dexscript.ast.type;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static com.dexscript.test.framework.TestFramework.testDataFrom;
 
 public class DexIntegerLiteralTypeTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("1", new DexIntegerLiteralType("1").toString());
+        testDataFrom(getClass()).assertMatched("Matched",
+                text -> DexIntegerLiteralType.$(text).matched());
+    }
+
+    @Test
+    public void unmatched() {
+        testDataFrom(getClass()).assertNotMatched("Unmatched",
+                text -> DexIntegerLiteralType.$(text).matched());
     }
 }

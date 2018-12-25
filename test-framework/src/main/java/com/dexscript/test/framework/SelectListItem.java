@@ -15,11 +15,6 @@ public class SelectListItem implements SelectNode {
             public void visit(ListItem listItem) {
                 selected.add(listItem);
             }
-
-            @Override
-            public void visit(Paragraph paragraph) {
-                super.visit(paragraph);
-            }
         };
         for (Node node : nodes) {
             node.accept(visitor);

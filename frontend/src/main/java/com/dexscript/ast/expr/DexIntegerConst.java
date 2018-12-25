@@ -1,9 +1,11 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.One2Nine;
+import com.dexscript.ast.token.Separator;
 import com.dexscript.ast.token.Zero2Nine;
 
 public class DexIntegerConst extends DexLeafExpr {
@@ -48,6 +50,7 @@ public class DexIntegerConst extends DexLeafExpr {
             State.Play(this::firstChar);
         }
 
+        @Expect("0~9")
         State firstChar() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
@@ -55,8 +58,8 @@ public class DexIntegerConst extends DexLeafExpr {
                     continue;
                 }
                 if (b == '0') {
-                    matched = new Text(src.bytes, i, i + 1);
-                    return null;
+                    i += 1;
+                    return this::separator;
                 }
                 if (One2Nine.$(b)) {
                     integerBegin = i;
@@ -67,6 +70,7 @@ public class DexIntegerConst extends DexLeafExpr {
             return null;
         }
 
+        @Expect("0~9")
         State remainingChars() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
@@ -75,7 +79,14 @@ public class DexIntegerConst extends DexLeafExpr {
                 }
                 break;
             }
-            matched = new Text(src.bytes, integerBegin, i);
+            return this::separator;
+        }
+
+        @Expect("separator")
+        State separator() {
+            if (Separator.$(src, i)) {
+                matched = new Text(src.bytes, integerBegin, i);
+            }
             return null;
         }
     }
