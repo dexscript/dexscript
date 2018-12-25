@@ -1,8 +1,6 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
-public final class PlaceholderType implements NamedType {
+public final class PlaceholderType implements DType {
 
     private final TypeSystem ts;
     private final String name;
@@ -33,15 +31,10 @@ public final class PlaceholderType implements NamedType {
 
     @Override
     public String toString() {
-        return name();
-    }
-
-    @Override
-    public @NotNull String name() {
         return name;
     }
 
     public String description() {
-        return "<" + name() + ">: " + constraint;
+        return "<" + name + ">: " + constraint;
     }
 }

@@ -1,8 +1,6 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
-public class VoidType implements NamedType {
+public class VoidType implements DType {
 
     private final TypeSystem ts;
 
@@ -22,11 +20,6 @@ public class VoidType implements NamedType {
 
     @Override
     public String toString() {
-        return name();
-    }
-
-    @Override
-    public @NotNull String name() {
         return "void";
     }
 }

@@ -3,10 +3,7 @@ package com.dexscript.ast.expr;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.token.A2Z;
-import com.dexscript.ast.token.Blank;
-import com.dexscript.ast.token.Keyword;
-import com.dexscript.ast.token.Zero2Nine;
+import com.dexscript.ast.token.*;
 
 public class DexBoolConst extends DexLeafExpr {
 
@@ -76,19 +73,9 @@ public class DexBoolConst extends DexLeafExpr {
 
         @Expect("separator")
         State separator() {
-            int j = 0;
-            for (; i < src.end; i++, j++) {
-                byte b = src.bytes[i];
-                if (A2Z.$(b) || Zero2Nine.$(b) || b == '_') {
-                    continue;
-                }
-                break;
+            if (Separator.$(src, i)) {
+                matched = new Text(src.bytes, boolConstBegin, i);
             }
-            if (j > 0) {
-                // not match if more char following true or false
-                return null;
-            }
-            matched = new Text(src.bytes, boolConstBegin, i);
             return null;
         }
     }

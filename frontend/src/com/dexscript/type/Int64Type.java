@@ -1,10 +1,8 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
-public class Int64Type implements NamedType {
+public class Int64Type implements DType {
 
     private final TypeSystem ts;
 
@@ -14,11 +12,6 @@ public class Int64Type implements NamedType {
 
     @Override
     public String toString() {
-        return name();
-    }
-
-    @Override
-    public @NotNull String name() {
         return "int64";
     }
 

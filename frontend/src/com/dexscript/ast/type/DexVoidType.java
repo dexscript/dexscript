@@ -1,8 +1,11 @@
 package com.dexscript.ast.type;
 
+import com.dexscript.ast.core.Expect;
+import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
+import com.dexscript.ast.token.Separator;
 
 public class DexVoidType extends DexType {
 
@@ -15,18 +18,7 @@ public class DexVoidType extends DexType {
 
     public DexVoidType(Text src) {
         super(src);
-        int i = src.begin;
-        for (; i < src.end; i++) {
-            byte b = src.bytes[i];
-            if (Blank.$(b)) {
-                continue;
-            }
-            if (Keyword.$(src, i, 'v', 'o', 'i', 'd')) {
-                break;
-            }
-            return;
-        }
-        matched = true;
+        new Parser();
     }
 
     public DexVoidType(String src) {
@@ -64,5 +56,36 @@ public class DexVoidType extends DexType {
             return "void";
         }
         return super.toString();
+    }
+
+    private class Parser {
+        int i = src.begin;
+
+        Parser() {
+            State.Play(this::voidKeyword);
+        }
+
+        @Expect("void")
+        State voidKeyword() {
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (Blank.$(b)) {
+                    continue;
+                }
+                if (Keyword.$(src, i, 'v', 'o', 'i', 'd')) {
+                    i += 4;
+                    return this::separator;
+                }
+                return null;
+            }
+            return null;
+        }
+
+        State separator() {
+            if (Separator.$(src, i)) {
+                matched = true;
+            }
+            return null;
+        }
     }
 }

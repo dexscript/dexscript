@@ -10,7 +10,6 @@ import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.shim.OutShim;
-import com.dexscript.shim.actor.ActorType;
 import com.dexscript.type.*;
 
 import java.io.IOException;
@@ -19,7 +18,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dexscript.pkg.Package.$p;
+import static com.dexscript.pkg.DexPackageImpl.$p;
 
 public class CheckPackage {
 
@@ -46,7 +45,7 @@ public class CheckPackage {
         }
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
-        Package pkg = new Package(oShim);
+        DexPackageImpl pkg = new DexPackageImpl(oShim);
         try {
             Files.list(pkgPath).forEach(path -> {
                 try {

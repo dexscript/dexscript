@@ -1,8 +1,6 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
-public class UInt8Type implements NamedType {
+public class UInt8Type implements DType {
 
     private final TypeSystem ts;
 
@@ -12,7 +10,7 @@ public class UInt8Type implements NamedType {
 
     @Override
     public String toString() {
-        return name();
+        return "uint8";
     }
 
     @Override
@@ -26,10 +24,5 @@ public class UInt8Type implements NamedType {
     @Override
     public TypeSystem typeSystem() {
         return ts;
-    }
-
-    @Override
-    public @NotNull String name() {
-        return "uint8";
     }
 }

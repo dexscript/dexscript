@@ -1,6 +1,6 @@
 package com.dexscript.transpile;
 
-import com.dexscript.pkg.Package;
+import com.dexscript.pkg.DexPackageImpl;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 import org.junit.Test;
@@ -8,13 +8,13 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static com.dexscript.pkg.Package.$p;
+import static com.dexscript.pkg.DexPackageImpl.$p;
 
 public class TranspileMultiPackageTest {
 
     @Test
     public void type_of_same_name_is_allowed_in_multi_package() throws IOException {
-        Package.fs = Jimfs.newFileSystem(Configuration.unix());
+        DexPackageImpl.fs = Jimfs.newFileSystem(Configuration.unix());
         Files.createDirectory($p("/pkg1"));
         Files.write($p("/pkg1/__spi__.ds"), ("" +
                 "interface :: {\n" +

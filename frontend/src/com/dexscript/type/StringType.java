@@ -1,10 +1,8 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
-public class StringType implements NamedType {
+public class StringType implements DType {
 
     private final TypeSystem ts;
 
@@ -24,11 +22,6 @@ public class StringType implements NamedType {
 
     @Override
     public String toString() {
-        return name();
-    }
-
-    @Override
-    public @NotNull String name() {
         return "string";
     }
 

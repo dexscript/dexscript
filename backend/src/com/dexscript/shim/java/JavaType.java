@@ -16,10 +16,6 @@ import java.util.List;
 
 public class JavaType implements NamedType, FunctionsType, GenericType {
 
-    private static class InteropPackage implements DexPackage {
-    }
-    public static InteropPackage INTEROP_PACKAGE = new InteropPackage();
-
     private final OutShim oShim;
     private final Class clazz;
     private TypeTable localTypeTable;
@@ -41,7 +37,8 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         this.dTypeArgs = dTypeArgs;
         this.runtimeClassName = runtimeClassName;
         if (dTypeArgs == null) {
-            ts.defineType(INTEROP_PACKAGE, this);
+            DexPackage pkg = oShim.javaTypes().pkg(clazz.getPackage());
+            ts.defineType(pkg, this);
         }
         oShim.javaTypes().add(runtimeClassName, this);
         ts.lazyDefineFunctions(this);
@@ -126,6 +123,11 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     @Override
     public @NotNull String name() {
         return TranslateSig.dTypeNameOf(clazz);
+    }
+
+    @Override
+    public DexPackage pkg() {
+        return ts.pkg(clazz.getPackage().getName());
     }
 
     @Override

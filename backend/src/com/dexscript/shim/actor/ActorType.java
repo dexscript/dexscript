@@ -1,6 +1,7 @@
 package com.dexscript.shim.actor;
 
 import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
@@ -45,6 +46,11 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
     @Override
     public @NotNull String name() {
         return actor.identifier().toString();
+    }
+
+    @Override
+    public DexPackage pkg() {
+        return actor.pkg();
     }
 
     @Override

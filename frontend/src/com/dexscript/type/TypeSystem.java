@@ -17,15 +17,15 @@ public class TypeSystem {
     private final TypeComparisonCache comparisonCache = new TypeComparisonCache();
 
     public final DType ANY = new AnyType(this);
-    public final NamedType BOOL = new BoolType(this);
-    public final NamedType STRING = new StringType(this);
-    public final NamedType FLOAT64 = new Float64Type(this);
-    public final NamedType FLOAT32 = new Float32Type(this);
-    public final NamedType INT64 = new Int64Type(this);
-    public final NamedType INT32 = new Int32Type(this);
-    public final NamedType UINT8 = new UInt8Type(this);
-    public final NamedType VOID = new VoidType(this);
-    public final NamedType UNDEFINED = new UndefinedType(this);
+    public final DType BOOL = new BoolType(this);
+    public final DType STRING = new StringType(this);
+    public final DType FLOAT64 = new Float64Type(this);
+    public final DType FLOAT32 = new Float32Type(this);
+    public final DType INT64 = new Int64Type(this);
+    public final DType INT32 = new Int32Type(this);
+    public final DType UINT8 = new UInt8Type(this);
+    public final DType VOID = new VoidType(this);
+    public final DType UNDEFINED = new UndefinedType(this);
 
     public TypeSystem() {
         defineBuiltinTypes(DexPackage.DUMMY);
@@ -40,15 +40,19 @@ public class TypeSystem {
     }
 
     public void defineBuiltinTypes(DexPackage pkg) {
-        typeTable.define(pkg, BOOL);
-        typeTable.define(pkg, STRING);
-        typeTable.define(pkg, FLOAT64);
-        typeTable.define(pkg, FLOAT32);
-        typeTable.define(pkg, INT64);
-        typeTable.define(pkg, INT32);
-        typeTable.define(pkg, UINT8);
-        typeTable.define(pkg, VOID);
-        typeTable.define(pkg, UNDEFINED);
+        defineBuiltinType(pkg, BOOL);
+        defineBuiltinType(pkg, STRING);
+        defineBuiltinType(pkg, FLOAT64);
+        defineBuiltinType(pkg, FLOAT32);
+        defineBuiltinType(pkg, INT64);
+        defineBuiltinType(pkg, INT32);
+        defineBuiltinType(pkg, UINT8);
+        defineBuiltinType(pkg, VOID);
+        defineBuiltinType(pkg, UNDEFINED);
+    }
+
+    private void defineBuiltinType(DexPackage pkg, DType type) {
+        typeTable.define(pkg, type.toString(), type);
     }
 
     public void defineFunction(FunctionType function) {
@@ -187,5 +191,9 @@ public class TypeSystem {
 
     public boolean isConst(DType type) {
         return isBoolConst(type) || isStringConst(type) || isFloatConst(type) || isIntegerConst(type);
+    }
+
+    public DexPackage pkg(String packageName) {
+        return null;
     }
 }

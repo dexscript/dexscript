@@ -7,7 +7,7 @@ import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-public class Package implements DexPackage {
+public class DexPackageImpl implements DexPackage {
 
     public static FileSystem fs = FileSystems.getDefault();
 
@@ -15,7 +15,7 @@ public class Package implements DexPackage {
         return fs.getPath(first, more);
     }
 
-    public Package(OutShim oShim) {
+    public DexPackageImpl(OutShim oShim) {
         oShim.definePackage(this);
     }
 }

@@ -1,20 +1,13 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
-class Float32Type implements NamedType {
+class Float32Type implements DType {
 
     private final TypeSystem ts;
 
     Float32Type(TypeSystem ts) {
         this.ts = ts;
-    }
-
-    @Override
-    public @NotNull String name() {
-        return "float32";
     }
 
     @Override
@@ -29,7 +22,7 @@ class Float32Type implements NamedType {
 
     @Override
     public String toString() {
-        return name();
+        return "float32";
     }
 
     @Override

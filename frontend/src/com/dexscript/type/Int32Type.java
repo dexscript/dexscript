@@ -1,10 +1,8 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
-public class Int32Type implements NamedType {
+public class Int32Type implements DType {
 
     private final TypeSystem ts;
 
@@ -27,11 +25,6 @@ public class Int32Type implements NamedType {
 
     @Override
     public String toString() {
-        return name();
-    }
-
-    @Override
-    public @NotNull String name() {
         return "int32";
     }
 

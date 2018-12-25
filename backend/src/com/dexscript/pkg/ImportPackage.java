@@ -11,7 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import static com.dexscript.pkg.Package.$p;
+import static com.dexscript.pkg.DexPackageImpl.$p;
 
 public class ImportPackage {
     public static void $(OutShim oShim, String pkgPathStr) {
@@ -20,7 +20,7 @@ public class ImportPackage {
         }
         ArrayList<DexFile> dexFiles = new ArrayList<>();
         Path pkgPath = $p(pkgPathStr);
-        Package pkg = new Package(oShim);
+        DexPackageImpl pkg = new DexPackageImpl(oShim);
         try {
             Files.list(pkgPath).forEach(path -> {
                 try {

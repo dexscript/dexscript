@@ -1,6 +1,7 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
@@ -36,6 +37,11 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
     @Override
     public @NotNull String name() {
         return inf.identifier().toString();
+    }
+
+    @Override
+    public DexPackage pkg() {
+        return inf.pkg();
     }
 
     public List<FunctionType> functions() {

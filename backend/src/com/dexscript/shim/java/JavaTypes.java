@@ -1,5 +1,7 @@
 package com.dexscript.shim.java;
 
+import com.dexscript.ast.DexPackage;
+import com.dexscript.pkg.DexPackageImpl;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.UInt8;
 import com.dexscript.gen.Gen;
@@ -22,6 +24,7 @@ public class JavaTypes {
     private final Map<String, DType> types = new HashMap<>();
     private final Map<Class, DType> primitiveTypes = new HashMap<>();
     private final Map<DType, String> typeChecks = new HashMap<>();
+    private final Map<String, DexPackage> pkgs = new HashMap<>();
     private final OutShim oShim;
 
     public JavaTypes(OutShim oShim) {
@@ -49,6 +52,16 @@ public class JavaTypes {
 
     public void add(String className, DType type) {
         types.put(className, type);
+    }
+
+    public DexPackage pkg(Package jPkg) {
+        DexPackage dPkg = pkgs.get(jPkg.getName());
+        if (dPkg != null) {
+            return dPkg;
+        }
+        dPkg = new DexPackageImpl(oShim);
+        pkgs.put(jPkg.getName(), dPkg);
+        return dPkg;
     }
 
     public String genTypeCheck(DType targetType) {

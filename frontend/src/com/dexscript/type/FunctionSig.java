@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
@@ -190,8 +191,9 @@ public class FunctionSig {
         TypeTable localTypeTable = new TypeTable(ts);
         for (DexTypeParam typeParam : dexSig.typeParams()) {
             DType constraint = ResolveType.$(ts, null, typeParam.paramType());
-            PlaceholderType placeholder = new PlaceholderType(ts, typeParam.paramName().toString(), constraint);
-            localTypeTable.define(dexSig.pkg(), placeholder);
+            String placeholderName = typeParam.paramName().toString();
+            PlaceholderType placeholder = new PlaceholderType(ts, placeholderName, constraint);
+            localTypeTable.define(dexSig.pkg(), placeholderName, placeholder);
             typeParams.add(placeholder);
         }
         params = new ArrayList<>();

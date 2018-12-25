@@ -1,8 +1,6 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
-public class UndefinedType implements NamedType {
+public class UndefinedType implements DType {
 
     private final TypeSystem ts;
 
@@ -22,11 +20,6 @@ public class UndefinedType implements NamedType {
 
     @Override
     public String toString() {
-        return "undefined";
-    }
-
-    @Override
-    public @NotNull String name() {
         return "undefined";
     }
 }

@@ -12,6 +12,7 @@ public interface DType {
         return new IntersectionType(typeSystem(), this, that);
     }
 
+    // TODO: remove this
     default String initValue() {
         return null;
     }

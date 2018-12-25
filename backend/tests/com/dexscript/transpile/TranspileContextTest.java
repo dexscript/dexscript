@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 
-import static com.dexscript.pkg.Package.$p;
+import static com.dexscript.pkg.DexPackageImpl.$p;
 
 public class TranspileContextTest {
 

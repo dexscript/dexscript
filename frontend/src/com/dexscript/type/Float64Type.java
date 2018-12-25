@@ -1,20 +1,13 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
-class Float64Type implements NamedType {
+class Float64Type implements DType {
 
     private final TypeSystem ts;
 
     Float64Type(TypeSystem ts) {
         this.ts = ts;
-    }
-
-    @Override
-    public @NotNull String name() {
-        return "float64";
     }
 
     @Override
@@ -29,7 +22,7 @@ class Float64Type implements NamedType {
 
     @Override
     public String toString() {
-        return name();
+        return "float64";
     }
 
     @Override

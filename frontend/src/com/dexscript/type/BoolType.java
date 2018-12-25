@@ -1,10 +1,8 @@
 package com.dexscript.type;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
-public class BoolType implements NamedType {
+public class BoolType implements DType {
 
     private final TypeSystem ts;
 
@@ -14,7 +12,7 @@ public class BoolType implements NamedType {
 
     @Override
     public String toString() {
-        return name();
+        return "bool";
     }
 
     @Override
@@ -27,10 +25,6 @@ public class BoolType implements NamedType {
         return ts;
     }
 
-    @Override
-    public @NotNull String name() {
-        return "bool";
-    }
 
     @Override
     public boolean equals(Object o) {
