@@ -1,7 +1,42 @@
+# Overview
+
+For example
+
+```dexscript
+function Hello(): interface {
+    some_method()
+    ::some_func()
+} {
+    // impl
+}
+```
+
+The interface type is defined inline without a name. Most often, we use empty interface
+
+```dexscript
+function Hello(arg: interface{}) {
+}
+```
+
+to represent we take "any" as type.
+
 # empty_interface
 
 ```dexscript
 interface {}
+```
+
+* methods
+    * size
+        * 0
+* functions
+    * size
+        * 0
+
+# compact_empty_interface
+
+```
+interface{}
 ```
 
 * methods
@@ -83,4 +118,16 @@ method name is invalid
 interface {
    <error/>?? Hello(msg: string): string
 }
+```
+
+# interface_with_name
+
+```dexscript
+interface MyInf {}
+```
+
+named interface can only be defined in top level
+
+```dexscript
+<unmatched>interface MyInf {}</unmatched>
 ```
