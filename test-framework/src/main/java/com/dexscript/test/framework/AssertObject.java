@@ -33,7 +33,7 @@ class AssertObject extends AbstractVisitor {
             if (isInteger(pathElem)) {
                 Assert.assertEquals("path " + path,
                         Long.valueOf(pathElem).longValue(),
-                        ((Number)current).longValue());
+                        ((Number) current).longValue());
             } else if (isString(pathElem)) {
                 Assert.assertEquals("path " + path,
                         pathElem.substring(1, pathElem.length() - 1),
@@ -80,12 +80,13 @@ class AssertObject extends AbstractVisitor {
     private void enterProperty(String pathElem) {
         try {
             Method method = current.getClass().getMethod(pathElem);
+            method.setAccessible(true);
             try {
                 current = method.invoke(current);
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("access: " + path, e);
             } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("access: " + path, e);
             }
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);

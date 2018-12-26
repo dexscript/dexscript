@@ -15,8 +15,8 @@ public class DexFloatConst extends DexLeafExpr {
         new Parser();
     }
 
-    public DexFloatConst(String src) {
-        this(new Text(src));
+    public static DexFloatConst $(String src) {
+        return new DexFloatConst(new Text(src));
     }
 
     @Override
