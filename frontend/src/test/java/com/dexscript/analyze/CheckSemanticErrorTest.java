@@ -8,13 +8,9 @@ import org.junit.Test;
 
 public class CheckSemanticErrorTest {
 
-    private static DexFile parse(String src) {
-        return new DexFile("package abc\n" + src);
-    }
-
     private static boolean check(String src) {
         TypeSystem ts = new TypeSystem();
-        DexFile file = parse(src);
+        DexFile file = DexFile.$(src);
         for (DexTopLevelDecl decl : file.topLevelDecls()) {
             if (decl.inf() != null) {
                 ts.defineInterface(decl.inf());

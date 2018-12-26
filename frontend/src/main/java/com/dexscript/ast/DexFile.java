@@ -22,8 +22,8 @@ public final class DexFile extends DexElement {
         this(src, "");
     }
 
-    public DexFile(String src) {
-        this(new Text(src.getBytes(), 0, src.getBytes().length));
+    public static DexFile $(String src) {
+        return new DexFile(new Text(src));
     }
 
     public String fileName() {
@@ -78,5 +78,11 @@ public final class DexFile extends DexElement {
     @Override
     public DexSyntaxError syntaxError() {
         return syntaxError;
+    }
+
+    @Override
+    public String toString() {
+        topLevelDecls();
+        return super.toString();
     }
 }

@@ -14,8 +14,8 @@ public class DexTopLevelDecl extends DexElement {
         new Parser();
     }
 
-    public DexTopLevelDecl(String src) {
-        this(new Text(src));
+    public static DexTopLevelDecl $(String src) {
+        return new DexTopLevelDecl(new Text(src));
     }
 
     @Override

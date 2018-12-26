@@ -5,6 +5,7 @@ import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.stmt.DexBlock;
+import com.dexscript.ast.token.Blank;
 
 public class DexActorBody extends DexElement {
 
@@ -70,10 +71,17 @@ public class DexActorBody extends DexElement {
 
     public DexBlock blk() {
         if (blk == null) {
-            blk = new DexBlock(new Text(matched.bytes, sig().end(), matched.end));
+            blk = new DexBlock(matched.slice(sig().end()));
             blk.reparent(this, null);
             if (!blk.matched()) {
                 syntaxError = new DexSyntaxError(matched, sig().end());
+                return blk;
+            }
+            for (int i = blk.end(); i < matched.end; i++) {
+                if (!Blank.$(matched.bytes[i])) {
+                    syntaxError = new DexSyntaxError(matched, i);
+                    return blk;
+                }
             }
         }
         return blk;

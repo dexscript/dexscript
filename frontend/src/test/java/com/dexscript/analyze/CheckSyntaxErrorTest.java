@@ -6,19 +6,15 @@ import org.junit.Test;
 
 public class CheckSyntaxErrorTest {
 
-    private static DexFile parse(String src) {
-        return new DexFile("package abc\n" + src);
-    }
-
     @Test
     public void no_error() {
-        CheckSyntaxError result = new CheckSyntaxError(parse("function hello() {}"));
+        CheckSyntaxError result = new CheckSyntaxError(DexFile.$("function hello() {}"));
         Assert.assertFalse(result.hasError());
     }
 
     @Test
     public void has_error() {
-        CheckSyntaxError result = new CheckSyntaxError(parse("function hello() }"));
+        CheckSyntaxError result = new CheckSyntaxError(DexFile.$("function hello() }"));
         Assert.assertFalse(result.hasError());
     }
 }

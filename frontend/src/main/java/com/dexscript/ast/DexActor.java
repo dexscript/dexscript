@@ -123,10 +123,9 @@ public final class DexActor extends DexElement {
 
     private class Parser {
 
-        int i;
+        int i = src.begin;
 
         Parser() {
-            i = src.begin;
             State.Play(this::functionKeyword);
         }
 

@@ -1,71 +1,37 @@
 package com.dexscript.ast;
 
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexActorTest {
 
     @Test
     public void empty() {
-        String src = "" +
-                " function hello() {\n" +
-                "}\n";
-        DexActor function = DexActor.$(src);
-        Assert.assertTrue(function.matched());
-        Assert.assertEquals("hello", function.identifier().toString());
-        Assert.assertEquals("()", function.sig().toString());
-        Assert.assertEquals("{\n}", function.blk().toString());
-        Assert.assertEquals(src.substring(1), function.toString());
+        TestFramework.assertParsedAST(DexActor::$);
     }
 
     @Test
     public void no_space_between_function_keyword_and_identifier() {
-        Assert.assertEquals("<unmatched>functionhello() {}</unmatched>", DexActor.$("functionhello() {}").toString());
+        TestFramework.assertParsedAST(DexActor::$);
     }
 
     @Test
     public void one_argument() {
-        String src = "" +
-                " function hello(msg:string) {\n" +
-                "}\n";
-        DexActor function = DexActor.$(src);
-        Assert.assertTrue(function.matched());
-        Assert.assertEquals("hello", function.identifier().toString());
-        Assert.assertEquals("(msg:string)", function.sig().toString());
-        Assert.assertEquals("{\n}", function.blk().toString());
-        Assert.assertEquals(src.substring(1), function.toString());
+        TestFramework.assertParsedAST(DexActor::$);
     }
 
     @Test
     public void missing_left_paren() {
-        String src = "" +
-                "function hello ) {\n" +
-                "}\n";
-        Assert.assertEquals("" +
-                "<unmatched>function hello ) {\n" +
-                "}\n" +
-                "</unmatched>", DexActor.$(src).toString());
+        TestFramework.assertParsedAST(DexActor::$);
     }
 
     @Test
-    public void skip_garbage_in_prelude() {
-        String src = "" +
-                " example function hello () {\n" +
-                "}\n";
-        Assert.assertEquals("" +
-                "<unmatched> example function hello () {\n" +
-                "}\n" +
-                "</unmatched>", DexActor.$(src).toString());
+    public void missing_function_keyword() {
+        TestFramework.assertParsedAST(DexActor::$);
     }
 
     @Test
     public void missing_left_brace() {
-        String src = "" +
-                "function hello () \n" +
-                "}\n";
-        DexActor function = DexActor.$(src);
-        function.body().blk();
-        Assert.assertEquals("()<error/> \n" +
-                "}\n", function.body().toString());
+        TestFramework.assertParsedAST(DexActor::$);
     }
 }

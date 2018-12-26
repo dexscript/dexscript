@@ -1,54 +1,27 @@
 package com.dexscript.ast;
 
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexFileTest {
 
     @Test
-    public void function_without_package() {
-        String src = "" +
-                "function hello() {\n" +
-                "}";
-        DexFile file = new DexFile(src);
-        Assert.assertEquals(1, file.topLevelDecls().size());
-        DexActor rootDecl = file.topLevelDecls().get(0).actor();
-        Assert.assertEquals("hello", rootDecl.identifier().toString());
+    public void one_actor() {
+        TestFramework.assertParsedAST(DexFile::$);
     }
 
     @Test
-    public void one_function() {
-        String src = "" +
-                "package example;\n" +
-                "function hello() {\n" +
-                "}";
-        DexFile file = new DexFile(src);
-        Assert.assertEquals(1, file.topLevelDecls().size());
-        DexActor rootDecl = file.topLevelDecls().get(0).actor();
-        Assert.assertEquals("hello", rootDecl.identifier().toString());
+    public void two_actors() {
+        TestFramework.assertParsedAST(DexFile::$);
     }
 
     @Test
-    public void two_functions() {
-        String src = "" +
-                "package example;\n" +
-                "function hello() {\n" +
-                "}\n" +
-                "function world() {\n" +
-                "}";
-        DexFile file = new DexFile(src);
-        Assert.assertEquals(2, file.topLevelDecls().size());
-        DexActor function0 = file.topLevelDecls().get(0).actor();
-        DexActor function1 = file.topLevelDecls().get(1).actor();
-        Assert.assertEquals("hello", function0.identifier().toString());
-        Assert.assertEquals("world", function1.identifier().toString());
+    public void skip_garbage() {
+        TestFramework.assertParsedAST(DexFile::$);
     }
 
     @Test
     public void leaving_src_unparsed() {
-        String src = "f hello() {}";
-        DexFile file = new DexFile(src);
-        file.topLevelDecls();
-        Assert.assertEquals("<error/>f hello() {}", file.toString());
+        TestFramework.assertParsedAST(DexFile::$);
     }
 }
