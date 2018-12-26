@@ -1,18 +1,17 @@
 package com.dexscript.ast.expr;
 
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexPositiveExprTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("+a", new DexPositiveExpr("+a").toString());
-        Assert.assertEquals("+", new DexPositiveExpr("+").toString());
+        TestFramework.assertMatched(src -> DexPositiveExpr.$(src).matched());
     }
 
     @Test
     public void unmatched() {
-        Assert.assertEquals("<unmatched>-</unmatched>", new DexPositiveExpr("-").toString());
+        TestFramework.assertUnmatched(src -> DexPositiveExpr.$(src).matched());
     }
 }

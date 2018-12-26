@@ -21,7 +21,7 @@ public interface InferType<E extends DexExpr> {
 
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
         {
-            put(DexStringConst.class, (ts, elem) -> ts.constOf(((DexStringConst) elem).literalValue()));
+            put(DexStringConst.class, (ts, elem) -> ts.constOf(((DexStringConst) elem).constValue()));
             put(DexIntegerConst.class, (ts, elem) -> ts.constOfInteger(elem.toString()));
             put(DexFloatConst.class, (ts, elem) -> ts.constOfFloat(elem.toString()));
             put(DexBoolConst.class, (ts, elem) -> ts.constOfBool(elem.toString()));

@@ -16,16 +16,15 @@ public class DexPositiveExpr extends DexUnaryOperator {
                 continue;
             }
             if (b == '+') {
-                right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
+                right = DexExpr.parse(src.slice(i + 1), RIGHT_RANK);
                 return;
             }
-            // not plus
             return;
         }
     }
 
-    public DexPositiveExpr(String src) {
-        this(new Text(src));
+    public static DexPositiveExpr $(String src) {
+        return new DexPositiveExpr(new Text(src));
     }
 
     @Override

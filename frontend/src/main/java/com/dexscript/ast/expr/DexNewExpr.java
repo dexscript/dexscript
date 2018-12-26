@@ -122,7 +122,7 @@ public class DexNewExpr extends DexExpr implements DexInvocationExpr {
     @Override
     public DexInvocation invocation() {
         if (invocation == null) {
-            DexStringConst targetAsStr = new DexStringConst("'" + target.toString() + "'");
+            DexStringConst targetAsStr = new DexStringConst(new Text("'" + target.toString() + "'"));
             invocation = new DexInvocation(pkg(), "New__", targetAsStr, typeArgs(), posArgs(), namedArgs());
         }
         return invocation;
