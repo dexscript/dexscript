@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DexArrayExpr extends DexExpr {
 
-    private int arrayLiteralEnd = -1;
+    private int arrayExprEnd = -1;
     private List<DexExpr> elems;
     private DexSyntaxError syntaxError;
 
@@ -19,8 +19,8 @@ public class DexArrayExpr extends DexExpr {
         new Parser();
     }
 
-    public DexArrayExpr(String src) {
-        this(new Text(src));
+    public static DexArrayExpr $(String src) {
+        return new DexArrayExpr(new Text(src));
     }
 
     @Override
@@ -30,15 +30,15 @@ public class DexArrayExpr extends DexExpr {
 
     @Override
     public int end() {
-        if (arrayLiteralEnd == -1) {
+        if (arrayExprEnd == -1) {
             throw new IllegalStateException();
         }
-        return arrayLiteralEnd;
+        return arrayExprEnd;
     }
 
     @Override
     public boolean matched() {
-        return arrayLiteralEnd != -1;
+        return arrayExprEnd != -1;
     }
 
     @Override
@@ -104,7 +104,7 @@ public class DexArrayExpr extends DexExpr {
                     continue;
                 }
                 if (b == ']') {
-                    arrayLiteralEnd = i + 1;
+                    arrayExprEnd = i + 1;
                     return null;
                 }
                 break;
@@ -131,7 +131,7 @@ public class DexArrayExpr extends DexExpr {
                     return this::elemOrRightBracket;
                 }
                 if (b == ']') {
-                    arrayLiteralEnd = i + 1;
+                    arrayExprEnd = i + 1;
                     return null;
                 }
                 return this::missingRightBracket;
@@ -144,11 +144,11 @@ public class DexArrayExpr extends DexExpr {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (LineEnd.$(b)) {
-                    arrayLiteralEnd = i;
+                    arrayExprEnd = i;
                     return null;
                 }
             }
-            arrayLiteralEnd = i;
+            arrayExprEnd = i;
             return null;
         }
 
@@ -157,7 +157,7 @@ public class DexArrayExpr extends DexExpr {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (LineEnd.$(b)) {
-                    arrayLiteralEnd = i;
+                    arrayExprEnd = i;
                     return null;
                 }
                 if (Blank.$(b)) {
@@ -169,7 +169,7 @@ public class DexArrayExpr extends DexExpr {
                     return this::elemOrRightBracket;
                 }
             }
-            arrayLiteralEnd = i;
+            arrayExprEnd = i;
             return null;
         }
 

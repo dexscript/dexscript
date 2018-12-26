@@ -17,8 +17,8 @@ public class DexTypeParam extends DexElement {
         new Parser();
     }
 
-    public DexTypeParam(String src) {
-        this(new Text(src));
+    public static DexTypeParam $ (String src) {
+        return new DexTypeParam(new Text(src));
     }
 
     public DexIdentifier paramName() {
