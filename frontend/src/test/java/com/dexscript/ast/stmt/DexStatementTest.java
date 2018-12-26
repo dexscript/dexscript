@@ -1,36 +1,27 @@
 package com.dexscript.ast.stmt;
 
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexStatementTest {
 
     @Test
     public void expression() {
-        Assert.assertEquals("hello()", ((DexExprStmt) DexStatement.parse("hello()")).toString());
+        TestFramework.assertParsedAST(DexStatement::$parse);
     }
 
     @Test
     public void short_var_decl() {
-        Assert.assertEquals("a:=b", ((DexShortVarDecl) DexStatement.parse("a:=b")).toString());
+        TestFramework.assertParsedAST(DexStatement::$parse);
     }
 
     @Test
     public void block() {
-        Assert.assertEquals("{}", ((DexBlock) DexStatement.parse("{}")).toString());
+        TestFramework.assertParsedAST(DexStatement::$parse);
     }
 
     @Test
     public void stmt_in_block() {
-        String src = "" +
-                "{\n" +
-                "   hello()\n" +
-                "   world()\n" +
-                "}";
-        DexBlock blk = (DexBlock) DexStatement.parse(src);
-        Assert.assertEquals(src, blk.toString());
-        Assert.assertEquals(2, blk.stmts().size());
-        Assert.assertEquals("hello()", blk.stmts().get(0).toString());
-        Assert.assertEquals("world()", blk.stmts().get(1).toString());
+        TestFramework.assertParsedAST(DexStatement::$parse);
     }
 }

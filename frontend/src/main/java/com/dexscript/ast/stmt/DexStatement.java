@@ -69,7 +69,7 @@ public abstract class DexStatement extends DexElement {
         return new DexExprStmt(src);
     }
 
-    public static DexStatement parse(String src) {
+    public static DexStatement $parse(String src) {
         return parse(new Text(src));
     }
 
