@@ -19,8 +19,8 @@ public class DexInfTypeParam extends DexElement {
         new Parser();
     }
 
-    public DexInfTypeParam(String src) {
-        this(new Text(src));
+    public static DexInfTypeParam $(String src) {
+        return new DexInfTypeParam(new Text(src));
     }
 
     @Override
