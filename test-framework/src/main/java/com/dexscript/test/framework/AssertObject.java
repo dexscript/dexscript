@@ -46,6 +46,9 @@ class AssertObject extends AbstractVisitor {
                 Assert.assertEquals("path " + path,
                         false,
                         current);
+            } else if ("null".equals(pathElem)) {
+                Assert.assertNull("path " + path,
+                        current);
             } else if (isIndex(pathElem)) {
                 enterIndex(pathElem);
                 super.visit(listItem);
