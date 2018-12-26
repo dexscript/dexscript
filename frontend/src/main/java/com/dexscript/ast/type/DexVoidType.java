@@ -21,8 +21,8 @@ public class DexVoidType extends DexType {
         new Parser();
     }
 
-    public DexVoidType(String src) {
-        this(new Text(src));
+    public static DexVoidType $(String src) {
+        return new DexVoidType(new Text(src));
     }
 
     @Override

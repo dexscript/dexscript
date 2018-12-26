@@ -1,22 +1,22 @@
 package com.dexscript.ast.inf;
 
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexInfMethodTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("Quack(): string", new DexInfMethod("Quack(): string").toString());
+        TestFramework.assertParsedAST(DexInfMethod::$);
     }
 
     @Test
     public void invalid_identifier() {
-        Assert.assertEquals("<unmatched>?(): string</unmatched>", new DexInfMethod("?(): string").toString());
+        TestFramework.assertParsedAST(DexInfMethod::$);
     }
 
     @Test
     public void invalid_signature() {
-        Assert.assertEquals("(<error/>: string", new DexInfMethod("Quack(: string").sig().toString());
+        TestFramework.assertParsedAST(DexInfMethod::$);
     }
 }

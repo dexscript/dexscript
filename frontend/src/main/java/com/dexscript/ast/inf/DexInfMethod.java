@@ -1,6 +1,5 @@
 package com.dexscript.ast.inf;
 
-import com.dexscript.ast.DexInterfaceBody;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
@@ -14,15 +13,15 @@ public class DexInfMethod extends DexElement {
     public DexInfMethod(Text src) {
         super(src);
         identifier = new DexIdentifier(src);
+        identifier.reparent(this);
         if (identifier.matched()){
-            identifier.reparent(this);
-            sig = new DexSig(src.slice(identifier.begin()));
+            sig = new DexSig(src.slice(identifier.end()));
             sig.reparent(this);
         }
     }
 
-    public DexInfMethod(String src) {
-        this(new Text(src));
+    public static DexInfMethod $(String src) {
+        return new DexInfMethod(new Text(src));
     }
 
     @Override
