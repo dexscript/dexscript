@@ -26,8 +26,8 @@ public class DexProduceStmt extends DexStatement implements DexInvocationExpr  {
         this.new Parser();
     }
 
-    public DexProduceStmt(String src) {
-        this(new Text(src));
+    public static DexProduceStmt $(String src) {
+        return new DexProduceStmt(new Text(src));
     }
 
     @Override

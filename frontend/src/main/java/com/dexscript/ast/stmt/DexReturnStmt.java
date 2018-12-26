@@ -20,8 +20,8 @@ public class DexReturnStmt extends DexStatement {
         new Parser();
     }
 
-    public DexReturnStmt(String src) {
-        this(new Text(src));
+    public static DexReturnStmt $(String src) {
+        return new DexReturnStmt(new Text(src));
     }
 
     public DexExpr expr() {

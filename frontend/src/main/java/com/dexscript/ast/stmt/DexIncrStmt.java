@@ -19,8 +19,8 @@ public class DexIncrStmt extends DexSimpleStatement {
         new Parser();
     }
 
-    public DexIncrStmt(String src) {
-        this(new Text(src));
+    public static DexIncrStmt $(String src) {
+        return new DexIncrStmt(new Text(src));
     }
 
     @Override

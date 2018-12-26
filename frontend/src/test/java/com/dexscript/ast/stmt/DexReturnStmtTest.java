@@ -1,37 +1,37 @@
 package com.dexscript.ast.stmt;
 
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexReturnStmtTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("return example", new DexReturnStmt(" return example").toString());
+        TestFramework.assertParsedAST(DexReturnStmt::$);
     }
 
     @Test
     public void garbage_in_prelude() {
-        Assert.assertEquals("<unmatched>ddreturn example</unmatched>", new DexReturnStmt("ddreturn example").toString());
+        TestFramework.assertParsedAST(DexReturnStmt::$);
     }
 
     @Test
     public void missing_expr_recover_by_file_end() {
-        Assert.assertEquals("return <error/>", new DexReturnStmt("return ").toString());
+        TestFramework.assertParsedAST(DexReturnStmt::$);
     }
 
     @Test
     public void missing_expr_recover_by_line_end() {
-        Assert.assertEquals("return <error/>", new DexReturnStmt("return ; example").toString());
+        TestFramework.assertParsedAST(DexReturnStmt::$);
     }
 
     @Test
     public void return_without_space() {
-        Assert.assertEquals("<unmatched>returnabc</unmatched>", new DexReturnStmt("returnabc").toString());
+        TestFramework.assertParsedAST(DexReturnStmt::$);
     }
 
     @Test
     public void walk_up() {
-        Assert.assertEquals("return example", new DexReturnStmt("return example").expr().prev().toString());
+        TestFramework.assertParsedAST(DexReturnStmt::$);
     }
 }
