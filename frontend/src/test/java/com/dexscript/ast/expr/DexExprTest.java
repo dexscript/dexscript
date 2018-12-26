@@ -27,47 +27,32 @@ public class DexExprTest {
     }
 
     @Test
-    public void mul_and_div_has_equal_rank() {
-        DexAddExpr expr = (DexAddExpr) DexExpr.$parse("a*b/c+d");
-        Assert.assertEquals("a*b/c", left(expr).toString());
-        Assert.assertEquals("d", right(expr).toString());
-        Assert.assertEquals("a*b", left(left(expr)).toString());
-        Assert.assertEquals("c", right(left(expr)).toString());
-
-        expr = (DexAddExpr) DexExpr.$parse("a/b*c+d");
-        Assert.assertEquals("a/b*c", expr.left().toString());
-        Assert.assertEquals("d", expr.right().toString());
-        Assert.assertEquals("a/b", left(left(expr)).toString());
-        Assert.assertEquals("c", right(left(expr)).toString());
+    public void mul_and_div_has_equal_rank_1() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
-    private DexExpr left(DexExpr expr) {
-        return ((DexBinaryOperator) expr).left();
-    }
-
-    private DexExpr right(DexExpr expr) {
-        return ((DexBinaryOperator) expr).right();
+    @Test
+    public void mul_and_div_has_equal_rank_2() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void paren_override_rank() {
-        DexMulExpr expr = (DexMulExpr) DexExpr.$parse("(a+b)*c");
-        Assert.assertEquals("(a+b)", expr.left().toString());
-        Assert.assertEquals("c", expr.right().toString());
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
-    public void float_literal_is_preferred_over_integer_literal() {
-        Assert.assertEquals("1.34e100", DexExpr.$parse("1.34e100").toString());
-        DexIntegerConst parsed = (DexIntegerConst) DexExpr.$parse("100");
-        Assert.assertEquals("100", parsed.toString());
+    public void float_literal_is_preferred_over_integer_literal_1() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
+    }
+
+    @Test
+    public void float_literal_is_preferred_over_integer_literal_2() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void mix_function_call_and_method_call() {
-        DexMethodCallExpr methodCallExpr = (DexMethodCallExpr) DexExpr.$parse("a().b()");
-        Assert.assertEquals("a().b()", methodCallExpr.toString());
-        Assert.assertEquals("a()", methodCallExpr.obj().toString());
-        Assert.assertEquals("a", methodCallExpr.obj().asFunctionCall().target().toString());
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 }
