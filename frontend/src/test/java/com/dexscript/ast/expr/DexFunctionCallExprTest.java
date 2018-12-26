@@ -96,31 +96,6 @@ public class DexFunctionCallExprTest {
     }
 
     @Test
-    public void missing_type_arg_1() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
-    }
-
-    @Test
-    public void missing_type_arg_2() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
-    }
-
-    @Test
-    public void missing_right_angle_bracket_1() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
-    }
-
-    @Test
-    public void missing_right_angle_bracket_2() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
-    }
-
-    @Test
-    public void missing_left_paren() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
-    }
-
-    @Test
     public void missing_named_arg_val() {
         TestFramework.assertParsedAST(DexExpr::$parse);
     }

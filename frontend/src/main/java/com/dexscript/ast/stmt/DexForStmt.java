@@ -19,8 +19,8 @@ public class DexForStmt extends DexStatement {
         new Parser();
     }
 
-    public DexForStmt(String src) {
-        this(new Text(src));
+    public static DexForStmt $(String src) {
+        return new DexForStmt(new Text(src));
     }
 
     @Override

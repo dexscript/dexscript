@@ -248,56 +248,6 @@ print(a;b
 print(a<error/>
 ```
 
-# missing_type_arg_1
-
-```dexscript
-Hello<??>()
-```
-
-```dexscript
-Hello<<error/>??>()
-```
-
-# missing_type_arg_2
-
-```dexscript
-Hello<?? >()
-```
-
-```dexscript
-Hello<<error/>?? >()
-```
-
-# missing_right_angle_bracket_1
-
-```dexscript
-Hello<uint8()
-```
-
-```dexscript
-Hello<uint8<error/>()
-```
-
-# missing_right_angle_bracket_2
-
-```dexscript
-Hello<uint8 ()
-```
-
-```dexscript
-Hello<uint8 <error/>()
-```
-
-# missing_left_paren
-
-```dexscript
-Hello<uint8>)
-```
-
-```dexscript
-Hello<uint8><error/>)
-```
-
 # missing_named_arg_val
 
 ```dexscript

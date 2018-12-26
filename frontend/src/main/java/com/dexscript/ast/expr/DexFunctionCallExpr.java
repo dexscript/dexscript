@@ -169,7 +169,7 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
             DexType typeArg = DexType.parse(src.slice(i));
             typeArg.reparent(DexFunctionCallExpr.this);
             if (!typeArg.matched()) {
-                return this::missingTypeArg;
+                return null;
             }
             typeArgs.add(typeArg);
             i = typeArg.end();
@@ -192,9 +192,9 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                     i += 1;
                     return this::leftParen;
                 }
-                return this::missingRightAngleBracket;
+                return null;
             }
-            return this::missingRightAngleBracket;
+            return null;
         }
 
         @Expect("(")
@@ -209,9 +209,9 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
                     posArgs = new ArrayList<>();
                     return this::posArg;
                 }
-                return this::missingLeftParen;
+                return null;
             }
-            return this::missingLeftParen;
+            return null;
         }
 
         @Expect("expression")
