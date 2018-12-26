@@ -1,15 +1,13 @@
 package com.dexscript.ast.expr;
 
-import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.core.Expect;
-import com.dexscript.ast.core.State;
-import com.dexscript.ast.core.Text;
+import com.dexscript.ast.core.*;
 import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.LineEnd;
 
 public final class DexParenExpr extends DexExpr {
 
+    private DexSyntaxError syntaxError;
     private DexExpr body;
     private Text matched;
 
@@ -18,8 +16,8 @@ public final class DexParenExpr extends DexExpr {
         new Parser();
     }
 
-    public DexParenExpr(String src) {
-        this(new Text(src));
+    public static DexParenExpr $(String src) {
+        return new DexParenExpr(new Text(src));
     }
 
     @Override
@@ -54,6 +52,11 @@ public final class DexParenExpr extends DexExpr {
         visitor.visit(body);
     }
 
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
+    }
+
     public DexExpr body() {
         return body;
     }
@@ -86,12 +89,12 @@ public final class DexParenExpr extends DexExpr {
 
         @Expect("expr")
         State body() {
-            body = DexExpr.parse(new Text(src.bytes, i, src.end), 0);
-            if (body.matched()) {
-                i = body.end();
+            body = DexExpr.parse(src.slice(i), 0);
+            if (!body.matched()) {
+                reportError();
                 return this::rightParen;
             }
-            reportError();
+            i = body.end();
             return this::rightParen;
         }
 
@@ -129,7 +132,9 @@ public final class DexParenExpr extends DexExpr {
         }
 
         State reportError() {
-            // TODO: handle error
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
             return null;
         }
     }
