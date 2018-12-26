@@ -17,8 +17,8 @@ public class DexIntegerConst extends DexLeafExpr {
         new Parser();
     }
 
-    public DexIntegerConst(String src) {
-        this(new Text(src));
+    public static DexIntegerConst $(String src) {
+        return new DexIntegerConst(new Text(src));
     }
 
     @Override

@@ -19,13 +19,13 @@ public final class DexNegativeExpr extends DexUnaryOperator {
                 right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
                 return;
             }
-            // not plus
+            // not -
             return;
         }
     }
 
-    public DexNegativeExpr(String src) {
-        this(new Text(src));
+    public static DexNegativeExpr $(String src) {
+        return new DexNegativeExpr(new Text(src));
     }
 
     @Override

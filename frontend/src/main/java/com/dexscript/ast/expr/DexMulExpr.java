@@ -19,7 +19,7 @@ public class DexMulExpr extends DexBinaryOperator {
                 right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
                 return;
             }
-            // not plus
+            // not *
             return;
         }
     }
