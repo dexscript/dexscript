@@ -3,7 +3,9 @@ package com.dexscript.ast.expr;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.token.*;
+import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.Keyword;
+import com.dexscript.ast.token.Separator;
 
 public class DexBoolConst extends DexLeafExpr {
 
@@ -14,8 +16,8 @@ public class DexBoolConst extends DexLeafExpr {
         new Parser();
     }
 
-    public DexBoolConst(String src) {
-        this(new Text(src));
+    public static DexBoolConst $(String src) {
+        return new DexBoolConst(new Text(src));
     }
 
     @Override
@@ -51,7 +53,7 @@ public class DexBoolConst extends DexLeafExpr {
         @Expect("true")
         @Expect("false")
         State trueOrFalse() {
-            for (;i<src.end;i++) {
+            for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
                     continue;
