@@ -1,5 +1,6 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,26 +8,22 @@ public class DexExprTest {
 
     @Test
     public void unary_then_binary() {
-        DexAddExpr expr = (DexAddExpr) DexExpr.$parse("+a+b");
-        Assert.assertEquals("+a", expr.left().toString());
-        Assert.assertEquals("b", expr.right().toString());
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void binary_then_unary() {
-        DexAddExpr expr = (DexAddExpr) DexExpr.$parse("a+-b");
-        Assert.assertEquals("a", expr.left().toString());
-        Assert.assertEquals("-b", expr.right().toString());
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
-    public void add_has_lower_rank_than_mul() {
-        DexAddExpr expr = (DexAddExpr) DexExpr.$parse("a+b*c");
-        Assert.assertEquals("a", expr.left().toString());
-        Assert.assertEquals("b*c", expr.right().toString());
-        expr = (DexAddExpr) DexExpr.$parse("a*b+c");
-        Assert.assertEquals("a*b", expr.left().toString());
-        Assert.assertEquals("c", expr.right().toString());
+    public void add_has_lower_rank_than_mul_1() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
+    }
+
+    @Test
+    public void add_has_lower_rank_than_mul_2() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
