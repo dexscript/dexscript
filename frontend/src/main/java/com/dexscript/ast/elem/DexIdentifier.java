@@ -7,13 +7,13 @@ public final class DexIdentifier extends DexLeafElement {
 
     private Text matched;
 
-    public DexIdentifier(String src) {
-        this(new Text(src));
-    }
-
     public DexIdentifier(Text src) {
         super(src);
         new Parser();
+    }
+
+    public static DexIdentifier $(String src) {
+        return new DexIdentifier(new Text(src));
     }
 
     public boolean matched() {

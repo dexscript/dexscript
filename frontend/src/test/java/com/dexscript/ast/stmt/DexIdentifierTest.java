@@ -1,31 +1,18 @@
 package com.dexscript.ast.stmt;
 
 import com.dexscript.ast.elem.DexIdentifier;
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexIdentifierTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("hello", new DexIdentifier("hello").toString());
-        Assert.assertEquals("hello", new DexIdentifier(" hello ").toString());
-        Assert.assertEquals("hello", new DexIdentifier("\thello\t").toString());
-        Assert.assertEquals("hello", new DexIdentifier("\rhello\r").toString());
-        Assert.assertEquals("hello", new DexIdentifier("\nhello\n").toString());
-        Assert.assertEquals("hello", new DexIdentifier(" hello()").toString());
-        Assert.assertEquals("::", new DexIdentifier("::").toString());
-        Assert.assertEquals("$", new DexIdentifier("$").toString());
+        TestFramework.assertMatched(src -> DexIdentifier.$(src).matched());
     }
 
     @Test
     public void unmatched() {
-        Assert.assertFalse(new DexIdentifier("+ hello").matched());
-        Assert.assertEquals("<unmatched>+ hello</unmatched>", new DexIdentifier("+ hello").toString());
-        Assert.assertEquals("<unmatched>hello?</unmatched>", new DexIdentifier("hello?").toString());
-        Assert.assertFalse(new DexIdentifier("0").matched());
-        Assert.assertFalse(new DexIdentifier("hello+").matched());
-        Assert.assertEquals("<unmatched>::a</unmatched>", new DexIdentifier("::a").toString());
-        Assert.assertEquals("<unmatched>$a</unmatched>", new DexIdentifier("$a").toString());
+        TestFramework.assertUnmatched(src -> DexIdentifier.$(src).matched());
     }
 }

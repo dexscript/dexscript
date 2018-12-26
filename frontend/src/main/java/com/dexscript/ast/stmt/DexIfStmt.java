@@ -19,8 +19,8 @@ public class DexIfStmt extends DexStatement {
         new Parser();
     }
 
-    public DexIfStmt(String src) {
-        this(new Text(src));
+    public static DexIfStmt $(String src) {
+        return new DexIfStmt(new Text(src));
     }
 
     @Override
