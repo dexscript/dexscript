@@ -14,13 +14,13 @@ public class DexBlock extends DexStatement {
     private DexSyntaxError syntaxError;
     private List<DexStatement> stmts;
 
-    public DexBlock(String src) {
-        this(new Text(src));
-    }
-
     public DexBlock(Text src) {
         super(src);
         new Parser();
+    }
+
+    public static DexBlock $(String src) {
+        return new DexBlock(new Text(src));
     }
 
     @Override
