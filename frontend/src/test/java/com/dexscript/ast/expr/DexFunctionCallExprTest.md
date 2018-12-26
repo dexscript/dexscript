@@ -186,3 +186,124 @@ print(?)a
 print(<error/>?)
 ```
 
+# invalid_argument_recover_by_comma
+
+```dexscript
+print(?,)a
+```
+
+```dexscript
+print(<error/>?,)
+```
+
+# invalid_argument_recover_by_line_end
+
+```dexscript
+print(?
+a
+```
+
+```dexscript
+print(<error/>?
+```
+
+# invalid_argument_recover_by_file_end
+
+```dexscript
+print(?
+```
+
+```dexscript
+print(<error/>?
+```
+
+
+# argument_followed_by_invalid_argument
+
+```dexscript
+print(?,a)
+```
+
+```dexscript
+print(<error/>?,a)
+```
+
+# missing_right_paren_recover_by_file_end
+
+```dexscript
+print(a
+```
+
+```dexscript
+print(a<error/>
+```
+
+# missing_right_paren_recover_by_line_end
+
+```dexscript
+print(a;b
+```
+
+```dexscript
+print(a<error/>
+```
+
+# missing_type_arg_1
+
+```dexscript
+Hello<??>()
+```
+
+```dexscript
+Hello<<error/>??>()
+```
+
+# missing_type_arg_2
+
+```dexscript
+Hello<?? >()
+```
+
+```dexscript
+Hello<<error/>?? >()
+```
+
+# missing_right_angle_bracket_1
+
+```dexscript
+Hello<uint8()
+```
+
+```dexscript
+Hello<uint8<error/>()
+```
+
+# missing_right_angle_bracket_2
+
+```dexscript
+Hello<uint8 ()
+```
+
+```dexscript
+Hello<uint8 <error/>()
+```
+
+# missing_left_paren
+
+```dexscript
+Hello<uint8>)
+```
+
+```dexscript
+Hello<uint8><error/>)
+```
+
+# missing_named_arg_val
+
+```dexscript
+print(d=)
+```
+
+```dexscript
+print(d=<error/>)
+```

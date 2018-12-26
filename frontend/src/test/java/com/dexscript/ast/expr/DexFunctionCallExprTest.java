@@ -1,7 +1,6 @@
 package com.dexscript.ast.expr;
 
 import com.dexscript.test.framework.TestFramework;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class DexFunctionCallExprTest {
@@ -67,85 +66,62 @@ public class DexFunctionCallExprTest {
     }
 
     @Test
-    public void with_invalid_argument_recover_by_comma() {
-        DexFunctionCallExpr call = (DexFunctionCallExpr) DexExpr.$parse("print(?,)a");
-        Assert.assertEquals("print(<error/>?,)", call.toString());
-        Assert.assertEquals("print", call.target().toString());
-        Assert.assertEquals(1, call.posArgs().size());
-        Assert.assertEquals("<error/>", call.posArgs().get(0).toString());
+    public void invalid_argument_recover_by_comma() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
-    public void with_invalid_argument_recover_by_line_end() {
-        DexFunctionCallExpr call = (DexFunctionCallExpr) DexExpr.$parse("print(?\na");
-        Assert.assertEquals("print(<error/>?", call.toString());
-        Assert.assertEquals("print", call.target().toString());
-        Assert.assertEquals(1, call.posArgs().size());
-        Assert.assertEquals("<error/>", call.posArgs().get(0).toString());
+    public void invalid_argument_recover_by_line_end() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
-    public void with_invalid_argument_recover_by_file_end() {
-        DexFunctionCallExpr call = (DexFunctionCallExpr) DexExpr.$parse("print(?");
-        Assert.assertEquals("print(<error/>?", call.toString());
-        Assert.assertEquals("print", call.target().toString());
-        Assert.assertEquals(1, call.posArgs().size());
+    public void invalid_argument_recover_by_file_end() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
-    public void valid_argument_followed_by_invalid_argument() {
-        DexFunctionCallExpr call = (DexFunctionCallExpr) DexExpr.$parse("print(?,a)");
-        Assert.assertEquals("print(<error/>?,a)", call.toString());
-        Assert.assertEquals("print", call.target().toString());
-        Assert.assertEquals(2, call.posArgs().size());
-        Assert.assertEquals("a", call.posArgs().get(1).toString());
+    public void argument_followed_by_invalid_argument() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void missing_right_paren_recover_by_file_end() {
-        DexFunctionCallExpr call = (DexFunctionCallExpr) DexExpr.$parse("print(a");
-        Assert.assertEquals("print(a<error/>", call.toString());
-        Assert.assertEquals("print", call.target().toString());
-        Assert.assertEquals(1, call.posArgs().size());
-        Assert.assertEquals("a", call.posArgs().get(0).toString());
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void missing_right_paren_recover_by_line_end() {
-        DexFunctionCallExpr call = (DexFunctionCallExpr) DexExpr.$parse("print(a;b");
-        Assert.assertEquals("print(a<error/>", call.toString());
-        Assert.assertEquals("print", call.target().toString());
-        Assert.assertEquals(1, call.posArgs().size());
-        Assert.assertEquals("a", call.posArgs().get(0).toString());
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
-    public void missing_type_arg() {
-        DexExpr expr = DexExpr.$parse("Hello<??>()");
-        Assert.assertEquals("Hello<<error/>??>()", expr.toString());
-        expr = DexExpr.$parse("Hello<?? >()");
-        Assert.assertEquals("Hello<<error/>?? >()", expr.toString());
+    public void missing_type_arg_1() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
-    public void missing_right_angle_bracket() {
-        DexExpr expr = DexExpr.$parse("Hello<uint8()");
-        Assert.assertEquals("Hello<uint8<error/>()", expr.toString());
-        expr = DexExpr.$parse("Hello<uint8 ()");
-        Assert.assertEquals("Hello<uint8 <error/>()", expr.toString());
+    public void missing_type_arg_2() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
+    }
+
+    @Test
+    public void missing_right_angle_bracket_1() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
+    }
+
+    @Test
+    public void missing_right_angle_bracket_2() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void missing_left_paren() {
-        DexExpr expr = DexExpr.$parse("Hello<uint8>)");
-        Assert.assertEquals("Hello<uint8><error/>)", expr.toString());
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void missing_named_arg_val() {
-        DexFunctionCallExpr call = (DexFunctionCallExpr) DexExpr.$parse("print(d=)");
-        Assert.assertEquals("print(d=<error/>)", call.toString());
-        Assert.assertEquals(0, call.posArgs().size());
-        Assert.assertEquals(0, call.namedArgs().size());
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 }
