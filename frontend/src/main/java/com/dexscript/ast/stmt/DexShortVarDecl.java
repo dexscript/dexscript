@@ -22,8 +22,8 @@ public class DexShortVarDecl extends DexSimpleStatement {
         new Parser();
     }
 
-    public DexShortVarDecl(String src) {
-        this(new Text(src));
+    public static DexShortVarDecl $(String src) {
+        return new DexShortVarDecl(new Text(src));
     }
 
     @Override
