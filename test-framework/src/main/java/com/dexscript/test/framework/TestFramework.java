@@ -24,9 +24,9 @@ public interface TestFramework {
         testDataFrom(method.getDeclaringClass()).assertMatched(method.getName(), predicate);
     }
 
-    static void assertNotMatched(Predicate<String> predicate) {
+    static void assertUnmatched(Predicate<String> predicate) {
         Method method = InspectTestingMethod.$();
-        testDataFrom(method.getDeclaringClass()).assertNotMatched(method.getName(), predicate);
+        testDataFrom(method.getDeclaringClass()).assertUnmatched(method.getName(), predicate);
     }
 
     static void assertParsedAST(Function<String, Object> parse) {

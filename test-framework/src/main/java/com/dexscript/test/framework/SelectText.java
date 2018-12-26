@@ -17,6 +17,11 @@ public class SelectText {
             }
 
             @Override
+            public void visit(Code text) {
+                selected.add('`' + text.getLiteral() + '`');
+            }
+
+            @Override
             public void visit(BulletList bulletList) {
             }
         };

@@ -1,17 +1,27 @@
 package com.dexscript.ast.type;
 
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexTypeRefTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("hello", new DexTypeRef("hello").toString());
-        Assert.assertEquals("hello", new DexTypeRef(" hello ").toString());
-        Assert.assertEquals("hello", new DexTypeRef("\thello\t").toString());
-        Assert.assertEquals("hello", new DexTypeRef("\rhello\r").toString());
-        Assert.assertEquals("hello", new DexTypeRef("\nhello\n").toString());
-        Assert.assertEquals("hello", new DexTypeRef(" hello()").toString());
+        TestFramework.assertMatched(text -> DexTypeRef.$(text).matched());
+    }
+
+    @Test
+    public void unmatched() {
+        TestFramework.assertUnmatched(text -> DexTypeRef.$(text).matched());
+    }
+
+    @Test
+    public void package_qualifier() {
+        TestFramework.assertParsedAST(DexTypeRef::$);
+    }
+
+    @Test
+    public void no_package_qualifier() {
+        TestFramework.assertParsedAST(DexTypeRef::$);
     }
 }

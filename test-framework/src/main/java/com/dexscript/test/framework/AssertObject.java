@@ -24,6 +24,9 @@ class AssertObject extends AbstractVisitor {
     @Override
     public void visit(ListItem listItem) {
         String pathElem = getText(listItem);
+        if (pathElem.length() == 0) {
+            throw new RuntimeException("no text at path " + path);
+        }
         path.add(pathElem);
         Object old = current;
         try {
@@ -34,7 +37,7 @@ class AssertObject extends AbstractVisitor {
             } else if (isString(pathElem)) {
                 Assert.assertEquals("path " + path,
                         pathElem.substring(1, pathElem.length() - 1),
-                        current.toString());
+                        current == null ? current : current.toString());
             } else if (isIndex(pathElem)) {
                 enterIndex(pathElem);
                 super.visit(listItem);
@@ -71,7 +74,7 @@ class AssertObject extends AbstractVisitor {
     }
 
     private static boolean isString(String pathElem) {
-        return pathElem.charAt(0) == '"';
+        return pathElem.charAt(0) == '"' || pathElem.charAt(0) == '`';
     }
 
     private void enterProperty(String pathElem) {

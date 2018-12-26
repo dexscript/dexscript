@@ -36,16 +36,18 @@ public class FluentAPI {
             throw new RuntimeException("no text found in section: " + expectedHeading);
         }
         for (String text : texts) {
+            text = translateDoubleQuote(text);
             Assert.assertTrue(text + " should match", predicate.test(text));
         }
     }
 
-    public void assertNotMatched(String expectedHeading, Predicate<String> predicate) {
+    public void assertUnmatched(String expectedHeading, Predicate<String> predicate) {
         List<String> texts = select(selectSection(expectedHeading).li()).text();
         if (texts.isEmpty()) {
             throw new RuntimeException("no text found in section: " + expectedHeading);
         }
         for (String text : texts) {
+            text = translateDoubleQuote(text);
             Assert.assertFalse(text + " should not match", predicate.test(text));
         }
     }
@@ -67,6 +69,19 @@ public class FluentAPI {
         for (Node node : selected.nodes) {
             node.accept(visitor);
         }
+    }
+
+    private String translateDoubleQuote(String text) {
+        if (text.isEmpty()) {
+            return text;
+        }
+        if (text.charAt(0) != '"') {
+            return text;
+        }
+        return text.substring(1, text.length() - 1)
+                .replace("\\n", "\n")
+                .replace("\\r", "\r")
+                .replace("\\t", "\t");
     }
 
     private String stripCode(String code) {

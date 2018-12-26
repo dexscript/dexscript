@@ -1,12 +1,17 @@
 package com.dexscript.ast.type;
 
-import org.junit.Assert;
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
 public class DexStringLiteralTypeTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("'hello'", new DexStringLiteralType("'hello'").toString());
+        TestFramework.assertMatched(text -> new DexStringLiteralType(text).matched());
+    }
+
+    @Test
+    public void unmatched() {
+        TestFramework.assertUnmatched(text -> new DexStringLiteralType(text).matched());
     }
 }

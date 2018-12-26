@@ -12,6 +12,6 @@ public class DexIntegerLiteralTypeTest {
 
     @Test
     public void unmatched() {
-        TestFramework.assertNotMatched(text -> DexIntegerLiteralType.$(text).matched());
+        TestFramework.assertUnmatched(text -> DexIntegerLiteralType.$(text).matched());
     }
 }

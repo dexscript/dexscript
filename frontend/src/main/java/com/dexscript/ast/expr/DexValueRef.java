@@ -53,6 +53,7 @@ public class DexValueRef extends DexLeafExpr {
         }
 
         @Expect("blank")
+        @Expect("$")
         @Expect("a~z")
         @Expect("A~Z")
         State firstChar() {

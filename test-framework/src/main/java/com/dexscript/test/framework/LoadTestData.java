@@ -13,6 +13,9 @@ public interface LoadTestData {
             String path = "/" + clazz.getCanonicalName().replace(".", "/") + ".md";
             Parser parser = Parser.builder().build();
             try (InputStream inputStream = clazz.getResourceAsStream(path)) {
+                if (inputStream == null) {
+                    throw new RuntimeException("test resource not found: " + path);
+                }
                 try (InputStreamReader reader = new InputStreamReader(inputStream)) {
                     return parser.parseReader(reader);
                 }

@@ -2,7 +2,6 @@ package com.dexscript.ast.type;
 
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexBoolConst;
-import com.dexscript.ast.expr.DexIntegerConst;
 
 public class DexBoolLiteralType extends DexType {
 
@@ -16,9 +15,10 @@ public class DexBoolLiteralType extends DexType {
         }
     }
 
-    public DexBoolLiteralType(String src) {
-        this(new Text(src));
+    public static DexBoolLiteralType $(String src) {
+        return new DexBoolLiteralType(new Text(src));
     }
+
     @Override
     public int leftRank() {
         return 0;
