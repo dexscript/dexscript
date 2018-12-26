@@ -22,8 +22,8 @@ public class DexAwaitStmt extends DexStatement {
         new Parser();
     }
 
-    public DexAwaitStmt(String src) {
-        this(new Text(src));
+    public static DexAwaitStmt $(String src) {
+        return new DexAwaitStmt(new Text(src));
     }
 
     @Override
