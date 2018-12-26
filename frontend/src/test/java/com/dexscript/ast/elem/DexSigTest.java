@@ -1,5 +1,6 @@
 package com.dexscript.ast.elem;
 
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,34 +8,32 @@ public class DexSigTest {
 
     @Test
     public void one_param() {
-        DexSig sig = DexSig.$("(msg:string)");
-        Assert.assertEquals("(msg:string)", sig.toString());
-        Assert.assertEquals(1, sig.params().size());
-        Assert.assertEquals("msg:string", sig.params().get(0).toString());
+        TestFramework.assertParsedAST(DexSig::$);
     }
 
     @Test
     public void empty() {
-        DexSig sig = DexSig.$("(){}");
-        Assert.assertEquals("()", sig.toString());
-        Assert.assertEquals(0, sig.params().size());
+        TestFramework.assertParsedAST(DexSig::$);
     }
 
     @Test
     public void two_params() {
-        DexSig sig = DexSig.$("(msg1:string, msg2:string)");
-        Assert.assertEquals("(msg1:string, msg2:string)", sig.toString());
-        Assert.assertEquals(2, sig.params().size());
-        Assert.assertEquals("msg1:string", sig.params().get(0).toString());
-        Assert.assertEquals("msg2:string", sig.params().get(1).toString());
+        TestFramework.assertParsedAST(DexSig::$);
     }
 
     @Test
     public void return_value() {
-        DexSig sig = DexSig.$("() : string");
-        Assert.assertEquals("() : string", sig.toString());
-        Assert.assertEquals(0, sig.params().size());
-        Assert.assertEquals("string", sig.ret().toString());
+        TestFramework.assertParsedAST(DexSig::$);
+    }
+
+    @Test
+    public void one_type_param() {
+        TestFramework.assertParsedAST(DexSig::$);
+    }
+
+    @Test
+    public void two_type_params() {
+        TestFramework.assertParsedAST(DexSig::$);
     }
 
     @Test
@@ -110,19 +109,5 @@ public class DexSigTest {
         Assert.assertEquals("():<error/>", sig.toString());
         Assert.assertEquals(0, sig.params().size());
         Assert.assertEquals("<unmatched>?</unmatched>", sig.ret().toString());
-    }
-
-    @Test
-    public void one_type_param() {
-        DexSig sig = DexSig.$("(<T>: string): T");
-        Assert.assertEquals("(<T>: string): T", sig.toString());
-        Assert.assertEquals(1, sig.typeParams().size());
-        Assert.assertEquals("<T>: string", sig.typeParams().get(0).toString());
-    }
-
-    @Test
-    public void two_type_params() {
-        DexSig sig = DexSig.$("(<T>: string, <T2>: string): T");
-        Assert.assertEquals("(<T>: string, <T2>: string): T", sig.toString());
     }
 }
