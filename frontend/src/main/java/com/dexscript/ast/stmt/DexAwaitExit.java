@@ -23,8 +23,8 @@ public class DexAwaitExit extends DexAwaitCase {
         }
     }
 
-    public DexAwaitExit(String src) {
-        this(new Text(src));
+    public static DexAwaitExit $(String src) {
+        return new DexAwaitExit(new Text(src));
     }
 
     @Override

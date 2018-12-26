@@ -16,8 +16,8 @@ public class DexAwaitProducer extends DexAwaitCase {
         new Parser();
     }
 
-    public DexAwaitProducer(String src) {
-        this(new Text(src));
+    public static DexAwaitProducer $(String src) {
+        return new DexAwaitProducer(new Text(src));
     }
 
     @Override

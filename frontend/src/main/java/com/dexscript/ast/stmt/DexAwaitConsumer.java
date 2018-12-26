@@ -27,6 +27,10 @@ public class DexAwaitConsumer extends DexAwaitCase {
         new Parser();
     }
 
+    public static DexAwaitConsumer $(String src) {
+        return new DexAwaitConsumer(new Text(src));
+    }
+
     @Override
     public int begin() {
         return src.begin;
@@ -67,10 +71,6 @@ public class DexAwaitConsumer extends DexAwaitCase {
 
     public DexIdentifier identifier() {
         return identifier;
-    }
-
-    public DexAwaitConsumer(String src) {
-        this(new Text(src));
     }
 
     public List<DexParam> params() {

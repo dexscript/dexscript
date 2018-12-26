@@ -1,5 +1,6 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -7,17 +8,11 @@ public class DexValueRefTest {
 
     @Test
     public void matched() {
-        Assert.assertEquals("hello", new DexValueRef("hello").toString());
-        Assert.assertEquals("hello", new DexValueRef(" hello ").toString());
-        Assert.assertEquals("hello", new DexValueRef("\thello\t").toString());
-        Assert.assertEquals("hello", new DexValueRef("\rhello\r").toString());
-        Assert.assertEquals("hello", new DexValueRef("\nhello\n").toString());
-        Assert.assertEquals("hello", new DexValueRef(" hello()").toString());
-        Assert.assertEquals("$", new DexValueRef(" $").toString());
+        TestFramework.assertMatched(src -> DexValueRef.$(src).matched());
     }
 
     @Test
     public void unmatched() {
-        Assert.assertEquals("<unmatched>$a</unmatched>", new DexValueRef("$a").toString());
+        TestFramework.assertUnmatched(src -> DexValueRef.$(src).matched());
     }
 }

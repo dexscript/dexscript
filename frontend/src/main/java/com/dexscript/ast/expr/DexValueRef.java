@@ -9,13 +9,13 @@ public class DexValueRef extends DexLeafExpr {
 
     private Text matched;
 
-    public DexValueRef(String src) {
-        this(new Text(src));
-    }
-
     public DexValueRef(Text src) {
         super(src);
         new Parser();
+    }
+
+    public static DexValueRef $(String src) {
+        return new DexValueRef(new Text(src));
     }
 
     public boolean matched() {

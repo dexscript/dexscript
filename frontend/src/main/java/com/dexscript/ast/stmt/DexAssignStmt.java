@@ -21,8 +21,8 @@ public class DexAssignStmt extends DexSimpleStatement {
         new Parser();
     }
 
-    public DexAssignStmt(String src) {
-        this(new Text(src));
+    public static DexAssignStmt $(String src) {
+        return new DexAssignStmt(new Text(src));
     }
 
     @Override
