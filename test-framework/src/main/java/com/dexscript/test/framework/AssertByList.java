@@ -12,12 +12,12 @@ import java.util.Stack;
 
 import static com.dexscript.test.framework.SelectText.getText;
 
-class AssertObject extends AbstractVisitor {
+class AssertByList extends AbstractVisitor {
 
     private Object current;
     private final Stack<String> path = new Stack<>();
 
-    public AssertObject(Object obj) {
+    public AssertByList(Object obj) {
         current = obj;
     }
 

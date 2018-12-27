@@ -6,7 +6,7 @@
 
 | invocation | success | needRuntimeCheck |
 | ---        | ---     | ---              |
-| `'abc'`    | true    | false            |
-| `string`   | true    | false            |
-| `int64`    | false   | false            |
+| 'abc'      | true    | false            |
+| string     | true    | false            |
+| int64      | false   | false            |
 

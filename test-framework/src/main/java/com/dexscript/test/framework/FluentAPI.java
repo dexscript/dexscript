@@ -5,10 +5,7 @@ import org.commonmark.node.Visitor;
 import org.junit.Assert;
 
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import static com.dexscript.test.framework.TestFramework.selectSection;
+import java.util.Map;
 
 public class FluentAPI {
 
@@ -50,44 +47,49 @@ public class FluentAPI {
         return stripCode(codes.get(0));
     }
 
-    public void assertTrue(Predicate<String> predicate) {
+    public void assertTrue(Function.F1<String, Boolean> sut) {
         List<String> texts = select(new SelectListItem()).texts();
         if (texts.isEmpty()) {
             throw new RuntimeException("no text found");
         }
         for (String text : texts) {
             text = translateDoubleQuote(text);
-            Assert.assertTrue(text + " should be true", predicate.test(text));
+            Assert.assertTrue(text + " should be true", sut.apply(text));
         }
     }
 
-    public void assertFalse(Predicate<String> predicate) {
+    public void assertFalse(Function.F1<String, Boolean> sut) {
         List<String> texts = select(new SelectListItem()).texts();
         if (texts.isEmpty()) {
             throw new RuntimeException("no text found");
         }
         for (String text : texts) {
             text = translateDoubleQuote(text);
-            Assert.assertFalse(text + " should be false", predicate.test(text));
+            Assert.assertFalse(text + " should be false", sut.apply(text));
         }
     }
 
-    public void assertObject(Function<String, Object> parse) {
+    public void assertByList(Function.F1<String, Object> sut) {
         List<String> codes = this.codes();
         if (codes.isEmpty()) {
             Assert.fail("no code found");
         }
         String code = stripCode(codes.get(0));
-        Object obj = parse.apply(code);
+        Object obj = sut.apply(code);
         String expectedToString = code;
         if (codes.size() >= 2) {
             expectedToString = stripCode(codes.get(1));
         }
         Assert.assertEquals(expectedToString, obj.toString());
-        Visitor visitor = new AssertObject(obj);
+        Visitor visitor = new AssertByList(obj);
         for (Node node : this.nodes) {
             node.accept(visitor);
         }
+    }
+
+    public void assertByTable(Function.F1<String, Object> sut) {
+        Table table = this.table();
+        AssertByTable.$(table, sut);
     }
 
     private String translateDoubleQuote(String text) {

@@ -4,8 +4,6 @@ import org.commonmark.node.Node;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 // entry point, import static
 public interface TestFramework {
@@ -25,24 +23,24 @@ public interface TestFramework {
         return new FluentSelectNode().section(expectedHeadings);
     }
 
-    static void assertTrue(Predicate<String> predicate) {
+    static void assertTrue(Function.F1<String, Boolean> sut) {
         Method method = InspectTestingMethod.$();
         testDataFrom(method.getDeclaringClass())
                 .select(selectSection(method.getName()))
-                .assertTrue(predicate);
+                .assertTrue(sut);
     }
 
-    static void assertFalse(Predicate<String> predicate) {
+    static void assertFalse(Function.F1<String, Boolean> sut) {
         Method method = InspectTestingMethod.$();
         testDataFrom(method.getDeclaringClass())
                 .select(selectSection(method.getName()))
-                .assertFalse(predicate);
+                .assertFalse(sut);
     }
 
-    static void assertObject(Function<String, Object> parse) {
+    static void assertObject(Function.F1<String, Object> sut) {
         Method method = InspectTestingMethod.$();
         testDataFrom(method.getDeclaringClass())
                 .select(selectSection(method.getName()))
-                .assertObject(parse);
+                .assertByList(sut);
     }
 }

@@ -3,7 +3,6 @@ package com.dexscript.type;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.test.framework.FluentAPI;
-import com.dexscript.test.framework.Table;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,10 +30,7 @@ public class FunctionSigTest {
     public void without_type_params() {
         FluentAPI testData = testDataFromMySection();
         FunctionSig sig = sig(testData.code());
-        Table table = testData.table();
-        Assert.assertTrue(invoke(sig, resolve("'abc'")).success());
-        Assert.assertTrue(invoke(sig, resolve("string")).success());
-        Assert.assertFalse(invoke(sig, resolve("int64")).success());
+        testData.assertByTable(invocation -> invoke(sig, resolve(invocation)));
     }
 
     @Test
