@@ -1,6 +1,5 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
@@ -17,7 +16,7 @@ public class FunctionSig {
 
         public abstract boolean needRuntimeCheck();
 
-        public FunctionType function() {
+        public FunctionType func() {
             return func;
         }
 
@@ -151,7 +150,7 @@ public class FunctionSig {
         }
 
         @Override
-        public FunctionType function() {
+        public FunctionType func() {
             return expandedFunction;
         }
 
@@ -283,8 +282,8 @@ public class FunctionSig {
         TypeTable localTypeTable = new TypeTable(ts);
         for (Map.Entry<DType, DType> entry : sub.entrySet()) {
             DType key = entry.getKey();
-            if (key instanceof NamedType) {
-                localTypeTable.define(dexSig.pkg(), ((NamedType) key).name(), entry.getValue());
+            if (key instanceof PlaceholderType) {
+                localTypeTable.define(dexSig.pkg(), ((PlaceholderType)key).name(), entry.getValue());
             }
         }
         List<FunctionParam> expandedParams = new ArrayList<>();

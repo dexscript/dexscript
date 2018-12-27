@@ -72,10 +72,10 @@ public class FunctionTable {
         }
         if (invoked.match != null) {
             for (FunctionSig.Invoked candidate : potentialCandidates) {
-                if (ivc.requireImpl() && !candidate.function().hasImpl()) {
+                if (ivc.requireImpl() && !candidate.func().hasImpl()) {
                     // no impl
                     invoked.ignoreds.add(candidate);
-                } else if (!IsAssignable.$(candidate.function(), invoked.match.function())) {
+                } else if (!IsAssignable.$(candidate.func(), invoked.match.func())) {
                     // not overriding the match
                     invoked.ignoreds.add(candidate);
                 } else {
@@ -94,11 +94,11 @@ public class FunctionTable {
             return null;
         }
         if (candidates.size() == 1) {
-            return candidates.get(0).function().ret();
+            return candidates.get(0).func().ret();
         }
-        DType ret = candidates.get(0).function().ret();
+        DType ret = candidates.get(0).func().ret();
         for (int i = 1; i < candidates.size(); i++) {
-            ret = ret.union(candidates.get(i).function().ret());
+            ret = ret.union(candidates.get(i).func().ret());
         }
         return ret;
     }

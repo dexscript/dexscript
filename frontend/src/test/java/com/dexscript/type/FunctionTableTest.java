@@ -28,7 +28,7 @@ public class FunctionTableTest {
         FunctionType func2 = func("Hello(arg0: int64)");
         Invoked invoked = invoke("Hello", "string");
         Assert.assertEquals(1, invoked.candidates.size());
-        Assert.assertEquals(func1, invoked.candidates.get(0).function());
+        Assert.assertEquals(func1, invoked.candidates.get(0).func());
     }
 
     @Test

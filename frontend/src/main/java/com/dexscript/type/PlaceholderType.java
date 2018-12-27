@@ -37,4 +37,8 @@ public final class PlaceholderType implements DType {
     public String description() {
         return "<" + name + ">: " + constraint;
     }
+
+    public String name() {
+        return name;
+    }
 }

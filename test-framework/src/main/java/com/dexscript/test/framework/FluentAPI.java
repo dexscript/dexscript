@@ -92,6 +92,11 @@ public class FluentAPI {
         AssertByTable.$(table, sut);
     }
 
+    public void assertByTable(Function.F2<String, String, Object> sut) {
+        Table table = this.table();
+        AssertByTable.$(table, sut);
+    }
+
     private String translateDoubleQuote(String text) {
         if (text.isEmpty()) {
             return text;

@@ -21,24 +21,29 @@ public class FunctionSigTest {
         ts = new TypeSystem();
     }
 
-    public FunctionSig.Invoked invoke(FunctionSig sig, List<DType> args) {
-        FunctionSig.Invoked invoked = sig.invoke(Collections.emptyList(), args, ts.ANY, null);
-        return invoked;
+    @Test
+    public void pos_param_assignable_from_arg() {
+        testInvoke();
     }
 
     @Test
-    public void without_type_params() {
-        FluentAPI testData = testDataFromMySection();
-        FunctionSig sig = sig(testData.code());
-        testData.assertByTable(invocation -> invoke(sig, resolve(invocation)));
+    public void pos_arg_assignable_from_param() {
+        testInvoke();
+    }
+
+    @Test
+    public void pos_args_count() {
+        testInvoke();
+    }
+
+    @Test
+    public void type_args_count() {
+        testInvoke();
     }
 
     @Test
     public void infer_type_params() {
-        FunctionSig sig = sig("(<T>: string, arg0: T): T");
-        FunctionType func = invoke(sig, resolve("string")).function();
-        Assert.assertEquals(ts.STRING, func.ret());
-        Assert.assertEquals(ts.STRING, func.params().get(0).type());
+        testInvoke();
     }
 
     @Test
@@ -50,7 +55,7 @@ public class FunctionSigTest {
                 "}");
         FunctionSig sig = sig("(<T>: string, arg0: SomeInf<T>): SomeInf<T>");
         List<DType> args = resolve("SomeInf<string>");
-        InterfaceType ret = (InterfaceType) invoke(sig, args).function().ret();
+        InterfaceType ret = (InterfaceType) invoke(sig, args).func().ret();
         Assert.assertEquals(resolve("string"), ret.typeArgs());
     }
 
@@ -70,9 +75,8 @@ public class FunctionSigTest {
                 "}");
         FunctionSig sig = sig("(<E1>: string, <E2>: string, arg0: AnotherInf<SomeInf<E1>, SomeInf<E2>>): E2");
         FunctionSig.Invoked invoked = invoke(sig, resolve("AnotherInf<SomeInf<'a'>, SomeInf<'b'>>"));
-        invoked.dump();
         Assert.assertTrue(invoked.success());
-        Assert.assertEquals("string", invoked.function().ret().toString());
+        Assert.assertEquals("string", invoked.func().ret().toString());
     }
 
     @Test
@@ -84,7 +88,7 @@ public class FunctionSigTest {
     @Test
     public void infer_with_return_value_hint() {
         FunctionSig sig = sig("(<T>: interface{}): T");
-        DType ret = sig.invoke(Collections.emptyList(), resolve(), ts.ANY, ts.STRING).function().ret();
+        DType ret = sig.invoke(Collections.emptyList(), resolve(), ts.ANY, ts.STRING).func().ret();
         Assert.assertEquals(ts.STRING, ret);
     }
 
@@ -124,6 +128,24 @@ public class FunctionSigTest {
         Assert.assertEquals("(<T>: string, arg0: T): T", sig("(<T>: string, arg0: T): T").toString());
     }
 
+    public FunctionSig.Invoked invoke(FunctionSig sig, List<DType> args) {
+        FunctionSig.Invoked invoked = sig.invoke(Collections.emptyList(), args, ts.ANY, null);
+        return invoked;
+    }
+
+    public void testInvoke() {
+        FluentAPI testData = testDataFromMySection();
+        FunctionSig sig = sig(testData.code());
+        if ("typeArgs".equals(testData.table().head.get(0))) {
+            testData.assertByTable((typeArgs, posArgs) -> sig.invoke(
+                    resolveWithComma(typeArgs),
+                    resolveWithComma(posArgs),
+                    ts.ANY, null));
+        } else {
+            testData.assertByTable(posArgs -> invoke(sig, resolveWithComma(posArgs)));
+        }
+    }
+
     private void defineInterface(String src) {
         new InterfaceType(ts, DexInterface.$(src));
     }
@@ -132,6 +154,17 @@ public class FunctionSigTest {
         FunctionSig sig = new FunctionSig(ts, DexSig.$(src));
         sig.reparent(new FunctionType(ts, "", sig.params(), sig.ret(), sig));
         return sig;
+    }
+
+    private List<DType> resolveWithComma(String typeDefs) {
+        if (typeDefs.isEmpty()) {
+            return Collections.emptyList();
+        }
+        if (!typeDefs.startsWith("`")) {
+            throw new RuntimeException("need to use `string` instead of string");
+        }
+        typeDefs = typeDefs.substring(1, typeDefs.length() - 1);
+        return ResolveType.resolveTypes(ts, typeDefs.split(","));
     }
 
     private List<DType> resolve(String... typeDefs) {
