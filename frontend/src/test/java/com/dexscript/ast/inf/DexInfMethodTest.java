@@ -7,16 +7,16 @@ public class DexInfMethodTest {
 
     @Test
     public void matched() {
-        TestFramework.assertParsedAST(DexInfMethod::$);
+        TestFramework.assertObject(DexInfMethod::$);
     }
 
     @Test
     public void invalid_identifier() {
-        TestFramework.assertParsedAST(DexInfMethod::$);
+        TestFramework.assertObject(DexInfMethod::$);
     }
 
     @Test
     public void invalid_signature() {
-        TestFramework.assertParsedAST(DexInfMethod::$);
+        TestFramework.assertObject(DexInfMethod::$);
     }
 }

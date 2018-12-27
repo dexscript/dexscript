@@ -7,16 +7,16 @@ public class DexAwaitProducerTest {
 
     @Test
     public void matched() {
-        TestFramework.assertParsedAST(DexAwaitProducer::$);
+        TestFramework.assertObject(DexAwaitProducer::$);
     }
 
     @Test
     public void missing_left_brace() {
-        TestFramework.assertParsedAST(DexAwaitProducer::$);
+        TestFramework.assertObject(DexAwaitProducer::$);
     }
 
     @Test
     public void missing_right_brace() {
-        TestFramework.assertParsedAST(DexAwaitProducer::$);
+        TestFramework.assertObject(DexAwaitProducer::$);
     }
 }

@@ -7,11 +7,11 @@ public class DexFloatConstTest {
 
     @Test
     public void matched() {
-        TestFramework.assertMatched(src -> DexFloatConst.$(src).matched());
+        TestFramework.assertTrue(src -> DexFloatConst.$(src).matched());
     }
 
     @Test
     public void with_error() {
-        TestFramework.assertParsedAST(DexFloatConst::$);
+        TestFramework.assertObject(DexFloatConst::$);
     }
 }

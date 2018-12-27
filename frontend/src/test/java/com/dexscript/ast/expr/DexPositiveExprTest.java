@@ -7,11 +7,11 @@ public class DexPositiveExprTest {
 
     @Test
     public void matched() {
-        TestFramework.assertMatched(src -> DexPositiveExpr.$(src).matched());
+        TestFramework.assertTrue(src -> DexPositiveExpr.$(src).matched());
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertUnmatched(src -> DexPositiveExpr.$(src).matched());
+        TestFramework.assertFalse(src -> DexPositiveExpr.$(src).matched());
     }
 }

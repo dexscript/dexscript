@@ -9,12 +9,12 @@ public class DexVoidTypeTest {
 
     @Test
     public void matched() {
-        TestFramework.assertParsedAST(DexVoidType::$);
+        TestFramework.assertObject(DexVoidType::$);
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertParsedAST(DexVoidType::$);
+        TestFramework.assertObject(DexVoidType::$);
     }
 
     @Test

@@ -7,11 +7,11 @@ public class DexBoolLiteralTypeTest {
 
     @Test
     public void matched() {
-        TestFramework.assertMatched(text -> DexBoolLiteralType.$(text).matched());
+        TestFramework.assertTrue(text -> DexBoolLiteralType.$(text).matched());
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertUnmatched(text -> DexBoolLiteralType.$(text).matched());
+        TestFramework.assertFalse(text -> DexBoolLiteralType.$(text).matched());
     }
 }

@@ -7,31 +7,31 @@ public class DexAwaitStmtTest {
 
     @Test
     public void empty() {
-        TestFramework.assertParsedAST(DexAwaitStmt::$);
+        TestFramework.assertObject(DexAwaitStmt::$);
     }
 
     @Test
     public void await_consumer() {
-        TestFramework.assertParsedAST(DexAwaitStmt::$);
+        TestFramework.assertObject(DexAwaitStmt::$);
     }
 
     @Test
     public void await_producer() {
-        TestFramework.assertParsedAST(DexAwaitStmt::$);
+        TestFramework.assertObject(DexAwaitStmt::$);
     }
 
     @Test
     public void await_exit() {
-        TestFramework.assertParsedAST(DexAwaitStmt::$);
+        TestFramework.assertObject(DexAwaitStmt::$);
     }
 
     @Test
     public void await_multiple_cases() {
-        TestFramework.assertParsedAST(DexAwaitStmt::$);
+        TestFramework.assertObject(DexAwaitStmt::$);
     }
 
     @Test
     public void recover_from_invalid_statement() {
-        TestFramework.assertParsedAST(DexAwaitStmt::$);
+        TestFramework.assertObject(DexAwaitStmt::$);
     }
 }

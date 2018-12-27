@@ -7,11 +7,11 @@ public class DexBoolConstTest {
 
     @Test
     public void matched() {
-        TestFramework.assertMatched(src -> DexBoolConst.$(src).matched());
+        TestFramework.assertTrue(src -> DexBoolConst.$(src).matched());
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertUnmatched(src -> DexBoolConst.$(src).matched());
+        TestFramework.assertFalse(src -> DexBoolConst.$(src).matched());
     }
 }

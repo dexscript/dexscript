@@ -7,26 +7,26 @@ public class DexTypeParamTest {
 
     @Test
     public void matched() {
-        TestFramework.assertParsedAST(DexTypeParam::$);
+        TestFramework.assertObject(DexTypeParam::$);
     }
 
     @Test
     public void missing_identifier() {
-        TestFramework.assertParsedAST(DexTypeParam::$);
+        TestFramework.assertObject(DexTypeParam::$);
     }
 
     @Test
     public void missing_right_angle_bracket() {
-        TestFramework.assertParsedAST(DexTypeParam::$);
+        TestFramework.assertObject(DexTypeParam::$);
     }
 
     @Test
     public void missing_colon() {
-        TestFramework.assertParsedAST(DexTypeParam::$);
+        TestFramework.assertObject(DexTypeParam::$);
     }
 
     @Test
     public void missing_type() {
-        TestFramework.assertParsedAST(DexTypeParam::$);
+        TestFramework.assertObject(DexTypeParam::$);
     }
 }

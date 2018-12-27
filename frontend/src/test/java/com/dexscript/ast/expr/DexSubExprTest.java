@@ -7,11 +7,11 @@ public class DexSubExprTest {
 
     @Test
     public void matched() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
+        TestFramework.assertObject(DexExpr::$parse);
     }
 
     @Test
     public void with_space() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
+        TestFramework.assertObject(DexExpr::$parse);
     }
 }

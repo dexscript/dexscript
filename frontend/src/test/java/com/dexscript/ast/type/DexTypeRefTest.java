@@ -7,21 +7,21 @@ public class DexTypeRefTest {
 
     @Test
     public void matched() {
-        TestFramework.assertMatched(text -> DexTypeRef.$(text).matched());
+        TestFramework.assertTrue(text -> DexTypeRef.$(text).matched());
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertUnmatched(text -> DexTypeRef.$(text).matched());
+        TestFramework.assertFalse(text -> DexTypeRef.$(text).matched());
     }
 
     @Test
     public void package_qualifier() {
-        TestFramework.assertParsedAST(DexTypeRef::$);
+        TestFramework.assertObject(DexTypeRef::$);
     }
 
     @Test
     public void no_package_qualifier() {
-        TestFramework.assertParsedAST(DexTypeRef::$);
+        TestFramework.assertObject(DexTypeRef::$);
     }
 }

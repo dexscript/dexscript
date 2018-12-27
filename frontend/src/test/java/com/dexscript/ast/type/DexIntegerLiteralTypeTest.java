@@ -7,11 +7,11 @@ public class DexIntegerLiteralTypeTest {
 
     @Test
     public void matched() {
-        TestFramework.assertMatched(text -> DexIntegerLiteralType.$(text).matched());
+        TestFramework.assertTrue(text -> DexIntegerLiteralType.$(text).matched());
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertUnmatched(text -> DexIntegerLiteralType.$(text).matched());
+        TestFramework.assertFalse(text -> DexIntegerLiteralType.$(text).matched());
     }
 }

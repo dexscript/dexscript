@@ -7,21 +7,21 @@ public class DexNewExprTest {
 
     @Test
     public void zero_argument() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
+        TestFramework.assertObject(DexExpr::$parse);
     }
 
     @Test
     public void three_pos_args() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
+        TestFramework.assertObject(DexExpr::$parse);
     }
 
     @Test
     public void missing_target() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
+        TestFramework.assertObject(DexExpr::$parse);
     }
 
     @Test
     public void missing_function_call() {
-        TestFramework.assertParsedAST(DexExpr::$parse);
+        TestFramework.assertObject(DexExpr::$parse);
     }
 }

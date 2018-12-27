@@ -7,11 +7,11 @@ public class DexStringLiteralTypeTest {
 
     @Test
     public void matched() {
-        TestFramework.assertMatched(text -> new DexStringLiteralType(text).matched());
+        TestFramework.assertTrue(text -> new DexStringLiteralType(text).matched());
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertUnmatched(text -> new DexStringLiteralType(text).matched());
+        TestFramework.assertFalse(text -> new DexStringLiteralType(text).matched());
     }
 }

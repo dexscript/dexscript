@@ -6,26 +6,26 @@ import org.junit.Test;
 public class DexIfStmtTest {
     @Test
     public void no_else() {
-        TestFramework.assertParsedAST(DexIfStmt::$);
+        TestFramework.assertObject(DexIfStmt::$);
     }
 
     @Test
     public void with_else_if_only() {
-        TestFramework.assertParsedAST(DexIfStmt::$);
+        TestFramework.assertObject(DexIfStmt::$);
     }
 
     @Test
     public void with_else_only() {
-        TestFramework.assertParsedAST(DexIfStmt::$);
+        TestFramework.assertObject(DexIfStmt::$);
     }
 
     @Test
     public void with_else_if_and_else() {
-        TestFramework.assertParsedAST(DexIfStmt::$);
+        TestFramework.assertObject(DexIfStmt::$);
     }
 
     @Test
     public void else_before_else_if() {
-        TestFramework.assertParsedAST(DexIfStmt::$);
+        TestFramework.assertObject(DexIfStmt::$);
     }
 }

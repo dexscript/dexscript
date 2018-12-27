@@ -25,18 +25,24 @@ public interface TestFramework {
         return new FluentSelectNode().section(expectedHeadings);
     }
 
-    static void assertMatched(Predicate<String> predicate) {
+    static void assertTrue(Predicate<String> predicate) {
         Method method = InspectTestingMethod.$();
-        testDataFrom(method.getDeclaringClass()).assertMatched(method.getName(), predicate);
+        testDataFrom(method.getDeclaringClass())
+                .select(selectSection(method.getName()))
+                .assertTrue(predicate);
     }
 
-    static void assertUnmatched(Predicate<String> predicate) {
+    static void assertFalse(Predicate<String> predicate) {
         Method method = InspectTestingMethod.$();
-        testDataFrom(method.getDeclaringClass()).assertUnmatched(method.getName(), predicate);
+        testDataFrom(method.getDeclaringClass())
+                .select(selectSection(method.getName()))
+                .assertFalse(predicate);
     }
 
-    static void assertParsedAST(Function<String, Object> parse) {
+    static void assertObject(Function<String, Object> parse) {
         Method method = InspectTestingMethod.$();
-        testDataFrom(method.getDeclaringClass()).assertParsedAST(method.getName(), parse);
+        testDataFrom(method.getDeclaringClass())
+                .select(selectSection(method.getName()))
+                .assertObject(parse);
     }
 }

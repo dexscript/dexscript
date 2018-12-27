@@ -7,6 +7,6 @@ public class DexNegativeExprTest {
 
     @Test
     public void matched() {
-        TestFramework.assertParsedAST(DexNegativeExpr::$);
+        TestFramework.assertObject(DexNegativeExpr::$);
     }
 }

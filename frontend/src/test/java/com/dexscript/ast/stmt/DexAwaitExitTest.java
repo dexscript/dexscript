@@ -1,17 +1,16 @@
 package com.dexscript.ast.stmt;
 
 import com.dexscript.test.framework.TestFramework;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class DexAwaitExitTest {
     @Test
     public void matched() {
-        TestFramework.assertParsedAST(DexAwaitExit::$);
+        TestFramework.assertObject(DexAwaitExit::$);
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertParsedAST(DexAwaitExit::$);
+        TestFramework.assertObject(DexAwaitExit::$);
     }
 }

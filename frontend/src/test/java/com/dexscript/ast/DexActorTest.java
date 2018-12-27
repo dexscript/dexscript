@@ -7,31 +7,31 @@ public class DexActorTest {
 
     @Test
     public void empty() {
-        TestFramework.assertParsedAST(DexActor::$);
+        TestFramework.assertObject(DexActor::$);
     }
 
     @Test
     public void no_space_between_function_keyword_and_identifier() {
-        TestFramework.assertParsedAST(DexActor::$);
+        TestFramework.assertObject(DexActor::$);
     }
 
     @Test
     public void one_argument() {
-        TestFramework.assertParsedAST(DexActor::$);
+        TestFramework.assertObject(DexActor::$);
     }
 
     @Test
     public void missing_left_paren() {
-        TestFramework.assertParsedAST(DexActor::$);
+        TestFramework.assertObject(DexActor::$);
     }
 
     @Test
     public void missing_function_keyword() {
-        TestFramework.assertParsedAST(DexActor::$);
+        TestFramework.assertObject(DexActor::$);
     }
 
     @Test
     public void missing_left_brace() {
-        TestFramework.assertParsedAST(DexActor::$);
+        TestFramework.assertObject(DexActor::$);
     }
 }

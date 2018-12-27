@@ -1,6 +1,7 @@
 package com.dexscript.test.framework;
 
-import org.commonmark.node.*;
+import org.commonmark.node.Node;
+import org.commonmark.node.Visitor;
 import org.junit.Assert;
 
 import java.util.List;
@@ -33,6 +34,14 @@ public class FluentAPI {
         return new SelectTable().select(nodes);
     }
 
+    public Table table() {
+        List<Table> tables = tables();
+        if (tables.isEmpty()) {
+            Assert.fail("no table found");
+        }
+        return tables.get(0);
+    }
+
     public String code() {
         List<String> codes = codes();
         if (codes.isEmpty()) {
@@ -41,33 +50,32 @@ public class FluentAPI {
         return stripCode(codes.get(0));
     }
 
-    public void assertMatched(String expectedHeading, Predicate<String> predicate) {
-        List<String> texts = select(selectSection(expectedHeading).li()).texts();
+    public void assertTrue(Predicate<String> predicate) {
+        List<String> texts = select(new SelectListItem()).texts();
         if (texts.isEmpty()) {
-            throw new RuntimeException("no text found in section: " + expectedHeading);
+            throw new RuntimeException("no text found");
         }
         for (String text : texts) {
             text = translateDoubleQuote(text);
-            Assert.assertTrue(text + " should match", predicate.test(text));
+            Assert.assertTrue(text + " should be true", predicate.test(text));
         }
     }
 
-    public void assertUnmatched(String expectedHeading, Predicate<String> predicate) {
-        List<String> texts = select(selectSection(expectedHeading).li()).texts();
+    public void assertFalse(Predicate<String> predicate) {
+        List<String> texts = select(new SelectListItem()).texts();
         if (texts.isEmpty()) {
-            throw new RuntimeException("no text found in section: " + expectedHeading);
+            throw new RuntimeException("no text found");
         }
         for (String text : texts) {
             text = translateDoubleQuote(text);
-            Assert.assertFalse(text + " should not match", predicate.test(text));
+            Assert.assertFalse(text + " should be false", predicate.test(text));
         }
     }
 
-    public void assertParsedAST(String expectedHeading, Function<String, Object> parse) {
-        FluentAPI selected = select(selectSection(expectedHeading));
-        List<String> codes = selected.codes();
+    public void assertObject(Function<String, Object> parse) {
+        List<String> codes = this.codes();
         if (codes.isEmpty()) {
-            Assert.fail("no code found in section: " + expectedHeading);
+            Assert.fail("no code found");
         }
         String code = stripCode(codes.get(0));
         Object obj = parse.apply(code);
@@ -77,7 +85,7 @@ public class FluentAPI {
         }
         Assert.assertEquals(expectedToString, obj.toString());
         Visitor visitor = new AssertObject(obj);
-        for (Node node : selected.nodes) {
+        for (Node node : this.nodes) {
             node.accept(visitor);
         }
     }

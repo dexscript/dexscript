@@ -8,11 +8,11 @@ public class DexIdentifierTest {
 
     @Test
     public void matched() {
-        TestFramework.assertMatched(src -> DexIdentifier.$(src).matched());
+        TestFramework.assertTrue(src -> DexIdentifier.$(src).matched());
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertUnmatched(src -> DexIdentifier.$(src).matched());
+        TestFramework.assertFalse(src -> DexIdentifier.$(src).matched());
     }
 }
