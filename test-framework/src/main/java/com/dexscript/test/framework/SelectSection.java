@@ -43,6 +43,13 @@ public class SelectSection implements SelectNode {
             }
 
             @Override
+            public void visit(CustomBlock customBlock) {
+                if (shouldSelect) {
+                    selected.add(customBlock);
+                }
+            }
+
+            @Override
             public void visit(Heading heading) {
                 if (heading.getLevel() == headings.size() + 1) {
                     headings.add(SelectText.getText(heading));

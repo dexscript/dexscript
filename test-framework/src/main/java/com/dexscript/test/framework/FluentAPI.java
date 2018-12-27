@@ -1,7 +1,6 @@
 package com.dexscript.test.framework;
 
-import org.commonmark.node.Node;
-import org.commonmark.node.Visitor;
+import org.commonmark.node.*;
 import org.junit.Assert;
 
 import java.util.List;
@@ -22,16 +21,28 @@ public class FluentAPI {
         return new FluentAPI(selectNode.select(nodes));
     }
 
-    public List<String> text() {
+    public List<String> texts() {
         return new SelectText().select(nodes);
     }
 
-    public List<String> code() {
+    public List<String> codes() {
         return new SelectCode().select(nodes);
     }
 
+    public List<Table> tables() {
+        return new SelectTable().select(nodes);
+    }
+
+    public String code() {
+        List<String> codes = codes();
+        if (codes.isEmpty()) {
+            Assert.fail("no code found");
+        }
+        return stripCode(codes.get(0));
+    }
+
     public void assertMatched(String expectedHeading, Predicate<String> predicate) {
-        List<String> texts = select(selectSection(expectedHeading).li()).text();
+        List<String> texts = select(selectSection(expectedHeading).li()).texts();
         if (texts.isEmpty()) {
             throw new RuntimeException("no text found in section: " + expectedHeading);
         }
@@ -42,7 +53,7 @@ public class FluentAPI {
     }
 
     public void assertUnmatched(String expectedHeading, Predicate<String> predicate) {
-        List<String> texts = select(selectSection(expectedHeading).li()).text();
+        List<String> texts = select(selectSection(expectedHeading).li()).texts();
         if (texts.isEmpty()) {
             throw new RuntimeException("no text found in section: " + expectedHeading);
         }
@@ -54,7 +65,7 @@ public class FluentAPI {
 
     public void assertParsedAST(String expectedHeading, Function<String, Object> parse) {
         FluentAPI selected = select(selectSection(expectedHeading));
-        List<String> codes = selected.code();
+        List<String> codes = selected.codes();
         if (codes.isEmpty()) {
             Assert.fail("no code found in section: " + expectedHeading);
         }
@@ -90,5 +101,4 @@ public class FluentAPI {
         }
         return code.substring(0, code.length() - 1);
     }
-
 }

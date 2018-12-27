@@ -15,6 +15,12 @@ public interface TestFramework {
         return new FluentAPI(Arrays.asList(testData));
     }
 
+    static FluentAPI testDataFromMySection() {
+        Method method = InspectTestingMethod.$();
+        return testDataFrom(method.getDeclaringClass())
+                .select(selectSection(method.getName()));
+    }
+
     static FluentSelectNode selectSection(String... expectedHeadings) {
         return new FluentSelectNode().section(expectedHeadings);
     }
