@@ -60,11 +60,27 @@ Hello(arg0: 'a')
 # invoke_interface_without_impl
 
 ```dexscript
-interface Hello {
+interface HelloInf {
     SayHello(msg: string)
 }
 ```
 
-| funcName | posArgs  | candidates.size | skippeds.size |
-| -------- | -------- | --------------- | ------------- |
-| SayHello | `string` | 0               | 1             |
+| funcName | posArgs           | candidates.size | ignoreds.size |
+| -------- | ----------------- | --------------- | ------------- |
+| SayHello | `HelloInf,string` | 0               | 1             |
+
+# invoke_interface_with_impl
+
+```dexscript
+interface HelloInf {
+    SayHello(msg: string)
+}
+```
+
+```dexscript
+SayHello(self: int64, msg: string)
+```
+
+| funcName | posArgs           | candidates.size |
+| -------- | ----------------- | --------------- |
+| SayHello | `HelloInf,string` | 1               |

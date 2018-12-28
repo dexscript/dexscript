@@ -54,14 +54,7 @@ public class FunctionTableTest {
 
     @Test
     public void invoke_interface_with_impl() {
-        ts.defineInterface(DexInterface.$("" +
-                "interface Hello {" +
-                "   SayHello(msg: string)\n" +
-                "}"));
-        func("SayHello(self: int64, arg0: string)");
-        Dispatched dispatched = invoke("SayHello", null, "Hello,string", true);
-        Assert.assertEquals(1, dispatched.candidates.size());
-        Assert.assertEquals(1, dispatched.ignoreds.size());
+        testDispatch();
     }
 
     @Test
@@ -119,7 +112,7 @@ public class FunctionTableTest {
         testData.assertByTable((funcName, posArgs) -> ts.dispatch(new Invocation(
                 funcName, Collections.emptyList(),
                 ResolvePosArgs.$(ts, stripQuote(posArgs)),
-                Collections.emptyList(), ts.ANY, null)));
+                Collections.emptyList(), ts.ANY, null).requireImpl(true)));
     }
 
     private FunctionType func(String actorSrc) {
