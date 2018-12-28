@@ -5,7 +5,7 @@ import com.dexscript.shim.java.FunctionImpl;
 import com.dexscript.shim.java.JavaTypes;
 import com.dexscript.type.FunctionSig;
 import com.dexscript.type.FunctionType;
-import com.dexscript.type.Invoked;
+import com.dexscript.type.Dispatched;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +17,12 @@ public class FunctionChain {
     private final int paramsCount;
     private final List<FunctionType> functions;
 
-    public FunctionChain(String funcName, int paramsCount, Invoked invoked) {
+    public FunctionChain(String funcName, int paramsCount, Dispatched invoked) {
         this.funcName = funcName;
         this.paramsCount = paramsCount;
         this.functions = new ArrayList<>();
         for (FunctionSig.Invoked candidate : invoked.candidates) {
-            functions.add(candidate.function());
+            functions.add(candidate.func());
         }
     }
 

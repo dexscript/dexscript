@@ -35,11 +35,11 @@ public class TranslateNew implements Translate<DexNewExpr> {
 
         DexInvocation dexIvc = iNewExpr.invocation();
         Invocation ivc = InferInvocation.$(ts, dexIvc);
-        Invoked invoked = ts.invoke(ivc);
-        if (invoked.candidates.isEmpty()) {
+        Dispatched dispatched = ts.dispatch(ivc);
+        if (dispatched.candidates.isEmpty()) {
             ON_FUNCTION_MISSING.handle(iNewExpr);
         }
-        String newF = oClass.oShim().dispatch(funcName, ivc.argsCount(), invoked);
+        String newF = oClass.oShim().dispatch(funcName, ivc.argsCount(), dispatched);
 
         OutField oActorField = oClass.allocateField(funcName);
         Gen g = oClass.g();
@@ -51,12 +51,12 @@ public class TranslateNew implements Translate<DexNewExpr> {
         ).__("\"");
         for (int i = 0; i < iArgs.size(); i++) {
             g.__(", ");
-            g.__(Translate.translateExpr(oClass, iArgs.get(i), invoked.args.get(i)));
+            g.__(Translate.translateExpr(oClass, iArgs.get(i), dispatched.args.get(i)));
         }
-        for (int i = 0; i < invoked.namedArgsMapping.length; i++) {
-            int namedArgIndex = invoked.namedArgsMapping[i];
+        for (int i = 0; i < dispatched.namedArgsMapping.length; i++) {
+            int namedArgIndex = dispatched.namedArgsMapping[i];
             oClass.g().__(", ");
-            DType targetType = invoked.args.get(i + dexIvc.posArgs().size());
+            DType targetType = dispatched.args.get(i + dexIvc.posArgs().size());
             oClass.g().__(Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType));
         }
         oClass.g().__(", "

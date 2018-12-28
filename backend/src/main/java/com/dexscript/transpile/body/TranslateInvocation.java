@@ -37,12 +37,12 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         TypeSystem ts = oClass.typeSystem();
 
         Invocation ivc = InferInvocation.$(ts, dexIvc).requireImpl(true);
-        Invoked invoked = ts.invoke(ivc);
-        if (invoked.candidates.isEmpty()) {
+        Dispatched dispatched = ts.dispatch(ivc);
+        if (dispatched.candidates.isEmpty()) {
             throw new DexRuntimeException("can not find candidates: " + ivc);
         }
-        String newF = oClass.oShim().dispatch(ivc.funcName(), ivc.argsCount(), invoked);
-        DType retType = invoked.ret;
+        String newF = oClass.oShim().dispatch(ivc.funcName(), ivc.argsCount(), dispatched);
+        DType retType = dispatched.ret;
 
         OutField oActorField = oClass.allocateField(ivc.funcName());
         oClass.g().__(oActorField.value()
@@ -51,18 +51,18 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         ).__("(scheduler");
         for (int i = 0; i < dexIvc.posArgs().size(); i++) {
             oClass.g().__(", ");
-            oClass.g().__(Translate.translateExpr(oClass, dexIvc.posArgs().get(i), invoked.args.get(i)));
+            oClass.g().__(Translate.translateExpr(oClass, dexIvc.posArgs().get(i), dispatched.args.get(i)));
         }
-        for (int i = 0; i < invoked.namedArgsMapping.length; i++) {
-            int namedArgIndex = invoked.namedArgsMapping[i];
+        for (int i = 0; i < dispatched.namedArgsMapping.length; i++) {
+            int namedArgIndex = dispatched.namedArgsMapping[i];
             oClass.g().__(", ");
-            DType targetType = invoked.args.get(i + dexIvc.posArgs().size());
+            DType targetType = dispatched.args.get(i + dexIvc.posArgs().size());
             oClass.g().__(Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType));
         }
         oClass.g().__(", "
         ).__(Translate.translateContext(dexIvc)
         ).__(new Line(");"));
-        boolean needToConsume = needToConsume(invoked);
+        boolean needToConsume = needToConsume(dispatched);
         if (needToConsume) {
             return consume(oClass, retType, oActorField.value());
         }
@@ -77,12 +77,12 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         return oResultField;
     }
 
-    private static boolean needToConsume(Invoked invoked) {
+    private static boolean needToConsume(Dispatched dispatched) {
         boolean needToConsume = false;
-        for (FunctionSig.Invoked candidate : invoked.candidates) {
-            FunctionImpl impl = (FunctionImpl) candidate.function().impl();
+        for (FunctionSig.Invoked candidate : dispatched.candidates) {
+            FunctionImpl impl = (FunctionImpl) candidate.func().impl();
             if (impl == null) {
-                throw new IllegalStateException("function type defined without impl attached: " + candidate.function());
+                throw new IllegalStateException("function type defined without impl attached: " + candidate.func());
             }
             if (impl.hasAwait()) {
                 needToConsume = true;
