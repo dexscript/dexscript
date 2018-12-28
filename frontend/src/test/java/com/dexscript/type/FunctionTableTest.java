@@ -44,21 +44,12 @@ public class FunctionTableTest {
 
     @Test
     public void if_not_match_then_candidate_will_be_ignored() {
-        func("Hello(arg0: 'a')"); // candidate, but not match
-        Dispatched dispatched = invoke("Hello", "string");
-        Assert.assertEquals(0, dispatched.candidates.size());
-        Assert.assertEquals(1, dispatched.ignoreds.size());
+        testDispatch();
     }
 
     @Test
     public void invoke_interface_without_impl() {
-        ts.defineInterface(DexInterface.$("" +
-                "interface Hello {" +
-                "   SayHello(msg: string)\n" +
-                "}"));
-        Dispatched dispatched = invoke("SayHello", null, "Hello,string", true);
-        Assert.assertEquals(0, dispatched.candidates.size());
-        Assert.assertEquals(1, dispatched.ignoreds.size());
+        testDispatch();
     }
 
     @Test
@@ -119,7 +110,11 @@ public class FunctionTableTest {
     private void testDispatch() {
         FluentAPI testData = testDataFromMySection();
         for (String code : testData.codes()) {
-            func(code);
+            if (code.startsWith("interface")) {
+                ts.defineInterface(DexInterface.$(code));
+            } else {
+                func(code);
+            }
         }
         testData.assertByTable((funcName, posArgs) -> ts.dispatch(new Invocation(
                 funcName, Collections.emptyList(),

@@ -39,4 +39,8 @@ public class Dispatched {
     public List<FunctionType> skippeds() {
         return skippeds;
     }
+
+    public List<FunctionSig.Invoked> ignoreds() {
+        return ignoreds;
+    }
 }

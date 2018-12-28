@@ -47,6 +47,24 @@ Hello(arg0: 'a')
 | -------- | ------- | --------------- | ------------- | --------------------------- |
 | Hello    | `'a'`   | 1               | 1             | `Hello(arg0: string): void` |
 
+# if_not_match_then_candidate_will_be_ignored
 
+```dexscript
+Hello(arg0: 'a')
+```
 
+| funcName | posArgs  | candidates.size | ignoreds.size |
+| -------- | -------- | --------------- | ------------- |
+| Hello    | `string` | 0               | 1             |
 
+# invoke_interface_without_impl
+
+```dexscript
+interface Hello {
+    SayHello(msg: string)
+}
+```
+
+| funcName | posArgs  | candidates.size | skippeds.size |
+| -------- | -------- | --------------- | ------------- |
+| SayHello | `string` | 0               | 1             |
