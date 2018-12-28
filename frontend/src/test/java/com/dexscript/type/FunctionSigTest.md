@@ -44,14 +44,34 @@
 | `string` |         | true    |
 |          |         | false   |
 
-# infer_type_params
+# infer_one_direct_placeholder
 
 ```dexscript
 (<T>: string, arg0: T): T
 ```
 
-| posArgs  | func.ret | success |
-| ---      | ---      | ---     |
-| `string` | "string" | true    |
-| `'abc'`  | "'abc'"  | true    |
-| `int64`  | "T"      | false   |
+| posArgs  | func.ret | `func.params[0].type` | success |
+| -------- | -------- | ------------------- | ------- |
+| `string` | `string` | `string`            | true    |
+| `'abc'`  | `'abc'`  | `'abc'`             | true    |
+| `int64`  | `T`      | `T`                 | false   |
+
+# infer_one_parameterized_type
+
+```dexscript
+interface SomeInf {
+    <T>: interface{}
+    Get__(arg: T)
+}
+```
+
+```dexscript
+(<T>: string, arg0: SomeInf<T>): T
+```
+
+| posArgs           | func.ret | success |
+| ----------------- | -------- | ------- |
+| `SomeInf<string>` | `string` | true    |
+| `SomeInf<'abc'>`  | `'abc'`  | true    |
+| `SomeInf<int64>`  | `T`      | false   |
+

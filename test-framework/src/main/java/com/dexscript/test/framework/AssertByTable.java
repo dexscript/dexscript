@@ -3,6 +3,7 @@ package com.dexscript.test.framework;
 
 import org.junit.Assert;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -28,7 +29,7 @@ public class AssertByTable {
         for (int i = from; i < size; i++) {
             String path = table.head.get(i);
             String expected = row.get(i);
-            Object actual = access(obj, path.trim());
+            Object actual = access(obj, trimPath(path));
             String msg = path + ": " + row;
             if (isInteger(expected)) {
                 Assert.assertEquals(msg,
@@ -56,23 +57,53 @@ public class AssertByTable {
         }
     }
 
+    private static String trimPath(String path) {
+        path = path.trim();
+        if (path.startsWith("`")) {
+            return path.substring(1, path.length() - 1);
+        }
+        return path;
+    }
+
     private static Object access(Object obj, String path) {
         if (path.isEmpty()) {
             return obj;
         }
+        int next = searchNext(path);
+        String pathElem = path;
+        if (next != -1) {
+            pathElem = path.substring(0, next);
+        }
         if (path.charAt(0) == '.') {
-            path = path.substring(1);
+            pathElem = pathElem.substring(1);
+            obj = accessProperty(obj, path, pathElem);
+        } else if (path.charAt(0) == '[') {
+            pathElem = pathElem.substring(1, pathElem.length() - 1);
+            Integer index = Integer.valueOf(pathElem);
+            obj = accessIndex(obj, path, index);
+        } else {
+            obj = accessProperty(obj, path, pathElem);
         }
-        int next = path.indexOf('.', 1);
         if (next == -1) {
-            next = path.indexOf('[', 1);
+            return obj;
         }
-        if (next == -1) {
-            return accessProperty(obj, path, path);
-        }
-        String pathElem = path.substring(0, next);
-        obj = accessProperty(obj, path, pathElem);
         return access(obj, path.substring(next));
+    }
+
+    private static int searchNext(String path) {
+        for (int i = 1; i < path.length(); i++) {
+            if (path.charAt(i) == '.' || path.charAt(i) == '[') {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static Object accessIndex(Object obj, String path, Integer index) {
+        if (obj instanceof List) {
+            return ((List) obj).get(index);
+        }
+        return Array.get(obj, index);
     }
 
     private static Object accessProperty(Object obj, String path, String pathElem) {

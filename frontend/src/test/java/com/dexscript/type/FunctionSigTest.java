@@ -42,21 +42,13 @@ public class FunctionSigTest {
     }
 
     @Test
-    public void infer_type_params() {
+    public void infer_one_direct_placeholder() {
         testInvoke();
     }
 
     @Test
-    public void infer_nested_type_params() {
-        defineInterface("" +
-                "interface SomeInf {" +
-                "   <T>: interface{}\n" +
-                "   Get__(arg: T)\n" +
-                "}");
-        FunctionSig sig = sig("(<T>: string, arg0: SomeInf<T>): SomeInf<T>");
-        List<DType> args = resolve("SomeInf<string>");
-        InterfaceType ret = (InterfaceType) invoke(sig, args).func().ret();
-        Assert.assertEquals(resolve("string"), ret.typeArgs());
+    public void infer_one_parameterized_type() {
+        testInvoke();
     }
 
     @Test
@@ -135,7 +127,12 @@ public class FunctionSigTest {
 
     public void testInvoke() {
         FluentAPI testData = testDataFromMySection();
-        FunctionSig sig = sig(testData.code());
+        List<String> codes = testData.codes();
+        for (int i = 0; i < codes.size() - 1; i++) {
+            String code = codes.get(i);
+            ts.defineInterface(DexInterface.$(code));
+        }
+        FunctionSig sig = sig(codes.get(codes.size() - 1));
         if ("typeArgs".equals(testData.table().head.get(0))) {
             testData.assertByTable((typeArgs, posArgs) -> sig.invoke(
                     resolveWithComma(typeArgs),
