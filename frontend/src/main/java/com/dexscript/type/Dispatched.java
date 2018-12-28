@@ -47,4 +47,8 @@ public class Dispatched {
     public List<DType> args() {
         return args;
     }
+
+    public int[] namedArgsMapping() {
+        return namedArgsMapping;
+    }
 }

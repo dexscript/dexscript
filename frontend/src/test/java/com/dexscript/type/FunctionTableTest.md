@@ -111,3 +111,18 @@ Hello(arg0: int32)
 | funcName | posArgs      | candidates.size | `args[0]` |
 | -------- | ------------ | --------------- | --------- |
 | Hello    | `(const)100` | 1               | `int32`   |
+
+# call_with_named_arg
+
+```dexscript
+Hello(a: int32)
+```
+
+only named args, no positional args
+
+| funcName | posArgs | namedArgs | candidates.size | namedArgsMapping[0] |
+| -------- | ------- | --------- | --------------- | ------------------- |
+| Hello    |         | `a=int32` | 1               | 0                   |
+| Hello    |         | `b=int32` | 0               | null                |
+
+

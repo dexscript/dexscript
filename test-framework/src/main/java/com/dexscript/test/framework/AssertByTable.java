@@ -10,21 +10,7 @@ import java.util.List;
 
 public class AssertByTable {
 
-    public static void $(Table table, Function.F1<String, Object> sut) {
-        for (Row row : table.body) {
-            Object obj = sut.apply(row.get(0));
-            assertObj(table, row, obj, 1);
-        }
-    }
-
-    public static void $(Table table, Function.F2<String, String, Object> sut) {
-        for (Row row : table.body) {
-            Object obj = sut.apply(row.get(0), row.get(1));
-            assertObj(table, row, obj, 2);
-        }
-    }
-
-    private static void assertObj(Table table, List<String> row, Object obj, int from) {
+    public static void $(Table table, List<String> row, Object obj, int from) {
         int size = table.head.size();
         for (int i = from; i < size; i++) {
             String path = table.head.get(i);

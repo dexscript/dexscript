@@ -89,12 +89,26 @@ public class FluentAPI {
 
     public void assertByTable(Function.F1<String, Object> sut) {
         Table table = this.table();
-        AssertByTable.$(table, sut);
+        for (Row row : table.body) {
+            Object obj = sut.apply(row.get(0));
+            AssertByTable.$(table, row, obj, 1);
+        }
     }
 
     public void assertByTable(Function.F2<String, String, Object> sut) {
         Table table = this.table();
-        AssertByTable.$(table, sut);
+        for (Row row : table.body) {
+            Object obj = sut.apply(row.get(0), row.get(1));
+            AssertByTable.$(table, row, obj, 2);
+        }
+    }
+
+    public void assertByTable(Function.F3<String, String, String, Object> sut) {
+        Table table = this.table();
+        for (Row row : table.body) {
+            Object obj = sut.apply(row.get(0), row.get(1), row.get(2));
+            AssertByTable.$(table, row, obj, 3);
+        }
     }
 
     private String translateDoubleQuote(String text) {

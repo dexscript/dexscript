@@ -5,6 +5,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferType;
+import com.dexscript.infer.ResolveNamedArgs;
 import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
 import org.jetbrains.annotations.NotNull;
@@ -70,12 +71,7 @@ public class FunctionTableTest {
 
     @Test
     public void call_with_named_arg() {
-        func("Hello(a: int32)");
-        Dispatched dispatched = invoke("Hello", null,
-                "a", "int32");
-        Assert.assertEquals(1, dispatched.candidates.size());
-        Assert.assertEquals(ts.INT32, dispatched.args.get(0));
-        Assert.assertEquals(0, dispatched.namedArgsMapping[0]);
+        testDispatch();
     }
 
     @Test
@@ -100,10 +96,17 @@ public class FunctionTableTest {
                 func(code);
             }
         }
-        testData.assertByTable((funcName, posArgs) -> ts.dispatch(new Invocation(
-                funcName, Collections.emptyList(),
-                ResolvePosArgs.$(ts, stripQuote(posArgs)),
-                Collections.emptyList(), ts.ANY, null).requireImpl(true)));
+        if ("namedArgs".equals(testData.table().head.get(2))) {
+            testData.assertByTable((funcName, posArgs, namedArgs) -> ts.dispatch(new Invocation(
+                    funcName, Collections.emptyList(),
+                    ResolvePosArgs.$(ts, stripQuote(posArgs)),
+                    ResolveNamedArgs.$(ts, stripQuote(namedArgs)), ts.ANY, null).requireImpl(true)));
+        } else {
+            testData.assertByTable((funcName, posArgs) -> ts.dispatch(new Invocation(
+                    funcName, Collections.emptyList(),
+                    ResolvePosArgs.$(ts, stripQuote(posArgs)),
+                    Collections.emptyList(), ts.ANY, null).requireImpl(true)));
+        }
     }
 
     private FunctionType func(String actorSrc) {

@@ -45,6 +45,9 @@ public interface TestFramework {
     }
 
     static String stripQuote(String text) {
+        if (text.isEmpty()) {
+            return text;
+        }
         if (text.charAt(0) == '`') {
             return text.substring(1, text.length() - 1);
         }
