@@ -43,4 +43,11 @@ public interface TestFramework {
                 .select(selectSection(method.getName()))
                 .assertByList(sut);
     }
+
+    static String stripQuote(String text) {
+        if (text.charAt(0) == '`') {
+            return text.substring(1, text.length() - 1);
+        }
+        return text;
+    }
 }
