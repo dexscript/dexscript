@@ -18,7 +18,7 @@
 
 | posArgs    | success | needRuntimeCheck |
 | ---        | ---     | ---              |
-| `'abc'1`   | true    | false            |
+| `'abc'`    | true    | false            |
 | `string`   | true    | true             |
 | `int64`    | false   | false            |
 
@@ -74,4 +74,54 @@ interface SomeInf {
 | `SomeInf<string>` | `string` | true    |
 | `SomeInf<'abc'>`  | `'abc'`  | true    |
 | `SomeInf<int64>`  | `T`      | false   |
+
+# infer_deep_nested_type_params
+
+```dexscript
+interface SomeInf {   
+	<T>: interface{}
+	Action1(arg: T)
+}
+```
+
+```dexscript
+interface AnotherInf {   
+	<E1>: interface{}
+	<E2>: interface{}
+	Action2(index: '0', arg: E1)
+	Action3(index: '1', arg: E2)
+}
+```
+
+```dexscript
+(<E1>: string, <E2>: string, arg0: AnotherInf<SomeInf<E1>, SomeInf<E2>>): E2
+```
+
+| posArgs                                  | func.ret | success | needRuntimeCheck |
+| ---------------------------------------- | -------- | ------- | ---------------- |
+| `AnotherInf<SomeInf<'a'>, SomeInf<'b'>>` | `string` | true    | false            |
+
+# infer_two_direct_placeholders
+
+```desxscript
+(<T>: interface{}, left: T, right: T): T
+```
+
+| posArgs          | func.ret | success |
+| ---------------- | -------- | ------- |
+| `int64, int64`   | `int64`  | true    |
+| `string, string` | `string` | true    |
+| `string, int64`  | `T`      | false   |
+
+# specify_type_args
+
+```dexscript
+(<T>: interface{}, left: T, right: T): bool
+```
+
+| typeArgs | posArgs          | success |
+| -------- | ---------------- | ------- |
+| `int64`  | `string, string` | false   |
+| `int64`  | `int64, int64`   | true    |
+
 

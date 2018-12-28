@@ -1,12 +1,17 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.type.DexType;
 import com.dexscript.test.framework.FluentAPI;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -53,28 +58,12 @@ public class FunctionSigTest {
 
     @Test
     public void infer_deep_nested_type_params() {
-        defineInterface("" +
-                "interface SomeInf {" +
-                "   <T>: interface{}\n" +
-                "   Action1(arg: T)\n" +
-                "}");
-        defineInterface("" +
-                "interface AnotherInf {" +
-                "   <E1>: interface{}\n" +
-                "   <E2>: interface{}\n" +
-                "   Action2(index: '0', arg: E1)\n" +
-                "   Action3(index: '1', arg: E2)\n" +
-                "}");
-        FunctionSig sig = sig("(<E1>: string, <E2>: string, arg0: AnotherInf<SomeInf<E1>, SomeInf<E2>>): E2");
-        FunctionSig.Invoked invoked = invoke(sig, resolve("AnotherInf<SomeInf<'a'>, SomeInf<'b'>>"));
-        Assert.assertTrue(invoked.success());
-        Assert.assertEquals("string", invoked.func().ret().toString());
+        testInvoke();
     }
 
     @Test
-    public void type_parameter_constraint_function() {
-        FunctionSig sig = sig("(<T>: interface{}, left: T, right: T): bool");
-        Assert.assertFalse(invoke(sig, resolve("string", "int64")).success());
+    public void infer_two_direct_placeholders() {
+        testInvoke();
     }
 
     @Test
@@ -86,22 +75,11 @@ public class FunctionSigTest {
 
     @Test
     public void specify_type_args() {
-        FunctionSig sig = sig("(<T>: interface{}, left: T, right: T): bool");
-        Assert.assertFalse(sig.invoke(
-                resolve("int64"),
-                resolve("string", "string"), ts.ANY, null).success());
+        testInvoke();
     }
 
     @Test
-    public void invoke_non_generic_function_with_type_args() {
-        FunctionSig sig = sig("(left: T, right: T): bool");
-        Assert.assertFalse(sig.invoke(
-                resolve("int64"),
-                resolve("string", "string"), ts.ANY, null).success());
-    }
-
-    @Test
-    public void invoke_with_incompatible_context() {
+    public void specify_context_arg() {
         ts.defineInterface(DexInterface.$("" +
                 "interface $ {\n" +
                 "   GetPid(): string\n" +
@@ -128,6 +106,9 @@ public class FunctionSigTest {
     public void testInvoke() {
         FluentAPI testData = testDataFromMySection();
         List<String> codes = testData.codes();
+        if (codes.isEmpty()) {
+            throw new RuntimeException("no code found");
+        }
         for (int i = 0; i < codes.size() - 1; i++) {
             String code = codes.get(i);
             ts.defineInterface(DexInterface.$(code));
@@ -161,7 +142,29 @@ public class FunctionSigTest {
             throw new RuntimeException("need to use `string` instead of string");
         }
         typeDefs = typeDefs.substring(1, typeDefs.length() - 1);
-        return ResolveType.resolveTypes(ts, typeDefs.split(","));
+        Text src = new Text(typeDefs);
+        List<DType> args = new ArrayList<>();
+        while(true) {
+            DexType arg = DexType.parse(src);
+            arg.attach(DexPackage.DUMMY);
+            if (!arg.matched()) {
+                throw new RuntimeException("unable to parse invocation args: " + src);
+            }
+            args.add(ResolveType.$(ts, null, arg));
+            src = src.slice(arg.end());
+            int i = src.begin;
+            for (; i < src.end; i++) {
+                if (Blank.$(src.bytes[i]) || src.bytes[i] == ',') {
+                    continue;
+                }
+                src = src.slice(i);
+                break;
+            }
+            if (i == src.end) {
+                break;
+            }
+        }
+        return args;
     }
 
     private List<DType> resolve(String... typeDefs) {

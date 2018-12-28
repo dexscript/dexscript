@@ -5,7 +5,6 @@ import org.commonmark.node.Visitor;
 import org.junit.Assert;
 
 import java.util.List;
-import java.util.Map;
 
 public class FluentAPI {
 
@@ -16,7 +15,8 @@ public class FluentAPI {
     }
 
     public FluentAPI select(SelectNode selectNode) {
-        return new FluentAPI(selectNode.select(nodes));
+        List<Node> selected = selectNode.select(nodes);
+        return new FluentAPI(selected);
     }
 
     public List<String> texts() {
