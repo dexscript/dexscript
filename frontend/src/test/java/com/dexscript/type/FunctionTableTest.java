@@ -28,16 +28,13 @@ public class FunctionTableTest {
     }
 
     @Test
-    public void match_one() {
+    public void only_match_one() {
         testDispatch();
     }
 
     @Test
-    public void match_two() {
-        func("Hello(arg0: 'a')");
-        func("Hello(arg0: string)");
-        Dispatched dispatched = invoke("Hello", "string");
-        Assert.assertEquals(2, dispatched.candidates.size());
+    public void need_runtime_check() {
+        testDispatch();
     }
 
     @Test

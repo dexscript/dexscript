@@ -66,6 +66,9 @@ public class AssertByTable {
     }
 
     private static Object access(Object obj, String path) {
+        if (obj == null) {
+            return null;
+        }
         if (path.isEmpty()) {
             return obj;
         }
@@ -101,7 +104,11 @@ public class AssertByTable {
 
     private static Object accessIndex(Object obj, String path, Integer index) {
         if (obj instanceof List) {
-            return ((List) obj).get(index);
+            List list = (List) obj;
+            if (index >= list.size()) {
+                return null;
+            }
+            return list.get(index);
         }
         return Array.get(obj, index);
     }
