@@ -29,8 +29,8 @@ Hello(arg0: interface{})
 
 | funcName | posArgs       | candidates.size | `candidates[0].func`     | `candidates[1].func`        | `candidates[2].func`             |
 | -------- | ------------- | --------------- | ------------------------ | --------------------------- | -------------------------------- |
-| Hello    | `'a'`         | 1               | `Hello(arg0: 'a'): void` | null                        | null                             |
-| Hello    | `string`      | 2               | `Hello(arg0: 'a'): void` | `Hello(arg0: string): void` | null                             |
+| Hello    | `'a'`         | 1               | `Hello(arg0: 'a'): void` | undefined                   | undefined                        |
+| Hello    | `string`      | 2               | `Hello(arg0: 'a'): void` | `Hello(arg0: string): void` | undefined                        |
 | Hello    | `interface{}` | 3               | `Hello(arg0: 'a'): void` | `Hello(arg0: string): void` | `Hello(arg0: interface{}): void` |
 
 # if_matched_then_following_candidates_will_be_skipped
@@ -123,6 +123,6 @@ only named args, no positional args
 | funcName | posArgs | namedArgs | candidates.size | namedArgsMapping[0] |
 | -------- | ------- | --------- | --------------- | ------------------- |
 | Hello    |         | `a=int32` | 1               | 0                   |
-| Hello    |         | `b=int32` | 0               | null                |
+| Hello    |         | `b=int32` | 0               | undefined           |
 
 

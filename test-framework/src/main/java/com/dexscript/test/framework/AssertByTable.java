@@ -2,6 +2,7 @@ package com.dexscript.test.framework;
 
 
 import org.junit.Assert;
+import org.junit.Test;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -9,6 +10,13 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 public class AssertByTable {
+
+    private static final Object UNDEFINED = new Object() {
+        @Override
+        public String toString() {
+            return "UNDEFINED";
+        }
+    };
 
     public static void $(Table table, List<String> row, Object obj, int from) {
         int size = table.head.size();
@@ -36,6 +44,10 @@ public class AssertByTable {
             } else if ("null".equals(expected)) {
                 Assert.assertNull(msg,
                         actual);
+            } else if ("undefined".equals(expected)) {
+                Assert.assertEquals(msg,
+                        UNDEFINED,
+                        actual);
             } else {
                 Assert.assertNull(msg,
                         actual);
@@ -53,7 +65,7 @@ public class AssertByTable {
 
     private static Object access(Object obj, String path) {
         if (obj == null) {
-            return null;
+            return UNDEFINED;
         }
         if (path.isEmpty()) {
             return obj;
@@ -92,7 +104,7 @@ public class AssertByTable {
         if (obj instanceof List) {
             List list = (List) obj;
             if (index >= list.size()) {
-                return null;
+                return UNDEFINED;
             }
             return list.get(index);
         }
@@ -111,7 +123,7 @@ public class AssertByTable {
                 throw new RuntimeException("access: " + path, e);
             }
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            return UNDEFINED;
         }
     }
 
