@@ -2,6 +2,7 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
 import org.junit.Assert;
 import org.junit.Before;

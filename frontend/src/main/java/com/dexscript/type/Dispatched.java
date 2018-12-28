@@ -43,4 +43,8 @@ public class Dispatched {
     public List<FunctionSig.Invoked> ignoreds() {
         return ignoreds;
     }
+
+    public List<DType> args() {
+        return args;
+    }
 }

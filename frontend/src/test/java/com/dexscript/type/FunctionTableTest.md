@@ -84,3 +84,30 @@ SayHello(self: int64, msg: string)
 | funcName | posArgs           | candidates.size |
 | -------- | ----------------- | --------------- |
 | SayHello | `HelloInf,string` | 1               |
+
+# impl_should_override_interface
+
+```dexscript
+interface HelloInf {
+    SayHello(msg: string)
+}
+```
+
+```dexscript
+SayHello(self: int64, msg: interface{})
+```
+
+| funcName | posArgs           | candidates.size |
+| -------- | ----------------- | --------------- |
+| SayHello | `HelloInf,string` | 0               |
+
+
+# widen_const_type
+
+```dexscript
+Hello(arg0: int32)
+```
+
+| funcName | posArgs      | candidates.size | `args[0]` |
+| -------- | ------------ | --------------- | --------- |
+| Hello    | `(const)100` | 1               | `int32`   |

@@ -5,6 +5,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferType;
+import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
@@ -58,23 +59,13 @@ public class FunctionTableTest {
     }
 
     @Test
-    public void ignore_candidate_wider_than_the_match() {
-        ts.defineInterface(DexInterface.$("" +
-                "interface Hello {" +
-                "   SayHello(msg: string)\n" +
-                "}"));
-        func("SayHello(self: int64, arg0: interface{})");
-        Dispatched dispatched = invoke("SayHello", null, "Hello,string", true);
-        Assert.assertEquals(0, dispatched.candidates.size());
-        Assert.assertEquals(2, dispatched.ignoreds.size());
+    public void impl_should_override_interface() {
+        testDispatch();
     }
 
     @Test
     public void widen_const_type() {
-        func("Hello(arg0: int32)");
-        Dispatched dispatched = invoke("Hello", "(const)100");
-        Assert.assertEquals(1, dispatched.candidates.size());
-        Assert.assertEquals(ts.INT32, dispatched.args.get(0));
+        testDispatch();
     }
 
     @Test

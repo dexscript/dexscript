@@ -1,5 +1,6 @@
-package com.dexscript.type;
+package com.dexscript.infer;
 
+import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,5 +29,10 @@ public class ResolvePosArgsTest {
     @Test
     public void two_args() {
         Assert.assertEquals(Arrays.asList(ts.STRING, ts.STRING), ResolvePosArgs.$(ts, "string,string"));
+    }
+
+    @Test
+    public void const_type() {
+        Assert.assertEquals(Arrays.asList(ts.constOf(100)), ResolvePosArgs.$(ts, "(const)100"));
     }
 }
