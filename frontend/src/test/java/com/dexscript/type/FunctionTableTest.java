@@ -5,13 +5,18 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferType;
+import com.dexscript.test.framework.FluentAPI;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static com.dexscript.test.framework.TestFramework.stripQuote;
+import static com.dexscript.test.framework.TestFramework.testDataFromMySection;
 
 public class FunctionTableTest {
 
@@ -24,36 +29,32 @@ public class FunctionTableTest {
 
     @Test
     public void match_one() {
-        FunctionType func1 = func("Hello(arg0: string)");
-        FunctionType func2 = func("Hello(arg0: int64)");
-        Invoked invoked = invoke("Hello", "string");
-        Assert.assertEquals(1, invoked.candidates.size());
-        Assert.assertEquals(func1, invoked.candidates.get(0).func());
+        testDispatch();
     }
 
     @Test
     public void match_two() {
         func("Hello(arg0: 'a')");
         func("Hello(arg0: string)");
-        Invoked invoked = invoke("Hello", "string");
-        Assert.assertEquals(2, invoked.candidates.size());
+        Dispatched dispatched = invoke("Hello", "string");
+        Assert.assertEquals(2, dispatched.candidates.size());
     }
 
     @Test
     public void if_matched_then_following_candidates_will_be_skipped() {
         func("Hello(arg0: string)");
         func("Hello(arg0: 'a')");
-        Invoked invoked = invoke("Hello", "string");
-        Assert.assertEquals(1, invoked.candidates.size());
-        Assert.assertEquals(1, invoked.skippeds.size());
+        Dispatched dispatched = invoke("Hello", "string");
+        Assert.assertEquals(1, dispatched.candidates.size());
+        Assert.assertEquals(1, dispatched.skippeds.size());
     }
 
     @Test
     public void if_not_match_then_candidate_will_be_ignored() {
         func("Hello(arg0: 'a')"); // candidate, but not match
-        Invoked invoked = invoke("Hello", "string");
-        Assert.assertEquals(0, invoked.candidates.size());
-        Assert.assertEquals(1, invoked.ignoreds.size());
+        Dispatched dispatched = invoke("Hello", "string");
+        Assert.assertEquals(0, dispatched.candidates.size());
+        Assert.assertEquals(1, dispatched.ignoreds.size());
     }
 
     @Test
@@ -62,9 +63,9 @@ public class FunctionTableTest {
                 "interface Hello {" +
                 "   SayHello(msg: string)\n" +
                 "}"));
-        Invoked invoked = invoke("SayHello", null, "Hello,string", true);
-        Assert.assertEquals(0, invoked.candidates.size());
-        Assert.assertEquals(1, invoked.ignoreds.size());
+        Dispatched dispatched = invoke("SayHello", null, "Hello,string", true);
+        Assert.assertEquals(0, dispatched.candidates.size());
+        Assert.assertEquals(1, dispatched.ignoreds.size());
     }
 
     @Test
@@ -74,9 +75,9 @@ public class FunctionTableTest {
                 "   SayHello(msg: string)\n" +
                 "}"));
         func("SayHello(self: int64, arg0: string)");
-        Invoked invoked = invoke("SayHello", null, "Hello,string", true);
-        Assert.assertEquals(1, invoked.candidates.size());
-        Assert.assertEquals(1, invoked.ignoreds.size());
+        Dispatched dispatched = invoke("SayHello", null, "Hello,string", true);
+        Assert.assertEquals(1, dispatched.candidates.size());
+        Assert.assertEquals(1, dispatched.ignoreds.size());
     }
 
     @Test
@@ -86,40 +87,51 @@ public class FunctionTableTest {
                 "   SayHello(msg: string)\n" +
                 "}"));
         func("SayHello(self: int64, arg0: interface{})");
-        Invoked invoked = invoke("SayHello", null, "Hello,string", true);
-        Assert.assertEquals(0, invoked.candidates.size());
-        Assert.assertEquals(2, invoked.ignoreds.size());
+        Dispatched dispatched = invoke("SayHello", null, "Hello,string", true);
+        Assert.assertEquals(0, dispatched.candidates.size());
+        Assert.assertEquals(2, dispatched.ignoreds.size());
     }
 
     @Test
     public void widen_const_type() {
         func("Hello(arg0: int32)");
-        Invoked invoked = invoke("Hello", "(const)100");
-        Assert.assertEquals(1, invoked.candidates.size());
-        Assert.assertEquals(ts.INT32, invoked.args.get(0));
+        Dispatched dispatched = invoke("Hello", "(const)100");
+        Assert.assertEquals(1, dispatched.candidates.size());
+        Assert.assertEquals(ts.INT32, dispatched.args.get(0));
     }
 
     @Test
     public void call_with_named_arg() {
         func("Hello(a: int32)");
-        Invoked invoked = invoke("Hello", null,
+        Dispatched dispatched = invoke("Hello", null,
                 "a", "int32");
-        Assert.assertEquals(1, invoked.candidates.size());
-        Assert.assertEquals(ts.INT32, invoked.args.get(0));
-        Assert.assertEquals(0, invoked.namedArgsMapping[0]);
+        Assert.assertEquals(1, dispatched.candidates.size());
+        Assert.assertEquals(ts.INT32, dispatched.args.get(0));
+        Assert.assertEquals(0, dispatched.namedArgsMapping[0]);
     }
 
     @Test
     public void call_with_two_named_args() {
         func("Hello(a: int32, b: int64)");
-        Invoked invoked = invoke("Hello", null,
+        Dispatched dispatched = invoke("Hello", null,
                 "b", "int64",
                 "a", "int32");
-        Assert.assertEquals(1, invoked.candidates.size());
-        Assert.assertEquals(ts.INT32, invoked.args.get(0));
-        Assert.assertEquals(ts.INT64, invoked.args.get(1));
-        Assert.assertEquals(1, invoked.namedArgsMapping[0]);
-        Assert.assertEquals(0, invoked.namedArgsMapping[1]);
+        Assert.assertEquals(1, dispatched.candidates.size());
+        Assert.assertEquals(ts.INT32, dispatched.args.get(0));
+        Assert.assertEquals(ts.INT64, dispatched.args.get(1));
+        Assert.assertEquals(1, dispatched.namedArgsMapping[0]);
+        Assert.assertEquals(0, dispatched.namedArgsMapping[1]);
+    }
+
+    private void testDispatch() {
+        FluentAPI testData = testDataFromMySection();
+        for (String code : testData.codes()) {
+            func(code);
+        }
+        testData.assertByTable((funcName, posArgs) -> ts.dispatch(new Invocation(
+                funcName, Collections.emptyList(),
+                ResolvePosArgs.$(ts, stripQuote(posArgs)),
+                Collections.emptyList(), ts.ANY, null)));
     }
 
     private FunctionType func(String actorSrc) {
@@ -130,11 +142,11 @@ public class FunctionTableTest {
         return funcType;
     }
 
-    private Invoked invoke(String funcName, String argsStr, Object... namedArgs) {
+    private Dispatched invoke(String funcName, String argsStr, Object... namedArgs) {
         return _invoke(funcName, null, argsStr, namedArgs, false);
     }
 
-    private Invoked _invoke(String funcName, String typeArgsStr, String argsStr, Object[] namedArgObjs, boolean requiresImpl) {
+    private Dispatched _invoke(String funcName, String typeArgsStr, String argsStr, Object[] namedArgObjs, boolean requiresImpl) {
         List<DType> typeArgs = new ArrayList<>();
         if (typeArgsStr != null) {
             typeArgs = resolve(typeArgsStr);
@@ -149,7 +161,7 @@ public class FunctionTableTest {
             DType type = resolve((String) namedArgObjs[i + 1]).get(0);
             namedArgs.add(new NamedArg(name, type));
         }
-        return ts.invoke(new Invocation(funcName, typeArgs, posArgs, namedArgs, ts.ANY, null).requireImpl(requiresImpl));
+        return ts.dispatch(new Invocation(funcName, typeArgs, posArgs, namedArgs, ts.ANY, null).requireImpl(requiresImpl));
     }
 
     @NotNull

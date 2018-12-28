@@ -16,8 +16,8 @@ public class InferInvocation<E extends DexExpr & DexInvocationExpr> implements I
     public DType handle(TypeSystem ts, E elem) {
         DexInvocation dexIvc = elem.invocation();
         Invocation ivc = InferInvocation.$(ts, dexIvc);
-        Invoked invoked = ts.invoke(ivc);
-        return invoked.ret == null ? ts.UNDEFINED : invoked.ret;
+        Dispatched dispatched = ts.dispatch(ivc);
+        return dispatched.ret == null ? ts.UNDEFINED : dispatched.ret;
     }
 
     public static Invocation $(TypeSystem ts, DexInvocation dexIvc) {

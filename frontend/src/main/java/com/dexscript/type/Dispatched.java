@@ -3,7 +3,7 @@ package com.dexscript.type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Invoked {
+public class Dispatched {
 
     // const type will be substituted,
     // so the invocation args may not be the same as invoked args
@@ -31,4 +31,8 @@ public class Invoked {
 
     // if match found, other functions will be skipped
     public final List<FunctionType> skippeds = new ArrayList<>();
+
+    public List<FunctionSig.Invoked> candidates() {
+        return candidates;
+    }
 }

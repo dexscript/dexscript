@@ -23,70 +23,70 @@ public class FunctionTable {
         ON_FUNCTION_DEFINED.handle(func);
     }
 
-    public Invoked invoke(Invocation ivc) {
+    public Dispatched dispatch(Invocation ivc) {
         SubstituteConst substituteConst = new SubstituteConst(ivc.posArgs(), ivc.namedArgs());
-        Invoked invoked = null;
+        Dispatched dispatched = null;
         while (substituteConst.hasNext()) {
             SubstituteConst.Combination combination = substituteConst.next();
-            invoked = tryInvoke(ivc, combination.posArgs, combination.namedArgs);
-            if (!invoked.candidates.isEmpty()) {
-                return invoked;
+            dispatched = tryInvoke(ivc, combination.posArgs, combination.namedArgs);
+            if (!dispatched.candidates.isEmpty()) {
+                return dispatched;
             }
         }
-        return invoked;
+        return dispatched;
     }
 
     // implement polymorphism: choose candidates statically
     // in runtime, invocation will dispatch candidate based on actual type
-    public Invoked tryInvoke(Invocation ivc, List<DType> args, List<NamedArg> namedArgs) {
+    public Dispatched tryInvoke(Invocation ivc, List<DType> args, List<NamedArg> namedArgs) {
         String funcName = ivc.funcName();
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
         if (functions == null) {
-            return new Invoked();
+            return new Dispatched();
         }
-        Invoked invoked = new Invoked();
+        Dispatched dispatched = new Dispatched();
         List<FunctionSig.Invoked> potentialCandidates = new ArrayList<>();
         for (int i = 0; i < functions.size(); i++) {
             FunctionType func = functions.get(i);
-            if (invoked.match != null) {
-                invoked.skippeds.add(func);
+            if (dispatched.match != null) {
+                dispatched.skippeds.add(func);
                 continue;
             }
             MapNamedArgs mapNamedArgs = MapNamedArgs.$(func, args, namedArgs);
             if (mapNamedArgs == null) {
-                invoked.skippeds.add(func);
+                dispatched.skippeds.add(func);
                 continue;
             }
             FunctionSig.Invoked candidate = func.sig().invoke(ivc.typeArgs(), mapNamedArgs.args, ivc.context(), ivc.retHint());
             if (!candidate.success()) {
-                invoked.failures.add(candidate);
+                dispatched.failures.add(candidate);
                 continue;
             }
             potentialCandidates.add(candidate);
             if (!candidate.needRuntimeCheck()) {
-                invoked.args = mapNamedArgs.args;
-                invoked.namedArgsMapping = mapNamedArgs.mapping;
-                invoked.match = candidate;
+                dispatched.args = mapNamedArgs.args;
+                dispatched.namedArgsMapping = mapNamedArgs.mapping;
+                dispatched.match = candidate;
             }
         }
-        if (invoked.match != null) {
+        if (dispatched.match != null) {
             for (FunctionSig.Invoked candidate : potentialCandidates) {
                 if (ivc.requireImpl() && !candidate.func().hasImpl()) {
                     // no impl
-                    invoked.ignoreds.add(candidate);
-                } else if (!IsAssignable.$(candidate.func(), invoked.match.func())) {
+                    dispatched.ignoreds.add(candidate);
+                } else if (!IsAssignable.$(candidate.func(), dispatched.match.func())) {
                     // not overriding the match
-                    invoked.ignoreds.add(candidate);
+                    dispatched.ignoreds.add(candidate);
                 } else {
-                    invoked.candidates.add(candidate);
+                    dispatched.candidates.add(candidate);
                 }
             }
         } else {
-            invoked.ignoreds.addAll(potentialCandidates);
+            dispatched.ignoreds.addAll(potentialCandidates);
         }
-        invoked.ret = unionRet(invoked.candidates);
-        return invoked;
+        dispatched.ret = unionRet(dispatched.candidates);
+        return dispatched;
     }
 
     private DType unionRet(List<FunctionSig.Invoked> candidates) {

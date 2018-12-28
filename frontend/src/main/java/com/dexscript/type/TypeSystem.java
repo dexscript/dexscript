@@ -5,9 +5,7 @@ import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.inf.DexInfMethod;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class TypeSystem {
@@ -77,8 +75,8 @@ public class TypeSystem {
         return new InterfaceType(this, inf);
     }
 
-    public Invoked invoke(Invocation ivc) {
-        return functionTable.invoke(ivc);
+    public Dispatched dispatch(Invocation ivc) {
+        return functionTable.dispatch(ivc);
     }
 
     public void defineType(DexPackage pkg, NamedType type) {
