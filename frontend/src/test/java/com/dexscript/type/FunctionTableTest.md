@@ -120,9 +120,18 @@ Hello(a: int32)
 
 only named args, no positional args
 
-| funcName | posArgs | namedArgs | candidates.size | namedArgsMapping[0] |
-| -------- | ------- | --------- | --------------- | ------------------- |
-| Hello    |         | `a=int32` | 1               | 0                   |
-| Hello    |         | `b=int32` | 0               | undefined           |
+| funcName | posArgs | namedArgs | candidates.size | `namedArgsMapping[0]` |
+| -------- | ------- | --------- | --------------- | --------------------- |
+| Hello    |         | `a=int32` | 1               | 0                     |
+| Hello    |         | `b=int32` | 0               | undefined             |
 
+# call_with_two_named_args
 
+```dexscript
+Hello(a: int32, b: int64)
+```
+
+| funcName | posArgs | namedArgs          | candidates.size | `namedArgsMapping[0]` | `namedArgsMapping[1]` |
+| -------- | ------- | ------------------ | --------------- | --------------------- | --------------------- |
+| Hello    |         | `b=int64, a=int32` | 1               | 1                     | 0                     |
+| Hello    |         | `a=int32`          | 0               | undefined             | undefined             |

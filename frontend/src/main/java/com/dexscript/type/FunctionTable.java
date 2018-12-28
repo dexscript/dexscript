@@ -28,7 +28,7 @@ public class FunctionTable {
         Dispatched dispatched = null;
         while (substituteConst.hasNext()) {
             SubstituteConst.Combination combination = substituteConst.next();
-            dispatched = tryInvoke(ivc, combination.posArgs, combination.namedArgs);
+            dispatched = tryDispatch(ivc, combination.posArgs, combination.namedArgs);
             if (!dispatched.candidates.isEmpty()) {
                 return dispatched;
             }
@@ -38,7 +38,7 @@ public class FunctionTable {
 
     // implement polymorphism: choose candidates statically
     // in runtime, invocation will dispatch candidate based on actual type
-    public Dispatched tryInvoke(Invocation ivc, List<DType> args, List<NamedArg> namedArgs) {
+    public Dispatched tryDispatch(Invocation ivc, List<DType> args, List<NamedArg> namedArgs) {
         String funcName = ivc.funcName();
         pullFromProviders();
         List<FunctionType> functions = defined.get(funcName);
