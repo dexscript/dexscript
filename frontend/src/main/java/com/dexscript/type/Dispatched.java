@@ -35,4 +35,8 @@ public class Dispatched {
     public List<FunctionSig.Invoked> candidates() {
         return candidates;
     }
+
+    public List<FunctionType> skippeds() {
+        return skippeds;
+    }
 }

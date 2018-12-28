@@ -39,11 +39,7 @@ public class FunctionTableTest {
 
     @Test
     public void if_matched_then_following_candidates_will_be_skipped() {
-        func("Hello(arg0: string)");
-        func("Hello(arg0: 'a')");
-        Dispatched dispatched = invoke("Hello", "string");
-        Assert.assertEquals(1, dispatched.candidates.size());
-        Assert.assertEquals(1, dispatched.skippeds.size());
+        testDispatch();
     }
 
     @Test

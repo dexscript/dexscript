@@ -33,6 +33,20 @@ Hello(arg0: interface{})
 | Hello    | `string`      | 2               | `Hello(arg0: 'a'): void` | `Hello(arg0: string): void` | null                             |
 | Hello    | `interface{}` | 3               | `Hello(arg0: 'a'): void` | `Hello(arg0: string): void` | `Hello(arg0: interface{}): void` |
 
+# if_matched_then_following_candidates_will_be_skipped
+
+```dexscript
+Hello(arg0: string)
+```
+
+```dexscript
+Hello(arg0: 'a')
+```
+
+| funcName | posArgs | candidates.size | skippeds.size | `candidates[0].func`        |
+| -------- | ------- | --------------- | ------------- | --------------------------- |
+| Hello    | `'a'`   | 1               | 1             | `Hello(arg0: string): void` |
+
 
 
 
