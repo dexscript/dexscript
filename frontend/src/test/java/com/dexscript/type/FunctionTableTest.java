@@ -104,7 +104,7 @@ public class FunctionTableTest {
     private FunctionType func(String actorSrc) {
         DexActor actor = DexActor.$("function " + actorSrc);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
-        FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
+        FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret());
         funcType.implProvider(expandedFunc -> new Object());
         return funcType;
     }

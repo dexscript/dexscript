@@ -60,14 +60,7 @@ public class TypeSystem {
     public void defineGlobalSPI(DexInterface inf) {
         for (DexInfMethod infMethod : inf.methods()) {
             String name = infMethod.identifier().toString();
-            List<FunctionParam> params = new ArrayList<>();
-            for (DexParam param : infMethod.sig().params()) {
-                String paramName = param.paramName().toString();
-                DType paramType = ResolveType.$(this, null, param.paramType());
-                params.add(new FunctionParam(paramName, paramType));
-            }
-            DType ret = ResolveType.$(this, null, infMethod.sig().ret());
-            this.defineFunction(new FunctionType(this, name, params, ret));
+            this.defineFunction(new FunctionType(this, name, null, infMethod.sig()));
         }
     }
 

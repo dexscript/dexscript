@@ -1,7 +1,11 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.elem.DexParam;
+import com.dexscript.ast.elem.DexSig;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 // Function DType: test type compatibility, more permissive than signature
@@ -12,11 +16,12 @@ public final class FunctionType implements DType {
 
     private final TypeSystem ts;
 
+    private final DexPackage pkg;
+
     @NotNull
     private final String name;
 
-    @NotNull
-    private final DType context;
+    private DType context;
 
     @NotNull
     private final List<FunctionParam> params;
@@ -31,24 +36,46 @@ public final class FunctionType implements DType {
 
     private FunctionImplProvider implProvider;
 
-    public FunctionType(TypeSystem ts, @NotNull String name,
-                        @NotNull List<FunctionParam> params, @NotNull DType ret) {
-        this(ts, name, params, ret, null);
+    public FunctionType(TypeSystem ts,
+                        @NotNull String name,
+                        @NotNull List<FunctionParam> params,
+                        @NotNull DType ret) {
+        this(ts, DexPackage.DUMMY, name, params, ret);
     }
 
-    public FunctionType(TypeSystem ts, @NotNull String name,
-                        @NotNull List<FunctionParam> params, @NotNull DType ret,
-                        FunctionSig sig) {
+    // non generic function
+    public FunctionType(TypeSystem ts,
+                        DexPackage pkg,
+                        @NotNull String name,
+                        @NotNull List<FunctionParam> params,
+                        @NotNull DType ret) {
         this.ts = ts;
+        this.pkg = pkg;
         this.name = name;
         this.params = params;
         this.ret = ret;
-        if (sig == null) {
-            sig = new FunctionSig(ts, params, ts.ANY, ret);
-        }
-        this.context = sig.contextParam();
+        sig = new FunctionSig(ts, params, ts.ANY, ret);
         sig.reparent(this);
-        this.sig = sig;
+        ts.defineFunction(this);
+    }
+
+    // generic function
+    public FunctionType(TypeSystem ts,
+                        String name,
+                        TypeTable localTypeTable,
+                        DexSig sig) {
+        this.ts = ts;
+        this.pkg = sig.pkg();
+        this.name = name;
+        this.params = new ArrayList<>();
+        for (DexParam param : sig.params()) {
+            String paramName = param.paramName().toString();
+            DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
+            this.params.add(new FunctionParam(paramName, paramType));
+        }
+        this.ret = ResolveType.$(ts, localTypeTable, sig.ret());
+        this.sig = new FunctionSig(ts, sig);
+        this.sig.reparent(this);
         ts.defineFunction(this);
     }
 
@@ -112,7 +139,7 @@ public final class FunctionType implements DType {
                 return false;
             }
         }
-        if (!new IsAssignable(ctx, "context", that.context, this.context).result()) {
+        if (!new IsAssignable(ctx, "context", that.context(), this.context()).result()) {
             return false;
         }
         if (!new IsAssignable(ctx, "ret", this.ret, that.ret).result()) {
@@ -144,6 +171,10 @@ public final class FunctionType implements DType {
     }
 
     public DType context() {
-        return context == null ? ts.ANY : context;
+        if (context != null) {
+            return context;
+        }
+        context = ts.context(pkg);
+        return context;
     }
 }

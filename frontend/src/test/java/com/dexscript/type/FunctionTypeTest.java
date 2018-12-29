@@ -1,6 +1,7 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexPackage;
 import com.dexscript.test.framework.FluentAPI;
 import com.dexscript.test.framework.Row;
 import com.dexscript.test.framework.Table;
@@ -55,8 +56,7 @@ public class FunctionTypeTest {
     @Test
     public void context_not_assignable() {
         FunctionType func1 = func("hello()");
-        FunctionSig sig = new FunctionSig(ts, Collections.emptyList(), ts.STRING, ts.VOID);
-        FunctionType func2 = new FunctionType(ts, "hello", Collections.emptyList(), ts.VOID, sig);
+        FunctionType func2 = new FunctionType(ts, DexPackage.DUMMY, "hello", Collections.emptyList(), ts.VOID);
         TestAssignable.$(false, func1, func2);
         TestAssignable.$(true, func2, func1);
     }
@@ -85,7 +85,7 @@ public class FunctionTypeTest {
     private FunctionType func(String src) {
         DexActor actor = DexActor.$("function " + src);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
-        return new FunctionType(ts, actor.functionName(), sig.params(), sig.ret(), sig);
+        return new FunctionType(ts, actor.functionName(), sig.params(), sig.ret());
     }
 
     private void testAssignable() {

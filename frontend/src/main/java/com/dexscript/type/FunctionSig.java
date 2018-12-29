@@ -286,14 +286,7 @@ public class FunctionSig {
                 localTypeTable.define(dexSig.pkg(), ((PlaceholderType)key).name(), entry.getValue());
             }
         }
-        List<FunctionParam> expandedParams = new ArrayList<>();
-        for (DexParam param : dexSig.params()) {
-            String name = param.paramName().toString();
-            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
-            expandedParams.add(new FunctionParam(name, type));
-        }
-        DType expandedRet = ResolveType.$(ts, localTypeTable, dexSig.ret());
-        expanded = new FunctionType(ts, func.name(), expandedParams, expandedRet);
+        expanded = new FunctionType(ts, func.name(), localTypeTable, dexSig);
         expanded.implProvider(func.implProvider());
         expandedFuncs.put(sub, expanded);
         return expanded;

@@ -70,27 +70,12 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
 
     private void addInfFunction(TypeTable localTypeTable, DexInfFunction infFunction) {
         String name = infFunction.identifier().toString();
-        List<FunctionParam> params = new ArrayList<>();
-        for (DexParam param : infFunction.sig().params()) {
-            String paramName = param.paramName().toString();
-            DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
-            params.add(new FunctionParam(paramName, paramType));
-        }
-        DType ret = ResolveType.$(ts, localTypeTable, infFunction.sig().ret());
-        functions.add(new FunctionType(ts, name, params, ret));
+        functions.add(new FunctionType(ts, name, localTypeTable, infFunction.sig()));
     }
 
     private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
         String name = infMethod.identifier().toString();
-        List<FunctionParam> params = new ArrayList<>();
-        params.add(new FunctionParam("self", this));
-        for (DexParam param : infMethod.sig().params()) {
-            String paramName = param.paramName().toString();
-            DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
-            params.add(new FunctionParam(paramName, paramType));
-        }
-        DType ret = ResolveType.$(ts, localTypeTable, infMethod.sig().ret());
-        functions.add(new FunctionType(ts, name, params, ret));
+        functions.add(new FunctionType(ts, name, localTypeTable, infMethod.sig()));
     }
 
     @Override
