@@ -54,7 +54,7 @@ public final class FunctionType implements DType {
         this.name = name;
         this.params = params;
         this.ret = ret;
-        sig = new FunctionSig(ts, params, ts.ANY, ret);
+        sig = new FunctionSig(ts, pkg, params, ret);
         sig.reparent(this);
         ts.defineFunction(this);
     }

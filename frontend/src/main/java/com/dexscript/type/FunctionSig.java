@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
@@ -166,25 +167,27 @@ public class FunctionSig {
     }
 
     private final TypeSystem ts;
+    private final DexPackage pkg;
     private FunctionType func;
     private final List<PlaceholderType> typeParams;
     private final List<FunctionParam> params;
-    private final DType contextParam;
+    private DType contextParam;
     private final DType ret;
     private final DexSig dexSig;
     private final Map<Object, FunctionType> expandedFuncs = new HashMap<>();
 
-    public FunctionSig(TypeSystem ts, List<FunctionParam> params, DType contextParam, DType ret) {
+    public FunctionSig(TypeSystem ts, DexPackage pkg, List<FunctionParam> params, DType ret) {
         this.ts = ts;
         this.typeParams = Collections.emptyList();
         this.params = params;
-        this.contextParam = contextParam;
+        this.pkg = pkg;
         this.ret = ret;
         this.dexSig = null;
     }
 
     public FunctionSig(TypeSystem ts, DexSig dexSig) {
         this.ts = ts;
+        this.pkg = dexSig.pkg();
         this.dexSig = dexSig;
         typeParams = new ArrayList<>();
         TypeTable localTypeTable = new TypeTable(ts);
@@ -214,6 +217,10 @@ public class FunctionSig {
     }
 
     public DType contextParam() {
+        if (contextParam != null) {
+            return contextParam;
+        }
+        contextParam = ts.context(pkg);
         return contextParam;
     }
 
@@ -250,12 +257,12 @@ public class FunctionSig {
                 return new ArgumentIncompatible(i, paramArg, argParam);
             }
         }
-        IsAssignable paramArg = new IsAssignable(ctx, "context param=arg", contextParam, contextArg);
+        IsAssignable paramArg = new IsAssignable(ctx, "context param=arg", contextParam(), contextArg);
         IsAssignable argParam = null;
         boolean argMatched = paramArg.result();
         if (!argMatched) {
             needRuntimeCheck = true;
-            argParam = new IsAssignable(ctx, "context arg=param", contextArg, contextParam);
+            argParam = new IsAssignable(ctx, "context arg=param", contextArg, contextParam());
             argMatched = argParam.result();
         }
         if (!argMatched) {
