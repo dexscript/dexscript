@@ -1,15 +1,15 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.core.Text;
 import com.dexscript.test.framework.FluentAPI;
 import com.dexscript.test.framework.Row;
 import com.dexscript.test.framework.Table;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.Collections;
 
 import static com.dexscript.test.framework.TestFramework.stripQuote;
 import static com.dexscript.test.framework.TestFramework.testDataFromMySection;
@@ -55,8 +55,37 @@ public class FunctionTypeTest {
 
     @Test
     public void context_not_assignable() {
-        FunctionType func1 = func("hello()");
-        FunctionType func2 = new FunctionType(ts, DexPackage.DUMMY, "hello", Collections.emptyList(), ts.VOID);
+        DexPackage pkg1 = new DexPackage("pkg1");
+        FunctionType func1 = func(pkg1, "hello()");
+        defineInterface(pkg1, "" +
+                "interface $ {\n" +
+                "   Some()\n" +
+                "}");
+        DexPackage pkg2 = new DexPackage("pkg2");
+        FunctionType func2 = func(pkg2, "hello()");
+        defineInterface(pkg2, "" +
+                "interface $ {\n" +
+                "   Another()\n" +
+                "}");
+        TestAssignable.$(false, func1, func2);
+        TestAssignable.$(false, func2, func1);
+    }
+
+    @Test
+    public void context_is_sub_type() {
+        DexPackage pkg1 = new DexPackage("pkg1");
+        FunctionType func1 = func(pkg1, "hello()");
+        defineInterface(pkg1, "" +
+                "interface $ {\n" +
+                "   Some()\n" +
+                "}");
+        DexPackage pkg2 = new DexPackage("pkg2");
+        FunctionType func2 = func(pkg2, "hello()");
+        defineInterface(pkg2, "" +
+                "interface $ {\n" +
+                "   Some()\n" +
+                "   Another()\n" +
+                "}");
         TestAssignable.$(false, func1, func2);
         TestAssignable.$(true, func2, func1);
     }
@@ -83,9 +112,20 @@ public class FunctionTypeTest {
     }
 
     private FunctionType func(String src) {
-        DexActor actor = DexActor.$("function " + src);
+        return func(DexPackage.DUMMY, src);
+    }
+
+    private FunctionType func(DexPackage pkg, String src) {
+        DexActor actor = new DexActor(new Text("function " + src));
+        actor.attach(pkg);
         FunctionSig sig = new FunctionSig(ts, actor.sig());
-        return new FunctionType(ts, actor.functionName(), sig.params(), sig.ret());
+        return new FunctionType(ts, pkg, actor.functionName(), sig.params(), sig.ret());
+    }
+
+    private void defineInterface(DexPackage pkg1, String src) {
+        DexInterface globalSpi = new DexInterface(new Text(src));
+        globalSpi.attach(pkg1);
+        ts.defineInterface(globalSpi);
     }
 
     private void testAssignable() {
