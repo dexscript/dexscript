@@ -52,3 +52,10 @@
 | false      | `hello(arg0: string)`    | `hello(arg0: 'example')` |
 | true       | `hello(arg0: 'example')` | `hello(arg0: string)`    |
 
+# ret_is_sub_type
+
+
+| assignable | to                       | from                     |
+| ---------- | ------------------------ | ------------------------ |
+| true      | `hello(): string`    | `hello(): 'example'` |
+| false       | `hello(): 'example'` | `hello(): string`    |
