@@ -24,7 +24,7 @@ public class BoolTypeTest {
     }
 
     @Test
-    public void test_to_string() {
+    public void to_string() {
         Assert.assertEquals("bool", ts.BOOL.toString());
         Assert.assertEquals("true", ts.literalOf(true).toString());
         Assert.assertEquals("false", ts.literalOf(false).toString());
