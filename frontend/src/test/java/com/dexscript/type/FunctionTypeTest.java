@@ -92,10 +92,7 @@ public class FunctionTypeTest {
 
     @Test
     public void param_is_sub_type() {
-        FunctionType hello1 = func("hello(arg0: string)");
-        FunctionType hello2 = func("hello(arg0: 'example')");
-        TestAssignable.$(false, hello1, hello2);
-        TestAssignable.$(true, hello2, hello1);
+        testAssignable();
     }
 
     @Test

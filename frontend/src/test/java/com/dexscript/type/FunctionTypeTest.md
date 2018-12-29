@@ -43,3 +43,12 @@
 | ---------- | ----------------- | ----------------- |
 | false      | `hello(): int64` | `hello(): string` |
 | false      | `hello(): string` | `hello(): int64` |
+
+# param_is_sub_type
+
+
+| assignable | to                       | from                     |
+| ---------- | ------------------------ | ------------------------ |
+| false      | `hello(arg0: string)`    | `hello(arg0: 'example')` |
+| true       | `hello(arg0: 'example')` | `hello(arg0: string)`    |
+
