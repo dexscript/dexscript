@@ -32,17 +32,17 @@
 
 # param_type_not_assignable
 
-| assignable | to                | from              |
-| ---------- | ----------------- | ----------------- |
-| false      | `hello(a: int64)` | `hello(a: string)` |
-| false      | `hello(a: string)` | `hello(a: int64)` |
+| assignable | to                 | from               |
+| ---------- | ------------------ | ------------------ |
+| false      | `hello(a: int64)`  | `hello(a: string)` |
+| false      | `hello(a: string)` | `hello(a: int64)`  |
 
 # ret_not_assignable
 
 | assignable | to                | from              |
 | ---------- | ----------------- | ----------------- |
-| false      | `hello(): int64` | `hello(): string` |
-| false      | `hello(): string` | `hello(): int64` |
+| false      | `hello(): int64`  | `hello(): string` |
+| false      | `hello(): string` | `hello(): int64`  |
 
 # param_is_sub_type
 
@@ -55,7 +55,7 @@
 # ret_is_sub_type
 
 
-| assignable | to                       | from                     |
-| ---------- | ------------------------ | ------------------------ |
-| true      | `hello(): string`    | `hello(): 'example'` |
-| false       | `hello(): 'example'` | `hello(): string`    |
+| assignable | to                   | from                 |
+| ---------- | -------------------- | -------------------- |
+| true       | `hello(): string`    | `hello(): 'example'` |
+| false      | `hello(): 'example'` | `hello(): string`    |

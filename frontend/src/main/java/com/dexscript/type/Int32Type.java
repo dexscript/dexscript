@@ -12,6 +12,12 @@ public class Int32Type implements DType {
 
     @Override
     public boolean _isAssignable(IsAssignable ctx, DType that) {
+        if (that instanceof Int32Type) {
+            return true;
+        }
+        if (that instanceof IntegerLiteralType) {
+            return true;
+        }
         if (that instanceof IntegerConstType) {
             try {
                 Integer.valueOf(((IntegerConstType) that).constValue());
@@ -20,7 +26,7 @@ public class Int32Type implements DType {
                 return false;
             }
         }
-        return that instanceof Int32Type;
+        return false;
     }
 
     @Override

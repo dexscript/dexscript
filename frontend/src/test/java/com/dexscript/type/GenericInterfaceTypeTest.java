@@ -38,14 +38,14 @@ public class GenericInterfaceTypeTest {
         Assert.assertFalse(IsAssignable.$(inf3, inf1));
     }
 
-    @Test(expected = DexSyntaxException.class)
+    @Test
     public void resolve_with_not_assignable_type() {
         ts.defineInterface(DexInterface.$("" +
                 "interface List {\n" +
                 "   <T>: string\n" +
                 "   Get__(index: int64): T\n" +
                 "}"));
-        ResolveType.$(ts, "List<int64>");
+        Assert.assertEquals(ts.UNDEFINED, ResolveType.$(ts, "List<int64>"));
     }
 
     @Test
