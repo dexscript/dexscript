@@ -1,6 +1,8 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexInterface;
 import com.dexscript.infer.ResolvePosArgs;
+import com.dexscript.test.framework.FluentAPI;
 import com.dexscript.test.framework.Row;
 import com.dexscript.test.framework.Table;
 import org.junit.Assert;
@@ -20,7 +22,11 @@ public interface TestAssignable {
 
     static void $() {
         TypeSystem ts = new TypeSystem();
-        Table table = testDataFromMySection().table();
+        FluentAPI testData = testDataFromMySection();
+        for (String code : testData.codes()) {
+            ts.defineInterface(DexInterface.$(code));
+        }
+        Table table = testData.table();
         for (Row row : table.body) {
             DType to = ResolvePosArgs.$(ts, stripQuote(row.get(1))).get(0);
             DType from = ResolvePosArgs.$(ts, stripQuote(row.get(2))).get(0);

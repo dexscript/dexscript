@@ -24,20 +24,7 @@ public class InterfaceTypeTest {
 
     @Test
     public void assignable_to_same_structure() {
-        InterfaceType inf1 = new InterfaceType(ts, DexInterface.$("" +
-                "interface Hello {\n" +
-                "   Action1(): string\n" +
-                "   Action2(): string\n" +
-                "}"));
-        InterfaceType inf2 = new InterfaceType(ts, DexInterface.$("" +
-                "interface World {\n" +
-                "   Action1(): string\n" +
-                "   Action2(): string\n" +
-                "}"));
-        IsAssignable isAssignable = new IsAssignable(inf1, inf2);
-        Assert.assertTrue(isAssignable.result());
-        isAssignable = new IsAssignable(inf2, inf1);
-        Assert.assertTrue(isAssignable.result());
+        TestAssignable.$();
     }
 
     @Test
