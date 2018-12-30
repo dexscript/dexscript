@@ -16,7 +16,7 @@ public class InvocationTest {
     }
 
     @Test
-    public void test_to_string() {
+    public void to_string() {
         Assert.assertEquals("hello($=interface{}): string", new Invocation(
                 "hello", null,
                 null, null, ts.ANY, ts.STRING).toString());
