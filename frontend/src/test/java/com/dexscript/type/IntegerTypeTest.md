@@ -7,7 +7,7 @@
 | true       | `int64`      | `(const)100` |
 | false      | `int64`      | `int32`      |
 | true       | `int32`      | `int32`      |
-| true       | `int32`      | `100`        |
+| false       | `int32`      | `100`        |
 | true       | `int32`      | `(const)100` |
 | false      | `int32`      | `int64`      |
 | true       | `100`        | `100`        |

@@ -8,5 +8,4 @@
 # unmatched
 
 * a
-* 0
 * 100a

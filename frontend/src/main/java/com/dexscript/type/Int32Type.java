@@ -15,9 +15,6 @@ public class Int32Type implements DType {
         if (that instanceof Int32Type) {
             return true;
         }
-        if (that instanceof IntegerLiteralType) {
-            return true;
-        }
         if (that instanceof IntegerConstType) {
             try {
                 Integer.valueOf(((IntegerConstType) that).constValue());

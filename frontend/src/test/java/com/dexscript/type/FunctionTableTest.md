@@ -110,7 +110,7 @@ Hello(arg0: int32)
 
 | funcName | posArgs      | candidates.size | `args[0]` |
 | -------- | ------------ | --------------- | --------- |
-| Hello    | `(const)100` | 1               | `100`   |
+| Hello    | `(const)100` | 1               | `int32`   |
 
 # call_with_named_arg
 
