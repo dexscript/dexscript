@@ -2,7 +2,9 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.type.*;
+import com.dexscript.type.DType;
+import com.dexscript.type.FunctionType;
+import com.dexscript.type.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,8 +20,7 @@ public class InferFunctionCallTest {
 
     private FunctionType func(String actorSrc) {
         DexActor actor = DexActor.$("function " + actorSrc);
-        FunctionSig sig = new FunctionSig(ts, actor.sig());
-        FunctionType funcType = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret());
+        FunctionType funcType = new FunctionType(ts, actor.functionName(), null, actor.sig());
         return funcType;
     }
 
@@ -37,20 +38,10 @@ public class InferFunctionCallTest {
     }
 
     @Test
-    public void match_two() {
-        func("Hello(arg0: 'a'): 'a'");
-        func("Hello(arg0: string): 'b'");
-        // TODO: as string
-        DType type = InferType.$(ts, DexExpr.$parse("Hello('hello')"));
-        Assert.assertTrue(IsAssignable.$(type, new StringLiteralType(ts, "a")));
-        Assert.assertTrue(IsAssignable.$(type, new StringLiteralType(ts, "b")));
-    }
-
-    @Test
     public void infer_generic_function_call() {
         func("Hello(<T>: interface{}, arg0: T): T");
         DType type = InferType.$(ts, DexExpr.$parse("Hello('world')"));
-        Assert.assertEquals(ts.STRING, type);
+        Assert.assertEquals(ts.literalOf("world"), type);
     }
 
     @Test

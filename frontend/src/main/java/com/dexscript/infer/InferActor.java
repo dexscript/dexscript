@@ -8,7 +8,7 @@ import com.dexscript.type.DType;
 import com.dexscript.type.TypeSystem;
 import com.dexscript.type.TypeTable;
 
-class InferFunction implements InferValue<DexActor> {
+class InferActor implements InferValue<DexActor> {
 
     @Override
     public void handle(TypeSystem ts, DexActor func, ValueTable table) {
