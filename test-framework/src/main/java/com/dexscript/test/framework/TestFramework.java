@@ -49,7 +49,7 @@ public interface TestFramework {
             return text;
         }
         if (text.charAt(0) == '`') {
-            return text.substring(1, text.length() - 1);
+            return text.substring(1, text.length() - 1).replace("\\|", "|");
         }
         return text;
     }

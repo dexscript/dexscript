@@ -63,6 +63,14 @@ public interface ResolveType<E extends DexType> {
             DType right = ResolveType.$(ts, localTypeTable, intersectionType.right());
             return left.intersect(right);
         });
+        put(DexUnionType.class, (ts, localTypeTable, elem) -> {
+            DexUnionType unionType = (DexUnionType) elem;
+            DType left = ResolveType.$(ts, localTypeTable, unionType.left());
+            DType right = ResolveType.$(ts, localTypeTable, unionType.right());
+            return left.union(right);
+        });
+        put(DexParenType.class, (ts, localTypeTable, elem) -> ResolveType.$(
+                ts, localTypeTable, ((DexParenType)elem).body()));
     }};
 
     DType handle(TypeSystem ts, TypeTable localTypeTable, E elem);
