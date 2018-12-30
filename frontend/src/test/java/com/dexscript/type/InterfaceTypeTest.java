@@ -1,24 +1,8 @@
 package com.dexscript.type;
 
-import com.dexscript.ast.DexActor;
-import org.junit.Before;
 import org.junit.Test;
 
 public class InterfaceTypeTest {
-
-    private TypeSystem ts;
-
-    @Before
-    public void setup() {
-        ts = new TypeSystem();
-    }
-
-    private void func(String src) {
-        DexActor actor = DexActor.$("function " + src);
-        FunctionSig sig = new FunctionSig(ts, actor.sig());
-        FunctionType function = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret());
-        function.implProvider(expandedFunc -> new Object());
-    }
 
     @Test
     public void assignable_to_same_structure() {
@@ -47,6 +31,16 @@ public class InterfaceTypeTest {
 
     @Test
     public void argument_is_super_type_can_still_implement() {
+        TestAssignable.$();
+    }
+
+    @Test
+    public void parameterized_type_with_incompatible_param() {
+        TestEquals.$();
+    }
+
+    @Test
+    public void generic_interface() {
         TestAssignable.$();
     }
 }

@@ -16,7 +16,7 @@
 
 # equals_relationship
 
-| equals | to           | from         |
+| equals | left           | right         |
 | ------ | ------------ | ------------ |
 | true   | `float64`    | `float64`    |
 | false  | `float64`    | `float32`    |

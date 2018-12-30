@@ -113,3 +113,36 @@ SomeAction(self: int64, msg: string)
 | false      | `int64`     | `SomeInf`    |
 | true       | `SomeInf`    | `int64`     |
 
+# parameterized_type_with_incompatible_param
+
+```dexscript
+interface List {
+   <T>: string
+   Get__(index: int64): T
+}
+```
+
+| equals | left           | right         |
+| ---------- | ------------ | ------------ |
+| true       | `undefined`    | `List<int64>`     |
+
+# generic_interface
+
+```dexscript
+interface List {
+   <T>: interface{}
+   Get__(index: int64): T
+}
+```
+
+```dexscript
+interface ListString {
+    Get__(index: int64): string
+}
+```
+
+| assignable | to           | from         |
+| ---------- | ------------ | ------------ |
+| true      | `List<string>`     | `ListString`    |
+| true       | `ListString`    | `List<string>`     |
+

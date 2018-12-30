@@ -23,7 +23,7 @@
 
 # equals_relationship
 
-| assignable | to           | from         |
+| equals | left           | right         |
 | ---------- | ------------ | ------------ |
 | true       | `int64`      | `int64`      |
 | false      | `int64`      | `int32`      |
