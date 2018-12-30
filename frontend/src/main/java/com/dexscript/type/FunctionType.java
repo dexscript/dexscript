@@ -64,10 +64,22 @@ public final class FunctionType implements DType {
                         String name,
                         TypeTable localTypeTable,
                         DexSig sig) {
+        this(ts, name, localTypeTable, null, sig);
+    }
+
+    // method
+    public FunctionType(TypeSystem ts,
+                        String name,
+                        TypeTable localTypeTable,
+                        DType self,
+                        DexSig sig) {
         this.ts = ts;
         this.pkg = sig.pkg();
         this.name = name;
         this.params = new ArrayList<>();
+        if (self != null) {
+            this.params.add(new FunctionParam("self", self));
+        }
         for (DexParam param : sig.params()) {
             String paramName = param.paramName().toString();
             DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());

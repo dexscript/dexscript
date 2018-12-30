@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
@@ -24,7 +25,11 @@ public interface TestAssignable {
         TypeSystem ts = new TypeSystem();
         FluentAPI testData = testDataFromMySection();
         for (String code : testData.codes()) {
-            ts.defineInterface(DexInterface.$(code));
+            if (code.startsWith("interface")) {
+                ts.defineInterface(DexInterface.$(code));
+            } else {
+                func(ts, code);
+            }
         }
         Table table = testData.table();
         for (Row row : table.body) {
@@ -32,5 +37,12 @@ public interface TestAssignable {
             DType from = ResolvePosArgs.$(ts, stripQuote(row.get(2))).get(0);
             TestAssignable.$("true".equals(row.get(0)), to, from);
         }
+    }
+
+    static void func(TypeSystem ts, String src) {
+        DexActor actor = DexActor.$("function " + src);
+        FunctionSig sig = new FunctionSig(ts, actor.sig());
+        FunctionType function = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret());
+        function.implProvider(expandedFunc -> new Object());
     }
 }

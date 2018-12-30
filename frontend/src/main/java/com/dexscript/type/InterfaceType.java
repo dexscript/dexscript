@@ -75,7 +75,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
 
     private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
         String name = infMethod.identifier().toString();
-        functions.add(new FunctionType(ts, name, localTypeTable, infMethod.sig()));
+        functions.add(new FunctionType(ts, name, localTypeTable, this, infMethod.sig()));
     }
 
     @Override

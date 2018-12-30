@@ -11,6 +11,7 @@ import com.dexscript.ast.inf.DexInfTypeParam;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 
+import java.util.Collections;
 import java.util.List;
 
 public class DexInterface extends DexElement {
