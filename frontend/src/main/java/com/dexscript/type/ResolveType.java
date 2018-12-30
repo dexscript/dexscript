@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// ResolveType translate AST to type object in type system
 public interface ResolveType<E extends DexType> {
 
     interface OnUnknownElem {
@@ -55,6 +56,12 @@ public interface ResolveType<E extends DexType> {
                 return ts.ANY;
             }
             throw new UnsupportedOperationException("not implemented");
+        });
+        put(DexIntersectionType.class, (ts, localTypeTable, elem) -> {
+            DexIntersectionType intersectionType = (DexIntersectionType) elem;
+            DType left = ResolveType.$(ts, localTypeTable, intersectionType.left());
+            DType right = ResolveType.$(ts, localTypeTable, intersectionType.right());
+            return left.intersect(right);
         });
     }};
 

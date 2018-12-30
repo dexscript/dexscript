@@ -3,7 +3,12 @@ package com.dexscript.type;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class IntersectTest {
+public class IntersectionTypeTest {
+
+    @Test
+    public void assignable_relationship() {
+        TestAssignable.$();
+    }
 
     @Test
     public void string_literals_intersect_string_literals() {

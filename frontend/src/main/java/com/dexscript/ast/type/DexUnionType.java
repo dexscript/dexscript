@@ -14,6 +14,7 @@ public class DexUnionType extends DexType {
     public DexUnionType(Text src, DexType left) {
         super(src);
         this.left = left;
+        left.reparent(this);
         for (int i = src.begin; i < src.end; i++) {
             byte b = src.bytes[i];
             if (Blank.$(b)) {
@@ -21,6 +22,7 @@ public class DexUnionType extends DexType {
             }
             if (b == '|') {
                 right = DexType.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
+                right.reparent(this);
                 return;
             }
             return;
