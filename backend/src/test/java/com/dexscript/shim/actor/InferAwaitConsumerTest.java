@@ -17,7 +17,7 @@ public class InferAwaitConsumerTest {
     @Test
     public void reference_task() {
         TypeSystem ts = new TypeSystem();
-        DexAwaitStmt awaitStmt = new DexAwaitStmt("" +
+        DexAwaitStmt awaitStmt = DexAwaitStmt.$("" +
                 "await {\n" +
                 "   case Hello(): string {\n" +
                 "       resolve 'hello' -> Hello\n" +

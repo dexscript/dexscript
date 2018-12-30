@@ -3,6 +3,7 @@ package com.dexscript.shim.java;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.type.DexType;
+import com.dexscript.pkg.DexPackages;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +38,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         this.dTypeArgs = dTypeArgs;
         this.runtimeClassName = runtimeClassName;
         if (dTypeArgs == null) {
-            DexPackage pkg = oShim.javaTypes().pkg(clazz.getPackage());
+            DexPackage pkg = oShim.pkg(clazz.getPackage());
             ts.defineType(pkg, this);
         }
         oShim.javaTypes().add(runtimeClassName, this);
@@ -98,7 +99,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         String src = TranslateSig.translateType(oShim.javaTypes(), jTypeObj);
         TypeTable localTypeTable = localTypeTable();
         DexType type = DexType.parse(new Text(src));
-        type.attach(INTEROP_PACKAGE);
+//        type.attach(DexPackages.of(jTypeObj));
         return ResolveType.$(ts, localTypeTable, type);
     }
 
@@ -170,7 +171,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         }
         for (int i = 0; i < clazz.getTypeParameters().length; i++) {
             TypeVariable jTypeParam = clazz.getTypeParameters()[i];
-            localTypeTable.define(INTEROP_PACKAGE, jTypeParam.getName(), dTypeArgs.get(i));
+            localTypeTable.define(oShim.pkg(clazz.getPackage()), jTypeParam.getName(), dTypeArgs.get(i));
         }
         return localTypeTable;
     }

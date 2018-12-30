@@ -29,7 +29,7 @@ public interface Translate<E extends DexElement> {
         {
             put(DexStringConst.class, (oClass, iElem) -> {
                 DexStringConst iStringConst = (DexStringConst) iElem;
-                iElem.attach(new OutValue("\"" + iStringConst.literalValue() + "\""));
+                iElem.attach(new OutValue("\"" + iStringConst.constValue() + "\""));
             });
             put(DexIntegerConst.class, (oClass, iElem) -> {
                 DexIntegerConst iIntegerConst = (DexIntegerConst) iElem;

@@ -1,6 +1,7 @@
 package com.dexscript.pkg;
 
 import com.dexscript.ast.DexFile;
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
@@ -11,7 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import static com.dexscript.pkg.DexPackageImpl.$p;
+import static com.dexscript.pkg.DexPackages.$p;
 
 public class ImportPackage {
     public static void $(OutShim oShim, String pkgPathStr) {
@@ -20,7 +21,7 @@ public class ImportPackage {
         }
         ArrayList<DexFile> dexFiles = new ArrayList<>();
         Path pkgPath = $p(pkgPathStr);
-        DexPackageImpl pkg = new DexPackageImpl(oShim);
+        DexPackage pkg = oShim.pkg(pkgPath);
         try {
             Files.list(pkgPath).forEach(path -> {
                 try {

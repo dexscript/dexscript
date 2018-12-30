@@ -88,15 +88,7 @@ public class ActorType implements NamedType, GenericType, FunctionsType {
     }
 
     public FunctionType callFunc(TypeTable localTypeTable) {
-        DType ret = ResolveType.$(ts, localTypeTable, actor.sig().ret());
-        List<FunctionParam> params = new ArrayList<>();
-        for (DexParam param : actor.sig().params()) {
-            String name = param.paramName().toString();
-            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
-            params.add(new FunctionParam(name, type));
-        }
-        FunctionSig sig = new FunctionSig(ts, actor.sig());
-        FunctionType functionType = new FunctionType(ts, name(), params, ret, sig);
+        FunctionType functionType = new FunctionType(ts, name(), localTypeTable, actor.sig());
         functionType.implProvider(expandedFunc -> new CallActor(oShim, expandedFunc, actor));
         return functionType;
     }

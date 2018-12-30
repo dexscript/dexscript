@@ -1,6 +1,6 @@
 package com.dexscript.transpile;
 
-import com.dexscript.pkg.DexPackageImpl;
+import com.dexscript.pkg.DexPackages;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
@@ -10,7 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.dexscript.pkg.DexPackageImpl.$p;
+import static com.dexscript.pkg.DexPackages.$p;
 
 public interface Transpile {
 
@@ -49,7 +49,7 @@ public interface Transpile {
             }
             writeToFile(className, classSrc);
         };
-        DexPackageImpl.fs = Jimfs.newFileSystem(Configuration.unix());
+        DexPackages.fs = Jimfs.newFileSystem(Configuration.unix());
     }
 
     static void writeToFile(String className, String classSrc) {

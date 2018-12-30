@@ -49,11 +49,11 @@ public class ActorTypeTest {
                 "   AA(): string\n" +
                 "}"));
         Assert.assertTrue(IsAssignable.$(inf, actor));
-        Invoked invoked = ts.invoke(new Invocation("New__", null, new ArrayList<DType>() {{
+        Dispatched dispatched = ts.dispatch(new Invocation("New__", null, new ArrayList<DType>() {{
             add(new StringLiteralType(ts, "AA"));
             add(actor);
         }}, null, ts.ANY, null));
-        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(1, dispatched.candidates.size());
     }
 
     @Test
@@ -63,10 +63,10 @@ public class ActorTypeTest {
         new ActorType(oShim, DexActor.$("" +
                 "function Hello() {\n" +
                 "}"));
-        Invoked invoked = ts.invoke(new Invocation("Hello",
+        Dispatched dispatched = ts.dispatch(new Invocation("Hello",
                 null, new ArrayList<>(), null, ts.ANY, null));
-        Assert.assertEquals(1, invoked.candidates.size());
-        Assert.assertEquals(ts.VOID, invoked.candidates.get(0).function().ret());
+        Assert.assertEquals(1, dispatched.candidates.size());
+        Assert.assertEquals(ts.VOID, dispatched.candidates.get(0).func().ret());
     }
 
     @Test
@@ -74,9 +74,9 @@ public class ActorTypeTest {
         new ActorType(oShim, DexActor.$("" +
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
-        Invoked invoked = ts.invoke(new Invocation("Hello",
+        Dispatched dispatched = ts.dispatch(new Invocation("Hello",
                 null, Arrays.asList(ts.STRING), null, ts.ANY, null));
-        Assert.assertEquals(1, invoked.candidates.size());
+        Assert.assertEquals(1, dispatched.candidates.size());
         DType type = ResolveType.$(ts, "Hello<string>");
         Assert.assertNotNull(type);
     }
@@ -89,8 +89,8 @@ public class ActorTypeTest {
                 "}"));
         StringLiteralType a = new StringLiteralType(ts, "a");
         StringLiteralType b = new StringLiteralType(ts, "b");
-        Invoked invoked = ts.invoke(new Invocation("Equals", null,
+        Dispatched dispatched = ts.dispatch(new Invocation("Equals", null,
                 Arrays.asList(a, b), null, ts.ANY, null));
-        Assert.assertEquals(0, invoked.candidates.size());
+        Assert.assertEquals(0, dispatched.candidates.size());
     }
 }

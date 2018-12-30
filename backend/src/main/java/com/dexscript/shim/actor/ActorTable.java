@@ -46,9 +46,11 @@ public class ActorTable {
 
     private static class PackageActors extends HashMap<String, List<ActorType>> implements NamedTypesProvider {
 
+        private final DexPackage pkg;
         private final TypeSystem ts;
 
         private PackageActors(DexPackage pkg, TypeSystem ts) {
+            this.pkg = pkg;
             this.ts = ts;
             ts.lazyDefineTypes(pkg, this);
         }
@@ -60,7 +62,7 @@ public class ActorTable {
                 if (entry.getValue().size() == 1) {
                     types.add(entry.getValue().get(0));
                 } else {
-                    types.add(new ActorUnionType(ts, entry.getKey(), entry.getValue()));
+                    types.add(new ActorUnionType(ts, pkg, entry.getKey(), entry.getValue()));
                 }
             }
             return types;

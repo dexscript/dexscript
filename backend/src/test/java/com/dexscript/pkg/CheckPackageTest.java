@@ -9,13 +9,13 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import static com.dexscript.pkg.DexPackageImpl.$p;
+import static com.dexscript.pkg.DexPackages.$p;
 
 public class CheckPackageTest {
 
     @Before
     public void setup() {
-        DexPackageImpl.fs = Jimfs.newFileSystem(Configuration.unix());
+        DexPackages.fs = Jimfs.newFileSystem(Configuration.unix());
     }
 
     @Test

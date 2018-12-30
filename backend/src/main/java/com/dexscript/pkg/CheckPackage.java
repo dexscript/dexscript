@@ -5,6 +5,7 @@ import com.dexscript.analyze.CheckSemanticError;
 import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
@@ -18,7 +19,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dexscript.pkg.DexPackageImpl.$p;
+import static com.dexscript.pkg.DexPackages.$p;
 
 public class CheckPackage {
 
@@ -45,7 +46,7 @@ public class CheckPackage {
         }
         TypeSystem ts = new TypeSystem();
         OutShim oShim = new OutShim(ts);
-        DexPackageImpl pkg = new DexPackageImpl(oShim);
+        DexPackage pkg = oShim.pkg(pkgPath);
         try {
             Files.list(pkgPath).forEach(path -> {
                 try {

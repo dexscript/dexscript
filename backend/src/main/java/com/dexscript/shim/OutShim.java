@@ -5,12 +5,14 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
+import com.dexscript.pkg.DexPackages;
 import com.dexscript.shim.java.*;
 import com.dexscript.shim.actor.ActorTable;
 import com.dexscript.shim.actor.ActorType;
 import com.dexscript.type.*;
 
 import java.lang.reflect.*;
+import java.nio.file.Path;
 import java.util.*;
 
 public class OutShim {
@@ -24,6 +26,7 @@ public class OutShim {
     private final Map<String, Integer> shims = new HashMap<>();
     private final Map<FunctionEntry, List<FunctionImpl>> entries = new HashMap<>();
     private final Map<FunctionChain, String> chains = new HashMap<>();
+    private final Map<String, DexPackage> pkgs = new HashMap<>();
     private final List<GeneratedSubClass> generatedSubClasses = new ArrayList<>();
     private final JavaTypes javaTypes;
     private final ActorTable actorTable;
@@ -42,7 +45,22 @@ public class OutShim {
         g.__(new Line());
     }
 
-    public void definePackage(DexPackage pkg) {
+    public DexPackage pkg(Path pkgPath) {
+        String pkgName = "DS__." + pkgPath.toString().replace('/', '.');
+        return pkg(pkgName);
+    }
+
+    public DexPackage pkg(Package pkg) {
+        return pkg(pkg.getName());
+    }
+
+    public DexPackage pkg(String pkgName) {
+        DexPackage pkg = pkgs.get(pkgName);
+        if (pkg != null) {
+            return pkg;
+        }
+        pkg = new DexPackage(pkgName);
+        pkgs.put(pkgName, pkg);
         DexInterface taskInf = new DexInterface(new Text("" +
                 "interface Task {\n" +
                 "   <T>: interface{}\n" +
@@ -58,6 +76,7 @@ public class OutShim {
         promiseInf.attach(pkg);
         ts.defineInterface(promiseInf);
         ts.defineBuiltinTypes(pkg);
+        return pkg;
     }
 
     public List<GeneratedSubClass> generatedSubClasses() {
@@ -150,16 +169,9 @@ public class OutShim {
 
     public void importJavaConstructor(Constructor ctor) {
         Class clazz = ctor.getDeclaringClass();
-        List<FunctionParam> params = new ArrayList<>();
-        params.add(new FunctionParam("class", new StringLiteralType(ts, clazz.getSimpleName())));
-        for (Parameter param : ctor.getParameters()) {
-            params.add(new FunctionParam(param.getName(), javaTypes.resolve(param.getType())));
-        }
-        DType ret = javaTypes.resolve(clazz);
         DexSig dexSig = TranslateSig.$(javaTypes, ctor);
-        dexSig.attach(JavaType.INTEROP_PACKAGE);
-        FunctionSig sig = new FunctionSig(ts, dexSig);
-        FunctionType functionType = new FunctionType(ts, "New__", params, ret, sig);
+        dexSig.attach(this.pkg(clazz.getPackage()));
+        FunctionType functionType = new FunctionType(ts, "New__", null, dexSig);
         functionType.implProvider(expandedFunc -> {
             JavaType type = (JavaType) expandedFunc.ret();
             return new NewJavaClass(this, expandedFunc, ctor, type.runtimeClassName());
