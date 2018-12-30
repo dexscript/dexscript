@@ -65,7 +65,15 @@ public abstract class DexType extends DexElement {
 
     private static DexType parseRight(Text src, DexType left) {
         src = new Text(src.bytes, left.end(), src.end);
-        return new DexParameterizedType(src, left);
+        DexType type = new DexParameterizedType(src, left);
+        if (type.matched()) {
+            return type;
+        }
+        type = new DexIntersectionType(src, left);
+        if (type.matched()) {
+            return type;
+        }
+        return type;
     }
 
     public void reparent(DexElement parent) {
