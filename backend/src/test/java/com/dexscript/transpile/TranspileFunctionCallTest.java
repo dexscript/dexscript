@@ -1,44 +1,24 @@
 package com.dexscript.transpile;
 
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TranspileFunctionCallTest {
 
     @Test
-    public void match_one() {
-        Object result = Transpile.$("" +
-                "function Hello(): string {\n" +
-                "   return World()\n" +
-                "}\n" +
-                "function World(): string {\n" +
-                "   return 'hello world'\n" +
-                "}");
-        Assert.assertEquals("hello world", result);
+    public void call_without_arg() {
+        TestFramework.assertByList(Transpile::$);
     }
 
     @Test
     public void call_with_pos_arg() {
-        Object result = Transpile.$("" +
-                "function Hello(): string {\n" +
-                "   return World('hello world')\n" +
-                "}\n" +
-                "function World(msg: string): string {\n" +
-                "   return msg\n" +
-                "}");
-        Assert.assertEquals("hello world", result);
+        TestFramework.assertByList(Transpile::$);
     }
 
     @Test
     public void call_with_named_arg() {
-        Object result = Transpile.$("" +
-                "function Hello(): string {\n" +
-                "   return World(msg='hello world')\n" +
-                "}\n" +
-                "function World(msg: string): string {\n" +
-                "   return msg\n" +
-                "}");
-        Assert.assertEquals("hello world", result);
+        TestFramework.assertByList(Transpile::$);
     }
 
     @Test
