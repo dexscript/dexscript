@@ -1,6 +1,7 @@
-package com.dexscript.transpile;
+package com.dexscript.transpile.call;
 
 import com.dexscript.test.framework.TestFramework;
+import com.dexscript.transpile.Transpile;
 import org.junit.Test;
 
 public class FunctionCallTest {
