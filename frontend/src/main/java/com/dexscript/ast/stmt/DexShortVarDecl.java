@@ -110,7 +110,7 @@ public class DexShortVarDecl extends DexSimpleStatement {
         }
 
         State expr() {
-            expr = DexExpr.parse(new Text(src.bytes, i, src.end), 0);
+            expr = DexExpr.parse(src.slice(i), 0);
             expr.reparent(DexShortVarDecl.this, DexShortVarDecl.this);
             if (!expr.matched()) {
                 return this::missingExpr;

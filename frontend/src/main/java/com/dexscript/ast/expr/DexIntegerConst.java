@@ -58,6 +58,7 @@ public class DexIntegerConst extends DexLeafExpr {
                     continue;
                 }
                 if (b == '0') {
+                    integerBegin = i;
                     i += 1;
                     return this::separator;
                 }
