@@ -1,16 +1,17 @@
 package com.dexscript.ast.type;
 
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 
-public class DexIntersectionType extends DexType {
+public class DexUnionType extends DexType {
 
     private static final int LEFT_RANK = 10;
     private static final int RIGHT_RANK = 10;
     private final DexType left;
     private DexType right;
 
-    public DexIntersectionType(Text src, DexType left) {
+    public DexUnionType(Text src, DexType left) {
         super(src);
         this.left = left;
         for (int i = src.begin; i < src.end; i++) {
@@ -18,7 +19,7 @@ public class DexIntersectionType extends DexType {
             if (Blank.$(b)) {
                 continue;
             }
-            if (b == '&') {
+            if (b == '|') {
                 right = DexType.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
                 return;
             }
@@ -50,7 +51,7 @@ public class DexIntersectionType extends DexType {
     }
 
     @Override
-    public void walkDown(Visitor visitor) {
+    public void walkDown(DexElement.Visitor visitor) {
         if (left() != null) {
             visitor.visit(left());
         }

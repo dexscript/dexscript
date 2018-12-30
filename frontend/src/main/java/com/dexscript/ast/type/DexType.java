@@ -73,6 +73,10 @@ public abstract class DexType extends DexElement {
         if (type.matched()) {
             return type;
         }
+        type = new DexUnionType(src, left);
+        if (type.matched()) {
+            return type;
+        }
         return type;
     }
 
