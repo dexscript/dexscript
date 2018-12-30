@@ -1,5 +1,6 @@
-package com.dexscript.transpile;
+package com.dexscript.transpile.actor;
 
+import com.dexscript.transpile.Transpile;
 import org.junit.Assert;
 import org.junit.Test;
 

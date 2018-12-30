@@ -4,7 +4,7 @@ import com.dexscript.test.framework.TestFramework;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TranslateAssignTest {
+public class AssignTest {
 
     @Test
     public void assign_string_const_type_to_literal_type() {

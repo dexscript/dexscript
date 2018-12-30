@@ -3,7 +3,7 @@ package com.dexscript.transpile;
 import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
-public class TranspileShortVarDecl {
+public class ShortVarDeclTest {
 
     @Test
     public void string_const_widen_to_string() {

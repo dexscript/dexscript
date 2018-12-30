@@ -3,7 +3,7 @@ package com.dexscript.transpile;
 import com.dexscript.test.framework.TestFramework;
 import org.junit.Test;
 
-public class TranspileFunctionCallTest {
+public class FunctionCallTest {
 
     @Test
     public void call_without_arg() {
