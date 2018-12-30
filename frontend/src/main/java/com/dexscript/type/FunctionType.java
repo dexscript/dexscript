@@ -86,7 +86,7 @@ public final class FunctionType implements DType {
             this.params.add(new FunctionParam(paramName, paramType));
         }
         this.ret = ResolveType.$(ts, localTypeTable, sig.ret());
-        this.sig = new FunctionSig(ts, sig);
+        this.sig = new FunctionSig(ts, self, sig);
         this.sig.reparent(this);
         ts.defineFunction(this);
     }

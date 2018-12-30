@@ -186,6 +186,10 @@ public class FunctionSig {
     }
 
     public FunctionSig(TypeSystem ts, DexSig dexSig) {
+        this(ts, null, dexSig);
+    }
+
+    public FunctionSig(TypeSystem ts, DType self, DexSig dexSig) {
         this.ts = ts;
         this.pkg = dexSig.pkg();
         this.dexSig = dexSig;
@@ -199,6 +203,9 @@ public class FunctionSig {
             typeParams.add(placeholder);
         }
         params = new ArrayList<>();
+        if (self != null) {
+            params.add(new FunctionParam("self", self));
+        }
         for (DexParam param : dexSig.params()) {
             String name = param.paramName().toString();
             DType type = ResolveType.$(ts, localTypeTable, param.paramType());
