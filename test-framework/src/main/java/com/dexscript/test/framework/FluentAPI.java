@@ -69,7 +69,7 @@ public class FluentAPI {
         }
     }
 
-    public void assertByList(Function.F1<String, Object> sut) {
+    public void assertParsedAST(Function.F1<String, Object> sut) {
         List<String> codes = this.codes();
         if (codes.isEmpty()) {
             Assert.fail("no code found");
@@ -81,6 +81,15 @@ public class FluentAPI {
             expectedToString = stripCode(codes.get(1));
         }
         Assert.assertEquals(expectedToString, obj.toString());
+        Visitor visitor = new AssertByList(obj);
+        for (Node node : this.nodes) {
+            node.accept(visitor);
+        }
+    }
+
+    public void assertByList(Function.F1<String, Object> sut) {
+        String code = code();
+        Object obj = sut.apply(code);
         Visitor visitor = new AssertByList(obj);
         for (Node node : this.nodes) {
             node.accept(visitor);

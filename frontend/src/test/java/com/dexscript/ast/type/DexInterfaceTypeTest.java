@@ -7,36 +7,36 @@ public class DexInterfaceTypeTest {
 
     @Test
     public void empty_interface() {
-        TestFramework.assertObject(DexInterfaceType::$);
+        TestFramework.assertParsedAST(DexInterfaceType::$);
     }
 
     @Test
     public void compact_empty_interface() {
-        TestFramework.assertObject(DexInterfaceType::$);
+        TestFramework.assertParsedAST(DexInterfaceType::$);
     }
 
     @Test
     public void one_function() {
-        TestFramework.assertObject(DexInterfaceType::$);
+        TestFramework.assertParsedAST(DexInterfaceType::$);
     }
 
     @Test
     public void one_method() {
-        TestFramework.assertObject(DexInterfaceType::$);
+        TestFramework.assertParsedAST(DexInterfaceType::$);
     }
 
     @Test
     public void function_and_method() {
-        TestFramework.assertObject(DexInterfaceType::$);
+        TestFramework.assertParsedAST(DexInterfaceType::$);
     }
 
     @Test
     public void invalid_method_name() {
-        TestFramework.assertObject(DexInterfaceType::$);
+        TestFramework.assertParsedAST(DexInterfaceType::$);
     }
 
     @Test
     public void interface_with_name() {
-        TestFramework.assertObject(DexInterfaceType::$);
+        TestFramework.assertParsedAST(DexInterfaceType::$);
     }
 }

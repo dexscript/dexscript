@@ -7,6 +7,6 @@ public class DexIncrStmtTest {
 
     @Test
     public void matched() {
-        TestFramework.assertObject(DexIncrStmt::$);
+        TestFramework.assertParsedAST(DexIncrStmt::$);
     }
 }

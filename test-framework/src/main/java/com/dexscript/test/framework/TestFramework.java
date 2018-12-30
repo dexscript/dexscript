@@ -37,7 +37,14 @@ public interface TestFramework {
                 .assertFalse(sut);
     }
 
-    static void assertObject(Function.F1<String, Object> sut) {
+    static void assertParsedAST(Function.F1<String, Object> sut) {
+        Method method = InspectTestingMethod.$();
+        testDataFrom(method.getDeclaringClass())
+                .select(selectSection(method.getName()))
+                .assertParsedAST(sut);
+    }
+
+    static void assertByList(Function.F1<String, Object> sut) {
         Method method = InspectTestingMethod.$();
         testDataFrom(method.getDeclaringClass())
                 .select(selectSection(method.getName()))

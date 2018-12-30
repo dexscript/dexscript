@@ -7,6 +7,6 @@ public class DexIntersectionTypeTest {
 
     @Test
     public void intersection_of_two(){
-        TestFramework.assertObject(DexType::$parse);
+        TestFramework.assertParsedAST(DexType::$parse);
     }
 }

@@ -7,41 +7,41 @@ public class DexProduceStmtTest {
 
     @Test
     public void matched() {
-        TestFramework.assertObject(DexProduceStmt::$);
+        TestFramework.assertParsedAST(DexProduceStmt::$);
     }
 
     @Test
     public void produced_is_optional() {
-        TestFramework.assertObject(DexProduceStmt::$);
+        TestFramework.assertParsedAST(DexProduceStmt::$);
     }
 
     @Test
     public void no_space_after_produce_keyword() {
-        TestFramework.assertObject(DexProduceStmt::$);
+        TestFramework.assertParsedAST(DexProduceStmt::$);
     }
 
     @Test
     public void missing_produced_recover_by_blank() {
-        TestFramework.assertObject(DexProduceStmt::$);
+        TestFramework.assertParsedAST(DexProduceStmt::$);
     }
 
     @Test
     public void missing_produced_recover_by_line_end() {
-        TestFramework.assertObject(DexProduceStmt::$);
+        TestFramework.assertParsedAST(DexProduceStmt::$);
     }
 
     @Test
     public void missing_right_arrow_recover_by_blank() {
-        TestFramework.assertObject(DexProduceStmt::$);
+        TestFramework.assertParsedAST(DexProduceStmt::$);
     }
 
     @Test
     public void missing_right_arrow_recover_by_line_end() {
-        TestFramework.assertObject(DexProduceStmt::$);
+        TestFramework.assertParsedAST(DexProduceStmt::$);
     }
 
     @Test
     public void missing_target() {
-        TestFramework.assertObject(DexProduceStmt::$);
+        TestFramework.assertParsedAST(DexProduceStmt::$);
     }
 }

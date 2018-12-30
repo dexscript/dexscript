@@ -7,36 +7,36 @@ public class DexShortVarDeclTest {
 
     @Test
     public void one_target() {
-        TestFramework.assertObject(DexShortVarDecl::$);
+        TestFramework.assertParsedAST(DexShortVarDecl::$);
     }
 
     @Test
     public void two_targets() {
-        TestFramework.assertObject(DexShortVarDecl::$);
+        TestFramework.assertParsedAST(DexShortVarDecl::$);
     }
 
     @Test
     public void invalid_identifier() {
-        TestFramework.assertObject(DexShortVarDecl::$);
+        TestFramework.assertParsedAST(DexShortVarDecl::$);
     }
 
     @Test
     public void second_decl_invalid() {
-        TestFramework.assertObject(DexShortVarDecl::$);
+        TestFramework.assertParsedAST(DexShortVarDecl::$);
     }
 
     @Test
     public void missing_comma() {
-        TestFramework.assertObject(DexShortVarDecl::$);
+        TestFramework.assertParsedAST(DexShortVarDecl::$);
     }
 
     @Test
     public void missing_colon() {
-        TestFramework.assertObject(DexShortVarDecl::$);
+        TestFramework.assertParsedAST(DexShortVarDecl::$);
     }
 
     @Test
     public void expr_with_error() {
-        TestFramework.assertObject(DexShortVarDecl::$);
+        TestFramework.assertParsedAST(DexShortVarDecl::$);
     }
 }

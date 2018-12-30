@@ -7,26 +7,26 @@ public class DexArrayExprTest {
 
     @Test
     public void empty() {
-        TestFramework.assertObject(DexArrayExpr::$);
+        TestFramework.assertParsedAST(DexArrayExpr::$);
     }
 
     @Test
     public void one_element() {
-        TestFramework.assertObject(DexArrayExpr::$);
+        TestFramework.assertParsedAST(DexArrayExpr::$);
     }
 
     @Test
     public void two_elements() {
-        TestFramework.assertObject(DexArrayExpr::$);
+        TestFramework.assertParsedAST(DexArrayExpr::$);
     }
 
     @Test
     public void missing_element() {
-        TestFramework.assertObject(DexArrayExpr::$);
+        TestFramework.assertParsedAST(DexArrayExpr::$);
     }
 
     @Test
     public void missing_right_bracket() {
-        TestFramework.assertObject(DexArrayExpr::$);
+        TestFramework.assertParsedAST(DexArrayExpr::$);
     }
 }

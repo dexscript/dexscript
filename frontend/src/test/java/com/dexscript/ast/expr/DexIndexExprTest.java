@@ -7,11 +7,11 @@ public class DexIndexExprTest {
 
     @Test
     public void matched() {
-        TestFramework.assertObject(DexExpr::$parse);
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void invocation() {
-        TestFramework.assertObject(DexExpr::$parse);
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 }

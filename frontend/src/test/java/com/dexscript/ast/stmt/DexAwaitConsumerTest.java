@@ -7,31 +7,31 @@ public class DexAwaitConsumerTest {
 
     @Test
     public void matched() {
-        TestFramework.assertObject(DexAwaitConsumer::$);
+        TestFramework.assertParsedAST(DexAwaitConsumer::$);
     }
 
     @Test
     public void missing_identifier() {
-        TestFramework.assertObject(DexAwaitConsumer::$);
+        TestFramework.assertParsedAST(DexAwaitConsumer::$);
     }
 
     @Test
     public void missing_blank() {
-        TestFramework.assertObject(DexAwaitConsumer::$);
+        TestFramework.assertParsedAST(DexAwaitConsumer::$);
     }
 
     @Test
     public void missing_left_paren() {
-        TestFramework.assertObject(DexAwaitConsumer::$);
+        TestFramework.assertParsedAST(DexAwaitConsumer::$);
     }
 
     @Test
     public void missing_right_paren() {
-        TestFramework.assertObject(DexAwaitConsumer::$);
+        TestFramework.assertParsedAST(DexAwaitConsumer::$);
     }
 
     @Test
     public void missing_block() {
-        TestFramework.assertObject(DexAwaitConsumer::$);
+        TestFramework.assertParsedAST(DexAwaitConsumer::$);
     }
 }

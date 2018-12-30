@@ -7,16 +7,16 @@ public class DexAssignStmtTest {
 
     @Test
     public void one_target() {
-        TestFramework.assertObject(DexAssignStmt::$);
+        TestFramework.assertParsedAST(DexAssignStmt::$);
     }
 
     @Test
     public void two_targets() {
-        TestFramework.assertObject(DexAssignStmt::$);
+        TestFramework.assertParsedAST(DexAssignStmt::$);
     }
 
     @Test
     public void missing_expr() {
-        TestFramework.assertObject(DexAssignStmt::$);
+        TestFramework.assertParsedAST(DexAssignStmt::$);
     }
 }

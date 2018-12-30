@@ -7,36 +7,36 @@ public class DexForStmtTest {
 
     @Test
     public void forever() {
-        TestFramework.assertObject(DexForStmt::$);
+        TestFramework.assertParsedAST(DexForStmt::$);
     }
 
     @Test
     public void for_condition() {
-        TestFramework.assertObject(DexForStmt::$);
+        TestFramework.assertParsedAST(DexForStmt::$);
     }
 
     @Test
     public void for_with_init_and_post() {
-        TestFramework.assertObject(DexForStmt::$);
+        TestFramework.assertParsedAST(DexForStmt::$);
     }
 
     @Test
     public void init_is_optional() {
-        TestFramework.assertObject(DexForStmt::$);
+        TestFramework.assertParsedAST(DexForStmt::$);
     }
 
     @Test
     public void post_is_optional() {
-        TestFramework.assertObject(DexForStmt::$);
+        TestFramework.assertParsedAST(DexForStmt::$);
     }
 
     @Test
     public void init_and_post_is_optional() {
-        TestFramework.assertObject(DexForStmt::$);
+        TestFramework.assertParsedAST(DexForStmt::$);
     }
 
     @Test
     public void for_with_3_semi_colon() {
-        TestFramework.assertObject(DexForStmt::$);
+        TestFramework.assertParsedAST(DexForStmt::$);
     }
 }

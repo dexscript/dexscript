@@ -1,17 +1,14 @@
 package com.dexscript.transpile;
 
+import com.dexscript.test.framework.TestFramework;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TranspileReturnTest {
 
     @Test
-    public void return_string_literal() {
-        Object result = Transpile.$("" +
-                "function Hello(): string {\n" +
-                "   return 'hello'\n" +
-                "}");
-        Assert.assertEquals("hello", result);
+    public void return_string() {
+        TestFramework.assertByList(Transpile::$);
     }
 
     @Test

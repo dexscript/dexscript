@@ -7,11 +7,11 @@ public class DexConsumeExprTest {
 
     @Test
     public void matched() {
-        TestFramework.assertObject(DexExpr::$parse);
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 
     @Test
     public void consume_new_actor() {
-        TestFramework.assertObject(DexExpr::$parse);
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 }

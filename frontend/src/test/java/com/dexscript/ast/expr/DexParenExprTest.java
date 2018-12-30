@@ -7,26 +7,26 @@ public class DexParenExprTest {
 
     @Test
     public void matched() {
-        TestFramework.assertObject(DexParenExpr::$);
+        TestFramework.assertParsedAST(DexParenExpr::$);
     }
 
     @Test
     public void empty_paren() {
-        TestFramework.assertObject(DexParenExpr::$);
+        TestFramework.assertParsedAST(DexParenExpr::$);
     }
 
     @Test
     public void nested_empty_paren() {
-        TestFramework.assertObject(DexParenExpr::$);
+        TestFramework.assertParsedAST(DexParenExpr::$);
     }
 
     @Test
     public void missing_right_paren_after_body() {
-        TestFramework.assertObject(DexParenExpr::$);
+        TestFramework.assertParsedAST(DexParenExpr::$);
     }
 
     @Test
     public void missing_right_paren_without_body() {
-        TestFramework.assertObject(DexParenExpr::$);
+        TestFramework.assertParsedAST(DexParenExpr::$);
     }
 }

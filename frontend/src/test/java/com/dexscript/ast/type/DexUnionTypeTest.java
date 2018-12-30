@@ -7,6 +7,6 @@ public class DexUnionTypeTest {
 
     @Test
     public void union_of_two() {
-        TestFramework.assertObject(DexType::$parse);
+        TestFramework.assertParsedAST(DexType::$parse);
     }
 }

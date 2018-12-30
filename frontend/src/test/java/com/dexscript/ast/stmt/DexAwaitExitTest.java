@@ -6,11 +6,11 @@ import org.junit.Test;
 public class DexAwaitExitTest {
     @Test
     public void matched() {
-        TestFramework.assertObject(DexAwaitExit::$);
+        TestFramework.assertParsedAST(DexAwaitExit::$);
     }
 
     @Test
     public void unmatched() {
-        TestFramework.assertObject(DexAwaitExit::$);
+        TestFramework.assertParsedAST(DexAwaitExit::$);
     }
 }

@@ -12,6 +12,6 @@ public class DexFloatConstTest {
 
     @Test
     public void with_error() {
-        TestFramework.assertObject(DexFloatConst::$);
+        TestFramework.assertParsedAST(DexFloatConst::$);
     }
 }

@@ -7,6 +7,6 @@ public class DexMethodCallExprTest {
 
     @Test
     public void matched() {
-        TestFramework.assertObject(DexExpr::$parse);
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 }

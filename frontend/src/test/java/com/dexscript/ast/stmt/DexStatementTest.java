@@ -7,21 +7,21 @@ public class DexStatementTest {
 
     @Test
     public void expression() {
-        TestFramework.assertObject(DexStatement::$parse);
+        TestFramework.assertParsedAST(DexStatement::$parse);
     }
 
     @Test
     public void short_var_decl() {
-        TestFramework.assertObject(DexStatement::$parse);
+        TestFramework.assertParsedAST(DexStatement::$parse);
     }
 
     @Test
     public void block() {
-        TestFramework.assertObject(DexStatement::$parse);
+        TestFramework.assertParsedAST(DexStatement::$parse);
     }
 
     @Test
     public void stmt_in_block() {
-        TestFramework.assertObject(DexStatement::$parse);
+        TestFramework.assertParsedAST(DexStatement::$parse);
     }
 }

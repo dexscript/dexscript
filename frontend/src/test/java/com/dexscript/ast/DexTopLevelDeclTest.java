@@ -7,11 +7,11 @@ public class DexTopLevelDeclTest {
 
     @Test
     public void missing_left_paren() {
-        TestFramework.assertObject(DexTopLevelDecl::$);
+        TestFramework.assertParsedAST(DexTopLevelDecl::$);
     }
 
     @Test
     public void skip_garbage_in_prelude() {
-        TestFramework.assertObject(DexTopLevelDecl::$);
+        TestFramework.assertParsedAST(DexTopLevelDecl::$);
     }
 }

@@ -7,21 +7,21 @@ public class DexFileTest {
 
     @Test
     public void one_actor() {
-        TestFramework.assertObject(DexFile::$);
+        TestFramework.assertParsedAST(DexFile::$);
     }
 
     @Test
     public void two_actors() {
-        TestFramework.assertObject(DexFile::$);
+        TestFramework.assertParsedAST(DexFile::$);
     }
 
     @Test
     public void skip_garbage() {
-        TestFramework.assertObject(DexFile::$);
+        TestFramework.assertParsedAST(DexFile::$);
     }
 
     @Test
     public void leaving_src_unparsed() {
-        TestFramework.assertObject(DexFile::$);
+        TestFramework.assertParsedAST(DexFile::$);
     }
 }

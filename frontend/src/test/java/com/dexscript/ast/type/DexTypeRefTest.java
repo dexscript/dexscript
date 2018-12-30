@@ -17,11 +17,11 @@ public class DexTypeRefTest {
 
     @Test
     public void package_qualifier() {
-        TestFramework.assertObject(DexTypeRef::$);
+        TestFramework.assertParsedAST(DexTypeRef::$);
     }
 
     @Test
     public void no_package_qualifier() {
-        TestFramework.assertObject(DexTypeRef::$);
+        TestFramework.assertParsedAST(DexTypeRef::$);
     }
 }

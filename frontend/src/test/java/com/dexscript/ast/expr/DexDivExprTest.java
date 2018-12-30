@@ -6,6 +6,6 @@ import org.junit.Test;
 public class DexDivExprTest {
     @Test
     public void matched() {
-        TestFramework.assertObject(DexExpr::$parse);
+        TestFramework.assertParsedAST(DexExpr::$parse);
     }
 }
