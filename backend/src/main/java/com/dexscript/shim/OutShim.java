@@ -50,9 +50,13 @@ public class OutShim {
         return pkg(pkgName);
     }
 
-    public DexPackage pkg(Class clazz) {
-        String className = clazz.getName();
-        String packageName = className.substring(0, className.lastIndexOf('.'));
+    public DexPackage pkg(Type jType) {
+        String typeName = jType.getTypeName();
+        int dotPos = typeName.lastIndexOf('.');
+        if (dotPos == -1) {
+            return pkg("JAVA_ROOT");
+        }
+        String packageName = typeName.substring(0, dotPos);
         return pkg(packageName);
     }
 

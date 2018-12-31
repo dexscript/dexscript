@@ -11,6 +11,7 @@ public interface TranslateSig {
 
     static DexSig $(JavaTypes javaTypes, Constructor ctor) {
         Class clazz = ctor.getDeclaringClass();
+        NamedType clazzAsDType = (NamedType) javaTypes.resolve(clazz);
         StringBuilder sig = new StringBuilder();
         sig.append('(');
         boolean isFirst = true;
@@ -18,8 +19,8 @@ public interface TranslateSig {
         isFirst = translateTypeVariables(javaTypes, sig, ctor.getTypeParameters(), isFirst);
         Type[] jParams = ctor.getGenericParameterTypes();
         isFirst = appendMore(sig, isFirst);
-        sig.append("clazz: '");
-        sig.append(clazz.getSimpleName());
+        sig.append("class: '");
+        sig.append(clazzAsDType.name());
         sig.append("'");
         for (int i = 0; i < jParams.length; i++) {
             isFirst = appendMore(sig, isFirst);
@@ -29,7 +30,9 @@ public interface TranslateSig {
             sig.append(translateType(javaTypes, jParams[i]));
         }
         sig.append("): ");
-        sig.append(clazz.getName());
+        sig.append(clazzAsDType.pkg());
+        sig.append(".");
+        sig.append(clazzAsDType.name());
         if (clazz.getTypeParameters().length > 0) {
             sig.append('<');
             for (int i = 0; i < clazz.getTypeParameters().length; i++) {

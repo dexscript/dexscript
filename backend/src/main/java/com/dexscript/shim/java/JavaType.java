@@ -54,10 +54,10 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             return functions;
         }
         functions = new ArrayList<>();
-        for (Method method : clazz.getMethods()) {
-            javaMethodToDexFunc(functions, method);
-        }
-        arrayGetToDexFunc(functions);
+//        for (Method method : clazz.getMethods()) {
+//            javaMethodToDexFunc(functions, method);
+//        }
+//        arrayGetToDexFunc(functions);
         return functions;
     }
 
@@ -98,7 +98,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         String src = TranslateSig.translateType(oShim.javaTypes(), jTypeObj);
         TypeTable localTypeTable = localTypeTable();
         DexType type = DexType.parse(new Text(src));
-//        type.attach(DexPackages.of(jTypeObj));
+        type.attach(oShim.pkg(jTypeObj));
         return ResolveType.$(ts, localTypeTable, type);
     }
 

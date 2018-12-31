@@ -26,7 +26,7 @@ public class NewJavaClass extends FunctionImpl {
         String callF = oShim.allocateShim("new__" + ctor.getDeclaringClass().getSimpleName());
         g.__("public static Object "
         ).__(callF);
-        DeclareParams.$(g, functionType.params().size(), true);
+        DeclareParams.$(g, functionType.params().size() + 1, true);
         g.__(" {");
         g.__(new Indent(() -> {
             g.__("return new "
