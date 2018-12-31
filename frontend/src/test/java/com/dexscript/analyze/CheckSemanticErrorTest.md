@@ -58,7 +58,7 @@ function Hello() {
 }
 ```
 
-# referenced_not_existing_type_parameter
+# interface_referenced_not_existing_type_parameter
 
 ```dexscript
 interface List {
@@ -66,6 +66,30 @@ interface List {
    get(index: int32): T
 }
 ```
+
+# interface_referenced_existing_type_parameter
+
+```dexscript
+interface List {
+   <E>: interface{}
+   get(index: int32): E
+}
+```
+
+# function_referenced_not_existing_type_parameter
+
+```dexscript
+function Hello(<E>: interface{}, msg: T) {
+}
+```
+
+# function_referenced_existing_type_parameter
+
+```dexscript
+function Hello(<E>: interface{}, msg: E) {
+}
+```
+
 
 
 

@@ -47,12 +47,31 @@ public class CheckSemanticErrorTest {
     }
 
     @Test
-    public void referenced_not_existing_type_parameter() {
+    public void interface_referenced_not_existing_type_parameter() {
         hasSemanticError();
+    }
+
+    @Test
+    public void interface_referenced_existing_type_parameter() {
+        noSemanticError();
+    }
+
+    @Test
+    public void function_referenced_not_existing_type_parameter() {
+        hasSemanticError();
+    }
+
+    @Test
+    public void function_referenced_existing_type_parameter() {
+        noSemanticError();
     }
 
     private static void hasSemanticError() {
         Assert.assertTrue(check(testDataFromMySection().code()));
+    }
+
+    private static void noSemanticError() {
+        Assert.assertFalse(check(testDataFromMySection().code()));
     }
 
     private static boolean check(String src) {
