@@ -16,7 +16,7 @@ class CheckReturn implements CheckSemanticError.Handler<DexReturnStmt> {
             cse.report(elem.expr(), "referenced value not found: " + elem);
             return;
         }
-        DType to = ResolveType.$(ts, null, elem.sig().ret());
+        DType to = ResolveType.$(ts, cse.localTypeTable(), elem.sig().ret());
         CheckAssignment.checkTypeAssignable(cse, elem, from, to);
     }
 }
