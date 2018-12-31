@@ -1,6 +1,6 @@
 package com.dexscript.transpile.java;
 
-import com.dexscript.transpile.Transpile;
+import com.dexscript.transpile.TestTranspile;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ public class GenericJavaClassTest {
 
     @Test
     public void new_generic_class() {
-        ArrayList result = (ArrayList) Transpile.$("" +
+        ArrayList result = (ArrayList) TestTranspile.$("" +
                 "interface List {\n" +
                 "   <E>: interface{}\n" +
                 "   get(index: int32): E\n" +
@@ -26,7 +26,7 @@ public class GenericJavaClassTest {
     @Test
     public void multi_dispatch_with_generic_argument() {
         // we can tell runtime java object implement List<int64> or List<interface{}>
-        String result = (String) Transpile.$("" +
+        String result = (String) TestTranspile.$("" +
                 "interface List {\n" +
                 "   <E>: interface{}\n" +
                 "   get(index: int32): E\n" +

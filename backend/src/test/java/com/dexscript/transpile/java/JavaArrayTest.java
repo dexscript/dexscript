@@ -1,7 +1,7 @@
 package com.dexscript.transpile.java;
 
 import com.dexscript.transpile.OutTown;
-import com.dexscript.transpile.Transpile;
+import com.dexscript.transpile.TestTranspile;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ public class JavaArrayTest {
     public void return_array() {
         OutTown oTown = new OutTown();
         oTown.oShim().importJavaFunctions(Class1.class);
-        Object ret = Transpile.$(oTown, "", "" +
+        Object ret = TestTranspile.$(oTown, "", "" +
                 "function Hello(): interface{} {\n" +
                 "   return newArray()\n" +
                 "}");
@@ -34,7 +34,7 @@ public class JavaArrayTest {
     public void get_element_from_array() {
         OutTown oTown = new OutTown();
         oTown.oShim().importJavaFunctions(Class2.class);
-        String ret = (String) Transpile.$(oTown, "", "" +
+        String ret = (String) TestTranspile.$(oTown, "", "" +
                 "function Hello(): string {\n" +
                 "   arr := newArray()\n" +
                 "   return arr[0]\n" +

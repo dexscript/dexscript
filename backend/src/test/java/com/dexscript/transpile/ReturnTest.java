@@ -7,21 +7,21 @@ public class ReturnTest {
 
     @Test
     public void return_string() {
-        TestFramework.assertByList(Transpile::$);
+        TestFramework.assertByList(TestTranspile::$);
     }
 
     @Test
     public void return_integer_literal() {
-        TestFramework.assertByList(Transpile::$);
+        TestFramework.assertByList(TestTranspile::$);
     }
 
     @Test
     public void return_int64() {
-        TestFramework.assertByList(Transpile::$);
+        TestFramework.assertByList(TestTranspile::$);
     }
 
     @Test
     public void return_int32() {
-        TestFramework.assertByList(Transpile::$);
+        TestFramework.assertByList(TestTranspile::$);
     }
 }

@@ -7,7 +7,7 @@ public class TranspileIncrTest {
 
     @Test
     public void incr() {
-        Object result = Transpile.$("function Hello(): int64 {\n" +
+        Object result = TestTranspile.$("function Hello(): int64 {\n" +
                 "   i := 0\n" +
                 "   i++\n" +
                 "   return i\n" +

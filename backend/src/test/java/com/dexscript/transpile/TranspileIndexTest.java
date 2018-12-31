@@ -7,7 +7,7 @@ public class TranspileIndexTest {
 
     @Test
     public void index_is_get() {
-        String result = (String) Transpile.$("" +
+        String result = (String) TestTranspile.$("" +
                 "function Hello(): string {\n" +
                 "   obj := new World()\n" +
                 "   return obj[0]\n" +

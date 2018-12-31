@@ -1,6 +1,7 @@
 package com.dexscript.transpile;
 
 import com.dexscript.pkg.DexPackages;
+import com.dexscript.test.framework.FluentAPI;
 import com.google.common.jimfs.Configuration;
 import com.google.common.jimfs.Jimfs;
 
@@ -9,14 +10,22 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static com.dexscript.pkg.DexPackages.$p;
+import static com.dexscript.test.framework.TestFramework.testDataFromMySection;
 
-public interface Transpile {
+public interface TestTranspile {
+
+    static void $(OutTown oTown) {
+        FluentAPI testData = testDataFromMySection();
+        List<String> codes = testData.codes("dexscript");
+        testData.assertByList(TestTranspile.$(oTown, codes.get(0), codes.get(1)));
+    }
 
     static Object $(String src) {
         OutTown oTown = new OutTown();
-        return Transpile.$(oTown, null, src);
+        return TestTranspile.$(oTown, null, src);
     }
 
     static Object $(OutTown oTown, String spiSrc, String implSrc) {

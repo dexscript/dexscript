@@ -7,7 +7,7 @@ public class TranspileIfTest {
 
     @Test
     public void only_if() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): string {\n" +
                 "   if 1 == 1 {\n" +
                 "       return 'hello'\n" +
@@ -19,7 +19,7 @@ public class TranspileIfTest {
 
     @Test
     public void if_then_else() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): string {\n" +
                 "   if 1 == 0 {\n" +
                 "       return 'hello'\n" +
@@ -32,7 +32,7 @@ public class TranspileIfTest {
 
     @Test
     public void if_then_else_if() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): string {\n" +
                 "   if 1 == 0 {\n" +
                 "       return 'hello'\n" +
@@ -45,7 +45,7 @@ public class TranspileIfTest {
 
     @Test
     public void statements_after_if() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): string {\n" +
                 "   var msg: string\n" +
                 "   if (1 == 0) {\n" +

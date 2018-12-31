@@ -1,13 +1,13 @@
 package com.dexscript.transpile.actor;
 
-import com.dexscript.transpile.Transpile;
+import com.dexscript.transpile.TestTranspile;
 import org.junit.Test;
 
 public class SerializationTest {
 
     @Test
     public void serialize() {
-        Transpile.$("" +
+        TestTranspile.$("" +
                 "function Hello() {\n" +
                 "   helper := new Helper()\n" +
                 "   order := new Order(helper)\n" +

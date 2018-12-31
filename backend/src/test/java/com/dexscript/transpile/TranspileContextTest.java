@@ -12,7 +12,7 @@ public class TranspileContextTest {
 
     @Test
     public void use_context() throws Exception {
-        Transpile.setup();
+        TestTranspile.setup();
         Files.createDirectory($p("/pkg1"));
         Files.write($p("/pkg1/__spi__.ds"), ("" +
                 "interface :: {\n" +

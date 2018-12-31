@@ -1,7 +1,7 @@
 package com.dexscript.transpile.java;
 
 import com.dexscript.transpile.OutTown;
-import com.dexscript.transpile.Transpile;
+import com.dexscript.transpile.TestTranspile;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ public class NormalJavaClassTest {
     public void new_java_class() {
         OutTown oTown = new OutTown();
         oTown.oShim().importJavaConstructors(File.class);
-        File result = (File) Transpile.$(oTown, "" +
+        File result = (File) TestTranspile.$(oTown, "" +
                 "interface :: {" +
                 "   New__(class: 'File', path: string): interface{}" +
                 "}", "" +
@@ -25,7 +25,7 @@ public class NormalJavaClassTest {
 
     @Test
     public void call_java_method() {
-        Boolean result = (Boolean) Transpile.$("" +
+        Boolean result = (Boolean) TestTranspile.$("" +
                 "interface File {\n" +
                 "   canRead(): bool\n" +
                 "}\n" +
@@ -39,7 +39,7 @@ public class NormalJavaClassTest {
 
     @Test
     public void java_method_return_another_java_object() {
-        Boolean result = (Boolean) Transpile.$("" +
+        Boolean result = (Boolean) TestTranspile.$("" +
                 "interface File {\n" +
                 "   getParentFile(): File\n" +
                 "   canRead(): bool\n" +

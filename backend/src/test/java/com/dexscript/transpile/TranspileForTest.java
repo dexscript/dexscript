@@ -7,7 +7,7 @@ public class TranspileForTest {
 
     @Test
     public void for_0_to_102400() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): int64 {\n" +
                 "   var total: int64\n" +
                 "   for i := 0; i < 102400; i++ {" +
@@ -20,7 +20,7 @@ public class TranspileForTest {
 
     @Test
     public void for_0_to_10240_with_await() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): int64 {\n" +
                 "   var total: int64\n" +
                 "   for i := 0; i < 102400; i++ {" +

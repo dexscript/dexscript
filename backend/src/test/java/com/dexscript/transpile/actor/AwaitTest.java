@@ -1,6 +1,6 @@
 package com.dexscript.transpile.actor;
 
-import com.dexscript.transpile.Transpile;
+import com.dexscript.transpile.TestTranspile;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -8,7 +8,7 @@ public class AwaitTest {
 
     @Test
     public void consume_new() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): string {\n" +
                 "   return <-new World()\n" +
                 "}\n" +
@@ -20,7 +20,7 @@ public class AwaitTest {
 
     @Test
     public void resolve_integer_const_to_int32() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): int32 {\n" +
                 "   a := new A()\n" +
                 "   return a.AA()\n" +
@@ -36,7 +36,7 @@ public class AwaitTest {
 
     @Test
     public void non_block() {
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): string {\n" +
                 "   a := new A()\n" +
                 "   return a.AA()\n" +
@@ -53,7 +53,7 @@ public class AwaitTest {
     @Test
     public void block() {
         // translate to FSM
-        Object result = Transpile.$("" +
+        Object result = TestTranspile.$("" +
                 "function Hello(): string {\n" +
                 "   a := new A()\n" +
                 "   b := new B(a)\n" +

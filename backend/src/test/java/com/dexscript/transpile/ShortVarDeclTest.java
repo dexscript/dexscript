@@ -7,11 +7,11 @@ public class ShortVarDeclTest {
 
     @Test
     public void string_const_widen_to_string() {
-        TestFramework.assertByList(Transpile::$);
+        TestFramework.assertByList(TestTranspile::$);
     }
 
     @Test
     public void integer_const_widen_to_int64() {
-        TestFramework.assertByList(Transpile::$);
+        TestFramework.assertByList(TestTranspile::$);
     }
 }
