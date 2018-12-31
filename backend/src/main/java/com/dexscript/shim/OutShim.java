@@ -50,8 +50,10 @@ public class OutShim {
         return pkg(pkgName);
     }
 
-    public DexPackage pkg(Package pkg) {
-        return pkg(pkg.getName());
+    public DexPackage pkg(Class clazz) {
+        String className = clazz.getName();
+        String packageName = className.substring(0, className.lastIndexOf('.'));
+        return pkg(packageName);
     }
 
     public DexPackage pkg(String pkgName) {
@@ -170,7 +172,7 @@ public class OutShim {
     public void importJavaConstructor(Constructor ctor) {
         Class clazz = ctor.getDeclaringClass();
         DexSig dexSig = TranslateSig.$(javaTypes, ctor);
-        dexSig.attach(this.pkg(clazz.getPackage()));
+        dexSig.attach(this.pkg(clazz));
         FunctionType functionType = new FunctionType(ts, "New__", null, dexSig);
         functionType.implProvider(expandedFunc -> {
             JavaType type = (JavaType) expandedFunc.ret();

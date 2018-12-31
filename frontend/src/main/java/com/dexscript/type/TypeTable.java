@@ -112,14 +112,14 @@ public class TypeTable {
         }
         for (NamedTypesProvider provider : pkgTypeProviders) {
             for (NamedType type : provider.namedTypes()) {
-                define(pkg, type);
+                define(type);
             }
         }
         pkgTypeProviders.clear();
     }
 
-    public void define(DexPackage pkg, NamedType type) {
-        define(pkg, type.name(), type);
+    public void define(NamedType type) {
+        define(type.pkg(), type.name(), type);
     }
 
     public void define(DexPackage pkg, String typeName, DType type) {

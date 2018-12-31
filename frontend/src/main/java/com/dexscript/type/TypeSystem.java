@@ -72,8 +72,8 @@ public class TypeSystem {
         return functionTable.dispatch(ivc);
     }
 
-    public void defineType(DexPackage pkg, NamedType type) {
-        typeTable.define(pkg, type);
+    public void defineType(NamedType type) {
+        typeTable.define(type);
     }
 
     public void lazyDefineFunctions(FunctionsType functionsType) {

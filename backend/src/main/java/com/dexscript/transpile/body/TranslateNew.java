@@ -37,7 +37,9 @@ public class TranslateNew implements Translate<DexNewExpr> {
         Invocation ivc = InferInvocation.$(ts, dexIvc);
         Dispatched dispatched = ts.dispatch(ivc);
         if (dispatched.candidates.isEmpty()) {
-            ON_FUNCTION_MISSING.handle(iNewExpr);
+            System.out.println("can not find candidates for: " + ivc);
+            dispatched.dump();
+            throw new DexRuntimeException("missing implementation");
         }
         String newF = oClass.oShim().dispatch(funcName, ivc.argsCount(), dispatched);
 

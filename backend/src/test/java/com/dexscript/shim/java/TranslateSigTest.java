@@ -33,7 +33,7 @@ public class TranslateSigTest {
         DexSig sig = TranslateSig.$(javaTypes, ctor);
         Assert.assertEquals(0, sig.typeParams().size());
         Assert.assertEquals(1, sig.params().size());
-        Assert.assertEquals(TranslateSig.dTypeNameOf(Class1.class), sig.ret().toString());
+        Assert.assertEquals(Class1.class.getName(), sig.ret().toString());
     }
 
     public static class Class2 {

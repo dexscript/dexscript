@@ -51,4 +51,16 @@ public class Dispatched {
     public int[] namedArgsMapping() {
         return namedArgsMapping;
     }
+
+    public void dump() {
+        System.out.println("dispatched skippeds: " + skippeds.size());
+        System.out.println("dispatched ignoreds: " + ignoreds.size());
+        System.out.println("dispatched failures: " + failures.size());
+        if (!ignoreds.isEmpty()) {
+            System.out.println("ignored following functions: ");
+            for (FunctionSig.Invoked ignored : ignoreds) {
+                System.out.println("  " + ignored.func());
+            }
+        }
+    }
 }

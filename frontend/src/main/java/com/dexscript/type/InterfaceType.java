@@ -29,7 +29,7 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
         this.typeArgs = typeArgs;
         this.inf = inf;
         if (typeArgs == null) {
-            ts.defineType(inf.pkg(), this);
+            ts.defineType(this);
         }
         ts.lazyDefineFunctions(this);
     }

@@ -38,8 +38,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         this.dTypeArgs = dTypeArgs;
         this.runtimeClassName = runtimeClassName;
         if (dTypeArgs == null) {
-            DexPackage pkg = oShim.pkg(clazz.getPackage());
-            ts.defineType(pkg, this);
+            ts.defineType(this);
         }
         oShim.javaTypes().add(runtimeClassName, this);
         ts.lazyDefineFunctions(this);
@@ -123,12 +122,12 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
 
     @Override
     public @NotNull String name() {
-        return TranslateSig.dTypeNameOf(clazz);
+        return clazz.getSimpleName();
     }
 
     @Override
     public DexPackage pkg() {
-        return ts.pkg(clazz.getPackage().getName());
+        return oShim.pkg(clazz);
     }
 
     @Override
@@ -171,7 +170,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         }
         for (int i = 0; i < clazz.getTypeParameters().length; i++) {
             TypeVariable jTypeParam = clazz.getTypeParameters()[i];
-            localTypeTable.define(oShim.pkg(clazz.getPackage()), jTypeParam.getName(), dTypeArgs.get(i));
+            localTypeTable.define(oShim.pkg(clazz), jTypeParam.getName(), dTypeArgs.get(i));
         }
         return localTypeTable;
     }

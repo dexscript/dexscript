@@ -29,7 +29,7 @@ public interface TranslateSig {
             sig.append(translateType(javaTypes, jParams[i]));
         }
         sig.append("): ");
-        sig.append(dTypeNameOf(clazz));
+        sig.append(clazz.getName());
         if (clazz.getTypeParameters().length > 0) {
             sig.append('<');
             for (int i = 0; i < clazz.getTypeParameters().length; i++) {
@@ -105,9 +105,5 @@ public interface TranslateSig {
             sig.append(translateType(javaTypes, jBound));
         }
         return isFirst;
-    }
-
-    static String dTypeNameOf(Class clazz) {
-        return clazz.getSimpleName() + "_" + System.identityHashCode(clazz);
     }
 }

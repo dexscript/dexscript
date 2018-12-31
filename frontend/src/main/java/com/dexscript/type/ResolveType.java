@@ -1,5 +1,6 @@
 package com.dexscript.type;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.type.*;
 
@@ -24,14 +25,19 @@ public interface ResolveType<E extends DexType> {
     Map<Class<? extends DexElement>, ResolveType> handlers = new HashMap<Class<? extends DexElement>, ResolveType>() {{
         put(DexVoidType.class, (ts, localTypeTable, elem) -> ts.VOID);
         put(DexTypeRef.class, (ts, localTypeTable, elem) -> {
-            String name = elem.toString();
+            DexTypeRef typeRef = (DexTypeRef) elem;
+            DexPackage pkg = elem.pkg();
+            if (!typeRef.pkgName().isEmpty()) {
+                pkg = new DexPackage(typeRef.pkgName());
+            }
+            String name = typeRef.typeName();
             if (localTypeTable != null) {
-                DType type = localTypeTable.resolveType(elem.pkg(), name);
+                DType type = localTypeTable.resolveType(pkg, name);
                 if (!(type instanceof UndefinedType)) {
                     return type;
                 }
             }
-            return ts.typeTable().resolveType(elem.pkg(), name);
+            return ts.typeTable().resolveType(pkg, name);
         });
         put(DexStringLiteralType.class, (ts, localTypeTable, elem) -> {
             String literalValue = ((DexStringLiteralType) (elem)).literalValue();
