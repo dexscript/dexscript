@@ -15,6 +15,9 @@ public class CheckInvocation<E extends DexElement & DexInvocationExpr> implement
         Dispatched dispatched = ts.dispatch(ivc);
         if (dispatched.candidates.isEmpty()) {
             cse.report(elem, "no matching function: " + elem);
+            System.out.println("dispatched.failures: " + dispatched.failures.size());
+            System.out.println("dispatched.ignoreds: " + dispatched.ignoreds.size());
+            System.out.println("dispatched.skippeds: " + dispatched.skippeds.size());
         }
     }
 }

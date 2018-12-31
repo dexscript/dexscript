@@ -16,16 +16,20 @@ public interface Transpile {
 
     static Object $(String src) {
         OutTown oTown = new OutTown();
-        return Transpile.$(oTown, "" +
-                "interface :: {\n" +
-                "}", src);
+        return Transpile.$(oTown, null, src);
     }
 
     static Object $(OutTown oTown, String spiSrc, String implSrc) {
         try {
             setup();
             Files.createDirectory($p("/pkg1"));
-            Files.write($p("/pkg1/__spi__.ds"), spiSrc.getBytes());
+            if (spiSrc == null) {
+                Files.write($p("/pkg1/__spi__.ds"), ("" +
+                        "interface :: {\n" +
+                        "}").getBytes());
+            } else {
+                Files.write($p("/pkg1/__spi__.ds"), spiSrc.getBytes());
+            }
             Files.write($p("/pkg1/hello.ds"), implSrc.getBytes());
             Class shimClass = oTown
                     .importPackage("/pkg1")

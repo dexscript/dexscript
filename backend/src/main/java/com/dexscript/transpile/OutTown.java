@@ -61,7 +61,7 @@ public class OutTown {
         }
     }
 
-    private void addSource(String className, String classSrc) {
+    public void addSource(String className, String classSrc) {
         try {
             compiler.addSource(className, classSrc);
             ON_SOURCE_ADDED.handle(className, classSrc);

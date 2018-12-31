@@ -24,7 +24,11 @@ public class FluentAPI {
     }
 
     public List<String> codes() {
-        return new SelectCode().select(nodes);
+        return new SelectCode(null).select(nodes);
+    }
+
+    public List<String> codes(String lang) {
+        return new SelectCode(lang).select(nodes);
     }
 
     public List<Table> tables() {
@@ -90,6 +94,13 @@ public class FluentAPI {
     public void assertByList(Function.F1<String, Object> sut) {
         String code = code();
         Object obj = sut.apply(code);
+        Visitor visitor = new AssertByList(obj);
+        for (Node node : this.nodes) {
+            node.accept(visitor);
+        }
+    }
+
+    public void assertByList(Object obj) {
         Visitor visitor = new AssertByList(obj);
         for (Node node : this.nodes) {
             node.accept(visitor);
