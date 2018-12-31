@@ -4,7 +4,7 @@ import com.dexscript.test.framework.TestFramework;
 import com.dexscript.transpile.Transpile;
 import org.junit.Test;
 
-public class GenericDispatchTest {
+public class GenericFunctionCallTest {
 
     @Test
     public void call_generic_function_with_type_inference() {
