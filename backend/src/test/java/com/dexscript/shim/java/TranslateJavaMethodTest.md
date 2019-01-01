@@ -134,21 +134,3 @@ public class SomeClass {
 ```
 
 * `(<T>: interface{}, self: some.java.pkg.SomeClass, arg0: T): void`
-
-# getAnnotation_has_two_T
-
-```java
-package some.java.pkg;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Constructor;
-
-public class SomeClass {
-
-    public static Method method() throws Exception {
-        return Constructor.class.getMethod("getAnnotation", Class.class);
-    }
-}
-```
-
-* `(<T>: interface{}, self: some.java.pkg.SomeClass, arg0: T): void`

@@ -58,10 +58,7 @@ public class TypeSystem {
     }
 
     public void defineGlobalSPI(DexInterface inf) {
-        for (DexInfMethod infMethod : inf.methods()) {
-            String name = infMethod.identifier().toString();
-            this.defineFunction(new FunctionType(this, name, null, infMethod.sig()));
-        }
+        new GlobalSPI(this, inf);
     }
 
     public InterfaceType defineInterface(DexInterface inf) {

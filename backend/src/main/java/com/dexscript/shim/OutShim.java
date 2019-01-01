@@ -44,7 +44,7 @@ public class OutShim {
     }
 
     public DexPackage pkg(Path pkgPath) {
-        String pkgName = "DS__." + pkgPath.toString().replace('/', '.');
+        String pkgName = "DEXSCRIPT_ROOT" + pkgPath.toString().replace('/', '.');
         return pkg(pkgName);
     }
 

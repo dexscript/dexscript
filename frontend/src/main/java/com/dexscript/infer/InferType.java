@@ -2,6 +2,7 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
+import com.dexscript.ast.type.DexParenType;
 import com.dexscript.type.*;
 
 import java.util.*;
@@ -21,6 +22,7 @@ public interface InferType<E extends DexExpr> {
 
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
         {
+            put(DexParenExpr.class, (ts, elem) -> InferType.$(ts, ((DexParenExpr)elem).body()));
             put(DexStringConst.class, (ts, elem) -> ts.constOf(((DexStringConst) elem).constValue()));
             put(DexIntegerConst.class, (ts, elem) -> ts.constOfInteger(elem.toString()));
             put(DexFloatConst.class, (ts, elem) -> ts.constOfFloat(elem.toString()));
