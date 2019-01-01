@@ -9,8 +9,11 @@ import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.type.*;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface Translate<E extends DexElement> {
@@ -148,5 +151,22 @@ public interface Translate<E extends DexElement> {
             return "context";
         }
         return OutValue.of(context);
+    }
+
+    @NotNull
+    static List<String> translateArgs(OutClass oClass, DexInvocation dexIvc, Dispatched dispatched) {
+        List<String> translatedArgs = new ArrayList<>();
+        for (int i = 0; i < dexIvc.posArgs().size(); i++) {
+            String translatedArg = Translate.translateExpr(oClass, dexIvc.posArgs().get(i), dispatched.args.get(i));
+            translatedArgs.add(translatedArg);
+        }
+        for (int i = 0; i < dispatched.namedArgsMapping.length; i++) {
+            int namedArgIndex = dispatched.namedArgsMapping[i];
+            DType targetType = dispatched.args.get(i + dexIvc.posArgs().size());
+            String translatedArg = Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType);
+            translatedArgs.add(translatedArg);
+        }
+        translatedArgs.add(Translate.translateContext(dexIvc));
+        return translatedArgs;
     }
 }

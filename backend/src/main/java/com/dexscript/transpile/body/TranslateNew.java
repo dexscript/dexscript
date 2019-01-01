@@ -25,11 +25,6 @@ public class TranslateNew implements Translate<DexNewExpr> {
 
     @Override
     public void handle(OutClass oClass, DexNewExpr iNewExpr) {
-        List<DexExpr> iArgs = iNewExpr.posArgs();
-        for (DexExpr iArg : iArgs) {
-            Translate.$(oClass, iArg);
-        }
-
         String funcName = iNewExpr.target().asRef().toString();
         TypeSystem ts = oClass.typeSystem();
 
@@ -41,6 +36,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
             dispatched.dump();
             throw new DexRuntimeException("missing implementation");
         }
+        List<String> translatedArgs = Translate.translateArgs(oClass, dexIvc, dispatched);
         String newF = oClass.oShim().dispatch(funcName, ivc.argsCount(), dispatched);
 
         OutField oActorField = oClass.allocateField(funcName);
@@ -48,22 +44,12 @@ public class TranslateNew implements Translate<DexNewExpr> {
         g.__(oActorField.value()
         ).__(" = "
         ).__(newF
-        ).__("(scheduler, \""
-        ).__(funcName
-        ).__("\"");
-        for (int i = 0; i < iArgs.size(); i++) {
+        ).__("(scheduler");
+        for (String translatedArg : translatedArgs) {
             g.__(", ");
-            g.__(Translate.translateExpr(oClass, iArgs.get(i), dispatched.args.get(i)));
+            g.__(translatedArg);
         }
-        for (int i = 0; i < dispatched.namedArgsMapping.length; i++) {
-            int namedArgIndex = dispatched.namedArgsMapping[i];
-            oClass.g().__(", ");
-            DType targetType = dispatched.args.get(i + dexIvc.posArgs().size());
-            oClass.g().__(Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType));
-        }
-        oClass.g().__(", "
-        ).__(Translate.translateContext(dexIvc)
-        ).__(new Line(");"));
+        g.__(new Line(");"));
         iNewExpr.attach(oActorField);
     }
 }

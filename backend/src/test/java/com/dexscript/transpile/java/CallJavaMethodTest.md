@@ -29,4 +29,4 @@ function Hello(): string {
 * "SomeClass"
 * getClass
     * getName
-        * "some.java.pkg.SomeClass"
+        * "java.lang.String"

@@ -15,6 +15,10 @@ import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;
 import com.dexscript.transpile.skeleton.OutStateMethod;
 import com.dexscript.type.*;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TranslateInvocation<E extends DexElement & DexInvocationExpr> implements Translate<E> {
 
@@ -28,12 +32,6 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
     }
 
     public static OutField invoke(OutClass oClass, DexInvocation dexIvc) {
-        for (DexExpr iPosArg : dexIvc.posArgs()) {
-            Translate.$(oClass, iPosArg);
-        }
-        for (DexNamedArg iNamedArg : dexIvc.namedArgs()) {
-            Translate.$(oClass, iNamedArg.val());
-        }
         TypeSystem ts = oClass.typeSystem();
 
         Invocation ivc = InferInvocation.$(ts, dexIvc).requireImpl(true);
@@ -41,6 +39,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         if (dispatched.candidates.isEmpty()) {
             throw new DexRuntimeException("can not find candidates: " + ivc);
         }
+        List<String> translatedArgs = Translate.translateArgs(oClass, dexIvc, dispatched);
         String newF = oClass.oShim().dispatch(ivc.funcName(), ivc.argsCount(), dispatched);
         DType retType = dispatched.ret;
 
@@ -49,19 +48,11 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
         ).__(" = "
         ).__(newF
         ).__("(scheduler");
-        for (int i = 0; i < dexIvc.posArgs().size(); i++) {
+        for (String translatedArg : translatedArgs) {
             oClass.g().__(", ");
-            oClass.g().__(Translate.translateExpr(oClass, dexIvc.posArgs().get(i), dispatched.args.get(i)));
+            oClass.g().__(translatedArg);
         }
-        for (int i = 0; i < dispatched.namedArgsMapping.length; i++) {
-            int namedArgIndex = dispatched.namedArgsMapping[i];
-            oClass.g().__(", ");
-            DType targetType = dispatched.args.get(i + dexIvc.posArgs().size());
-            oClass.g().__(Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType));
-        }
-        oClass.g().__(", "
-        ).__(Translate.translateContext(dexIvc)
-        ).__(new Line(");"));
+        oClass.g().__(new Line(");"));
         boolean needToConsume = needToConsume(dispatched);
         if (needToConsume) {
             return consume(oClass, retType, oActorField.value());
