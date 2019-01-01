@@ -2,6 +2,7 @@ package com.dexscript.shim.java;
 
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.*;
@@ -74,31 +75,11 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     }
 
     private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
-        Type jRet = method.getGenericReturnType();
-        DType dRet = resolve(jRet);
-        if (dRet == null) {
-            return;
-        }
-        List<FunctionParam> dParams = new ArrayList<>();
-        dParams.add(new FunctionParam("self", this));
-        for (Parameter jParam : method.getParameters()) {
-            DType dParam = resolve(jParam.getType());
-            if (dParam == null) {
-                return;
-            }
-            dParams.add(new FunctionParam(jParam.getName(), dParam));
-        }
-        FunctionType func = new FunctionType(ts, method.getName(), dParams, dRet);
+        DexSig sig = TranslateJavaMethod.$(oShim.javaTypes(), clazz, method);
+        sig.attach(DexPackage.DUMMY);
+        FunctionType func = new FunctionType(ts, method.getName(), null, sig);
         func.implProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));
         collector.add(func);
-    }
-
-    private DType resolve(Type jTypeObj) {
-        String src = TranslateJavaCtor.translateType(oShim.javaTypes(), jTypeObj);
-        TypeTable localTypeTable = localTypeTable();
-        DexType type = DexType.parse(new Text(src));
-        type.attach(oShim.pkg(jTypeObj));
-        return ResolveType.$(ts, localTypeTable, type);
     }
 
     @Override
@@ -123,10 +104,12 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     public @NotNull String name() {
         String className = clazz.getCanonicalName();
         int dotPos = className.lastIndexOf('.');
-        if (dotPos == -1) {
-            return className;
+        if (dotPos != -1) {
+            className = className.substring(dotPos + 1);
         }
-        return className.substring(dotPos + 1).replace("$", "__");
+        return className
+                .replace('$', '_')
+                .replace("[]", "_array");
     }
 
     @Override

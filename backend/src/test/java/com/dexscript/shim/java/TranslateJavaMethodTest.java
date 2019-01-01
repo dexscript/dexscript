@@ -21,6 +21,31 @@ public class TranslateJavaMethodTest {
         testTranslateJavaMethod();
     }
 
+    @Test
+    public void two_params() throws Exception {
+        testTranslateJavaMethod();
+    }
+
+    @Test
+    public void return_string() throws Exception {
+        testTranslateJavaMethod();
+    }
+
+    @Test
+    public void referenced_class_type_param() throws Exception {
+        testTranslateJavaMethod();
+    }
+
+    @Test
+    public void one_type_param() throws Exception {
+        testTranslateJavaMethod();
+    }
+
+    @Test
+    public void referenced_method_type_param() throws Exception {
+        testTranslateJavaMethod();
+    }
+
     private void testTranslateJavaMethod() throws Exception {
         OutTown oTown = new OutTown();
         Class<?> clazz = DefineJavaClass.$(oTown).get("some.java.pkg.SomeClass");

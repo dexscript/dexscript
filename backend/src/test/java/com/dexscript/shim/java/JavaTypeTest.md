@@ -8,11 +8,14 @@ public class SomeClass {
 ```
 
 ```dexscript
-interface SomeClass {
+interface SomeInf {
     toString(): string
 }
 ```
 
+| assignable | to        | from                      |
+| ---------- | --------- | ------------------------- |
+| true       | `SomeInf` | `some.java.pkg.SomeClass` |
 
 # one_param
 
@@ -25,7 +28,11 @@ public class SomeClass {
 ```
 
 ```dexscript
-interface SomeClass {
+interface SomeInf {
     sayHello(arg0: int64)
 }
 ```
+
+| assignable | to        | from                      |
+| ---------- | --------- | ------------------------- |
+| true       | `SomeInf` | `some.java.pkg.SomeClass` |

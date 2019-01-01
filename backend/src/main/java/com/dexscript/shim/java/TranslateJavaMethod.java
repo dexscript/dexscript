@@ -7,14 +7,14 @@ import com.dexscript.type.NamedType;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import static com.dexscript.shim.java.TranslateJavaCtor.appendMore;
-import static com.dexscript.shim.java.TranslateJavaCtor.translateType;
+import static com.dexscript.shim.java.TranslateJavaCtor.*;
 
 public interface TranslateJavaMethod {
     static DexSig $(JavaTypes javaTypes, Class clazz, Method method) {
         StringBuilder sig = new StringBuilder();
         sig.append('(');
         boolean isFirst = true;
+        isFirst = translateTypeVariables(javaTypes, sig, method.getTypeParameters(), isFirst);
         Type[] jParams = method.getGenericParameterTypes();
         isFirst = appendMore(sig, isFirst);
         sig.append("self: ");

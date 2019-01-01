@@ -86,6 +86,9 @@ public interface ResolveType<E extends DexType> {
     }
 
     static DType $(TypeSystem ts, TypeTable localTypeTable, DexType elem) {
+        if (elem == null) {
+            throw new IllegalArgumentException();
+        }
         ResolveType resolveType = handlers.get(elem.getClass());
         if (resolveType == null) {
             Events.ON_UNKNOWN_ELEM.handle(elem);
