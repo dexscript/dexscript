@@ -26,7 +26,6 @@ public class OutShim {
     private final Map<FunctionEntry, List<FunctionImpl>> entries = new HashMap<>();
     private final Map<FunctionChain, String> chains = new HashMap<>();
     private final Map<String, DexPackage> pkgs = new HashMap<>();
-    private final List<GeneratedSubClass> generatedSubClasses = new ArrayList<>();
     private final JavaTypes javaTypes;
     private final ActorTable actorTable;
 
@@ -82,10 +81,6 @@ public class OutShim {
         ts.defineInterface(promiseInf);
         ts.defineBuiltinTypes(pkg);
         return pkg;
-    }
-
-    public List<GeneratedSubClass> generatedSubClasses() {
-        return generatedSubClasses;
     }
 
     public String finish() {
@@ -179,7 +174,7 @@ public class OutShim {
         FunctionType functionType = new FunctionType(ts, "New__", null, dexSig);
         functionType.implProvider(expandedFunc -> {
             JavaType type = (JavaType) expandedFunc.ret();
-            return new NewJavaClass(this, expandedFunc, ctor, type.runtimeClassName());
+            return new NewJavaClass(this, expandedFunc, ctor);
         });
     }
 
@@ -199,19 +194,5 @@ public class OutShim {
 
     public JavaTypes javaTypes() {
         return javaTypes;
-    }
-
-    public String genSubClass(Class clazz) {
-        if (Modifier.isFinal(clazz.getModifiers())) {
-            return clazz.getCanonicalName();
-        }
-        if (Modifier.isAbstract(clazz.getModifiers())) {
-            return clazz.getCanonicalName();
-        }
-        String subClassName = clazz.getSimpleName() + "__" + UUID.randomUUID().toString().substring(0, 8);
-        GeneratedSubClass generatedSubClass = new GeneratedSubClass(
-                clazz, subClassName);
-        generatedSubClasses.add(generatedSubClass);
-        return generatedSubClass.qualifiedClassName();
     }
 }

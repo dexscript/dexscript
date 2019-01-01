@@ -22,29 +22,29 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     private List<FunctionType> functions;
     private List<DType> dTypeParams;
     private List<DType> dTypeArgs;
-    private final String runtimeClassName;
     private TypeSystem ts;
     private String description;
 
     public JavaType(OutShim oShim, Class clazz) {
-        this(oShim, clazz, null, clazz.getCanonicalName());
+        this(oShim, clazz, null);
     }
 
-    public JavaType(OutShim oShim, Class clazz, List<DType> dTypeArgs, String runtimeClassName) {
+    public JavaType(OutShim oShim, Class clazz, List<DType> dTypeArgs) {
         this.oShim = oShim;
         this.clazz = clazz;
         this.ts = oShim.typeSystem();
-        this.dTypeArgs = dTypeArgs;
-        this.runtimeClassName = runtimeClassName;
-        if (dTypeArgs == null) {
-            ts.defineType(this);
+        dTypeParams = new ArrayList<>();
+        for (int i = 0; i < clazz.getTypeParameters().length; i++) {
+            dTypeParams.add(ts.ANY);
         }
-        oShim.javaTypes().add(runtimeClassName, this);
+        if (dTypeArgs == null) {
+            oShim.javaTypes().add(clazz, this);
+            ts.defineType(this);
+            this.dTypeArgs = dTypeParams;
+        } else {
+            this.dTypeArgs = dTypeArgs;
+        }
         ts.lazyDefineFunctions(this);
-    }
-
-    public String runtimeClassName() {
-        return runtimeClassName;
     }
 
     @Override
@@ -53,9 +53,9 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             return functions;
         }
         functions = new ArrayList<>();
-//        for (Method method : clazz.getMethods()) {
-//            javaMethodToDexFunc(functions, method);
-//        }
+        for (Method method : clazz.getMethods()) {
+            javaMethodToDexFunc(functions, method);
+        }
 //        arrayGetToDexFunc(functions);
         return functions;
     }
@@ -136,8 +136,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
 
     @Override
     public DType generateType(List<DType> typeArgs) {
-        String runtimeClassName = oShim.genSubClass(clazz);
-        return new JavaType(oShim, clazz, typeArgs, runtimeClassName);
+        return new JavaType(oShim, clazz, typeArgs);
     }
 
     @Override
@@ -146,19 +145,8 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             return dTypeParams;
         }
         dTypeParams = new ArrayList<>();
-        JavaTypes javaTypes = oShim.javaTypes();
-        for (TypeVariable jTypeVar : clazz.getTypeParameters()) {
-            Type[] jTypeParams = jTypeVar.getBounds();
-            if (jTypeParams.length != 1) {
-                throw new UnsupportedOperationException("not implemented");
-            }
-            // TODO: implement recursive generic expansion
-            Type jTypeParam = jTypeParams[0];
-            if (jTypeParam instanceof Class) {
-                dTypeParams.add(javaTypes.resolve((Class) jTypeParam));
-            } else {
-                dTypeParams.add(ts.ANY);
-            }
+        for (int i = 0; i < clazz.getTypeParameters().length; i++) {
+            dTypeParams.add(ts.ANY);
         }
         return dTypeParams;
     }

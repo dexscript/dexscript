@@ -3,7 +3,6 @@ package com.dexscript.transpile;
 import com.dexscript.pkg.ImportPackage;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.std.BasicOperators;
-import com.dexscript.shim.GeneratedSubClass;
 import com.dexscript.shim.OutShim;
 import com.dexscript.shim.actor.ActorType;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
@@ -43,9 +42,6 @@ public class OutTown {
         }
         try {
             addSource(OutShim.QUALIFIED_CLASSNAME, oShim.finish());
-            for (GeneratedSubClass generatedSubClass : oShim.generatedSubClasses()) {
-                addSource(generatedSubClass.qualifiedClassName(), generatedSubClass.gen());
-            }
             return compiler.compileAll().get(OutShim.QUALIFIED_CLASSNAME);
         } catch (Exception e) {
             throw new DexRuntimeException(e);

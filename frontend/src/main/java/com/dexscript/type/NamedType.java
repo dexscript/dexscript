@@ -9,4 +9,8 @@ public interface NamedType extends DType {
     String name();
 
     DexPackage pkg();
+
+    default String qualifiedName() {
+        return pkg() + "." + name();
+    }
 }
