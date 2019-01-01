@@ -3,7 +3,6 @@ package com.dexscript.shim.java;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.type.DexType;
-import com.dexscript.pkg.DexPackages;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
@@ -95,7 +94,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     }
 
     private DType resolve(Type jTypeObj) {
-        String src = TranslateSig.translateType(oShim.javaTypes(), jTypeObj);
+        String src = TranslateJavaCtor.translateType(oShim.javaTypes(), jTypeObj);
         TypeTable localTypeTable = localTypeTable();
         DexType type = DexType.parse(new Text(src));
         type.attach(oShim.pkg(jTypeObj));
@@ -122,7 +121,12 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
 
     @Override
     public @NotNull String name() {
-        return clazz.getSimpleName();
+        String className = clazz.getName();
+        int dotPos = className.lastIndexOf('.');
+        if (dotPos == -1) {
+            return className;
+        }
+        return className.substring(dotPos + 1).replace("$", "__");
     }
 
     @Override

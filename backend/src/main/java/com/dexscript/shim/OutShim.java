@@ -5,7 +5,6 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
-import com.dexscript.pkg.DexPackages;
 import com.dexscript.shim.java.*;
 import com.dexscript.shim.actor.ActorTable;
 import com.dexscript.shim.actor.ActorType;
@@ -175,7 +174,7 @@ public class OutShim {
 
     public void importJavaConstructor(Constructor ctor) {
         Class clazz = ctor.getDeclaringClass();
-        DexSig dexSig = TranslateSig.$(javaTypes, ctor);
+        DexSig dexSig = TranslateJavaCtor.$(javaTypes, ctor);
         dexSig.attach(this.pkg(clazz));
         FunctionType functionType = new FunctionType(ts, "New__", null, dexSig);
         functionType.implProvider(expandedFunc -> {

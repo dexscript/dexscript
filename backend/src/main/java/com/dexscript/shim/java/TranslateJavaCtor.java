@@ -7,7 +7,7 @@ import com.dexscript.type.NamedType;
 
 import java.lang.reflect.*;
 
-public interface TranslateSig {
+public interface TranslateJavaCtor {
 
     static DexSig $(JavaTypes javaTypes, Constructor ctor) {
         Class clazz = ctor.getDeclaringClass();
