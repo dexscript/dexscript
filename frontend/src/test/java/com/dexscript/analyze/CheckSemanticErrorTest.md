@@ -76,6 +76,14 @@ interface List {
 }
 ```
 
+# interface_method_referenced_its_type_parameter
+
+```dexscript
+interface List {
+   get(<E>: interface{}, index: int32): E
+}
+```
+
 # function_referenced_not_existing_type_parameter
 
 ```dexscript

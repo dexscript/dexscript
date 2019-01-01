@@ -7,7 +7,7 @@ import org.junit.Test;
 public class CallJavaFunctionTest {
 
     @Test
-    public void call_java_function() {
+    public void normal_function() {
         OutTown oTown = new OutTown();
         for (Class<?> clazz : DefineJavaClass.$(oTown).values()) {
             oTown.oShim().importJavaFunctions(clazz);
@@ -15,4 +15,12 @@ public class CallJavaFunctionTest {
         TestTranspile.$(oTown);
     }
 
+    @Test
+    public void generic_function() {
+        OutTown oTown = new OutTown();
+        for (Class<?> clazz : DefineJavaClass.$(oTown).values()) {
+            oTown.oShim().importJavaFunctions(clazz);
+        }
+        TestTranspile.$(oTown);
+    }
 }

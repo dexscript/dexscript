@@ -16,7 +16,7 @@ public interface DefineJavaClass {
             List<String> javaCodes = testDataFromMySection().codes("java");
             Pattern packageNamePattern = Pattern.compile("package\\s+(.*)\\s*\\;");
             Pattern classNamePattern = Pattern.compile("class\\s+([A-Za-z][A-Za-z0-9_]*)\\s*");
-            InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance();
+            InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance().ignoreWarnings();
             for (String javaCode : javaCodes) {
                 Matcher matcher = packageNamePattern.matcher(javaCode);
                 if (!matcher.find()) {

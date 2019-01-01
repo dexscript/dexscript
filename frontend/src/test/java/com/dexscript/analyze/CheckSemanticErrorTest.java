@@ -57,6 +57,11 @@ public class CheckSemanticErrorTest {
     }
 
     @Test
+    public void interface_method_referenced_its_type_parameter() {
+        noSemanticError();
+    }
+
+    @Test
     public void function_referenced_not_existing_type_parameter() {
         hasSemanticError();
     }

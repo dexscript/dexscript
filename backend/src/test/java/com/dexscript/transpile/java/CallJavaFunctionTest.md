@@ -1,4 +1,4 @@
-# call_java_function
+# normal_function
 
 ```java
 package some.java.pkg;
@@ -24,3 +24,34 @@ function Hello(): int64 {
 ```
 
 * 3
+
+# generic_function
+
+```java
+package some.java.pkg;
+
+public class SomeClass {
+    public static <T> T Add(T leftObj, T rightObj) {
+        Long left = (Long)leftObj;
+        Long right = (Long)rightObj;
+        Long result = left.longValue() + right.longValue();
+        return (T)result;
+    }
+}
+```
+
+```dexscript
+interface :: {
+    Add(<T>: interface{}, left: T, right: T): T
+}
+```
+
+
+```dexscript
+function Hello(): int64 {
+    return Add(1, 2)
+}
+```
+
+* 3
+
