@@ -58,6 +58,15 @@ public class TypeTable {
         }
     }
 
+    public TypeTable(TypeSystem ts, TypeTable copyFrom) {
+        this.ts = ts;
+        if (copyFrom != null) {
+            this.defined.putAll(copyFrom.defined);
+            this.providers.putAll(copyFrom.providers);
+            this.expanded.putAll(copyFrom.expanded);
+        }
+    }
+
     public DType resolveType(DexPackage pkg, String name) {
         pullFromProviders(pkg);
         Map<String, DType> pkgTypes = defined.get(pkg);

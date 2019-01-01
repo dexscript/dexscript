@@ -105,6 +105,16 @@ public class FunctionTypeTest {
         Assert.assertEquals("Hello(arg0: string): void", func("Hello(arg0: string): void").toString());
     }
 
+    @Test
+    public void one_type_param() {
+        testAssignable();
+    }
+
+    @Test
+    public void argument_referenced_type_param() {
+        testAssignable();
+    }
+
     private FunctionType func(String src) {
         return func(DexPackage.DUMMY, src);
     }
@@ -112,8 +122,7 @@ public class FunctionTypeTest {
     private FunctionType func(DexPackage pkg, String src) {
         DexActor actor = new DexActor(new Text("function " + src));
         actor.attach(pkg);
-        FunctionSig sig = new FunctionSig(ts, actor.sig());
-        return new FunctionType(ts, pkg, actor.functionName(), sig.params(), sig.ret());
+        return new FunctionType(ts, actor.functionName(), null, actor.sig());
     }
 
     private void defineInterface(DexPackage pkg1, String src) {

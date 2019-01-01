@@ -3,6 +3,7 @@ package com.dexscript.type;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.elem.DexTypeParam;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -79,6 +80,13 @@ public final class FunctionType implements DType {
         this.params = new ArrayList<>();
         if (self != null) {
             this.params.add(new FunctionParam("self", self));
+        }
+        TypeTable superTypeTable = localTypeTable;
+        localTypeTable = new TypeTable(ts, superTypeTable);
+        for (DexTypeParam typeParam : sig.typeParams()) {
+            String paramName = typeParam.paramName().toString();
+            DType paramType = ResolveType.$(ts, superTypeTable, typeParam.paramType());
+            localTypeTable.define(pkg, paramName, paramType);
         }
         for (DexParam param : sig.params()) {
             String paramName = param.paramName().toString();

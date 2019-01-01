@@ -37,7 +37,7 @@ interface SomeInf {
 | ---------- | --------- | ------------------------- |
 | true       | `SomeInf` | `some.java.pkg.SomeClass` |
 
-# one_type_param
+# one_class_type_param
 
 ```java
 package some.java.pkg;
@@ -56,3 +56,43 @@ interface SomeInf {
 | assignable | to        | from                      |
 | ---------- | --------- | ------------------------- |
 | true       | `SomeInf` | `some.java.pkg.SomeClass<string>` |
+
+# argument_referenced_class_type_param
+
+```java
+package some.java.pkg;
+
+public class SomeClass<T> {
+    public void sayHello(T arg0) {}
+}
+```
+
+```dexscript
+interface SomeInf {
+    sayHello(arg0: int64)
+}
+```
+
+| assignable | to        | from                      |
+| ---------- | --------- | ------------------------- |
+| true       | `SomeInf` | `some.java.pkg.SomeClass<int64>` |
+
+# one_method_type_param
+
+```java
+package some.java.pkg;
+
+public class SomeClass {
+    public <T extends Long> void sayHello(T arg0) {}
+}
+```
+
+```dexscript
+interface SomeInf {
+    sayHello(arg0: int64)
+}
+```
+
+| assignable | to        | from                      |
+| ---------- | --------- | ------------------------- |
+| true       | `SomeInf` | `some.java.pkg.SomeClass` |

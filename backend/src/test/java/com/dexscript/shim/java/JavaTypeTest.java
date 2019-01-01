@@ -31,7 +31,17 @@ public class JavaTypeTest {
     }
 
     @Test
-    public void one_type_param() {
+    public void one_class_type_param() {
+        testJavaTypeAssignable();
+    }
+
+    @Test
+    public void argument_referenced_class_type_param() {
+        testJavaTypeAssignable();
+    }
+
+    @Test
+    public void one_method_type_param() {
         testJavaTypeAssignable();
     }
 
