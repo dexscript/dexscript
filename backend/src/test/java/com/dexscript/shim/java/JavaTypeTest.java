@@ -45,6 +45,11 @@ public class JavaTypeTest {
         testJavaTypeAssignable();
     }
 
+    @Test
+    public void return_parameterized_self() {
+        testJavaTypeAssignable();
+    }
+
     private static void testJavaTypeAssignable() {
         OutTown oTown = new OutTown();
         Class<?> jType = DefineJavaClass.$(oTown).get("some.java.pkg.SomeClass");

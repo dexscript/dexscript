@@ -96,3 +96,25 @@ interface SomeInf {
 | assignable | to        | from                      |
 | ---------- | --------- | ------------------------- |
 | true       | `SomeInf` | `some.java.pkg.SomeClass` |
+
+# return_parameterized_self
+
+```java
+package some.java.pkg;
+
+public class SomeClass<T> {
+    public SomeClass<T> sayHello() {
+        return null;
+    }
+}
+```
+
+```dexscript
+interface SomeInf {
+    sayHello(): SomeInf
+}
+```
+
+| assignable | to        | from                      |
+| ---------- | --------- | ------------------------- |
+| true       | `SomeInf` | `some.java.pkg.SomeClass<int64>` |
