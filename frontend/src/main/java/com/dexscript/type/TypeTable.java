@@ -45,6 +45,7 @@ public class TypeTable {
     // package => providers
     private final Map<DexPackage, List<NamedTypesProvider>> providers = new HashMap<>();
     private final Map<Expansion, DType> expanded = new HashMap<>();
+    private TypeTable parentTypeTable;
 
     public TypeTable(TypeSystem ts) {
         this.ts = ts;
@@ -58,12 +59,15 @@ public class TypeTable {
         }
     }
 
-    public TypeTable(TypeSystem ts, TypeTable copyFrom) {
+    public TypeTable(TypeSystem ts, TypeTable parentTypeTable) {
         this.ts = ts;
-        if (copyFrom != null) {
-            this.defined.putAll(copyFrom.defined);
-            this.providers.putAll(copyFrom.providers);
-            this.expanded.putAll(copyFrom.expanded);
+        this.parentTypeTable = parentTypeTable;
+        if (parentTypeTable != null) {
+            for (Map.Entry<DexPackage, Map<String, DType>> entry : parentTypeTable.defined.entrySet()) {
+                defined.put(entry.getKey(), new HashMap<>(entry.getValue()));
+            }
+            this.providers.putAll(parentTypeTable.providers);
+            this.expanded.putAll(parentTypeTable.expanded);
         }
     }
 
@@ -137,7 +141,7 @@ public class TypeTable {
 
     public void define(DexPackage pkg, String typeName, DType type) {
         Map<String, DType> pkgTypes = defined.computeIfAbsent(pkg, k -> new HashMap<>());
-        if (pkgTypes.containsKey(typeName)) {
+        if (parentTypeTable == null && pkgTypes.containsKey(typeName)) {
             throw new DexSyntaxException("redefine type: " + typeName + " in package: " + pkg);
         }
         pkgTypes.put(typeName, type);

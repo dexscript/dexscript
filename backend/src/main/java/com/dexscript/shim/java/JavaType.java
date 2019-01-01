@@ -53,9 +53,9 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         }
         functions = new ArrayList<>();
         for (Method method : clazz.getMethods()) {
-            if (method.getDeclaringClass().equals(Object.class)) {
-                continue;
-            }
+//            if (method.getDeclaringClass().equals(Object.class)) {
+//                continue;
+//            }
             javaMethodToDexFunc(functions, method);
         }
 //        arrayGetToDexFunc(functions);

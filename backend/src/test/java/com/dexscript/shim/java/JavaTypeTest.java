@@ -2,18 +2,13 @@ package com.dexscript.shim.java;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.infer.ResolvePosArgs;
-import com.dexscript.shim.OutShim;
 import com.dexscript.test.framework.FluentAPI;
 import com.dexscript.test.framework.Row;
 import com.dexscript.transpile.OutTown;
 import com.dexscript.transpile.java.DefineJavaClass;
 import com.dexscript.type.DType;
-import com.dexscript.type.InterfaceType;
 import com.dexscript.type.TypeSystem;
-import org.junit.Assert;
 import org.junit.Test;
-
-import java.util.stream.BaseStream;
 
 import static com.dexscript.test.framework.TestFramework.stripQuote;
 import static com.dexscript.test.framework.TestFramework.testDataFromMySection;
