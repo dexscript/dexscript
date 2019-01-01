@@ -61,7 +61,8 @@ public interface TranslateJavaCtor {
             Class jType = (Class) jTypeObj;
             DType dType = javaTypes.resolve(jType);
             if (dType instanceof NamedType) {
-                return ((NamedType) dType).name();
+                NamedType namedType = (NamedType) dType;
+                return namedType.pkg() + "." + namedType.name();
             }
             return dType.toString();
         } else if (jTypeObj instanceof TypeVariable) {
