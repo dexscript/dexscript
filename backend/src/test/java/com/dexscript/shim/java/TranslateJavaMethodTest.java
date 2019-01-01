@@ -16,6 +16,11 @@ public class TranslateJavaMethodTest {
         testTranslateJavaMethod();
     }
 
+    @Test
+    public void one_param() throws Exception {
+        testTranslateJavaMethod();
+    }
+
     private void testTranslateJavaMethod() throws Exception {
         OutTown oTown = new OutTown();
         Class<?> clazz = DefineJavaClass.$(oTown).get("some.java.pkg.SomeClass");

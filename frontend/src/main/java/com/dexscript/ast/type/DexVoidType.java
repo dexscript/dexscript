@@ -10,10 +10,12 @@ import com.dexscript.ast.token.Separator;
 public class DexVoidType extends DexType {
 
     private boolean matched;
+    private int voidTypeEnd = -1;
 
     public DexVoidType(Text src, boolean matched) {
         super(src);
         this.matched = matched;
+        voidTypeEnd = src.begin;
     }
 
     public DexVoidType(Text src) {
@@ -37,7 +39,7 @@ public class DexVoidType extends DexType {
 
     @Override
     public int end() {
-        return src.begin;
+        return voidTypeEnd;
     }
 
     @Override
@@ -84,6 +86,7 @@ public class DexVoidType extends DexType {
         State separator() {
             if (Separator.$(src, i)) {
                 matched = true;
+                voidTypeEnd = i;
             }
             return null;
         }

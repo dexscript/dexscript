@@ -73,7 +73,7 @@ public class TypeTable {
 
     public DType resolveType(DexPackage pkg, String name, List<DType> typeArgs) {
         DType type = this.resolveType(pkg, name);
-        if (type == null) {
+        if (type instanceof UndefinedType) {
             ON_NO_SUCH_TYPE.handle(name);
             return ts.UNDEFINED;
         }
@@ -125,7 +125,7 @@ public class TypeTable {
     public void define(DexPackage pkg, String typeName, DType type) {
         Map<String, DType> pkgTypes = defined.computeIfAbsent(pkg, k -> new HashMap<>());
         if (pkgTypes.containsKey(typeName)) {
-            throw new DexSyntaxException("redefine type: " + typeName);
+            throw new DexSyntaxException("redefine type: " + typeName + " in package: " + pkg);
         }
         pkgTypes.put(typeName, type);
     }

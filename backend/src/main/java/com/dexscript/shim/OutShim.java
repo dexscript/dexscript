@@ -50,6 +50,9 @@ public class OutShim {
 
     public DexPackage pkg(Type jType) {
         String typeName = jType.getTypeName();
+        if (jType instanceof Class) {
+            typeName = ((Class) jType).getCanonicalName();
+        }
         int dotPos = typeName.lastIndexOf('.');
         if (dotPos == -1) {
             return pkg("JAVA_ROOT");

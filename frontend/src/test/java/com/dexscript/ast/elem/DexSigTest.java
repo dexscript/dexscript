@@ -26,6 +26,11 @@ public class DexSigTest {
     }
 
     @Test
+    public void return_void() {
+        TestFramework.assertParsedAST(DexSig::$);
+    }
+
+    @Test
     public void one_type_param() {
         TestFramework.assertParsedAST(DexSig::$);
     }

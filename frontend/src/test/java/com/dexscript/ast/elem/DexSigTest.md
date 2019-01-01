@@ -68,6 +68,21 @@
 * ret
     * "string"
 
+# return_void
+
+```dexscript
+(): void
+```
+
+* params
+    * size
+        * 0
+* typeParams
+    * size
+        * 0
+* ret
+    * "void"
+
 # one_type_param
 
 ```dexscript

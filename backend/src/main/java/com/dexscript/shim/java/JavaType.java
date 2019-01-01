@@ -121,7 +121,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
 
     @Override
     public @NotNull String name() {
-        String className = clazz.getName();
+        String className = clazz.getCanonicalName();
         int dotPos = className.lastIndexOf('.');
         if (dotPos == -1) {
             return className;

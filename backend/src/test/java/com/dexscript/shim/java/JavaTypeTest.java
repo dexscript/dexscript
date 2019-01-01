@@ -19,17 +19,26 @@ public class JavaTypeTest {
 
     @Test
     public void just_object() {
-        OutTown oTown = new OutTown();
-        Class<?> jType = DefineJavaClass.$(oTown).get("some.java.pkg.SomeClass");
-        DType actualDType = oTown.oShim().javaTypes().resolve(jType);
-        String code = testDataFromMySection().codes("dexscript").get(0);
-        InterfaceType expactedDType = oTown.oShim().typeSystem().defineInterface(DexInterface.$(code));
-        TestAssignable.$(true, expactedDType, actualDType);
+        testJavaTypeAssignable();
+    }
+
+    @Test
+    public void one_param() {
+        testJavaTypeAssignable();
     }
 
     @Test
     public void type_parameters() {
         JavaType dType = new JavaType(new OutShim(new TypeSystem()), BaseStream.class);
         Assert.assertEquals(2, dType.typeParameters().size());
+    }
+
+    private static void testJavaTypeAssignable() {
+        OutTown oTown = new OutTown();
+        Class<?> jType = DefineJavaClass.$(oTown).get("some.java.pkg.SomeClass");
+        DType actualDType = oTown.oShim().javaTypes().resolve(jType);
+        String code = testDataFromMySection().codes("dexscript").get(0);
+        InterfaceType expactedDType = oTown.oShim().typeSystem().defineInterface(DexInterface.$(code));
+        TestAssignable.$(true, expactedDType, actualDType);
     }
 }
