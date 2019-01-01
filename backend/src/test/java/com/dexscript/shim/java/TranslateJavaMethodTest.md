@@ -93,7 +93,7 @@ public class SomeClass<T> {
 }
 ```
 
-* `(self: some.java.pkg.SomeClass): T`
+* `(self: some.java.pkg.SomeClass<T>): T`
 
 # one_type_param
 

@@ -31,9 +31,8 @@ public class JavaTypeTest {
     }
 
     @Test
-    public void type_parameters() {
-        JavaType dType = new JavaType(new OutShim(new TypeSystem()), BaseStream.class);
-        Assert.assertEquals(2, dType.typeParameters().size());
+    public void one_type_param() {
+        testJavaTypeAssignable();
     }
 
     private static void testJavaTypeAssignable() {

@@ -77,8 +77,12 @@ public class TypeTable {
             ON_NO_SUCH_TYPE.handle(name);
             return ts.UNDEFINED;
         }
+        return resolveType(type, typeArgs);
+    }
+
+    public DType resolveType(DType type, List<DType> typeArgs) {
         if (!(type instanceof GenericType)) {
-            ON_NOT_GENERIC_TYPE.handle(name, typeArgs, type);
+            ON_NOT_GENERIC_TYPE.handle(type.toString(), typeArgs, type);
             return ts.UNDEFINED;
         }
         GenericType genericType = (GenericType) type;
@@ -89,14 +93,14 @@ public class TypeTable {
         }
         List<DType> typeParams = genericType.typeParameters();
         if (typeParams.size() != typeArgs.size()) {
-            ON_GENERIC_TYPE_ARGUMENTS_SIZE_MISMATCH.handle(name, genericType, typeArgs);
+            ON_GENERIC_TYPE_ARGUMENTS_SIZE_MISMATCH.handle(type.toString(), genericType, typeArgs);
             return ts.UNDEFINED;
         }
         for (int i = 0; i < typeParams.size(); i++) {
             DType typeParam = typeParams.get(i);
             DType typeArg = typeArgs.get(i);
             if (!IsAssignable.$(typeParam, typeArg)) {
-                ON_GENERIC_TYPE_ARGUMENT_NOT_ASSIGNABLE.handle(name, genericType, typeArgs, i);
+                ON_GENERIC_TYPE_ARGUMENT_NOT_ASSIGNABLE.handle(type.toString(), genericType, typeArgs, i);
                 return ts.UNDEFINED;
             }
         }

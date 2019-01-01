@@ -90,6 +90,7 @@ public class DexParameterizedType extends DexType {
                 }
                 if (b == '<') {
                     i += 1;
+                    genericType.reparent(DexParameterizedType.this);
                     return this::firstTypeArg;
                 }
                 return null;

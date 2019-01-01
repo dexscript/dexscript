@@ -1,16 +1,12 @@
 package com.dexscript.shim.java;
 
 import com.dexscript.ast.DexPackage;
-import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.ast.type.DexType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +21,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
     private List<DType> dTypeArgs;
     private TypeSystem ts;
     private String description;
+    private DexPackage dPkg;
 
     public JavaType(OutShim oShim, Class clazz) {
         this(oShim, clazz, null);
@@ -34,6 +31,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         this.oShim = oShim;
         this.clazz = clazz;
         this.ts = oShim.typeSystem();
+        dPkg = oShim.pkg(clazz);
         dTypeParams = new ArrayList<>();
         for (int i = 0; i < clazz.getTypeParameters().length; i++) {
             dTypeParams.add(ts.ANY);
@@ -55,6 +53,9 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         }
         functions = new ArrayList<>();
         for (Method method : clazz.getMethods()) {
+            if (method.getDeclaringClass().equals(Object.class)) {
+                continue;
+            }
             javaMethodToDexFunc(functions, method);
         }
 //        arrayGetToDexFunc(functions);
@@ -76,8 +77,8 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
 
     private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
         DexSig sig = TranslateJavaMethod.$(oShim.javaTypes(), clazz, method);
-        sig.attach(DexPackage.DUMMY);
-        FunctionType func = new FunctionType(ts, method.getName(), null, sig);
+        sig.attach(pkg());
+        FunctionType func = new FunctionType(ts, method.getName(), localTypeTable(), sig);
         func.implProvider(expandedFunc -> new CallJavaMethod(oShim, expandedFunc, method));
         collector.add(func);
     }
@@ -114,7 +115,7 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
 
     @Override
     public DexPackage pkg() {
-        return oShim.pkg(clazz);
+        return dPkg;
     }
 
     @Override
@@ -139,10 +140,6 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             return localTypeTable;
         }
         localTypeTable = new TypeTable(ts);
-        List<DType> dTypeArgs = this.dTypeArgs;
-        if (dTypeArgs == null) {
-            dTypeArgs = typeParameters();
-        }
         for (int i = 0; i < clazz.getTypeParameters().length; i++) {
             TypeVariable jTypeParam = clazz.getTypeParameters()[i];
             localTypeTable.define(oShim.pkg(clazz), jTypeParam.getName(), dTypeArgs.get(i));

@@ -53,8 +53,8 @@ public interface ResolveType<E extends DexType> {
             for (DexType typeArg : genericExpansionType.typeArgs()) {
                 typeArgs.add(ResolveType.$(ts, localTypeTable, typeArg));
             }
-            String genericTypeName = genericExpansionType.genericType().toString();
-            return ts.typeTable().resolveType(elem.pkg(), genericTypeName, typeArgs);
+            DType genericType = ResolveType.$(ts, localTypeTable, genericExpansionType.genericType());
+            return ts.typeTable().resolveType(genericType, typeArgs);
         });
         put(DexInterfaceType.class, (ts, localTypeTable, elem) -> {
             DexInterfaceType infType = (DexInterfaceType) elem;
@@ -95,14 +95,6 @@ public interface ResolveType<E extends DexType> {
             return ts.UNDEFINED;
         }
         return resolveType.handle(ts, localTypeTable, elem);
-    }
-
-    static List<DType> resolveTypes(TypeSystem ts, String... typeDefs) {
-        List<DType> types = new ArrayList<>();
-        for (String typeDef : typeDefs) {
-            types.add(ResolveType.$(ts, typeDef));
-        }
-        return types;
     }
 
     static List<DType> resolveTypes(TypeSystem ts, TypeTable localTypeTable, List<DexType> dexTypes) {

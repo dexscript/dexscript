@@ -6,6 +6,7 @@ import com.dexscript.type.NamedType;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 
 import static com.dexscript.shim.java.TranslateJavaCtor.*;
 
@@ -19,6 +20,17 @@ public interface TranslateJavaMethod {
         isFirst = appendMore(sig, isFirst);
         sig.append("self: ");
         sig.append(((NamedType) javaTypes.resolve(clazz)).qualifiedName());
+        if (clazz.getTypeParameters().length > 0) {
+            sig.append('<');
+            for (int i = 0; i < clazz.getTypeParameters().length; i++) {
+                if (i > 0) {
+                    sig.append(", ");
+                }
+                TypeVariable jTypeParam = clazz.getTypeParameters()[i];
+                sig.append(jTypeParam.getName());
+            }
+            sig.append('>');
+        }
         for (int i = 0; i < jParams.length; i++) {
             isFirst = appendMore(sig, isFirst);
             sig.append("arg");
