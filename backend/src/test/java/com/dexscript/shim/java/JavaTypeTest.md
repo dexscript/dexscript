@@ -118,3 +118,17 @@ interface SomeInf {
 | assignable | to        | from                      |
 | ---------- | --------- | ------------------------- |
 | true       | `SomeInf` | `some.java.pkg.SomeClass<int64>` |
+
+# one_dimension_array
+
+```dexscript
+interface SomeInf {
+    Set__(index: int32, element: string)
+    Get__(index: int32): string
+}
+```
+
+
+| assignable | to        | from                      |
+| ---------- | --------- | ------------------------- |
+| true       | `SomeInf` | `java.lang.String_array` |

@@ -56,29 +56,44 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
         }
         functions = new ArrayList<>();
         for (Method method : clazz.getMethods()) {
-//            if (method.getDeclaringClass().equals(Object.class)) {
-//                continue;
-//            }
-            javaMethodToDexFunc(functions, method);
+            defineObjectMethods(functions, method);
         }
-//        arrayGetToDexFunc(functions);
+        defineArrayMethods(functions);
         return functions;
     }
 
-    private void arrayGetToDexFunc(List<FunctionType> collector) {
+    private void defineArrayMethods(List<FunctionType> collector) {
         if (!clazz.isArray()) {
             return;
         }
+        collector.add(arrayGetFunc());
+        collector.add(arraySetFunc());
+    }
+
+    @NotNull
+    private FunctionType arraySetFunc() {
+        ArrayList<FunctionParam> params = new ArrayList<>();
+        params.add(new FunctionParam("self", this));
+        params.add(new FunctionParam("index", ts.INT32));
+        DType dComponentType = oShim.javaTypes().resolve(clazz.getComponentType());
+        params.add(new FunctionParam("element", dComponentType));
+        FunctionType func = new FunctionType(ts, "Set__", params, ts.VOID);
+        func.implProvider(expandedFunc -> new CallJavaArraySet(oShim, expandedFunc, clazz));
+        return func;
+    }
+
+    @NotNull
+    private FunctionType arrayGetFunc() {
         ArrayList<FunctionParam> params = new ArrayList<>();
         params.add(new FunctionParam("self", this));
         params.add(new FunctionParam("index", ts.INT32));
         DType ret = oShim.javaTypes().resolve(clazz.getComponentType());
-        FunctionType func = new FunctionType(ts, "get", params, ret);
+        FunctionType func = new FunctionType(ts, "Get__", params, ret);
         func.implProvider(expandedFunc -> new CallJavaArrayGet(oShim, expandedFunc, clazz));
-        collector.add(func);
+        return func;
     }
 
-    private void javaMethodToDexFunc(List<FunctionType> collector, Method method) {
+    private void defineObjectMethods(List<FunctionType> collector, Method method) {
         DexSig sig = TranslateJavaMethod.$(oShim.javaTypes(), clazz, method);
         sig.attach(pkg());
         FunctionType func = new FunctionType(ts, method.getName(), localTypeTable(), sig);

@@ -26,6 +26,7 @@ function Hello(): string {
     array := CreateOneElementArray()
     array[0] = 'hello'
     return array[0]
+}
 ```
 
 * "hello"

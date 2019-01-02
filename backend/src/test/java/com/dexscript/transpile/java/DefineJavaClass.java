@@ -3,6 +3,7 @@ package com.dexscript.transpile.java;
 import com.dexscript.transpile.OutTown;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -14,6 +15,9 @@ public interface DefineJavaClass {
     static Map<String, Class<?>> $(OutTown oTown) {
         try {
             List<String> javaCodes = testDataFromMySection().codes("java");
+            if (javaCodes.isEmpty()) {
+                throw new RuntimeException("no java code found in my section");
+            }
             Pattern packageNamePattern = Pattern.compile("package\\s+(.*)\\s*\\;");
             Pattern classNamePattern = Pattern.compile("class\\s+([A-Za-z][A-Za-z0-9_]*)\\s*");
             InMemoryJavaCompiler compiler = InMemoryJavaCompiler.newInstance().ignoreWarnings();

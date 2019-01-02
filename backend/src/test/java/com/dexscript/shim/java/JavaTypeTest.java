@@ -8,6 +8,7 @@ import com.dexscript.transpile.OutTown;
 import com.dexscript.transpile.java.DefineJavaClass;
 import com.dexscript.type.DType;
 import com.dexscript.type.TypeSystem;
+import org.junit.Assert;
 import org.junit.Test;
 
 import static com.dexscript.test.framework.TestFramework.stripQuote;
@@ -45,10 +46,22 @@ public class JavaTypeTest {
         testJavaTypeAssignable();
     }
 
+    @Test
+    public void one_dimension_array() {
+        OutTown oTown = new OutTown();
+        DType dType = oTown.oShim().javaTypes().resolve(String[].class);
+        Assert.assertEquals("String_array", dType.toString());
+        testJavaTypeAssignable(oTown);
+    }
+
     private static void testJavaTypeAssignable() {
         OutTown oTown = new OutTown();
         Class<?> jType = DefineJavaClass.$(oTown).get("some.java.pkg.SomeClass");
         oTown.oShim().javaTypes().resolve(jType);
+        testJavaTypeAssignable(oTown);
+    }
+
+    private static void testJavaTypeAssignable(OutTown oTown) {
         FluentAPI testData = testDataFromMySection();
         TypeSystem ts = oTown.oShim().typeSystem();
         for (String code : testData.codes("dexscript")) {
