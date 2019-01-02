@@ -74,10 +74,13 @@ public class TypeTable {
 
     public TypeTable(TypeSystem ts, TypeTable parentTypeTable, DexSig sig) {
         this(ts, parentTypeTable);
+        DexPackage pkg = sig.pkg();
         for (DexTypeParam typeParam : sig.typeParams()) {
             String paramName = typeParam.paramName().toString();
             DType paramType = ResolveType.$(ts, parentTypeTable, typeParam.paramType());
-            define(sig.pkg(), paramName, paramType);
+            if (resolveType(pkg, paramName) == ts.UNDEFINED) {
+                define(pkg, paramName, paramType);
+            }
         }
     }
 
