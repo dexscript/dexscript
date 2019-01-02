@@ -4,7 +4,8 @@ import java.util.Objects;
 
 public class DexPackage {
 
-    public final static DexPackage DUMMY = new DexPackage("DUMMY__");
+    public final static DexPackage DUMMY = new DexPackage("DEXSCRIPT_DUMMY");
+    public final static DexPackage BUILTIN = new DexPackage("DEXSCRIPT_BUILTIN");
 
     private final String packageName;
 

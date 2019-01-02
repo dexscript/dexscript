@@ -2,11 +2,6 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
-import com.dexscript.ast.elem.DexParam;
-import com.dexscript.ast.inf.DexInfMethod;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TypeSystem {
 
@@ -27,6 +22,7 @@ public class TypeSystem {
 
     public TypeSystem() {
         defineBuiltinTypes(DexPackage.DUMMY);
+        defineBuiltinTypes(DexPackage.BUILTIN);
     }
 
     public TypeTable typeTable() {

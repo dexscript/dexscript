@@ -1,8 +1,6 @@
 package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
-import com.dexscript.ast.core.Text;
-import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.inf.DexInfMethod;
 
 import java.util.ArrayList;
@@ -17,14 +15,6 @@ public class GlobalSPI implements FunctionsType {
     public GlobalSPI(TypeSystem ts, DexInterface inf) {
         this.ts = ts;
         this.inf = inf;
-        DexInterface arrayInf = new DexInterface(new Text("" +
-                "interface Array {\n" +
-                "   <T>: interface{}\n" +
-                "   Set__(index: int32, element: T)\n" +
-                "   Get__(index: int32): T\n" +
-                "}"));
-        arrayInf.attach(inf.pkg());
-        ts.defineInterface(arrayInf);
         ts.lazyDefineFunctions(this);
     }
 
@@ -34,7 +24,6 @@ public class GlobalSPI implements FunctionsType {
             return functions;
         }
         functions = new ArrayList<>();
-        functions.add(newArrayFunc());
         for (DexInfMethod infMethod : inf.methods()) {
             String name = infMethod.identifier().toString();
             FunctionType functionType = new FunctionType(ts, name, null, infMethod.sig());
@@ -42,14 +31,6 @@ public class GlobalSPI implements FunctionsType {
             functions.add(functionType);
         }
         return functions;
-    }
-
-    private FunctionType newArrayFunc() {
-        DexSig sig = new DexSig(new Text("(<T>: interface{}, class: 'Array', length: int32): Array<T>"));
-        sig.attach(inf.pkg());
-        FunctionType functionType = new FunctionType(ts, "New__", null, sig);
-        functionType.isGlobalSPI(true);
-        return functionType;
     }
 
     @Override

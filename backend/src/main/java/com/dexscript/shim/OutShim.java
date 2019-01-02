@@ -8,6 +8,7 @@ import com.dexscript.gen.Line;
 import com.dexscript.shim.java.*;
 import com.dexscript.shim.actor.ActorTable;
 import com.dexscript.shim.actor.ActorType;
+import com.dexscript.shim.java.ArrayType;
 import com.dexscript.type.*;
 
 import java.lang.reflect.*;
@@ -41,6 +42,15 @@ public class OutShim {
         ).__(" {");
         g.indention("  ");
         g.__(new Line());
+        defineNewArray();
+    }
+
+    private void defineNewArray() {
+        new ArrayType(this);
+        DexSig dexSig = new DexSig(new Text("(<T>: interface{}, class: 'Array', length: int32): Array<T>"));
+        dexSig.attach(DexPackage.BUILTIN);
+        FunctionType functionType = new FunctionType(ts, "New__", null, dexSig);
+        functionType.implProvider(expandedFunc -> new NewJavaArray(this, expandedFunc));
     }
 
     public DexPackage pkg(Path pkgPath) {
@@ -101,16 +111,6 @@ public class OutShim {
         g.__(new Line());
         g.__(new Line("}")); // end of class Shim__
         return g.toString();
-    }
-
-    public void defineFile(DexFile file) {
-        for (DexTopLevelDecl topLevelDecl : file.topLevelDecls()) {
-            if (topLevelDecl.actor() != null) {
-                defineActor(topLevelDecl.actor());
-            } else if (topLevelDecl.inf() != null) {
-                ts.defineInterface(topLevelDecl.inf());
-            }
-        }
     }
 
     public void defineInterface(DexInterface inf) {
@@ -175,10 +175,7 @@ public class OutShim {
         DexSig dexSig = TranslateJavaCtor.$(javaTypes, ctor);
         dexSig.attach(this.pkg(clazz));
         FunctionType functionType = new FunctionType(ts, "New__", null, dexSig);
-        functionType.implProvider(expandedFunc -> {
-            JavaType type = (JavaType) expandedFunc.ret();
-            return new NewJavaClass(this, expandedFunc, ctor);
-        });
+        functionType.implProvider(expandedFunc -> new NewJavaClass(this, expandedFunc, ctor));
     }
 
     public Gen g() {
