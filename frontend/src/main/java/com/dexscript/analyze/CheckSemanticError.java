@@ -11,6 +11,9 @@ import com.dexscript.type.TypeTable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class CheckSemanticError implements DexElement.Visitor {
 
@@ -27,6 +30,8 @@ public class CheckSemanticError implements DexElement.Visitor {
             add(new CheckAssignment());
             add(new CheckInterface());
             add(new CheckActor());
+            add(new CheckInfMethod());
+            add(new CheckInfFunction());
             add(new CheckInvocation<DexFunctionCallExpr>() {
             });
             add(new CheckInvocation<DexMethodCallExpr>() {
@@ -42,19 +47,28 @@ public class CheckSemanticError implements DexElement.Visitor {
 
     private final TypeSystem ts;
     private boolean hasError;
-    private TypeTable localTypeTable;
+    private Stack<TypeTable> localTypeTables = new Stack<>();
 
     public CheckSemanticError(TypeSystem ts, DexFile file) {
         this.ts = ts;
         visit(file);
     }
 
-    public void localTypeTable(TypeTable localTypeTable) {
-        this.localTypeTable = localTypeTable;
+    public interface Action {
+        void apply();
+    }
+
+    public void withTypeTable(TypeTable localTypeTable, Action action) {
+        localTypeTables.push(localTypeTable);
+        action.apply();
+        localTypeTables.pop();
     }
 
     public TypeTable localTypeTable() {
-        return localTypeTable;
+        if (localTypeTables.isEmpty()) {
+            return null;
+        }
+        return localTypeTables.peek();
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.dexscript.analyze;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.elem.DexTypeParam;
-import com.dexscript.ast.inf.DexInfTypeParam;
 import com.dexscript.type.DType;
 import com.dexscript.type.ResolveType;
 import com.dexscript.type.TypeSystem;
@@ -17,8 +16,6 @@ public class CheckActor implements CheckSemanticError.Handler<DexActor> {
             DType type = ResolveType.$(ts, null, typeParam.paramType());
             localTypeTable.define(actor.pkg(), typeParam.paramName().toString(), type);
         }
-        cse.localTypeTable(localTypeTable);
-        actor.walkDown(cse);
-        cse.localTypeTable(null);
+        cse.withTypeTable(localTypeTable, () -> actor.walkDown(cse));
     }
 }

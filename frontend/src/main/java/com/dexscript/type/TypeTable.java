@@ -2,6 +2,7 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexSyntaxException;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
 
 import java.util.*;
@@ -68,6 +69,15 @@ public class TypeTable {
             }
             this.providers.putAll(parentTypeTable.providers);
             this.expanded.putAll(parentTypeTable.expanded);
+        }
+    }
+
+    public TypeTable(TypeSystem ts, TypeTable parentTypeTable, DexSig sig) {
+        this(ts, parentTypeTable);
+        for (DexTypeParam typeParam : sig.typeParams()) {
+            String paramName = typeParam.paramName().toString();
+            DType paramType = ResolveType.$(ts, parentTypeTable, typeParam.paramType());
+            define(sig.pkg(), paramName, paramType);
         }
     }
 
