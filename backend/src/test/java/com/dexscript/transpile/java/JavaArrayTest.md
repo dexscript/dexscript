@@ -30,3 +30,18 @@ function Hello(): string {
 ```
 
 * "hello"
+
+# new_array_of_interface
+
+```dexscript
+interface :: {
+}
+```
+
+```dexscript
+function Hello(): string {
+    array := new Array<string>(1)
+    array[0] = 'hello'
+    return array[0]
+}
+```

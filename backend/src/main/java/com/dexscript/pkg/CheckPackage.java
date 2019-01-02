@@ -11,7 +11,7 @@ import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.*;
+import com.dexscript.type.TypeSystem;
 
 import java.io.IOException;
 import java.nio.file.Files;

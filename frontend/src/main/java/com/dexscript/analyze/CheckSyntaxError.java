@@ -17,6 +17,10 @@ public class CheckSyntaxError implements DexElement.Visitor {
             System.out.println("missing parent for " + elem);
             hasError = true;
         }
+        if (!elem.matched()) {
+            System.out.println("not matched: " + elem);
+            hasError = true;
+        }
         if (elem.syntaxError() != null) {
             System.out.println(elem.syntaxError());
             hasError = true;

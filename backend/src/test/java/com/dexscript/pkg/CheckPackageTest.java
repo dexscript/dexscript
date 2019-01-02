@@ -85,6 +85,11 @@ public class CheckPackageTest {
         Assert.assertFalse(checkPkg1());
     }
 
+    @Test
+    public void array_support_is_builtin() throws Exception {
+        Assert.assertTrue(checkPkg1());
+    }
+
     private boolean checkPkg1() throws IOException {
         for (String code : testDataFromMySection().codes()) {
             int newLinePos = code.indexOf("\n");

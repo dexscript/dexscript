@@ -189,3 +189,22 @@ function World(): int64 {
     return 1
 }
 ```
+
+# array_support_is_builtin
+
+```dexscript
+// /pkg1/__spi__.ds
+interface :: {
+}
+interface ABC {
+    SomeAction()
+}
+```
+
+```dexscript
+// /pkg1/123.ds
+
+function Hello(): interface{} {
+   return new Array<ABC>(3)
+}
+```

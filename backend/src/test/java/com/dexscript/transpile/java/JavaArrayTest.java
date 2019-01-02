@@ -16,21 +16,9 @@ public class JavaArrayTest {
         TestTranspile.$(oTown);
     }
 
-    public static class Class2 {
-        public static String[] newArray() {
-            return new String[]{"hello"};
-        }
-    }
-
     @Test
-    public void get_element_from_array() {
+    public void new_array_of_interface() {
         OutTown oTown = new OutTown();
-        oTown.oShim().importJavaFunctions(Class2.class);
-        String ret = (String) TestTranspile.$(oTown, "", "" +
-                "function Hello(): string {\n" +
-                "   arr := newArray()\n" +
-                "   return arr[0]\n" +
-                "}");
-        Assert.assertEquals("hello", ret);
+        TestTranspile.$(oTown);
     }
 }
