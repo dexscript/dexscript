@@ -48,12 +48,12 @@ public interface ResolveType<E extends DexType> {
         put(DexBoolLiteralType.class, (ts, localTypeTable, elem) ->
                 new BoolLiteralType(ts, elem.toString()));
         put(DexParameterizedType.class, (ts, localTypeTable, elem) -> {
-            DexParameterizedType genericExpansionType = (DexParameterizedType) elem;
+            DexParameterizedType parameterizedType = (DexParameterizedType) elem;
             List<DType> typeArgs = new ArrayList<>();
-            for (DexType typeArg : genericExpansionType.typeArgs()) {
+            for (DexType typeArg : parameterizedType.typeArgs()) {
                 typeArgs.add(ResolveType.$(ts, localTypeTable, typeArg));
             }
-            DType genericType = ResolveType.$(ts, localTypeTable, genericExpansionType.genericType());
+            DType genericType = ResolveType.$(ts, localTypeTable, parameterizedType.genericType());
             return ts.typeTable().resolveType(genericType, typeArgs);
         });
         put(DexInterfaceType.class, (ts, localTypeTable, elem) -> {

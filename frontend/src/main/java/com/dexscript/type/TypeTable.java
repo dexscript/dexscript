@@ -26,7 +26,7 @@ public class TypeTable {
     }
 
     public final static OnNotGenericType ON_NOT_GENERIC_TYPE = (name, typeArgs, actualType) -> {
-        throw new DexSyntaxException("paramType is not generic: " + name);
+        throw new DexSyntaxException("type is not generic: " + name);
     };
 
     public final static OnNoSuchType ON_NO_SUCH_TYPE = name -> {
