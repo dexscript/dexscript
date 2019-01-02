@@ -87,6 +87,10 @@ public class DexInterface extends DexElement {
         return "::".equals(identifier().toString());
     }
 
+    public boolean isContextSPI() {
+        return "$".equals(identifier().toString());
+    }
+
     private class Parser {
 
         int i = src.begin;

@@ -52,7 +52,7 @@ public class FunctionTable {
             if (!func.hasImpl() && !func.isGlobalSPI() && !ivc.canProvide(func)) {
                 continue;
             }
-            if (dispatched.match != null) {
+            if (dispatched.match != null && dispatched.match.func().hasImpl()) {
                 dispatched.skippeds.add(func);
                 continue;
             }

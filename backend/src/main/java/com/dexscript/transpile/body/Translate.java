@@ -145,11 +145,12 @@ public interface Translate<E extends DexElement> {
         return val;
     }
 
-    static String translateContext(DexInvocation ivc) {
+    static String translateContext(OutClass oClass, DexInvocation ivc) {
         DexExpr context = ivc.context();
         if (context == null) {
             return "context";
         }
+        Translate.$(oClass, context);
         return OutValue.of(context);
     }
 
@@ -166,7 +167,7 @@ public interface Translate<E extends DexElement> {
             String translatedArg = Translate.translateExpr(oClass, dexIvc.namedArgs().get(namedArgIndex).val(), targetType);
             translatedArgs.add(translatedArg);
         }
-        translatedArgs.add(Translate.translateContext(dexIvc));
+        translatedArgs.add(Translate.translateContext(oClass, dexIvc));
         return translatedArgs;
     }
 }

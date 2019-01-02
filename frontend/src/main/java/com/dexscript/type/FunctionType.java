@@ -194,6 +194,10 @@ public final class FunctionType implements DType {
         return context;
     }
 
+    public void context(DType context) {
+        this.context = context;
+    }
+
     public void isGlobalSPI(boolean isGlobalSPI) {
         this.isGlobalSPI = isGlobalSPI;
     }

@@ -15,6 +15,6 @@ public class CheckSyntaxErrorTest {
     @Test
     public void has_error() {
         CheckSyntaxError result = new CheckSyntaxError(DexFile.$("function hello() }"));
-        Assert.assertFalse(result.hasError());
+        Assert.assertTrue(result.hasError());
     }
 }
