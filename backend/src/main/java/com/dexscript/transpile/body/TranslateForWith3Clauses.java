@@ -40,7 +40,7 @@ public class TranslateForWith3Clauses implements Translate<DexForStmt> {
         // loop
         new OutTransientStateMethod(oClass, loopState);
         OutStateMethod.call(oClass.g(), checkConditionState);
-        oClass.g().__("for (;"
+        oClass.g().__("for (;(Boolean)"
         ).__(OutValue.of(condition)
         ).__(";"
         ).__(OutStateMethod.methodName(postState)
@@ -75,7 +75,7 @@ public class TranslateForWith3Clauses implements Translate<DexForStmt> {
         new OutStateMethod(oClass, checkConditionState);
         DexExpr condition = iForStmt.condition();
         Translate.$(oClass, condition);
-        oClass.g().__("if ("
+        oClass.g().__("if ((Boolean)"
         ).__(OutValue.of(condition)
         ).__(") {"
         ).__(new Indent(() -> {

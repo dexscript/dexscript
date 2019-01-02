@@ -29,7 +29,7 @@ function Context() {
 interface :: {
 }
 interface $ {
-   GetPid(): string
+    GetPid(): string
 }
 ```
 
@@ -37,10 +37,10 @@ interface $ {
 // /pkg2/123.ds
 
 function F1(): string {
-   return F2()
+    return F2()
 }
 function F2(): string {
-   return $.GetPid()
+    return $.GetPid()
 }
 ```
 
