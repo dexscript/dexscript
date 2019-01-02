@@ -41,7 +41,7 @@ public interface TestAssignable {
 
     static void func(TypeSystem ts, String src) {
         DexActor actor = DexActor.$("function " + src);
-        FunctionSig sig = new FunctionSig(ts, actor.sig());
+        FunctionSig sig = new FunctionSig(ts, null, actor.sig());
         FunctionType function = new FunctionType(ts, actor.functionName(), sig.params(), sig.ret());
         function.implProvider(expandedFunc -> new Object());
     }

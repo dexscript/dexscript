@@ -120,7 +120,7 @@ public class FunctionSigTest {
     }
 
     private FunctionSig sig(String src) {
-        FunctionSig sig = new FunctionSig(ts, DexSig.$(src));
+        FunctionSig sig = new FunctionSig(ts, null, DexSig.$(src));
         sig.reparent(new FunctionType(ts, "", sig.params(), sig.ret()));
         return sig;
     }

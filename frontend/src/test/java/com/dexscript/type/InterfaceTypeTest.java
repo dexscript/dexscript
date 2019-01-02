@@ -43,4 +43,9 @@ public class InterfaceTypeTest {
     public void generic_interface() {
         TestAssignable.$();
     }
+
+    @Test
+    public void parameterized_with_sub_type() {
+        TestAssignable.$();
+    }
 }

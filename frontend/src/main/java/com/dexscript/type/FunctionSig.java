@@ -185,22 +185,25 @@ public class FunctionSig {
         this.dexSig = null;
     }
 
-    public FunctionSig(TypeSystem ts, DexSig dexSig) {
-        this(ts, null, dexSig);
+    public FunctionSig(TypeSystem ts, TypeTable localTypeTable, DexSig dexSig) {
+        this(ts, localTypeTable, null, dexSig);
     }
 
-    public FunctionSig(TypeSystem ts, DType self, DexSig dexSig) {
+    public FunctionSig(TypeSystem ts, TypeTable localTypeTable, DType self, DexSig dexSig) {
         this.ts = ts;
         this.pkg = dexSig.pkg();
         this.dexSig = dexSig;
         typeParams = new ArrayList<>();
-        TypeTable localTypeTable = new TypeTable(ts);
+        localTypeTable = new TypeTable(ts, localTypeTable);
         for (DexTypeParam typeParam : dexSig.typeParams()) {
             DType constraint = ResolveType.$(ts, null, typeParam.paramType());
-            String placeholderName = typeParam.paramName().toString();
-            PlaceholderType placeholder = new PlaceholderType(ts, placeholderName, constraint);
-            localTypeTable.define(dexSig.pkg(), placeholderName, placeholder);
-            typeParams.add(placeholder);
+            String paramName = typeParam.paramName().toString();
+            if (localTypeTable.resolveType(pkg, paramName) != ts.UNDEFINED) {
+                continue;
+            }
+            PlaceholderType paramType = new PlaceholderType(ts, paramName, constraint);
+            localTypeTable.define(pkg, paramName, paramType);
+            typeParams.add(paramType);
         }
         params = new ArrayList<>();
         if (self != null) {

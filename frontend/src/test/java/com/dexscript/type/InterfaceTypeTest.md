@@ -146,3 +146,16 @@ interface ListString {
 | true      | `List<string>`     | `ListString`    |
 | true       | `ListString`    | `List<string>`     |
 
+# parameterized_with_sub_type
+
+```dexscript
+interface SomeInf {
+   <T>: interface{}
+   get(): T
+}
+```
+
+| assignable | to           | from         |
+| ---------- | ------------ | ------------ |
+| true      | `SomeInf<interface{}>`     | `SomeInf<int64>`    |
+| false       | `SomeInf<int64>`    | `SomeInf<interface{}>`     |

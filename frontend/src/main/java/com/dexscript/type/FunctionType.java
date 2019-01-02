@@ -81,14 +81,15 @@ public final class FunctionType implements DType {
         if (self != null) {
             this.params.add(new FunctionParam("self", self));
         }
-        localTypeTable = new TypeTable(ts, localTypeTable, sig);
+        TypeTable parentTypeTable = localTypeTable;
+        localTypeTable = new TypeTable(ts, parentTypeTable, sig);
         for (DexParam param : sig.params()) {
             String paramName = param.paramName().toString();
             DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
             this.params.add(new FunctionParam(paramName, paramType));
         }
         this.ret = ResolveType.$(ts, localTypeTable, sig.ret());
-        this.sig = new FunctionSig(ts, self, sig);
+        this.sig = new FunctionSig(ts, parentTypeTable, self, sig);
         this.sig.reparent(this);
         ts.defineFunction(this);
     }

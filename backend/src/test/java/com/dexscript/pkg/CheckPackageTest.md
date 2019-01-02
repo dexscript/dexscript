@@ -148,3 +148,24 @@ function Hello() {
    new SomeClass().toString()
 }
 ```
+
+# invoke_generic_method
+
+```dexscript
+// /pkg1/__spi__.ds
+interface :: {
+    New__(<T>: interface{}, class: 'SomeClass', val: T): SomeInf<T>
+}
+
+interface SomeInf {
+    <T>: interface{}
+    get(): T
+}
+```
+
+```dexscript
+// /pkg1/123.ds
+function Hello(): int64 {
+   return new SomeClass(100).get()
+}
+```

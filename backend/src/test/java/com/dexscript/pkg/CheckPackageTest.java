@@ -75,6 +75,11 @@ public class CheckPackageTest {
         Assert.assertTrue(checkPkg1());
     }
 
+    @Test
+    public void invoke_generic_method() throws Exception {
+        Assert.assertTrue(checkPkg1());
+    }
+
     private boolean checkPkg1() throws IOException {
         for (String code : testDataFromMySection().codes()) {
             int newLinePos = code.indexOf("\n");
