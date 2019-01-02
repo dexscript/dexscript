@@ -66,8 +66,10 @@ public class FunctionTable {
                 dispatched.failures.add(candidate);
                 continue;
             }
-            potentialCandidates.add(candidate);
-            if (!candidate.needRuntimeCheck()) {
+            if (dispatched.match == null || candidate.func().hasImpl()) {
+                potentialCandidates.add(candidate);
+            }
+            if (dispatched.match == null && !candidate.needRuntimeCheck()) {
                 dispatched.args = mapNamedArgs.args;
                 dispatched.namedArgsMapping = mapNamedArgs.mapping;
                 dispatched.match = candidate;
