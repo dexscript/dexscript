@@ -34,7 +34,6 @@ function Hello(): string {
 
 # generic_method_referenced_class_type_param
 
-
 ```java
 package some.java.pkg;
 
@@ -66,6 +65,40 @@ interface SomeInf {
 function Hello(): int64 {
     box := new SomeClass(100)
     return box.get()
+}
+```
+
+* "100"
+* getClass
+    * getName
+        * "java.lang.Long"
+
+# generic_method_referenced_method_type_param
+
+```java
+package some.java.pkg;
+
+public class SomeClass {
+
+    public <T> T get(T val) {
+        return val;
+    }
+}
+```
+
+```dexscript
+interface :: {
+    New__(class: 'SomeClass'): SomeInf
+}
+interface SomeInf {
+    get(<T>: interface{}, val: T): T
+}
+```
+
+```dexscript
+function Hello(): int64 {
+    box := new SomeClass()
+    return box.get(100)
 }
 ```
 

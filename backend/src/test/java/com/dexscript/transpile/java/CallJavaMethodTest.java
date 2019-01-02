@@ -8,15 +8,20 @@ public class CallJavaMethodTest {
 
     @Test
     public void normal_method() {
-        OutTown oTown = new OutTown();
-        for (Class<?> clazz : DefineJavaClass.$(oTown).values()) {
-            oTown.oShim().importJavaConstructors(clazz);
-        }
-        TestTranspile.$(oTown);
+        testJavaMethod();
     }
 
     @Test
     public void generic_method_referenced_class_type_param() {
+        testJavaMethod();
+    }
+
+    @Test
+    public void generic_method_referenced_method_type_param() {
+        testJavaMethod();
+    }
+
+    private static void testJavaMethod() {
         OutTown oTown = new OutTown();
         for (Class<?> clazz : DefineJavaClass.$(oTown).values()) {
             oTown.oShim().importJavaConstructors(clazz);
