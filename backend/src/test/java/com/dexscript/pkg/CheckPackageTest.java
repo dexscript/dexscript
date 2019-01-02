@@ -80,6 +80,11 @@ public class CheckPackageTest {
         Assert.assertTrue(checkPkg1());
     }
 
+    @Test
+    public void function_call_can_not_be_left_value_of_assignment() throws Exception {
+        Assert.assertFalse(checkPkg1());
+    }
+
     private boolean checkPkg1() throws IOException {
         for (String code : testDataFromMySection().codes()) {
             int newLinePos = code.indexOf("\n");

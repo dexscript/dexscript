@@ -7,21 +7,13 @@ import org.junit.Test;
 
 public class JavaArrayTest {
 
-    public static class Class1 {
-        public static String[] newArray() {
-            return new String[10];
-        }
-    }
-
     @Test
-    public void return_array() {
+    public void get_set_array_element() {
         OutTown oTown = new OutTown();
-        oTown.oShim().importJavaFunctions(Class1.class);
-        Object ret = TestTranspile.$(oTown, "", "" +
-                "function Hello(): interface{} {\n" +
-                "   return newArray()\n" +
-                "}");
-        Assert.assertEquals(10, ((String[]) ret).length);
+        for (Class<?> clazz : DefineJavaClass.$(oTown).values()) {
+            oTown.oShim().importJavaFunctions(clazz);
+        }
+        TestTranspile.$(oTown);
     }
 
     public static class Class2 {

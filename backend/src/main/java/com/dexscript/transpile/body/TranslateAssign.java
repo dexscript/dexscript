@@ -13,7 +13,7 @@ public class TranslateAssign implements Translate<DexAssignStmt> {
         if (iAssignStmt.targets().size() != 1) {
             throw new UnsupportedOperationException("not implemented");
         }
-        DexValueRef target = iAssignStmt.targets().get(0);
+        DexValueRef target = (DexValueRef) iAssignStmt.targets().get(0);
         Value ref = InferValue.$(oClass.typeSystem(), target);
         String val = Translate.translateExpr(oClass, iAssignStmt.expr(), ref.type());
         oClass.g().__(OutValue.of(ref.definedBy())

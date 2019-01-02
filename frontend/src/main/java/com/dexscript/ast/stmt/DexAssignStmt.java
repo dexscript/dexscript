@@ -1,5 +1,6 @@
 package com.dexscript.ast.stmt;
 
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class DexAssignStmt extends DexSimpleStatement {
 
-    private List<DexValueRef> targets;
+    private List<DexExpr> targets;
     private DexExpr expr;
     private int assignStmtEnd = -1;
 
@@ -41,7 +42,7 @@ public class DexAssignStmt extends DexSimpleStatement {
     @Override
     public void walkDown(Visitor visitor) {
         if (targets() != null) {
-            for (DexValueRef target : targets()) {
+            for (DexExpr target : targets()) {
                 visitor.visit(target);
             }
         }
@@ -50,7 +51,7 @@ public class DexAssignStmt extends DexSimpleStatement {
         }
     }
 
-    public List<DexValueRef> targets() {
+    public List<DexExpr> targets() {
         return targets;
     }
 
@@ -68,7 +69,7 @@ public class DexAssignStmt extends DexSimpleStatement {
 
         @Expect("value reference")
         State target() {
-            DexValueRef target = new DexValueRef(src.slice(i));
+            DexExpr target = DexExpr.parse(src.slice(i));
             target.reparent(DexAssignStmt.this, DexAssignStmt.this);
             if (!target.matched()) {
                 return null;

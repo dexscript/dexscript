@@ -19,4 +19,9 @@ public class DexAssignStmtTest {
     public void missing_expr() {
         TestFramework.assertParsedAST(DexAssignStmt::$);
     }
+
+    @Test
+    public void target_is_index_expr() {
+        TestFramework.assertParsedAST(DexAssignStmt::$);
+    }
 }

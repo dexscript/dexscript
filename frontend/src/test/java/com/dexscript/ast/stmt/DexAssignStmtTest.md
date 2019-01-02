@@ -38,6 +38,18 @@ a=??
 <unmatched>a=??</unmatched>
 ```
 
+# target_is_index_expr
 
+```dexscript
+world()[a]=b
+```
+
+* targets
+    * size
+        * 1
+    * [0]
+        * "world()[a]"
+* expr
+    * "b"
 
 

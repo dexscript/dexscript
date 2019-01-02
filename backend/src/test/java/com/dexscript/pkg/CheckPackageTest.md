@@ -165,7 +165,27 @@ interface SomeInf {
 
 ```dexscript
 // /pkg1/123.ds
+
 function Hello(): int64 {
    return new SomeClass(100).get()
+}
+```
+
+# function_call_can_not_be_left_value_of_assignment
+
+```dexscript
+// /pkg1/__spi__.ds
+interface :: {
+}
+```
+
+```dexscript
+// /pkg1/123.ds
+
+function Hello() {
+   World() = 2
+}
+function World(): int64 {
+    return 1
 }
 ```

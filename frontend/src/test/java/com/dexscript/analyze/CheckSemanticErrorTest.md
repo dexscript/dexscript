@@ -106,3 +106,4 @@ function Hello(<E>: interface{}, msg: E) {
 
 
 
+
