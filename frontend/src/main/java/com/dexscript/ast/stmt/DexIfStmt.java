@@ -44,7 +44,7 @@ public class DexIfStmt extends DexStatement {
         if (blk() != null) {
             visitor.visit(blk());
         }
-        if (elseStmt() != null) {
+        if (elseStmt() != null && elseStmt().matched()) {
             visitor.visit(elseStmt());
         }
     }

@@ -32,7 +32,7 @@ public class DexElseStmt extends DexStatement {
 
     @Override
     public void walkDown(Visitor visitor) {
-        if (ifStmt() != null) {
+        if (ifStmt() != null && ifStmt().matched()) {
             visitor.visit(ifStmt());
         }
         if (blk() != null) {

@@ -16,7 +16,7 @@ public class TranslateIf implements Translate<DexIfStmt> {
         int ifMatchedState = oStateMachine.nextState();
         int elseMatchedState = iIfStmt.hasElse() ? oStateMachine.nextState() : -1;
         int postIfState = oStateMachine.nextState();
-        oClass.g().__("if ("
+        oClass.g().__("if ((Boolean)"
         ).__(OutValue.of(iIfStmt.condition())
         ).__(") {"
         ).__(new Indent(() -> OutStateMethod.call(oClass.g(), ifMatchedState))
