@@ -17,10 +17,18 @@ import static com.dexscript.test.framework.TestFramework.testDataFromMySection;
 
 public interface TestTranspile {
 
+    static void $() {
+        $(new OutTown());
+    }
+
     static void $(OutTown oTown) {
         FluentAPI testData = testDataFromMySection();
         List<String> codes = testData.codes("dexscript");
-        testData.assertByList(TestTranspile.$(oTown, codes.get(0), codes.get(1)));
+        if (codes.size() == 1) {
+            testData.assertByList(TestTranspile.$(oTown, null, codes.get(0)));
+        } else {
+            testData.assertByList(TestTranspile.$(oTown, codes.get(0), codes.get(1)));
+        }
     }
 
     static Object $(String src) {

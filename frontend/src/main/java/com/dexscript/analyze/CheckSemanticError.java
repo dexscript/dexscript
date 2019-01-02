@@ -2,6 +2,7 @@ package com.dexscript.analyze;
 
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexEqualExpr;
 import com.dexscript.ast.expr.DexFunctionCallExpr;
 import com.dexscript.ast.expr.DexMethodCallExpr;
 import com.dexscript.ast.expr.DexNewExpr;
@@ -37,6 +38,8 @@ public class CheckSemanticError implements DexElement.Visitor {
             add(new CheckInvocation<DexMethodCallExpr>() {
             });
             add(new CheckInvocation<DexNewExpr>() {
+            });
+            add(new CheckInvocation<DexEqualExpr>() {
             });
         }
 

@@ -25,10 +25,6 @@ public class OutTown {
     private final TypeSystem ts = new TypeSystem();
     private final OutShim oShim = new OutShim(ts);
 
-    public OutTown() {
-        oShim.importJavaFunctions(BasicOperators.class);
-    }
-
     public OutTown importPackage(String path) {
         ImportPackage.$(oShim, path);
         return this;

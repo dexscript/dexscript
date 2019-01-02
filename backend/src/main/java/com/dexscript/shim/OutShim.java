@@ -1,19 +1,24 @@
 package com.dexscript.shim;
 
-import com.dexscript.ast.*;
+import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
-import com.dexscript.shim.java.*;
+import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.shim.actor.ActorTable;
 import com.dexscript.shim.actor.ActorType;
-import com.dexscript.shim.java.ArrayType;
+import com.dexscript.shim.java.*;
 import com.dexscript.type.*;
 
 import java.lang.reflect.*;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OutShim {
 
@@ -43,6 +48,7 @@ public class OutShim {
         g.indention("  ");
         g.__(new Line());
         defineNewArray();
+        importJavaFunctions(BasicOperators.class);
     }
 
     private void defineNewArray() {
