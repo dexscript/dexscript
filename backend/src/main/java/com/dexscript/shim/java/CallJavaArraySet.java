@@ -18,16 +18,19 @@ public class CallJavaArraySet extends FunctionImpl {
 
     @Override
     protected String genCallF() {
-        String callF = oShim.allocateShim("array_get");
+        String callF = oShim.allocateShim("array_set");
         Gen g = oShim.g();
         g.__("public static Promise "
         ).__(callF);
-        DeclareParams.$(g, functionType.params().size(), true);
+        DeclareParams.$(g, functionType.params().size() + 1, true);
         g.__(" {");
         g.__(new Indent(() -> {
-            g.__("return new ImmediateResult((("
+            g.__("(("
             ).__(clazz.getCanonicalName()
-            ).__(")arg0)[(Integer)arg1]);");
+            ).__(")arg0)[(Integer)arg1] = ("
+            ).__(clazz.getComponentType().getCanonicalName()
+            ).__(new Line(")arg2;"));
+            g.__(new Line("return new ImmediateResult(null);"));
         }));
         g.__(new Line("}"));
         return callF;
