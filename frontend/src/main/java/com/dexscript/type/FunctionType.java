@@ -36,6 +36,7 @@ public final class FunctionType implements DType {
     private Object impl;
 
     private FunctionImplProvider implProvider;
+    private boolean isGlobalSPI;
 
     public FunctionType(TypeSystem ts,
                         @NotNull String name,
@@ -191,5 +192,13 @@ public final class FunctionType implements DType {
         }
         context = ts.context(pkg);
         return context;
+    }
+
+    public void isGlobalSPI(boolean isGlobalSPI) {
+        this.isGlobalSPI = isGlobalSPI;
+    }
+
+    public boolean isGlobalSPI() {
+        return isGlobalSPI;
     }
 }

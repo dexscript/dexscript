@@ -21,6 +21,7 @@ public class InferFunctionCallTest {
     private FunctionType func(String actorSrc) {
         DexActor actor = DexActor.$("function " + actorSrc);
         FunctionType funcType = new FunctionType(ts, actor.functionName(), null, actor.sig());
+        funcType.implProvider(expandedFunc -> new Object());
         return funcType;
     }
 

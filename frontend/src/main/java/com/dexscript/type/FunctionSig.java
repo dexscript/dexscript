@@ -305,6 +305,7 @@ public class FunctionSig {
         }
         expanded = new FunctionType(ts, func.name(), localTypeTable, dexSig);
         expanded.implProvider(func.implProvider());
+        expanded.isGlobalSPI(func.isGlobalSPI());
         expandedFuncs.put(sub, expanded);
         return expanded;
     }

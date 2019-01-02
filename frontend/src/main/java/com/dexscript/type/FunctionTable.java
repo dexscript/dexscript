@@ -49,6 +49,9 @@ public class FunctionTable {
         List<FunctionSig.Invoked> potentialCandidates = new ArrayList<>();
         for (int i = 0; i < functions.size(); i++) {
             FunctionType func = functions.get(i);
+            if (!func.hasImpl() && !func.isGlobalSPI() && !ivc.canProvide(func)) {
+                continue;
+            }
             if (dispatched.match != null) {
                 dispatched.skippeds.add(func);
                 continue;

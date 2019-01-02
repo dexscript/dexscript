@@ -1,7 +1,6 @@
 package com.dexscript.type;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Invocation {
 
@@ -12,6 +11,7 @@ public class Invocation {
     private final DType context;
     private final DType retHint;
     private boolean requireImpl;
+    private final Set<FunctionType> providedFunctions;
 
     public Invocation(String funcName, List<DType> typeArgs,
                       List<DType> posArgs, List<NamedArg> namedArgs, DType context,
@@ -22,6 +22,17 @@ public class Invocation {
         this.namedArgs = namedArgs == null ? Collections.emptyList() : namedArgs;
         this.context = context;
         this.retHint = retHint;
+        ArrayList<DType> allArgs = new ArrayList<>(this.posArgs);
+        for (NamedArg namedArg : this.namedArgs) {
+            allArgs.add(namedArg.type());
+        }
+        allArgs.add(context);
+        providedFunctions = new HashSet<>();
+        for (DType allArg : allArgs) {
+            if (allArg instanceof FunctionsType) {
+                providedFunctions.addAll(((FunctionsType) allArg).functions());
+            }
+        }
     }
 
     // when checking semantic error, the interface function is assumed to have impl
@@ -57,6 +68,10 @@ public class Invocation {
 
     public DType retHint() {
         return retHint;
+    }
+
+    public boolean canProvide(FunctionType func) {
+        return providedFunctions.contains(func);
     }
 
     public int argsCount() {

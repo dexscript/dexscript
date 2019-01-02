@@ -59,6 +59,8 @@ public class JavaTypes {
         String isF;
         if (targetType instanceof StringLiteralType) {
             isF = genStringLiteral((StringLiteralType) targetType);
+        } else if (targetType instanceof IntegerLiteralType) {
+            isF = genIntegerLiteral((IntegerLiteralType) targetType);
         } else if (isAny(targetType)) {
             isF = genAny(targetType);
         } else {
@@ -89,6 +91,24 @@ public class JavaTypes {
             ).__(stringLiteralType.literalValue()
             ).__('"'
             ).__(".equals(obj);");
+        }));
+        g.__(new Line("}"));
+        return isF;
+    }
+
+    private String genIntegerLiteral(IntegerLiteralType integerLiteralType) {
+        String isF = allocateShim(integerLiteralType);
+        Gen g = oShim.g();
+        g.__("// is "
+        ).__(new Line(integerLiteralType.toString())
+        ).__("public static boolean "
+        ).__(isF
+        ).__("(Object obj) {");
+        g.__(new Indent(() -> {
+            g.__("return ((Long)"
+            ).__(integerLiteralType.literalValue()
+            ).__('L'
+            ).__(").equals(obj);");
         }));
         g.__(new Line("}"));
         return isF;

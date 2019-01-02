@@ -37,12 +37,15 @@ public class JavaType implements NamedType, FunctionsType, GenericType {
             dTypeParams.add(ts.ANY);
         }
         if (dTypeArgs == null) {
-            oShim.javaTypes().add(clazz, this);
             ts.defineType(this);
             this.dTypeArgs = dTypeParams;
         } else {
             this.dTypeArgs = dTypeArgs;
         }
+        // for every parameterized expansion of this type,
+        // we register the original java class implements the dexscript type
+        // so that the type check can accept the java class
+        oShim.javaTypes().add(clazz, this);
         ts.lazyDefineFunctions(this);
     }
 

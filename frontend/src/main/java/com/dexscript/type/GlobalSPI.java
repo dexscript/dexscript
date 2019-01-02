@@ -26,7 +26,9 @@ public class GlobalSPI implements FunctionsType {
         functions = new ArrayList<>();
         for (DexInfMethod infMethod : inf.methods()) {
             String name = infMethod.identifier().toString();
-            functions.add(new FunctionType(ts, name, null, infMethod.sig()));
+            FunctionType functionType = new FunctionType(ts, name, null, infMethod.sig());
+            functionType.isGlobalSPI(true);
+            functions.add(functionType);
         }
         return functions;
     }
