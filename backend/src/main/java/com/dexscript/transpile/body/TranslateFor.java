@@ -40,7 +40,8 @@ public class TranslateFor implements Translate<DexForStmt> {
         new OutTransientStateMethod(oClass, loopState);
         OutStateMethod.call(oClass.g(), checkConditionState);
         if (condition == null) {
-            oClass.g().__("for (;;");
+            // this ! = null to prevent unreachable statement warning
+            oClass.g().__("for (;this != null;");
         } else {
             oClass.g().__("for (;(Boolean)"
             ).__(OutValue.of(condition)

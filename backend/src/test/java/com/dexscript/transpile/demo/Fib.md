@@ -4,10 +4,12 @@
 function Hello() {
     a := 1
     b := 1
-    ::STDIN.read()
     for {
         ::STDIN.read()
-        print('hello')
+        c := a + b
+        print(c, stream=::STDERR)
+        a = b
+        b = c
     }
 }
 ```
