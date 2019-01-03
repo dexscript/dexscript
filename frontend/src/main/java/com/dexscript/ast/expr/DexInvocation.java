@@ -15,6 +15,7 @@ public class DexInvocation {
     private final List<DexType> typeArgs;
     private final List<DexExpr> posArgs;
     private final List<DexNamedArg> namedArgs;
+    private boolean isGlobalScope;
 
     public DexInvocation(DexPackage pkg, String funcName, List<DexExpr> posArgs) {
         this.pkg = pkg;
@@ -89,5 +90,14 @@ public class DexInvocation {
             return null;
         }
         return lastNamedArg.val();
+    }
+
+    public DexInvocation isGlobalScope(boolean isGlobalScope) {
+        this.isGlobalScope = isGlobalScope;
+        return this;
+    }
+
+    public boolean isGlobalScope() {
+        return isGlobalScope;
     }
 }

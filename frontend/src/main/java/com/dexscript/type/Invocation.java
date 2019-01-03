@@ -11,6 +11,7 @@ public class Invocation {
     private final DType context;
     private final DType retHint;
     private boolean requireImpl;
+    private boolean isGlobalScope;
     private final Set<FunctionType> providedFunctions;
 
     public Invocation(String funcName, List<DType> typeArgs,
@@ -37,13 +38,22 @@ public class Invocation {
 
     // when checking semantic error, the interface function is assumed to have impl
     // when transpile, we set require impl
-    public Invocation requireImpl(boolean val) {
-        requireImpl = val;
+    public Invocation requireImpl(boolean requireImpl) {
+        this.requireImpl = requireImpl;
         return this;
     }
 
     public boolean requireImpl() {
         return requireImpl;
+    }
+
+    public Invocation isGlobalScope(boolean isGlobalScope) {
+        this.isGlobalScope = isGlobalScope;
+        return this;
+    }
+
+    public boolean isGlobalScope() {
+        return isGlobalScope;
     }
 
     public String funcName() {

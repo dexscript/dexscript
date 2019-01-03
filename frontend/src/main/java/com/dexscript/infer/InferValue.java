@@ -74,6 +74,9 @@ public interface InferValue<E extends DexElement> {
             DType contextType = ts.context(ref.pkg());
             return new Value("$", contextType, null);
         }
+        if (ref.isGlobalScope()) {
+            return new Value(ref.toString(), InferType.$(ts, ref), null);
+        }
         List<DexElement> prevElems = collectPrevElems(ref);
         ValueTable parentTable = new ValueTable();
         for (int i = prevElems.size() - 1; i >= 0; i--) {

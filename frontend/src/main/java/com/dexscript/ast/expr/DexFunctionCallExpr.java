@@ -128,6 +128,9 @@ public class DexFunctionCallExpr extends DexExpr implements DexInvocationExpr {
     public DexInvocation invocation() {
         if (invocation == null) {
             invocation = new DexInvocation(pkg(), target().asRef().toString(), typeArgs(), posArgs(), namedArgs());
+            if (target() instanceof DexValueRef) {
+                invocation.isGlobalScope(((DexValueRef) target()).isGlobalScope());
+            }
         }
         return invocation;
     }

@@ -209,7 +209,7 @@ function Hello(): interface{} {
 }
 ```
 
-# double_colon_reference_local_function_is_invalid
+# double_colon_function_call_can_not_reference_locally
 
 ```dexscript
 // /pkg1/__spi__.ds
@@ -228,7 +228,7 @@ function World(): interface{} {
 }
 ```
 
-# double_colon_can_reference_global_spi
+# double_colon_function_call_can_reference_global_spi
 
 ```dexscript
 // /pkg1/__spi__.ds
@@ -244,5 +244,23 @@ interface :: {
 function Hello(): interface{} {
    new ::World()
    return ::World()
+}
+```
+
+# double_colon_value_reference_global_spi
+
+```dexscript
+// /pkg1/__spi__.ds
+
+interface :: {
+    getHello(): string
+}
+```
+
+```dexscript
+// /pkg1/123.ds
+
+function Hello(): string {
+   return ::hello
 }
 ```

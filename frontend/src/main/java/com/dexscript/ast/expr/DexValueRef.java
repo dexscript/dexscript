@@ -6,10 +6,13 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.Zero2Nine;
 
-public class DexValueRef extends DexLeafExpr {
+import java.util.Collections;
+
+public class DexValueRef extends DexLeafExpr implements DexInvocationExpr {
 
     private boolean isGlobalScope;
     private Text matched;
+    private DexInvocation invocation;
 
     public DexValueRef(Text src) {
         super(src);
@@ -45,6 +48,19 @@ public class DexValueRef extends DexLeafExpr {
 
     public boolean isGlobalScope() {
         return isGlobalScope;
+    }
+
+    @Override
+    public DexInvocation invocation() {
+        if (!isGlobalScope) {
+            throw new DexSyntaxException("only global scope value reference is invocation");
+        }
+        if (invocation == null) {
+            String fieldName = toString();
+            String funcName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+            invocation = new DexInvocation(pkg(), funcName, Collections.emptyList());
+        }
+        return invocation;
     }
 
     private class Parser {

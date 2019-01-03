@@ -50,6 +50,11 @@ public class FunctionTable {
         for (int i = 0; i < functions.size(); i++) {
             FunctionType func = functions.get(i);
             if (!func.hasImpl() && !func.isGlobalSPI() && !ivc.canProvide(func)) {
+                dispatched.skippeds.add(func);
+                continue;
+            }
+            if (ivc.isGlobalScope() && !func.isGlobalSPI()) {
+                dispatched.skippeds.add(func);
                 continue;
             }
             if (dispatched.match != null && dispatched.match.func().hasImpl()) {

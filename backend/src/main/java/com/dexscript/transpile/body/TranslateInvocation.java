@@ -1,10 +1,8 @@
 package com.dexscript.transpile.body;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
-import com.dexscript.ast.expr.DexNamedArg;
 import com.dexscript.infer.InferInvocation;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.gen.Indent;
@@ -15,9 +13,7 @@ import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;
 import com.dexscript.transpile.skeleton.OutStateMethod;
 import com.dexscript.type.*;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TranslateInvocation<E extends DexElement & DexInvocationExpr> implements Translate<E> {
@@ -34,7 +30,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
     public static OutField invoke(OutClass oClass, DexInvocation dexIvc) {
         TypeSystem ts = oClass.typeSystem();
 
-        Invocation ivc = InferInvocation.$(ts, dexIvc).requireImpl(true);
+        Invocation ivc = InferInvocation.ivc(ts, dexIvc).requireImpl(true);
         Dispatched dispatched = ts.dispatch(ivc);
         if (dispatched.candidates.isEmpty()) {
             throw new DexRuntimeException("can not find candidates: " + ivc);

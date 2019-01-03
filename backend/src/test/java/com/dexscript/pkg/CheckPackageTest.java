@@ -91,13 +91,18 @@ public class CheckPackageTest {
     }
 
     @Test
-    public void double_colon_reference_local_function_is_invalid() throws Exception {
+    public void double_colon_function_call_can_not_reference_locally() throws Exception {
         Assert.assertFalse(checkPkg1());
     }
 
     @Test
-    public void double_colon_can_reference_global_spi() throws Exception {
-        Assert.assertFalse(checkPkg1());
+    public void double_colon_function_call_can_reference_global_spi() throws Exception {
+        Assert.assertTrue(checkPkg1());
+    }
+
+    @Test
+    public void double_colon_value_reference_global_spi() throws Exception {
+        Assert.assertTrue(checkPkg1());
     }
 
     private boolean checkPkg1() throws IOException {

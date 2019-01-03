@@ -46,7 +46,7 @@ public class HasAwait implements DexElement.Visitor {
         }
         if (elem instanceof DexInvocationExpr) {
             DexInvocation dexIvc = ((DexInvocationExpr) elem).invocation();
-            Invocation ivc = InferInvocation.$(ts, dexIvc).requireImpl(true);
+            Invocation ivc = InferInvocation.ivc(ts, dexIvc).requireImpl(true);
             Dispatched dispatched = ts.dispatch(ivc);
             for (FunctionSig.Invoked candidate : dispatched.candidates) {
                 FunctionImpl impl = (FunctionImpl) candidate.func().impl();

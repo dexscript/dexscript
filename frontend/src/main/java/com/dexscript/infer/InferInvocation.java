@@ -15,12 +15,16 @@ public class InferInvocation<E extends DexExpr & DexInvocationExpr> implements I
     @Override
     public DType handle(TypeSystem ts, E elem) {
         DexInvocation dexIvc = elem.invocation();
-        Invocation ivc = InferInvocation.$(ts, dexIvc);
+        return InferInvocation.$(ts, dexIvc);
+    }
+
+    public static DType $(TypeSystem ts, DexInvocation dexIvc) {
+        Invocation ivc = InferInvocation.ivc(ts, dexIvc);
         Dispatched dispatched = ts.dispatch(ivc);
         return dispatched.ret == null ? ts.UNDEFINED : dispatched.ret;
     }
 
-    public static Invocation $(TypeSystem ts, DexInvocation dexIvc) {
+    public static Invocation ivc(TypeSystem ts, DexInvocation dexIvc) {
         List<DType> posArgs = InferType.inferTypes(ts, dexIvc.posArgs());
         List<DType> typeArgs = ResolveType.resolveTypes(ts, null, dexIvc.typeArgs());
         List<NamedArg> namedArgs = new ArrayList<>();
@@ -44,6 +48,7 @@ public class InferInvocation<E extends DexExpr & DexInvocationExpr> implements I
             throw new DexSyntaxException("context argument $ must not be const value");
         }
         Invocation ivc = new Invocation(dexIvc.funcName(), typeArgs, posArgs, namedArgs, context, null);
+        ivc.isGlobalScope(dexIvc.isGlobalScope());
         return ivc;
     }
 }

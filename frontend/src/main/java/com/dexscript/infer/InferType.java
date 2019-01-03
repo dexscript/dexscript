@@ -2,7 +2,6 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
-import com.dexscript.ast.type.DexParenType;
 import com.dexscript.type.*;
 
 import java.util.*;
@@ -28,7 +27,11 @@ public interface InferType<E extends DexExpr> {
             put(DexFloatConst.class, (ts, elem) -> ts.constOfFloat(elem.toString()));
             put(DexBoolConst.class, (ts, elem) -> ts.constOfBool(elem.toString()));
             put(DexValueRef.class, (ts, elem) -> {
-                Value val = InferValue.$(ts, (DexValueRef) elem);
+                DexValueRef valueRef = (DexValueRef) elem;
+                if (valueRef.isGlobalScope()) {
+                    return InferInvocation.$(ts, valueRef.invocation());
+                }
+                Value val = InferValue.$(ts, valueRef);
                 if (val == null) {
                     return ts.UNDEFINED;
                 }
