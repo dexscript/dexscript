@@ -40,6 +40,8 @@ public class CheckSemanticError implements DexElement.Visitor {
             });
             add(new CheckInvocation<DexIndexExpr>() {
             });
+            add(new CheckInvocation<DexFieldExpr>() {
+            });
         }
 
         private void add(Handler<?> handler) {

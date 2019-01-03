@@ -125,14 +125,18 @@ a().b()
 # mix_field_expr_and_method_call
 
 ```dexscript
-a.b.c()
+a.b.c.d()
 ```
 
 * obj
-    * "a.b"
+    * "a.b.c"
     * left
-        * "a"
+        * "a.b"
+        * left
+            * "a"
+        * right
+            * "b"
     * right
-        * "b"
+        * "c"
 * method
-    * "c"
+    * "d"

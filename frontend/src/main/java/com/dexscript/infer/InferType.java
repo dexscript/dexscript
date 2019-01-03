@@ -50,6 +50,8 @@ public interface InferType<E extends DexExpr> {
             });
             add(new InferInvocation<DexIndexExpr>() {
             });
+            add(new InferInvocation<DexFieldExpr>() {
+            });
         }
 
         private void add(InferType<?> handler) {
