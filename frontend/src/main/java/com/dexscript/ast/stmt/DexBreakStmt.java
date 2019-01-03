@@ -1,5 +1,7 @@
 package com.dexscript.ast.stmt;
 
+import com.dexscript.ast.DexActor;
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
@@ -39,5 +41,16 @@ public class DexBreakStmt extends DexStatement {
     @Override
     public void walkDown(Visitor visitor) {
 
+    }
+
+    public DexForStmt enclosingForStmt() {
+        DexElement current = parent;
+        while (current != null) {
+            if (current instanceof DexForStmt) {
+                return (DexForStmt) current;
+            }
+            current = current.parent();
+        }
+        return null;
     }
 }

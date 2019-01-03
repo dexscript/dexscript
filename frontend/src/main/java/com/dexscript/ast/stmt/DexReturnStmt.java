@@ -59,7 +59,7 @@ public class DexReturnStmt extends DexStatement {
         visitor.visit(expr);
     }
 
-    public DexSig sig() {
+    public DexSig enclosingSig() {
         DexElement current = parent;
         while (current != null) {
             if (current instanceof DexActor) {

@@ -51,7 +51,7 @@ public class OutStateMachine {
     private void genResumeFrom(Gen g, Integer fromState, Map<String, Integer> toStates) {
         g.__("public void resume__from__"
         ).__(fromState
-        ).__("() {"
+        ).__("() throws Exception {"
         ).__(new Indent(() -> {
             for (Map.Entry<String, Integer> entry : toStates.entrySet()) {
                 g.__("if (((Promise)"
@@ -68,7 +68,7 @@ public class OutStateMachine {
     }
 
     private void genResume(Gen g) {
-        g.__("public void resume() {"
+        g.__("public void resume() throws Exception {"
         ).__(new Indent(() -> {
             if (!yieldToStates.isEmpty()) {
                 genSwitchYieldToStates(g);

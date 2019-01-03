@@ -7,7 +7,7 @@ public class Scheduler {
 
     private List<Actor> readyActors = new ArrayList<>();
 
-    public final void schedule() {
+    public final void schedule() throws Exception {
         while (!readyActors.isEmpty()) {
             List<Actor> todoActors = readyActors;
             readyActors = new ArrayList<>();

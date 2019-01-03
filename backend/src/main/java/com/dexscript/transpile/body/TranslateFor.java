@@ -53,7 +53,7 @@ public class TranslateFor implements Translate<DexForStmt> {
         ).__("()) {"
         ).__(new Indent(() -> {
             Translate.$(oClass, iForStmt.blk());
-        })).__(new Line("}"));
+        })).__(new Line("} // for"));
         OutStateMethod.call(oClass.g(), afterStmtState);
         // post
         new OutTransientStateMethod(oClass, postState);

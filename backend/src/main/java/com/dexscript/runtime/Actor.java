@@ -64,6 +64,6 @@ public abstract class Actor implements Promise, Task {
         consumers.add(consumer);
     }
 
-    public void resume() {
+    public void resume() throws Exception {
     }
 }
