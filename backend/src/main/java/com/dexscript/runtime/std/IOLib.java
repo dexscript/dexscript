@@ -5,8 +5,6 @@ import java.io.PrintStream;
 
 public class IOLib {
 
-    public final static Stdio STDIO = new Stdio();
-
     public static void print(Object object) {
         print(object, System.out);
     }
@@ -15,21 +13,15 @@ public class IOLib {
         stream.println(object);
     }
 
-    public static Stdio stdio() {
-        return STDIO;
+    public static InputStream getSTDIN() {
+        return System.in;
     }
 
-    public static class Stdio {
-        public PrintStream err() {
-            return System.err;
-        }
+    public static PrintStream getSTDOUT() {
+        return System.out;
+    }
 
-        public PrintStream out() {
-            return System.out;
-        }
-
-        public InputStream in() {
-            return System.in;
-        }
+    public static PrintStream getSTDERR() {
+        return System.err;
     }
 }

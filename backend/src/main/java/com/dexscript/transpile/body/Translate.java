@@ -51,11 +51,16 @@ public interface Translate<E extends DexElement> {
                     iElem.attach(new OutValue("context"));
                     return;
                 }
-                Value refValue = InferValue.$(oClass.typeSystem(), (DexValueRef) iElem);
-                if (refValue.definedBy() == null) {
+                DexValueRef valueRef = (DexValueRef) iElem;
+                if (valueRef.isGlobalScope()) {
+                    new TranslateInvocation<DexValueRef>().handle(oClass, valueRef);
+                    return;
+                }
+                Value val = InferValue.$(oClass.typeSystem(), valueRef);
+                if (val.definedBy() == null) {
                     throw new IllegalStateException("referenced value not found: " + iElem);
                 }
-                OutValue oValue = refValue.definedBy().attachmentOfType(OutValue.class);
+                OutValue oValue = val.definedBy().attachmentOfType(OutValue.class);
                 if (oValue == null) {
                     throw new IllegalStateException("referenced value not translated: " + iElem);
                 }
