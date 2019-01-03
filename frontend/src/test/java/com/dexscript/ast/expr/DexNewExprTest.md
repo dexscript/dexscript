@@ -60,4 +60,13 @@ new print a1,b1,c1)
 new print<error/> a1,b1,c1)
 ```
 
+# prefix_with_double_colon
+
+```dexscript
+new ::abc()
+```
+
+* target
+    * isGlobalScope
+        * true
 

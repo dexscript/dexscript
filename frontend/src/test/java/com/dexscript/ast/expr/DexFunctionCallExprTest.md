@@ -257,3 +257,17 @@ print(d=)
 ```dexscript
 print(d=<error/>)
 ```
+
+# prefix_with_double_colon
+
+```dexscript
+::print()
+```
+
+```dexscript
+print()
+```
+
+* target
+    * isGlobalScope
+        * true

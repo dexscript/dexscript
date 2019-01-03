@@ -24,4 +24,9 @@ public class DexNewExprTest {
     public void missing_function_call() {
         TestFramework.assertParsedAST(DexExpr::$parse);
     }
+
+    @Test
+    public void prefix_with_double_colon() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
+    }
 }

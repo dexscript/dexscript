@@ -90,6 +90,16 @@ public class CheckPackageTest {
         Assert.assertTrue(checkPkg1());
     }
 
+    @Test
+    public void double_colon_reference_local_function_is_invalid() throws Exception {
+        Assert.assertFalse(checkPkg1());
+    }
+
+    @Test
+    public void double_colon_can_reference_global_spi() throws Exception {
+        Assert.assertFalse(checkPkg1());
+    }
+
     private boolean checkPkg1() throws IOException {
         for (String code : testDataFromMySection().codes()) {
             int newLinePos = code.indexOf("\n");

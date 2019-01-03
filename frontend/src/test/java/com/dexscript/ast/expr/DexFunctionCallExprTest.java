@@ -99,4 +99,9 @@ public class DexFunctionCallExprTest {
     public void missing_named_arg_val() {
         TestFramework.assertParsedAST(DexExpr::$parse);
     }
+
+    @Test
+    public void prefix_with_double_colon() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
+    }
 }

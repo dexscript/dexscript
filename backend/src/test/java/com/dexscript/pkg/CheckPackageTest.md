@@ -208,3 +208,41 @@ function Hello(): interface{} {
    return new Array<ABC>(3)
 }
 ```
+
+# double_colon_reference_local_function_is_invalid
+
+```dexscript
+// /pkg1/__spi__.ds
+interface :: {
+}
+```
+
+```dexscript
+// /pkg1/123.ds
+
+function Hello(): interface{} {
+   return ::World()
+}
+function World(): interface{} {
+    return 'hello'
+}
+```
+
+# double_colon_can_reference_global_spi
+
+```dexscript
+// /pkg1/__spi__.ds
+interface :: {
+    World(): interface{}
+    New__(class: 'World'): interface{}
+}
+```
+
+```dexscript
+// /pkg1/123.ds
+
+function Hello(): interface{} {
+   new ::World()
+   return ::World()
+}
+```
