@@ -54,4 +54,9 @@ public class DexExprTest {
     public void mix_function_call_and_method_call() {
         TestFramework.assertParsedAST(DexExpr::$parse);
     }
+
+    @Test
+    public void mix_field_expr_and_method_call() {
+        TestFramework.assertParsedAST(DexExpr::$parse);
+    }
 }

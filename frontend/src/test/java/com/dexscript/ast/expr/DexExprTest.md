@@ -121,3 +121,18 @@ a().b()
     * "a()"
 * method
     * "b"
+
+# mix_field_expr_and_method_call
+
+```dexscript
+a.b.c()
+```
+
+* obj
+    * "a.b"
+    * left
+        * "a"
+    * right
+        * "b"
+* method
+    * "c"
