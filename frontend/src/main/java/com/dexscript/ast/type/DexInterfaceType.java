@@ -4,6 +4,7 @@ import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.inf.DexInfField;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.ast.token.Blank;
@@ -18,6 +19,7 @@ public class DexInterfaceType extends DexType {
     private DexSyntaxError syntaxError;
     private List<DexInfMethod> methods;
     private List<DexInfFunction> functions;
+    private List<DexInfField> fields;
     private int interfaceTypeEnd = -1;
 
     public DexInterfaceType(Text src) {
@@ -59,6 +61,11 @@ public class DexInterfaceType extends DexType {
                 visitor.visit(function);
             }
         }
+        if (fields() != null) {
+            for (DexInfField field : fields()) {
+                visitor.visit(field);
+            }
+        }
     }
 
     @Override
@@ -72,6 +79,10 @@ public class DexInterfaceType extends DexType {
 
     public List<DexInfFunction> functions() {
         return functions;
+    }
+
+    public List<DexInfField> fields() {
+        return fields;
     }
 
     private class Parser {
@@ -108,6 +119,7 @@ public class DexInterfaceType extends DexType {
                 if (b == '{') {
                     methods = new ArrayList<>();
                     functions = new ArrayList<>();
+                    fields = new ArrayList<>();
                     i += 1;
                     return this::methodOrFunctionOrFieldOrRightBrace;
                 }
@@ -144,10 +156,16 @@ public class DexInterfaceType extends DexType {
                 i = func.end();
                 return this::methodOrFunctionOrFieldOrRightBrace;
             }
-            return this::missingMethodOrFunction;
+            DexInfField field = new DexInfField(src.slice(i));
+            if (field.matched()) {
+                fields.add(field);
+                i = field.end();
+                return this::methodOrFunctionOrFieldOrRightBrace;
+            }
+            return this::missingMember;
         }
 
-        State missingMethodOrFunction() {
+        State missingMember() {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];

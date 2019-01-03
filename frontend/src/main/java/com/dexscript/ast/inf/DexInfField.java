@@ -13,8 +13,12 @@ public class DexInfField extends DexElement {
     public DexInfField(Text src) {
         super(src);
         dexParam = new DexParam(src);
-        dexParam.paramName().reparent(this);
-        dexParam.paramType().reparent(this);
+        if (dexParam.paramName() != null) {
+            dexParam.paramName().reparent(this);
+        }
+        if (dexParam.paramType() != null) {
+            dexParam.paramType().reparent(this);
+        }
     }
 
     public static DexInfField $(String src) {

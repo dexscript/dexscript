@@ -67,7 +67,7 @@ interface Duck {
     * size
         * 1
     * [0]
-        * "Quack(): string"
+        * "::Quack(): string"
 
 # recover_invalid_inf_member_by_line_end
 
