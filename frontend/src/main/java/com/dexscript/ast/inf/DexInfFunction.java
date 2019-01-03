@@ -9,6 +9,7 @@ import com.dexscript.ast.token.Keyword;
 
 public class DexInfFunction extends DexElement {
 
+    private int infFunctionBegin = -1;
     private DexIdentifier identifier;
     private DexSig sig;
 
@@ -22,6 +23,7 @@ public class DexInfFunction extends DexElement {
                 continue;
             }
             if (Keyword.$(src, i, ':', ':')) {
+                infFunctionBegin = i;
                 matched = src.slice(i + 2);
                 break;
             }
@@ -38,13 +40,13 @@ public class DexInfFunction extends DexElement {
         }
     }
 
-    public DexInfFunction(String src) {
-        this(new Text(src));
+    public static DexInfFunction $(String src) {
+        return new DexInfFunction(new Text(src));
     }
 
     @Override
     public int begin() {
-        return identifier.begin();
+        return infFunctionBegin;
     }
 
     @Override

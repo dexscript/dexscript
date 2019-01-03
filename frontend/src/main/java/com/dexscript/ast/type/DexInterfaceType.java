@@ -109,7 +109,7 @@ public class DexInterfaceType extends DexType {
                     methods = new ArrayList<>();
                     functions = new ArrayList<>();
                     i += 1;
-                    return this::methodOrFunctionOrRightBrace;
+                    return this::methodOrFunctionOrFieldOrRightBrace;
                 }
                 return null;
             }
@@ -118,8 +118,9 @@ public class DexInterfaceType extends DexType {
 
         @Expect("method")
         @Expect("function")
+        @Expect("field")
         @Expect("}")
-        State methodOrFunctionOrRightBrace() {
+        State methodOrFunctionOrFieldOrRightBrace() {
             for (; i < src.end;i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b)) {
@@ -135,13 +136,13 @@ public class DexInterfaceType extends DexType {
             if (method.matched()) {
                 methods.add(method);
                 i = method.end();
-                return this::methodOrFunctionOrRightBrace;
+                return this::methodOrFunctionOrFieldOrRightBrace;
             }
             DexInfFunction func = new DexInfFunction(src.slice(i));
             if (func.matched()) {
                 functions.add(func);
                 i = func.end();
-                return this::methodOrFunctionOrRightBrace;
+                return this::methodOrFunctionOrFieldOrRightBrace;
             }
             return this::missingMethodOrFunction;
         }
@@ -156,7 +157,7 @@ public class DexInterfaceType extends DexType {
                 }
                 if (Blank.$(b)) {
                     i += 1;
-                    return this::methodOrFunctionOrRightBrace;
+                    return this::methodOrFunctionOrFieldOrRightBrace;
                 }
             }
             interfaceTypeEnd = i;

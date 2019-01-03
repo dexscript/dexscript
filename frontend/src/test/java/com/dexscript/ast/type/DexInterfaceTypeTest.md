@@ -131,3 +131,11 @@ named interface can only be defined in top level
 ```dexscript
 <unmatched>interface MyInf {}</unmatched>
 ```
+
+# one_field
+
+```dexscript
+interface {
+    Hello: string
+}
+```

@@ -39,4 +39,9 @@ public class DexInterfaceTypeTest {
     public void interface_with_name() {
         TestFramework.assertParsedAST(DexInterfaceType::$);
     }
+
+    @Test
+    public void one_field() {
+        TestFramework.assertParsedAST(DexInterfaceType::$);
+    }
 }
