@@ -110,6 +110,9 @@ public final class DexParenExpr extends DexExpr {
                     matched = new Text(src.bytes, parenBegin, i+1);
                     return null;
                 }
+                // reset and search line end instead
+                i = savedCursor;
+                return this::lineEnd;
             }
             // reset and search line end instead
             i = savedCursor;

@@ -1,12 +1,16 @@
 package com.dexscript.runtime.std;
 
+import java.util.Objects;
+
 public class ComparisonLib {
 
-    public static Boolean Equal__(Long arg0, Long arg1) {
-        return arg0.equals(arg1);
+    public static boolean Equal__(Object left, Object right) {
+        return Objects.equals(left, right);
     }
 
-    public static Boolean LessThan__(Long arg0, Long arg1) {
-        return arg0 < arg1;
+    public static boolean LessThan__(long left, long right) {
+        return left < right;
     }
+
+    public static boolean GreaterThan__(long left, long right) { return left > right; }
 }

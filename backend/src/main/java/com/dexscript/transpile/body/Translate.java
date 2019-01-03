@@ -83,6 +83,8 @@ public interface Translate<E extends DexElement> {
             });
             add(new TranslateInvocation<DexLessThanExpr>() {
             });
+            add(new TranslateInvocation<DexGreaterThanExpr>() {
+            });
             add(new TranslateInvocation<DexFunctionCallExpr>() {
             });
             add(new TranslateInvocation<DexMethodCallExpr>() {

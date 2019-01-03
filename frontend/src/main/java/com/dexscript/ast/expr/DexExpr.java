@@ -147,6 +147,10 @@ public abstract class DexExpr extends DexElement {
         if (expr.matched()) {
             return expr;
         }
+        expr = new DexGreaterThanExpr(src, left);
+        if (expr.matched()) {
+            return expr;
+        }
         return new DexEndExpr(src);
     }
 

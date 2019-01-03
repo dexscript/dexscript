@@ -120,6 +120,9 @@ public class DexIfStmt extends DexStatement {
         private State block() {
             blk = new DexBlock(src.slice(i));
             blk.reparent(DexIfStmt.this, null);
+            if (!blk.matched()) {
+                return null;
+            }
             i = blk.end();
             return this::elseSmt;
         }
