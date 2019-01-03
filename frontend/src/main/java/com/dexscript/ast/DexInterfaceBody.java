@@ -1,6 +1,7 @@
 package com.dexscript.ast;
 
 import com.dexscript.ast.core.*;
+import com.dexscript.ast.inf.DexInfField;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.ast.inf.DexInfTypeParam;
@@ -16,6 +17,7 @@ public class DexInterfaceBody extends DexElement {
     private List<DexInfTypeParam> typeParams;
     private List<DexInfMethod> methods;
     private List<DexInfFunction> functions;
+    private List<DexInfField> fields;
     private DexSyntaxError syntaxError;
 
     public DexInterfaceBody(Text src) {
@@ -74,6 +76,11 @@ public class DexInterfaceBody extends DexElement {
         return functions;
     }
 
+    public List<DexInfField> fields() {
+        parse();
+        return fields;
+    }
+
     public List<DexInfTypeParam> typeParams() {
         parse();
         return typeParams;
@@ -84,6 +91,7 @@ public class DexInterfaceBody extends DexElement {
             typeParams = new ArrayList<>();
             methods = new ArrayList<>();
             functions = new ArrayList<>();
+            fields = new ArrayList<>();
             new Parser();
         }
     }
@@ -131,13 +139,13 @@ public class DexInterfaceBody extends DexElement {
                 }
                 break;
             }
-            return this::methodOrFunctionOrRightBrace;
+            return this::methodOrFunctionOrFieldOrRightBrace;
         }
 
         @Expect("method")
         @Expect("function")
         @Expect("}")
-        State methodOrFunctionOrRightBrace() {
+        State methodOrFunctionOrFieldOrRightBrace() {
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (Blank.$(b) || b == ';') {
@@ -153,25 +161,32 @@ public class DexInterfaceBody extends DexElement {
             if (func.matched()) {
                 functions.add(func);
                 i = func.end();
-                return this::methodOrFunctionOrRightBrace;
+                return this::methodOrFunctionOrFieldOrRightBrace;
             }
             DexInfMethod method = new DexInfMethod(src.slice(i));
             method.reparent(DexInterfaceBody.this);
             if (method.matched()) {
                 methods.add(method);
                 i = method.end();
-                return this::methodOrFunctionOrRightBrace;
+                return this::methodOrFunctionOrFieldOrRightBrace;
             }
-            return this::missingMethodOrFunction;
+            DexInfField field = new DexInfField(src.slice(i));
+            field.reparent(DexInterfaceBody.this);
+            if (field.matched()) {
+                fields.add(field);
+                i = field.end();
+                return this::methodOrFunctionOrFieldOrRightBrace;
+            }
+            return this::missingMember;
         }
 
-        State missingMethodOrFunction() {
+        State missingMember() {
             reportError();
             for (; i < src.end; i++) {
                 byte b = src.bytes[i];
                 if (LineEnd.$(b)) {
                     i += 1;
-                    return this::methodOrFunctionOrRightBrace;
+                    return this::methodOrFunctionOrFieldOrRightBrace;
                 }
                 if ('}' == b) {
                     return null;

@@ -145,18 +145,21 @@ public class DexInterfaceType extends DexType {
                 break;
             }
             DexInfMethod method = new DexInfMethod(src.slice(i));
+            method.reparent(DexInterfaceType.this);
             if (method.matched()) {
                 methods.add(method);
                 i = method.end();
                 return this::methodOrFunctionOrFieldOrRightBrace;
             }
             DexInfFunction func = new DexInfFunction(src.slice(i));
+            func.reparent(DexInterfaceType.this);
             if (func.matched()) {
                 functions.add(func);
                 i = func.end();
                 return this::methodOrFunctionOrFieldOrRightBrace;
             }
             DexInfField field = new DexInfField(src.slice(i));
+            field.reparent(DexInterfaceType.this);
             if (field.matched()) {
                 fields.add(field);
                 i = field.end();

@@ -36,6 +36,11 @@ public class DexInterfaceTest {
     }
 
     @Test
+    public void inf_field() {
+        TestFramework.assertParsedAST(DexInterface::$);
+    }
+
+    @Test
     public void recover_invalid_inf_member_by_line_end() {
         TestFramework.assertParsedAST(DexInterface::$);
     }

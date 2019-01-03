@@ -52,4 +52,8 @@ public class DexInfField extends DexElement {
     public DexType fieldType() {
         return dexParam.paramType();
     }
+
+    public void reparent(DexElement parent) {
+        this.parent = parent;
+    }
 }

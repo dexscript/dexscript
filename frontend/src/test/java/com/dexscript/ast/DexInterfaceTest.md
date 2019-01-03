@@ -69,6 +69,20 @@ interface Duck {
     * [0]
         * "::Quack(): string"
 
+# inf_field
+
+```dexscript
+interface Duck {
+    Name: string
+}
+```
+
+* fields
+    * size
+        * 1
+    * [0]
+        * "Name: string"
+
 # recover_invalid_inf_member_by_line_end
 
 ```dexscript

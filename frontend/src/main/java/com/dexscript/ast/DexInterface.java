@@ -5,6 +5,7 @@ import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
+import com.dexscript.ast.inf.DexInfField;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.ast.inf.DexInfTypeParam;
@@ -77,6 +78,10 @@ public class DexInterface extends DexElement {
 
     public List<DexInfMethod> methods() {
         return body().methods();
+    }
+
+    public List<DexInfField> fields() {
+        return body().fields();
     }
 
     public void reparent(DexFile parent) {
