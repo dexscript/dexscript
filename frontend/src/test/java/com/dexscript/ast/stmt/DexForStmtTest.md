@@ -4,17 +4,12 @@
 for {}
 ```
 
-* isForever
-    * true
-
 # for_condition
 
 ```dexscript
 for a==1 {}
 ```
 
-* isForCondition
-    * true
 * condition
     * "a==1"
 
@@ -24,8 +19,6 @@ for a==1 {}
 for i := 0; i < 10; i++ {}
 ```
 
-* isForWith3Clauses
-    * true
 * initStmt
     * `i := 0`
 * condition
@@ -39,8 +32,6 @@ for i := 0; i < 10; i++ {}
 for ; i < 10; i++ {}
 ```
 
-* isForWith3Clauses
-    * true
 * initStmt
     * null
 * condition
@@ -54,8 +45,6 @@ for ; i < 10; i++ {}
 for i := 0 ; i < 10; {}
 ```
 
-* isForWith3Clauses
-    * true
 * initStmt
     * `i := 0`
 * condition
@@ -69,10 +58,6 @@ for i := 0 ; i < 10; {}
 for ; i < 10; {}
 ```
 
-* isForWith3Clauses
-    * false
-* isForCondition
-    * true
 * initStmt
     * null
 * condition
@@ -85,9 +70,5 @@ for ; i < 10; {}
 ```dexscript
 for ;; {}
 ```
-
-* isForever
-    * true
-
 
 

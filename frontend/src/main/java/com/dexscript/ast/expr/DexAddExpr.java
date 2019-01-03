@@ -2,6 +2,7 @@ package com.dexscript.ast.expr;
 
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.Keyword;
 
 public class DexAddExpr extends DexBinaryOperator implements DexInvocationExpr {
 
@@ -17,6 +18,10 @@ public class DexAddExpr extends DexBinaryOperator implements DexInvocationExpr {
                 continue;
             }
             if (b == '+') {
+                if (Keyword.$(src, i + 1, '+')) {
+                    // ++ is not +
+                    return;
+                }
                 right = DexExpr.parse(new Text(src.bytes, i + 1, src.end), RIGHT_RANK);
                 return;
             }

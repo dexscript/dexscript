@@ -53,27 +53,6 @@ public class DexForStmt extends DexStatement {
         return blk;
     }
 
-    public boolean isForCondition() {
-        if (!matched()) {
-            return false;
-        }
-        return initStmt == null && condition != null;
-    }
-
-    public boolean isForever() {
-        if (!matched()) {
-            return false;
-        }
-        return initStmt == null && condition == null;
-    }
-
-    public boolean isForWith3Clauses() {
-        if (!matched()) {
-            return false;
-        }
-        return initStmt != null || postStmt != null;
-    }
-
     public DexExpr condition() {
         return condition;
     }

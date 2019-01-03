@@ -1,11 +1,9 @@
 package com.dexscript.ast.stmt;
 
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.token.Blank;
 
 import java.util.ArrayList;

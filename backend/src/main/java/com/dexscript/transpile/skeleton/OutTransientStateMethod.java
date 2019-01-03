@@ -14,7 +14,7 @@ public class OutTransientStateMethod implements OutMethod {
         g = new Gen(oClass.indention());
         g.__("private final void "
         ).__(OutStateMethod.methodName(state)
-        ).__("() {");
+        ).__("() throws Exception {");
         g.indention(oClass.indention() + "  ");
         g.__(new Line());
     }

@@ -14,7 +14,7 @@ public class OutStateMethod implements OutMethod {
         g = new Gen(oClass.indention());
         g.__("private final void "
         ).__(methodName(state)
-        ).__("() {");
+        ).__("() throws Exception {");
         g.indention(oClass.indention() + "  ");
         g.__(new Line());
         g.__("Set__state("

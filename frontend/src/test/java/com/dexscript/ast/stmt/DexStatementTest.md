@@ -32,5 +32,9 @@ a:=b
     * size
         * 2
 
+# break_stmt
 
+```dexscript
+break
+```
 

@@ -29,3 +29,22 @@ function AsIs(i: int64): int64 {
 ```
 
 * "5242828800"
+
+# for_break_without_await
+
+```dexscript
+function Hello(): int64 {
+    i := 0
+    total := 0
+    for {
+        i++
+        total = total + i
+        if (i > 10) {
+            break
+        }
+    }
+    return total
+}
+```
+
+

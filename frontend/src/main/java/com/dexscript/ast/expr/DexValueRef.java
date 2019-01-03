@@ -63,6 +63,11 @@ public class DexValueRef extends DexLeafExpr implements DexInvocationExpr {
         return invocation;
     }
 
+    @Override
+    public boolean isInvokable() {
+        return isGlobalScope;
+    }
+
     private class Parser {
 
         int i;

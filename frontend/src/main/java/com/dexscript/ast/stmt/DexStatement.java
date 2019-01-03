@@ -66,6 +66,10 @@ public abstract class DexStatement extends DexElement {
         if (stmt.matched()) {
             return stmt;
         }
+        stmt = new DexBreakStmt(src);
+        if (stmt.matched()) {
+            return stmt;
+        }
         return new DexExprStmt(src);
     }
 

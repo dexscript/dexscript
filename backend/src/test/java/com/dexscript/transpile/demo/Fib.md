@@ -2,7 +2,12 @@
 
 ```dexscript
 function Hello() {
+    a := 1
+    b := 1
     ::STDIN.read()
-    print('hello', stream=::STDERR)
+    for {
+        ::STDIN.read()
+        print('hello')
+    }
 }
 ```

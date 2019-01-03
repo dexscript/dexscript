@@ -24,4 +24,9 @@ public class DexStatementTest {
     public void stmt_in_block() {
         TestFramework.assertParsedAST(DexStatement::$parse);
     }
+
+    @Test
+    public void break_stmt() {
+        TestFramework.assertParsedAST(DexStatement::$parse);
+    }
 }
