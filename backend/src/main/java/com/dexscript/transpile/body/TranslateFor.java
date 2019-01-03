@@ -5,10 +5,7 @@ import com.dexscript.ast.stmt.DexForStmt;
 import com.dexscript.gen.Indent;
 import com.dexscript.gen.Line;
 import com.dexscript.shim.actor.HasAwait;
-import com.dexscript.transpile.skeleton.OutClass;
-import com.dexscript.transpile.skeleton.OutStateMachine;
-import com.dexscript.transpile.skeleton.OutStateMethod;
-import com.dexscript.transpile.skeleton.OutTransientStateMethod;
+import com.dexscript.transpile.skeleton.*;
 
 public class TranslateFor implements Translate<DexForStmt> {
 
@@ -66,6 +63,8 @@ public class TranslateFor implements Translate<DexForStmt> {
     }
 
     private void hasAwait(OutClass oClass, DexForStmt iForStmt) {
+        OutBreakFlag oBreakFlag = new OutBreakFlag(oClass);
+        iForStmt.attach(oBreakFlag);
         // init
         if (iForStmt.initStmt() != null) {
             Translate.$(oClass, iForStmt.initStmt());
@@ -80,10 +79,16 @@ public class TranslateFor implements Translate<DexForStmt> {
         // check condition
         new OutStateMethod(oClass, checkConditionState);
         DexExpr condition = iForStmt.condition();
-        Translate.$(oClass, condition);
-        oClass.g().__("if ((Boolean)"
-        ).__(OutValue.of(condition)
-        ).__(") {"
+        if (condition == null) {
+            oClass.g().__("if (");
+        } else {
+            Translate.$(oClass, condition);
+            oClass.g().__("if ((Boolean)"
+            ).__(OutValue.of(condition)
+            ).__("&& ");
+        }
+        oClass.g().__(oBreakFlag.fieldName()
+        ).__(" == null) {"
         ).__(new Indent(() -> {
             OutStateMethod.call(oClass.g(), trampolineState);
         })).__("} else {"
