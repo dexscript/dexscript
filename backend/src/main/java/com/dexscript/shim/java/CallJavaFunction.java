@@ -24,8 +24,11 @@ public class CallJavaFunction extends FunctionImpl {
         DeclareParams.$(g, functionType.params().size() + 1, true);
         g.__(" {");
         g.__(new Indent(() -> {
-            g.__("return new ImmediateResult("
-            ).__(javaFunction.getDeclaringClass().getCanonicalName()
+            boolean returnVoid = javaFunction.getReturnType().equals(Void.TYPE);
+            if (!returnVoid){
+                g.__("return new ImmediateResult(");
+            }
+            g.__(javaFunction.getDeclaringClass().getCanonicalName()
             ).__('.'
             ).__(javaFunction.getName()
             ).__('(');
@@ -41,7 +44,13 @@ public class CallJavaFunction extends FunctionImpl {
                 ).__(i
                 ).__(')');
             }
-            g.__("));");
+            g.__(")");
+            if (returnVoid){
+                g.__(new Line(";"));
+                g.__("return new ImmediateResult(null);");
+            } else {
+                g.__(");");
+            }
         }));
         g.__(new Line("}"));
         return callF;

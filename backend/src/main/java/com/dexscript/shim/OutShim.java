@@ -7,7 +7,9 @@ import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
-import com.dexscript.runtime.std.BasicOperators;
+import com.dexscript.runtime.std.ArithmeticLib;
+import com.dexscript.runtime.std.ComparisonLib;
+import com.dexscript.runtime.std.IOLib;
 import com.dexscript.shim.actor.ActorTable;
 import com.dexscript.shim.actor.ActorType;
 import com.dexscript.shim.java.*;
@@ -48,7 +50,9 @@ public class OutShim {
         g.indention("  ");
         g.__(new Line());
         defineNewArray();
-        importJavaFunctions(BasicOperators.class);
+        importJavaFunctions(ArithmeticLib.class);
+        importJavaFunctions(ComparisonLib.class);
+        importJavaFunctions(IOLib.class);
     }
 
     private void defineNewArray() {

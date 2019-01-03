@@ -22,7 +22,7 @@ public interface DeclareParams {
             g.__("Object arg"
             ).__(i);
         }
-        g.__(')');
+        g.__(") throws Exception ");
     }
 
     static void $(Gen g, DexSig sig) {
@@ -33,6 +33,6 @@ public interface DeclareParams {
             g.__("Object "
             ).__(param.paramName());
         }
-        g.__(", Object context)");
+        g.__(", Object context) throws Exception ");
     }
 }

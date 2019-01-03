@@ -15,6 +15,9 @@ allprojects {
     sourceCompatibility = javaVersion
     targetCompatibility = javaVersion
     tasks.withType(JavaCompile) { options.encoding = 'UTF-8' }
+    compileJava {
+        options.compilerArgs << '-parameters'
+    }
 
     sourceSets {
         test {

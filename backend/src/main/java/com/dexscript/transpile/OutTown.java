@@ -2,7 +2,6 @@ package com.dexscript.transpile;
 
 import com.dexscript.pkg.ImportPackage;
 import com.dexscript.runtime.DexRuntimeException;
-import com.dexscript.runtime.std.BasicOperators;
 import com.dexscript.shim.OutShim;
 import com.dexscript.shim.actor.ActorType;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
