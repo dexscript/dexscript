@@ -9,8 +9,13 @@ import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.infer.InferType;
 import com.dexscript.shim.OutShim;
+import com.dexscript.shim.struct.StructType;
+import com.dexscript.type.DType;
 import com.dexscript.type.TypeSystem;
 
 import java.io.IOException;
@@ -22,6 +27,18 @@ import java.util.List;
 import static com.dexscript.pkg.DexPackages.$p;
 
 public class CheckPackage {
+
+    static {
+        InferType.handlers.put(DexStructExpr.class, (ts, elem) -> {
+            StructType structType = elem.attachmentOfType(StructType.class);
+            if (structType != null) {
+                return structType;
+            }
+            structType = new StructType(ts, (DexStructExpr) elem);
+            elem.attach(structType);
+            return structType;
+        });
+    }
 
     static class Failed extends RuntimeException {
     }

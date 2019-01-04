@@ -291,3 +291,28 @@ interface Inf2 {
     SomeAction()
 }
 ```
+
+# return_struct
+
+
+```dexscript
+// /pkg1/__spi__.ds
+
+interface :: {
+}
+```
+
+```dexscript
+// /pkg1/123.ds
+
+function Hello(): MyInf {
+    return {
+        field: 'hello'
+    }
+}
+
+interface MyInf {
+    getField(): string
+    setField(value: string)
+}
+```
