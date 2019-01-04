@@ -1,4 +1,4 @@
-package com.dexscript.analyze;
+package com.dexscript.pkg;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.inf.DexInfTypeParam;

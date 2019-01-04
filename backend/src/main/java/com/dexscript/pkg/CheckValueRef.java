@@ -1,4 +1,4 @@
-package com.dexscript.analyze;
+package com.dexscript.pkg;
 
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.infer.InferValue;

@@ -1,21 +1,17 @@
 package com.dexscript.pkg;
 
 
-import com.dexscript.analyze.CheckSemanticError;
-import com.dexscript.analyze.CheckSyntaxError;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.infer.InferType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.shim.struct.StructType;
-import com.dexscript.type.DType;
 import com.dexscript.type.TypeSystem;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.dexscript.analyze;
+package com.dexscript.pkg;
 
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.core.DexElement;
@@ -10,8 +10,6 @@ import com.dexscript.type.TypeTable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class CheckSemanticError implements DexElement.Visitor {
 
