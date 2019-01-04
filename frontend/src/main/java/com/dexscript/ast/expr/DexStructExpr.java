@@ -1,10 +1,12 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.token.Blank;
+import com.dexscript.ast.token.LineEnd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +15,7 @@ public class DexStructExpr extends DexExpr {
 
     private int structExprEnd = -1;
     private List<DexNamedArg> fields;
+    private DexSyntaxError syntaxError;
 
     public DexStructExpr(Text src) {
         super(src);
@@ -53,6 +56,11 @@ public class DexStructExpr extends DexExpr {
                 }
             }
         }
+    }
+
+    @Override
+    public DexSyntaxError syntaxError() {
+        return syntaxError;
     }
 
     public List<DexNamedArg> fields() {
@@ -170,19 +178,113 @@ public class DexStructExpr extends DexExpr {
         }
 
         State missingColon() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    structExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::fieldVal;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::fieldName;
+                }
+                if (b == '}') {
+                    structExprEnd = i + 1;
+                    return null;
+                }
+            }
+            structExprEnd = i;
+            return null;
         }
 
         State missingFieldName() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    structExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::colon;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::fieldName;
+                }
+                if (b == ':') {
+                    i += 1;
+                    return this::fieldVal;
+                }
+                if (b == '}') {
+                    structExprEnd = i + 1;
+                    return null;
+                }
+            }
+            structExprEnd = i;
+            return null;
         }
 
         State missingRightBrace() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    structExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::fieldName;
+                }
+                if (b == ':') {
+                    i += 1;
+                    return this::fieldVal;
+                }
+            }
+            structExprEnd = i;
+            return null;
         }
 
         State missingFieldVal() {
-            throw new UnsupportedOperationException("not implemented");
+            reportError();
+            for (; i < src.end; i++) {
+                byte b = src.bytes[i];
+                if (LineEnd.$(b)) {
+                    structExprEnd = i;
+                    return null;
+                }
+                if (Blank.$(b)) {
+                    i += 1;
+                    return this::commaOrRightBrace;
+                }
+                if (b == ',') {
+                    i += 1;
+                    return this::fieldName;
+                }
+                if (b == ':') {
+                    i += 1;
+                    return this::fieldVal;
+                }
+                if (b == '}') {
+                    structExprEnd = i + 1;
+                    return null;
+                }
+            }
+            structExprEnd = i;
+            return null;
+        }
+
+        void reportError() {
+            if (syntaxError == null) {
+                syntaxError = new DexSyntaxError(src, i);
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.dexscript.ast.stmt;
 
-import com.dexscript.ast.DexActor;
 import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.expr.DexExpr;
