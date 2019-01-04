@@ -53,7 +53,8 @@ public abstract class FunctionImpl {
             String typeCheck = javaTypes.genTypeCheck(param.type());
             typeChecks.add(typeCheck);
         }
-        typeChecks.add(javaTypes.genTypeCheck(functionType.context()));
+        // context argument type is not checked
+        typeChecks.add(javaTypes.genTypeCheck(oShim.typeSystem().ANY));
         g.__("public static boolean "
         ).__(canF);
         DeclareParams.$(g, typeChecks.size(), false);

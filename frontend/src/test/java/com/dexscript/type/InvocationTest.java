@@ -17,17 +17,17 @@ public class InvocationTest {
 
     @Test
     public void to_string() {
-        Assert.assertEquals("hello($=interface{}): string", new Invocation(
+        Assert.assertEquals("hello(): string", new Invocation(
                 "hello", null,
-                null, null, ts.ANY, ts.STRING).toString());
-        Assert.assertEquals("hello<string>($=interface{}): string", new Invocation(
+                null, null, ts.STRING).toString());
+        Assert.assertEquals("hello<string>(): string", new Invocation(
                 "hello", Arrays.asList(ts.STRING),
-                null, null, ts.ANY, ts.STRING).toString());
-        Assert.assertEquals("hello(string, $=interface{}): string", new Invocation(
+                null, null, ts.STRING).toString());
+        Assert.assertEquals("hello(string): string", new Invocation(
                 "hello", null,
-                Arrays.asList(ts.STRING), null, ts.ANY, ts.STRING).toString());
-        Assert.assertEquals("hello(msg=string, $=interface{}): string", new Invocation(
+                Arrays.asList(ts.STRING), null, ts.STRING).toString());
+        Assert.assertEquals("hello(msg=string): string", new Invocation(
                 "hello", null,
-                null, Arrays.asList(new NamedArg("msg", ts.STRING)), ts.ANY, ts.STRING).toString());
+                null, Arrays.asList(new NamedArg("msg", ts.STRING)), ts.STRING).toString());
     }
 }

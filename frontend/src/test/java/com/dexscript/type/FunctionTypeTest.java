@@ -54,43 +54,6 @@ public class FunctionTypeTest {
     }
 
     @Test
-    public void context_not_assignable() {
-        DexPackage pkg1 = new DexPackage("pkg1");
-        FunctionType func1 = func(pkg1, "hello()");
-        defineInterface(pkg1, "" +
-                "interface $ {\n" +
-                "   Some()\n" +
-                "}");
-        DexPackage pkg2 = new DexPackage("pkg2");
-        FunctionType func2 = func(pkg2, "hello()");
-        defineInterface(pkg2, "" +
-                "interface $ {\n" +
-                "   Another()\n" +
-                "}");
-        TestAssignable.$(false, func1, func2);
-        TestAssignable.$(false, func2, func1);
-    }
-
-    @Test
-    public void context_is_sub_type() {
-        DexPackage pkg1 = new DexPackage("pkg1");
-        FunctionType func1 = func(pkg1, "hello()");
-        defineInterface(pkg1, "" +
-                "interface $ {\n" +
-                "   Some()\n" +
-                "}");
-        DexPackage pkg2 = new DexPackage("pkg2");
-        FunctionType func2 = func(pkg2, "hello()");
-        defineInterface(pkg2, "" +
-                "interface $ {\n" +
-                "   Some()\n" +
-                "   Another()\n" +
-                "}");
-        TestAssignable.$(false, func1, func2);
-        TestAssignable.$(true, func2, func1);
-    }
-
-    @Test
     public void param_is_sub_type() {
         testAssignable();
     }

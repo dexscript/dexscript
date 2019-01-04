@@ -92,12 +92,12 @@ public class FunctionTableTest {
             testData.assertByTable((funcName, posArgs, namedArgs) -> ts.dispatch(new Invocation(
                     funcName, Collections.emptyList(),
                     ResolvePosArgs.$(ts, stripQuote(posArgs)),
-                    ResolveNamedArgs.$(ts, stripQuote(namedArgs)), ts.ANY, null).requireImpl(true)));
+                    ResolveNamedArgs.$(ts, stripQuote(namedArgs)), null).requireImpl(true)));
         } else {
             testData.assertByTable((funcName, posArgs) -> ts.dispatch(new Invocation(
                     funcName, Collections.emptyList(),
                     ResolvePosArgs.$(ts, stripQuote(posArgs)),
-                    Collections.emptyList(), ts.ANY, null).requireImpl(true)));
+                    Collections.emptyList(), null).requireImpl(true)));
         }
     }
 

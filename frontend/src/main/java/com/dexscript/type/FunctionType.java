@@ -22,8 +22,6 @@ public final class FunctionType implements DType {
     @NotNull
     private final String name;
 
-    private DType context;
-
     @NotNull
     private final List<FunctionParam> params;
 
@@ -155,9 +153,6 @@ public final class FunctionType implements DType {
                 return false;
             }
         }
-        if (!new IsAssignable(ctx, "context", that.context(), this.context()).result()) {
-            return false;
-        }
         if (!new IsAssignable(ctx, "ret", this.ret, that.ret).result()) {
             return false;
         }
@@ -186,23 +181,15 @@ public final class FunctionType implements DType {
         return implProvider != null;
     }
 
-    public DType context() {
-        if (context != null) {
-            return context;
-        }
-        context = ts.context(pkg);
-        return context;
-    }
-
-    public void context(DType context) {
-        this.context = context;
-    }
-
     public void isGlobalSPI(boolean isGlobalSPI) {
         this.isGlobalSPI = isGlobalSPI;
     }
 
     public boolean isGlobalSPI() {
         return isGlobalSPI;
+    }
+
+    public DexPackage pkg() {
+        return pkg;
     }
 }

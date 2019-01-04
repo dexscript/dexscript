@@ -52,7 +52,7 @@ public class ActorTypeTest {
         Dispatched dispatched = ts.dispatch(new Invocation("New__", null, new ArrayList<DType>() {{
             add(new StringLiteralType(ts, "AA"));
             add(actor);
-        }}, null, ts.ANY, null));
+        }}, null, null));
         Assert.assertEquals(1, dispatched.candidates.size());
     }
 
@@ -64,7 +64,7 @@ public class ActorTypeTest {
                 "function Hello() {\n" +
                 "}"));
         Dispatched dispatched = ts.dispatch(new Invocation("Hello",
-                null, new ArrayList<>(), null, ts.ANY, null));
+                null, new ArrayList<>(), null, null));
         Assert.assertEquals(1, dispatched.candidates.size());
         Assert.assertEquals(ts.VOID, dispatched.candidates.get(0).func().ret());
     }
@@ -75,7 +75,7 @@ public class ActorTypeTest {
                 "function Hello(<T>: string, msg: T) {\n" +
                 "}"));
         Dispatched dispatched = ts.dispatch(new Invocation("Hello",
-                null, Arrays.asList(ts.STRING), null, ts.ANY, null));
+                null, Arrays.asList(ts.STRING), null, null));
         Assert.assertEquals(1, dispatched.candidates.size());
         DType type = ResolveType.$(ts, "Hello<string>");
         Assert.assertNotNull(type);
@@ -90,7 +90,7 @@ public class ActorTypeTest {
         StringLiteralType a = new StringLiteralType(ts, "a");
         StringLiteralType b = new StringLiteralType(ts, "b");
         Dispatched dispatched = ts.dispatch(new Invocation("Equals", null,
-                Arrays.asList(a, b), null, ts.ANY, null));
+                Arrays.asList(a, b), null, null));
         Assert.assertEquals(0, dispatched.candidates.size());
     }
 }

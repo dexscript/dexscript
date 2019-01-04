@@ -20,7 +20,7 @@ a[b]
 
 * invocation
     * funcName
-        * "Get__"
+        * "get"
     * posArgs
         * size
             * 2

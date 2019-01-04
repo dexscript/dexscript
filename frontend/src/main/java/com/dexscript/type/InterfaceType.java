@@ -71,18 +71,12 @@ public class InterfaceType implements NamedType, GenericType, FunctionsType {
     private void addInfFunction(TypeTable localTypeTable, DexInfFunction infFunction) {
         String name = infFunction.identifier().toString();
         FunctionType functionType = new FunctionType(ts, name, localTypeTable, infFunction.sig());
-        if (inf.isContextSPI()) {
-            functionType.context(ts.ANY);
-        }
         functions.add(functionType);
     }
 
     private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
         String name = infMethod.identifier().toString();
         FunctionType functionType = new FunctionType(ts, name, localTypeTable, this, infMethod.sig());
-        if (inf.isContextSPI()) {
-            functionType.context(ts.ANY);
-        }
         functions.add(functionType);
     }
 

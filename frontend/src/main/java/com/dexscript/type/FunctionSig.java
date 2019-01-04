@@ -89,34 +89,6 @@ public class FunctionSig {
         }
     }
 
-    public class ContextIncomptible extends Incompatible {
-
-        private final IsAssignable paramArg;
-        private final IsAssignable argParam;
-
-        public ContextIncomptible(IsAssignable paramArg, IsAssignable argParam) {
-            this.paramArg = paramArg;
-            this.argParam = argParam;
-        }
-
-        public IsAssignable paramArg() {
-            return paramArg;
-        }
-
-        public IsAssignable argParam() {
-            return argParam;
-        }
-
-        @Override
-        public void dump() {
-            System.out.println("context is incompatible");
-            System.out.println("tried param=arg");
-            paramArg.dump();
-            System.out.println("tried arg=param");
-            argParam.dump();
-        }
-    }
-
     public class MissingTypeArgument extends Incompatible {
 
         private final PlaceholderType typeParam;
@@ -242,7 +214,7 @@ public class FunctionSig {
         return typeParams;
     }
 
-    Invoked invoke(List<DType> typeArgs, List<DType> args, DType contextArg, DType retHint) {
+    Invoked invoke(List<DType> typeArgs, List<DType> args, DType retHint) {
         if (params.size() != args.size()) {
             return new ArgumentsCountIncompatible();
         }
@@ -266,17 +238,6 @@ public class FunctionSig {
             if (!argMatched) {
                 return new ArgumentIncompatible(i, paramArg, argParam);
             }
-        }
-        IsAssignable paramArg = new IsAssignable(ctx, "context param=arg", contextParam(), contextArg);
-        IsAssignable argParam = null;
-        boolean argMatched = paramArg.result();
-        if (!argMatched) {
-            needRuntimeCheck = true;
-            argParam = new IsAssignable(ctx, "context arg=param", contextArg, contextParam());
-            argMatched = argParam.result();
-        }
-        if (!argMatched) {
-            return new ContextIncomptible(paramArg, argParam);
         }
         if (typeParams.isEmpty()) {
             return new Compatible(needRuntimeCheck, func);

@@ -66,26 +66,13 @@ public class FunctionSigTest {
     @Test
     public void infer_with_return_value_hint() {
         FunctionSig sig = sig("(<T>: interface{}): T");
-        DType ret = sig.invoke(Collections.emptyList(), Collections.emptyList(), ts.ANY, ts.STRING).func().ret();
+        DType ret = sig.invoke(Collections.emptyList(), Collections.emptyList(), ts.STRING).func().ret();
         Assert.assertEquals(ts.STRING, ret);
     }
 
     @Test
     public void specify_type_args() {
         testInvoke();
-    }
-
-    @Test
-    public void specify_context_arg() {
-        ts.defineInterface(DexInterface.$("" +
-                "interface $ {\n" +
-                "   GetPid(): string\n" +
-                "}"));
-        FunctionSig sig = sig("(): bool");
-        FunctionSig.Invoked invoked = sig.invoke(
-                Collections.emptyList(),
-                Collections.emptyList(), ts.STRING, null);
-        Assert.assertFalse(invoked.success());
     }
 
     @Test
@@ -110,12 +97,12 @@ public class FunctionSigTest {
             testData.assertByTable((typeArgs, posArgs) -> sig.invoke(
                     ResolvePosArgs.$(ts, stripQuote(typeArgs)),
                     ResolvePosArgs.$(ts, stripQuote(posArgs)),
-                    ts.ANY, null));
+                    null));
         } else {
             testData.assertByTable(posArgs -> sig.invoke(
                     Collections.emptyList(),
                     ResolvePosArgs.$(ts, stripQuote(posArgs)),
-                    ts.ANY, null));
+                    null));
         }
     }
 

@@ -41,13 +41,7 @@ public class InferInvocation<E extends DexExpr & DexInvocationExpr> implements I
                 namedArgs.add(new NamedArg(argName, argType));
             }
         }
-        if (context == null) {
-            context = ts.context(dexIvc.pkg());
-        }
-        if (ts.isConst(context)) {
-            throw new DexSyntaxException("context argument $ must not be const value");
-        }
-        Invocation ivc = new Invocation(dexIvc.funcName(), typeArgs, posArgs, namedArgs, context, null);
+        Invocation ivc = new Invocation(dexIvc.funcName(), typeArgs, posArgs, namedArgs, null);
         ivc.isGlobalScope(dexIvc.isGlobalScope());
         return ivc;
     }

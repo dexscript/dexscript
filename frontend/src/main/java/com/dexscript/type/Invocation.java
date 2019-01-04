@@ -8,26 +8,23 @@ public class Invocation {
     private final List<DType> typeArgs;
     private final List<DType> posArgs;
     private final List<NamedArg> namedArgs;
-    private final DType context;
     private final DType retHint;
     private boolean requireImpl;
     private boolean isGlobalScope;
     private final Set<FunctionType> providedFunctions;
 
     public Invocation(String funcName, List<DType> typeArgs,
-                      List<DType> posArgs, List<NamedArg> namedArgs, DType context,
+                      List<DType> posArgs, List<NamedArg> namedArgs,
                       DType retHint) {
         this.funcName = funcName;
         this.typeArgs = typeArgs == null ? Collections.emptyList() : typeArgs;
         this.posArgs = posArgs == null ? Collections.emptyList() : posArgs;
         this.namedArgs = namedArgs == null ? Collections.emptyList() : namedArgs;
-        this.context = context;
         this.retHint = retHint;
         ArrayList<DType> allArgs = new ArrayList<>(this.posArgs);
         for (NamedArg namedArg : this.namedArgs) {
             allArgs.add(namedArg.type());
         }
-        allArgs.add(context);
         providedFunctions = new HashSet<>();
         for (DType allArg : allArgs) {
             if (allArg instanceof FunctionsType) {
@@ -72,10 +69,6 @@ public class Invocation {
         return namedArgs;
     }
 
-    public DType context() {
-        return context;
-    }
-
     public DType retHint() {
         return retHint;
     }
@@ -115,9 +108,6 @@ public class Invocation {
             desc.append('=');
             desc.append(namedArg.type().toString());
         }
-        isFirst = appendMore(desc, isFirst);
-        desc.append("$=");
-        desc.append(context.toString());
         desc.append(")");
         if (retHint != null) {
             desc.append(": ");
