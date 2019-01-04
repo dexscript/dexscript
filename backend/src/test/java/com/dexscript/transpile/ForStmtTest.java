@@ -23,4 +23,14 @@ public class ForStmtTest {
     public void for_break_with_await() {
         TestTranspile.$();
     }
+
+    @Test
+    public void for_return_without_await() {
+        TestTranspile.$();
+    }
+
+    @Test
+    public void for_return_with_await() {
+        TestTranspile.$();
+    }
 }
