@@ -37,11 +37,6 @@ public class CheckSemanticErrorTest {
     }
 
     @Test
-    public void assign_type_mismatch() {
-        hasSemanticError();
-    }
-
-    @Test
     public void interface_not_implemented() {
         hasSemanticError();
     }

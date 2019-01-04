@@ -37,15 +37,6 @@ function Hello() {
 }
 ```
 
-# assign_type_mismatch
-
-```dexscript
-function Hello() {
-   var i: int64
-   i = 'hello'
-}
-```
-
 # interface_not_implemented
 
 ```dexscript

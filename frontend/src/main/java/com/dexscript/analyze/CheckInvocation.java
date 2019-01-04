@@ -22,8 +22,11 @@ public class CheckInvocation<E extends DexElement & DexInvocationExpr> implement
         if (!elem.isInvokable()) {
             return;
         }
+        $(cse, (DexElement) elem, elem.invocation());
+    }
+
+    public static void $(CheckSemanticError cse, DexElement elem, DexInvocation dexIvc) {
         TypeSystem ts = cse.typeSystem();
-        DexInvocation dexIvc = elem.invocation();
         for (DexType typeArg : dexIvc.typeArgs()) {
             cse.visit(typeArg);
         }
@@ -36,7 +39,7 @@ public class CheckInvocation<E extends DexElement & DexInvocationExpr> implement
         Invocation ivc = InferInvocation.ivc(ts, dexIvc);
         Dispatched dispatched = ts.dispatch(ivc);
         if (dispatched.candidates.isEmpty()) {
-            cse.report((DexElement) elem, "no matching function: " + ivc);
+            cse.report(elem, "no matching function: " + ivc);
             System.out.println("dispatched.failures: " + dispatched.failures.size());
             System.out.println("dispatched.ignoreds: " + dispatched.ignoreds.size());
             System.out.println("dispatched.skippeds: " + dispatched.skippeds.size());

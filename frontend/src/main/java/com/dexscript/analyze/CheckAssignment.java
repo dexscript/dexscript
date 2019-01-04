@@ -1,9 +1,7 @@
 package com.dexscript.analyze;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.ast.expr.DexIndexExpr;
-import com.dexscript.ast.expr.DexValueRef;
+import com.dexscript.ast.expr.*;
 import com.dexscript.ast.stmt.DexAssignStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.type.DType;
@@ -17,17 +15,19 @@ public class CheckAssignment implements CheckSemanticError.Handler<DexAssignStmt
         if (elem.targets().size() != 1) {
             throw new UnsupportedOperationException("not implemented");
         }
-        TypeSystem ts = cse.typeSystem();
-        DexExpr leftExpr = elem.targets().get(0);
-        if (leftExpr instanceof DexValueRef) {
-            DType left = InferType.$(ts, leftExpr);
-            DType right = InferType.$(ts, elem.expr());
-            checkTypeAssignable(cse, elem, right, left);
-        } else if (leftExpr instanceof DexIndexExpr) {
-            // TODO:
-        } else {
-            cse.report(elem, "is not left value: " + leftExpr);
+        if (elem.isInvokable()) {
+            CheckInvocation.$(cse, elem);
+            return;
         }
+        DexExpr leftExpr = elem.targets().get(0);
+        if (!(leftExpr instanceof DexValueRef)) {
+            cse.report(elem, "is not left value: " + leftExpr);
+            return;
+        }
+        TypeSystem ts = cse.typeSystem();
+        DType left = InferType.$(ts, leftExpr);
+        DType right = InferType.$(ts, elem.expr());
+        checkTypeAssignable(cse, elem, right, left);
     }
 
     public static void checkTypeAssignable(CheckSemanticError cse, DexElement elem, DType from, DType to) {
