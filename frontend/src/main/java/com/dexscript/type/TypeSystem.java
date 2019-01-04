@@ -177,7 +177,16 @@ public class TypeSystem {
         return isBoolConst(type) || isStringConst(type) || isFloatConst(type) || isIntegerConst(type);
     }
 
-    public DexPackage pkg(String packageName) {
-        return null;
+    public DType widenConst(DType type) {
+        if (isStringConst(type)) {
+            return STRING;
+        } else if (isIntegerConst(type)) {
+            return INT64;
+        } else if (isFloatConst(type)) {
+            return FLOAT64;
+        } else if (isBoolConst(type)) {
+            return BOOL;
+        }
+        return type;
     }
 }

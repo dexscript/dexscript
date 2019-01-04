@@ -1,5 +1,6 @@
 package com.dexscript.ast.expr;
 
+import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexSyntaxError;
 import com.dexscript.ast.core.Expect;
 import com.dexscript.ast.core.State;
@@ -23,7 +24,9 @@ public class DexStructExpr extends DexExpr {
     }
 
     public static DexStructExpr $(String src) {
-        return new DexStructExpr(new Text(src));
+        DexStructExpr expr = new DexStructExpr(new Text(src));
+        expr.attach(DexPackage.DUMMY);
+        return expr;
     }
 
     @Override
