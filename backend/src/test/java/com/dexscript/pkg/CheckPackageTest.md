@@ -264,3 +264,30 @@ function Hello(): string {
    return ::hello
 }
 ```
+
+# array_of_compatible_type_is_assignable
+
+```dexscript
+// /pkg1/__spi__.ds
+
+interface :: {
+}
+```
+
+```dexscript
+// /pkg1/123.ds
+
+function Hello() {
+    var var1: Array<Inf1>
+    var var2: Array<Inf2>
+    var1 = var2
+}
+
+interface Inf1 {
+    SomeAction()
+}
+
+interface Inf2 {
+    SomeAction()
+}
+```

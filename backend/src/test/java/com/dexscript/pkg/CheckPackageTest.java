@@ -66,11 +66,6 @@ public class CheckPackageTest {
     }
 
     @Test
-    public void context_type_is_added_to_function_signature() throws IOException {
-        Assert.assertFalse(checkPkg1());
-    }
-
-    @Test
     public void global_spi_reference_later_defined_types() throws Exception {
         Assert.assertTrue(checkPkg1());
     }
@@ -102,6 +97,11 @@ public class CheckPackageTest {
 
     @Test
     public void double_colon_value_reference_global_spi() throws Exception {
+        Assert.assertTrue(checkPkg1());
+    }
+
+    @Test
+    public void array_of_compatible_type_is_assignable()  throws Exception {
         Assert.assertTrue(checkPkg1());
     }
 

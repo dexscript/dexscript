@@ -102,6 +102,14 @@ public class OutShim {
                 "}"));
         promiseInf.attach(pkg);
         ts.defineInterface(promiseInf);
+        DexInterface arrayInf = new DexInterface(new Text("" +
+                "interface Array {\n" +
+                "   <T>: interface{}\n" +
+                "   get(index: int32): T\n" +
+                "   set(index: int32, element: T)\n" +
+                "}"));
+        arrayInf.attach(pkg);
+        ts.defineInterface(arrayInf);
         ts.defineBuiltinTypes(pkg);
         return pkg;
     }

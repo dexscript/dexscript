@@ -1,29 +1,38 @@
 package com.dexscript.analyze;
 
 import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
-import com.dexscript.ast.expr.DexValueRef;
+import com.dexscript.ast.expr.DexNamedArg;
+import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferInvocation;
-import com.dexscript.type.*;
+import com.dexscript.type.Dispatched;
+import com.dexscript.type.Invocation;
+import com.dexscript.type.TypeSystem;
 
 public class CheckInvocation<E extends DexElement & DexInvocationExpr> implements CheckSemanticError.Handler<E> {
+
     @Override
     public void handle(CheckSemanticError cse, E elem) {
-        elem.walkDown(child -> {
-            if (child instanceof DexValueRef) {
-                if (!((DexValueRef) child).isGlobalScope()) {
-                    return;
-                }
-            }
-            cse.visit(child);
-        });
         CheckInvocation.$(cse, elem);
     }
 
     public static void $(CheckSemanticError cse, DexInvocationExpr elem) {
+        if (!elem.isInvokable()) {
+            return;
+        }
         TypeSystem ts = cse.typeSystem();
         DexInvocation dexIvc = elem.invocation();
+        for (DexType typeArg : dexIvc.typeArgs()) {
+            cse.visit(typeArg);
+        }
+        for (DexExpr posArg : dexIvc.posArgs()) {
+            cse.visit(posArg);
+        }
+        for (DexNamedArg namedArg : dexIvc.namedArgs()) {
+            cse.visit(namedArg.val());
+        }
         Invocation ivc = InferInvocation.ivc(ts, dexIvc);
         Dispatched dispatched = ts.dispatch(ivc);
         if (dispatched.candidates.isEmpty()) {
