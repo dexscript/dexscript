@@ -102,6 +102,10 @@ public abstract class DexExpr extends DexElement {
             }
             return expr;
         }
+        expr = new DexStructExpr(src);
+        if (expr.matched()){
+            return expr;
+        }
         return new DexEndExpr(src);
     }
 
