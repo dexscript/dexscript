@@ -88,12 +88,6 @@ public class FunctionTypeTest {
         return new FunctionType(ts, actor.functionName(), null, actor.sig());
     }
 
-    private void defineInterface(DexPackage pkg1, String src) {
-        DexInterface globalSpi = new DexInterface(new Text(src));
-        globalSpi.attach(pkg1);
-        ts.defineInterface(globalSpi);
-    }
-
     private void testAssignable() {
         FluentAPI testData = testDataFromMySection();
         Table table = testData.table();

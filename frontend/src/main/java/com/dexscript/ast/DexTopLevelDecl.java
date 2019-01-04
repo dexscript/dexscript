@@ -80,24 +80,13 @@ public class DexTopLevelDecl extends DexElement {
                 if (Blank.$(b)) {
                     continue;
                 }
-                if (Keyword.$(src, i, 'f', 'u', 'n', 'c', 't', 'i', 'o', 'n')) {
-                    matched = new DexActor(src.slice(i));
-                    if (matched.matched()) {
-                        return null;
-                    } else {
-                        i += 8;
-                        return this::skipError;
-                    }
+                matched = new DexActor(src.slice(i));
+                if (matched.matched()) {
+                    return null;
                 }
-                if (Keyword.$(src, i,
-                        'i', 'n', 't', 'e', 'r', 'f', 'a', 'c', 'e')) {
-                    matched = new DexInterface(src.slice(i));
-                    if (matched.matched()) {
-                        return null;
-                    } else {
-                        i += 9;
-                        return this::skipError;
-                    }
+                matched = new DexInterface(src.slice(i));
+                if (matched.matched()) {
+                    return null;
                 }
                 return reportError();
             }
