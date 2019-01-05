@@ -1,9 +1,10 @@
-package com.dexscript.shim.struct;
+package com.dexscript.type.composite;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.shim.TestAssignable;
 import com.dexscript.type.composite.InterfaceType;
+import com.dexscript.type.composite.StructType;
 import com.dexscript.type.core.TypeSystem;
 import org.junit.Before;
 import org.junit.Test;

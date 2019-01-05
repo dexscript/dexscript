@@ -1,4 +1,4 @@
-package com.dexscript.shim.struct;
+package com.dexscript.type.composite;
 
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexNamedArg;

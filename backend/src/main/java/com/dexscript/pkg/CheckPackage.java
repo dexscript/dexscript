@@ -11,7 +11,7 @@ import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.infer.InferType;
 import com.dexscript.shim.OutShim;
-import com.dexscript.shim.struct.StructType;
+import com.dexscript.type.composite.StructType;
 import com.dexscript.type.composite.GlobalSPI;
 import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.TypeSystem;
