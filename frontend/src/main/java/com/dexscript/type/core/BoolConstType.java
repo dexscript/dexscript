@@ -10,7 +10,7 @@ class BoolConstType implements DType {
 
     static {
         InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
-            put(DexBoolConst.class, (ts, elem) -> ts.constOfBool(elem.toString()));
+            put(DexBoolConst.class, (ts, localTypeTable, elem) -> ts.constOfBool(elem.toString()));
         }});
     }
 

@@ -40,7 +40,7 @@ public class Invocation {
     private static class InferInvocation<E extends DexExpr & DexInvocationExpr> implements InferType<E> {
 
         @Override
-        public DType handle(TypeSystem ts, E elem) {
+        public DType handle(TypeSystem ts, TypeTable localTypeTable, E elem) {
             DexInvocation dexIvc = elem.invocation();
             return Invocation.infer(ts, dexIvc);
         }

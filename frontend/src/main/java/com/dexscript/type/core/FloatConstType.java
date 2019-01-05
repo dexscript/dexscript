@@ -10,7 +10,7 @@ class FloatConstType implements DType {
 
     static {
         InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
-            put(DexFloatConst.class, (ts, elem) -> ts.constOfFloat(elem.toString()));
+            put(DexFloatConst.class, (ts, localTypeTable, elem) -> ts.constOfFloat(elem.toString()));
         }});
     }
 

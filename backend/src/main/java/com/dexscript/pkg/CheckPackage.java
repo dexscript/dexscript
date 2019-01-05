@@ -27,7 +27,7 @@ import static com.dexscript.pkg.DexPackages.$p;
 public class CheckPackage {
 
     static {
-        InferType.handlers.put(DexStructExpr.class, (ts, elem) -> {
+        InferType.handlers.put(DexStructExpr.class, (ts, localTypeTable, elem) -> {
             StructType structType = elem.attachmentOfType(StructType.class);
             if (structType != null) {
                 return structType;

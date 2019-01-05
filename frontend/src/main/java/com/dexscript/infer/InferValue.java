@@ -28,7 +28,7 @@ public interface InferValue<E extends DexElement> {
 
     Map<Class<? extends DexElement>, InferValue> handlers = new HashMap<Class<? extends DexElement>, InferValue>() {
         {
-            InferType.handlers.put(DexValueRef.class, (ts, elem) -> {
+            InferType.handlers.put(DexValueRef.class, (ts, localTypeTable, elem) -> {
                 DexValueRef valueRef = (DexValueRef) elem;
                 if (valueRef.isGlobalScope()) {
                     return Invocation.infer(ts, valueRef.invocation());

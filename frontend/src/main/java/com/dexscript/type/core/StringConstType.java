@@ -10,7 +10,7 @@ public class StringConstType implements DType {
 
     static {
         InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
-            put(DexStringConst.class, (ts, elem) -> ts.constOf(((DexStringConst) elem).constValue()));
+            put(DexStringConst.class, (ts, localTypeTable, elem) -> ts.constOf(((DexStringConst) elem).constValue()));
         }});
     }
 

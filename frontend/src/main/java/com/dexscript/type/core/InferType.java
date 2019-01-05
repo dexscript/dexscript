@@ -24,19 +24,29 @@ public interface InferType<E extends DexElement> {
 
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
         {
-            put(DexParenExpr.class, (ts, elem) -> InferType.$(ts, ((DexParenExpr) elem).body()));
+            put(DexParenExpr.class, (ts, localTypeTable, elem) -> InferType.$(ts, ((DexParenExpr) elem).body()));
         }
     };
 
-    DType handle(TypeSystem ts, E elem);
+    DType handle(TypeSystem ts, TypeTable localTypeTable, E elem);
 
     static DType $(TypeSystem ts, DexExpr elem) {
+        return InferType.$(ts, null, elem);
+    }
+
+    static DType $(TypeSystem ts, TypeTable localTypeTable, DexExpr elem) {
+        DType type = elem.attachmentOfType(DType.class);
+        if (type != null) {
+            return type;
+        }
         InferType inferType = handlers.get(elem.getClass());
         if (inferType == null) {
             Events.ON_UNKNOWN_ELEM.handle(elem);
             return ts.UNDEFINED;
         }
-        return inferType.handle(ts, elem);
+        type = inferType.handle(ts, localTypeTable, elem);
+        elem.attach(type);
+        return type;
     }
 
     static List<DType> inferTypes(TypeSystem ts, List<DexExpr> elems) {
