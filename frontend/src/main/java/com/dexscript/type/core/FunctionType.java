@@ -32,7 +32,7 @@ public final class FunctionType implements DType {
 
     private Object impl;
 
-    private FunctionImplProvider implProvider;
+    private ImplProvider implProvider;
     private boolean isGlobalSPI;
 
     public FunctionType(TypeSystem ts,
@@ -92,7 +92,7 @@ public final class FunctionType implements DType {
         ts.defineFunction(this);
     }
 
-    public void implProvider(FunctionImplProvider implProvider) {
+    public void implProvider(ImplProvider implProvider) {
         this.implProvider = implProvider;
     }
 
@@ -172,7 +172,7 @@ public final class FunctionType implements DType {
         return description;
     }
 
-    public FunctionImplProvider implProvider() {
+    public ImplProvider implProvider() {
         return implProvider;
     }
 
@@ -190,5 +190,11 @@ public final class FunctionType implements DType {
 
     public DexPackage pkg() {
         return pkg;
+    }
+
+    public interface ImplProvider {
+        // for generic function, the function will be expanded
+        // for each expanded function, it need a impl
+        Object implOf(FunctionType expandedFunc);
     }
 }
