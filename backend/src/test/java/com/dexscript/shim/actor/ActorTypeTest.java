@@ -3,6 +3,7 @@ package com.dexscript.shim.actor;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.shim.OutShim;
+import com.dexscript.type.composite.ActorType;
 import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.*;
 import org.junit.Assert;

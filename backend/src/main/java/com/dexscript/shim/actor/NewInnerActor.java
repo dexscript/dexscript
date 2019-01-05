@@ -9,7 +9,7 @@ import com.dexscript.shim.OutShim;
 import com.dexscript.shim.java.FunctionImpl;
 import com.dexscript.type.core.FunctionType;
 
-class NewInnerActor extends FunctionImpl {
+public class NewInnerActor extends FunctionImpl {
 
     private final DexAwaitConsumer awaitConsumer;
     private final String outerClassName;

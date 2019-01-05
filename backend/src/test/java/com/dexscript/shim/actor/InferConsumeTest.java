@@ -4,6 +4,7 @@ import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.infer.InferType;
 import com.dexscript.shim.OutShim;
+import com.dexscript.type.composite.ActorType;
 import com.dexscript.type.core.DType;
 import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;

@@ -5,14 +5,16 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
 import com.dexscript.runtime.std.ArithmeticLib;
 import com.dexscript.runtime.std.ComparisonLib;
 import com.dexscript.runtime.std.IOLib;
-import com.dexscript.shim.actor.ActorTable;
-import com.dexscript.shim.actor.ActorType;
+import com.dexscript.shim.actor.*;
 import com.dexscript.shim.java.*;
+import com.dexscript.type.composite.ActorTable;
+import com.dexscript.type.composite.ActorType;
 import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.*;
 
@@ -23,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OutShim {
+public class OutShim implements ActorType.Impl {
 
     public static final String CLASSNAME = "Shim";
     public static final String PACKAGE_NAME = "com.dexscript.transpiled.";
@@ -54,6 +56,10 @@ public class OutShim {
         importJavaFunctions(ArithmeticLib.class);
         importJavaFunctions(ComparisonLib.class);
         importJavaFunctions(IOLib.class);
+    }
+
+    public static String qualifiedClassNameOf(DexActor actor) {
+        return "com.dexscript.transpiled." + actor.actorName();
     }
 
     private void defineNewArray() {
@@ -203,6 +209,33 @@ public class OutShim {
 
     public TypeSystem typeSystem() {
         return ts;
+    }
+
+    @Override
+    public void addActorType(ActorType actorType) {
+        javaTypes().add(qualifiedClassNameOf(actorType.actor()), actorType);
+    }
+
+    @Override
+    public Object callActor(FunctionType expandedFunc, DexActor actor) {
+        return new CallActor(this, expandedFunc, actor);
+    }
+
+    @Override
+    public Object newActor(FunctionType expandedFunc, DexActor actor) {
+        return new NewActor(this, expandedFunc, actor);
+    }
+
+    @Override
+    public Object newInnerActor(FunctionType expandedFunc, DexActor actor, DexAwaitConsumer awaitConsumer) {
+        return new NewInnerActor(
+                this, expandedFunc, qualifiedClassNameOf(actor), awaitConsumer);
+    }
+
+    @Override
+    public Object callInnerActor(FunctionType expandedFunc, DexActor actor, DexAwaitConsumer awaitConsumer) {
+        return new CallInnerActor(
+                this, expandedFunc, qualifiedClassNameOf(actor), awaitConsumer);
     }
 
     public void registerImpl(FunctionImpl impl) {

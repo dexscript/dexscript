@@ -11,6 +11,7 @@ import com.dexscript.infer.InferInvocation;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
 import com.dexscript.shim.java.FunctionImpl;
+import com.dexscript.type.composite.InnerActorType;
 import com.dexscript.type.core.Dispatched;
 import com.dexscript.type.core.FunctionSig;
 import com.dexscript.type.core.Invocation;

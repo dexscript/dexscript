@@ -1,4 +1,4 @@
-package com.dexscript.shim.actor;
+package com.dexscript.type.composite;
 
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.type.core.*;

@@ -9,7 +9,7 @@ import com.dexscript.shim.OutShim;
 import com.dexscript.shim.java.FunctionImpl;
 import com.dexscript.type.core.FunctionType;
 
-class NewActor extends FunctionImpl {
+public class NewActor extends FunctionImpl {
 
     private final DexActor actor;
 
@@ -33,7 +33,7 @@ class NewActor extends FunctionImpl {
         DeclareParams.$(g, paramsCount, true);
         g.__(" {");
         g.__(new Indent(() -> {
-            String className = ActorType.qualifiedClassNameOf(actor);
+            String className = OutShim.qualifiedClassNameOf(actor);
             g.__("return new "
             ).__(className
             ).__("(scheduler");

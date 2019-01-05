@@ -3,7 +3,7 @@ package com.dexscript.transpile;
 import com.dexscript.pkg.ImportPackage;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.shim.OutShim;
-import com.dexscript.shim.actor.ActorType;
+import com.dexscript.type.composite.ActorType;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
 import com.dexscript.type.core.FunctionType;
 import com.dexscript.type.core.TypeSystem;

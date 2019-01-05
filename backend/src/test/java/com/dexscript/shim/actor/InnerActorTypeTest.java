@@ -3,6 +3,7 @@ package com.dexscript.shim.actor;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
+import com.dexscript.type.composite.InnerActorType;
 import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.IsAssignable;
 import com.dexscript.type.core.TypeSystem;
