@@ -69,8 +69,8 @@ public class TypeSystem {
         typeTable.define(type);
     }
 
-    public void lazyDefineFunctions(FunctionsType functionsType) {
-        functionTable.lazyDefine(functionsType);
+    public void lazyDefineFunctions(CompositeType compositeType) {
+        functionTable.lazyDefine(compositeType);
     }
 
     public void lazyDefineTypes(DexPackage pkg, NamedTypesProvider typesProvider) {

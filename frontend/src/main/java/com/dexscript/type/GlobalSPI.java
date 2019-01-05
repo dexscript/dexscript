@@ -6,7 +6,7 @@ import com.dexscript.ast.inf.DexInfMethod;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GlobalSPI implements FunctionsType {
+public class GlobalSPI implements CompositeType {
 
     private TypeSystem ts;
     private DexInterface inf;

@@ -27,8 +27,8 @@ public class Invocation {
         }
         providedFunctions = new HashSet<>();
         for (DType allArg : allArgs) {
-            if (allArg instanceof FunctionsType) {
-                providedFunctions.addAll(((FunctionsType) allArg).functions());
+            if (allArg instanceof CompositeType) {
+                providedFunctions.addAll(((CompositeType) allArg).functions());
             }
         }
     }

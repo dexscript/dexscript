@@ -2,7 +2,6 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
-import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.ast.inf.DexInfTypeParam;
@@ -11,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InterfaceType implements NamedType, GenericType, FunctionsType {
+public class InterfaceType implements NamedType, GenericType, CompositeType {
 
     private final TypeSystem ts;
     private final DexInterface inf;

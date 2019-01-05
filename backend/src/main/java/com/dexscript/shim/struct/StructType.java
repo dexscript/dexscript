@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StructType implements FunctionsType {
+public class StructType implements CompositeType {
 
     private final TypeSystem ts;
     private final DexStructExpr structExpr;

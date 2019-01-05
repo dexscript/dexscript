@@ -2,14 +2,30 @@
 
 ```dexscript
 function Hello(): string {
-   obj := new World()
-   return obj[0]
+    obj := new World()
+    return obj[0]
 }
 function World() {
-   await {
-   case get(index: int32): string {
-       resolve 'hello' -> get
-   }}
+    await {
+    case get(index: int32): string {
+        resolve 'hello' -> get
+    }}
+}
+```
+
+# index_set_by_int32
+
+```dexscript
+function Hello(): string {
+    obj := new World()
+    obj[0] = 'hello'
+    return <-obj
+}
+function World(): string {
+    await {
+    case set(index: int32, value: string) {
+        return value
+    }}
 }
 ```
 
@@ -19,14 +35,14 @@ function World() {
 
 ```dexscript
 function Hello(): string {
-   obj := new World()
-   return obj['field']
+    obj := new World()
+    return obj['field']
 }
 function World() {
-   await {
-   case get(index: 'field'): string {
-       resolve 'hello' -> get
-   }}
+    await {
+    case get(index: 'field'): string {
+        resolve 'hello' -> get
+    }}
 }
 ```
 
@@ -36,14 +52,14 @@ function World() {
 
 ```dexscript
 function Hello(): string {
-   obj := new World()
-   return obj.field
+    obj := new World()
+    return obj.field
 }
 function World() {
-   await {
-   case getField(): string {
-       resolve 'hello' -> getField
-   }}
+    await {
+    case getField(): string {
+        resolve 'hello' -> getField
+    }}
 }
 ```
 

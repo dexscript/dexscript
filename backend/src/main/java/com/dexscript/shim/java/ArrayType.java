@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArrayType implements NamedType, GenericType, FunctionsType {
+public class ArrayType implements NamedType, GenericType, CompositeType {
 
     private final TypeSystem ts;
     private final OutShim oShim;

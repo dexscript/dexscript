@@ -2,7 +2,7 @@ package com.dexscript.type;
 
 import java.util.List;
 
-public interface FunctionsType extends DType {
+public interface CompositeType extends DType {
 
     List<FunctionType> functions();
 }

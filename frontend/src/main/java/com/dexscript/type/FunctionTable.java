@@ -15,7 +15,7 @@ public class FunctionTable {
     };
 
     private final Map<String, List<FunctionType>> defined = new HashMap<>();
-    private final List<FunctionsType> providers = new ArrayList<>();
+    private final List<CompositeType> providers = new ArrayList<>();
 
     public void define(FunctionType func) {
         List<FunctionType> functions = defined.computeIfAbsent(func.name(), k -> new ArrayList<>());
@@ -113,23 +113,23 @@ public class FunctionTable {
         return ret;
     }
 
-    public void lazyDefine(FunctionsType provider) {
+    public void lazyDefine(CompositeType provider) {
         providers.add(provider);
     }
 
     private void pullFromProviders() {
         while (!(providers.isEmpty())) {
-            ArrayList<FunctionsType> toPull = new ArrayList<>(providers);
+            ArrayList<CompositeType> toPull = new ArrayList<>(providers);
             providers.clear();
-            for (FunctionsType provider : toPull) {
+            for (CompositeType provider : toPull) {
                 provider.functions();
             }
         }
     }
 
-    public boolean isAssignable(IsAssignable ctx, FunctionsType to, DType from) {
-        if (from instanceof FunctionsType) {
-            for (FunctionType member : ((FunctionsType) from).functions()) {
+    public boolean isAssignable(IsAssignable ctx, CompositeType to, DType from) {
+        if (from instanceof CompositeType) {
+            for (FunctionType member : ((CompositeType) from).functions()) {
                 ctx.makeAvailable(member);
             }
         }

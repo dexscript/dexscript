@@ -11,7 +11,7 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaType implements NamedType, FunctionsType, GenericType {
+public class JavaType implements NamedType, CompositeType, GenericType {
 
     private final OutShim oShim;
     private final Class clazz;
