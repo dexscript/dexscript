@@ -1,9 +1,6 @@
 package com.dexscript.type.core;
 
-import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
-import com.dexscript.type.GlobalSPI;
-import com.dexscript.type.InterfaceType;
 
 public class TypeSystem {
 
@@ -53,14 +50,6 @@ public class TypeSystem {
 
     public void defineFunction(FunctionType function) {
         functionTable.define(function);
-    }
-
-    public void defineGlobalSPI(DexInterface inf) {
-        new GlobalSPI(this, inf);
-    }
-
-    public InterfaceType defineInterface(DexInterface inf) {
-        return new InterfaceType(this, inf);
     }
 
     public Dispatched dispatch(Invocation ivc) {

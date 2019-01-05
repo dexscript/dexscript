@@ -3,7 +3,7 @@ package com.dexscript.shim.actor;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
-import com.dexscript.type.*;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.IsAssignable;
 import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
@@ -23,7 +23,7 @@ public class InnerActorTypeTest {
         DexAwaitConsumer awaitConsumer = (DexAwaitConsumer) function.stmts().get(0).asAwait().cases().get(0);
         TypeSystem ts = new TypeSystem();
         InnerActorType innerActorType = new InnerActorType(ts, awaitConsumer);
-        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
+        InterfaceType inf = new InterfaceType(ts, DexInterface.$("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));

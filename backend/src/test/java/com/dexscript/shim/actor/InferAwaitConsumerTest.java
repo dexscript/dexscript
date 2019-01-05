@@ -6,7 +6,7 @@ import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.infer.InferType;
 import com.dexscript.type.core.DType;
-import com.dexscript.type.InterfaceType;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.IsAssignable;
 import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
@@ -26,7 +26,7 @@ public class InferAwaitConsumerTest {
         DexAwaitConsumer awaitConsumer = awaitStmt.cases().get(0).asAwaitConsumer();
         DexValueRef target = awaitConsumer.stmts().get(0).asProduce().target();
         DType hello = InferType.$(ts, target);
-        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
+        InterfaceType inf = new InterfaceType(ts, DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
                 "}"));

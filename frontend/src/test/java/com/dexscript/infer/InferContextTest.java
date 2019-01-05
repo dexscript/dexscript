@@ -4,7 +4,7 @@ import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.expr.DexValueRef;
-import com.dexscript.type.InterfaceType;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
@@ -21,7 +21,7 @@ public class InferContextTest {
 
     @Test
     public void ref_context() {
-        InterfaceType contextType = ts.defineInterface(DexInterface.$("" +
+        InterfaceType contextType = new InterfaceType(ts, DexInterface.$("" +
                 "interface $ {" +
                 "}"));
         DexActor func = DexActor.$("" +

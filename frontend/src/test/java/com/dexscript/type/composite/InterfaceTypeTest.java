@@ -1,4 +1,4 @@
-package com.dexscript.type;
+package com.dexscript.type.composite;
 
 import com.dexscript.type.core.TestAssignable;
 import com.dexscript.type.core.TestEquals;

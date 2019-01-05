@@ -3,6 +3,7 @@ package com.dexscript.pkg;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.DexTopLevelDecl;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
@@ -80,7 +81,7 @@ public class CheckSemanticErrorTest {
         file.attach(DexPackage.DUMMY);
         for (DexTopLevelDecl decl : file.topLevelDecls()) {
             if (decl.inf() != null) {
-                ts.defineInterface(decl.inf());
+                new InterfaceType(ts, decl.inf());
             }
         }
         CheckSemanticError result = new CheckSemanticError(ts, file);

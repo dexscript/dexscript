@@ -14,7 +14,8 @@ import com.dexscript.ast.token.LineEnd;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DexInterfaceType extends DexType {
+// anonymous => ams
+public class DexAmsInfType extends DexType {
 
     private DexSyntaxError syntaxError;
     private List<DexInfMethod> methods;
@@ -22,13 +23,13 @@ public class DexInterfaceType extends DexType {
     private List<DexInfField> fields;
     private int interfaceTypeEnd = -1;
 
-    public DexInterfaceType(Text src) {
+    public DexAmsInfType(Text src) {
         super(src);
         new Parser();
     }
 
-    public static DexInterfaceType $(String src) {
-        return new DexInterfaceType(new Text(src));
+    public static DexAmsInfType $(String src) {
+        return new DexAmsInfType(new Text(src));
     }
 
     @Override
@@ -145,21 +146,21 @@ public class DexInterfaceType extends DexType {
                 break;
             }
             DexInfMethod method = new DexInfMethod(src.slice(i));
-            method.reparent(DexInterfaceType.this);
+            method.reparent(DexAmsInfType.this);
             if (method.matched()) {
                 methods.add(method);
                 i = method.end();
                 return this::methodOrFunctionOrFieldOrRightBrace;
             }
             DexInfFunction func = new DexInfFunction(src.slice(i));
-            func.reparent(DexInterfaceType.this);
+            func.reparent(DexAmsInfType.this);
             if (func.matched()) {
                 functions.add(func);
                 i = func.end();
                 return this::methodOrFunctionOrFieldOrRightBrace;
             }
             DexInfField field = new DexInfField(src.slice(i));
-            field.reparent(DexInterfaceType.this);
+            field.reparent(DexAmsInfType.this);
             if (field.matched()) {
                 fields.add(field);
                 i = field.end();

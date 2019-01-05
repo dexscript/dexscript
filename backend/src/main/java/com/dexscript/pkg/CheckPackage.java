@@ -12,6 +12,8 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.infer.InferType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.shim.struct.StructType;
+import com.dexscript.type.composite.GlobalSPI;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.TypeSystem;
 
 import java.io.IOException;
@@ -143,9 +145,9 @@ public class CheckPackage {
             DexInterface inf = topLevelDecl.inf();
             if (inf != null) {
                 if (inf.isGlobalSPI()) {
-                    ts.defineGlobalSPI(inf);
+                    new GlobalSPI(ts, inf);
                 } else {
-                    ts.defineInterface(inf);
+                    new InterfaceType(ts, inf);
                 }
             }
         }

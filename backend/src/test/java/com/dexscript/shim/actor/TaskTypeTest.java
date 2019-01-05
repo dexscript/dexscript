@@ -3,7 +3,7 @@ package com.dexscript.shim.actor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.*;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.DType;
 import com.dexscript.type.core.IsAssignable;
 import com.dexscript.type.core.ResolveType;
@@ -24,7 +24,7 @@ public class TaskTypeTest {
     @Test
     public void resolve_any() {
         DType taskType = ResolveType.$(ts, "Task");
-        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
+        InterfaceType inf = new InterfaceType(ts, DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
                 "}"));
@@ -34,12 +34,12 @@ public class TaskTypeTest {
     @Test
     public void resolve_string() {
         DType taskType = ResolveType.$(ts, "Task<string>");
-        InterfaceType resolveString = ts.defineInterface(DexInterface.$("" +
+        InterfaceType resolveString = new InterfaceType(ts, DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: string)\n" +
                 "}"));
         Assert.assertTrue(IsAssignable.$(resolveString, taskType));
-        InterfaceType resolveInt64 = ts.defineInterface(DexInterface.$("" +
+        InterfaceType resolveInt64 = new InterfaceType(ts, DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Resolve__(value: int64)\n" +
                 "}"));

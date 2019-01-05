@@ -56,8 +56,8 @@ public interface ResolveType<E extends DexType> {
             DType genericType = ResolveType.$(ts, localTypeTable, parameterizedType.genericType());
             return ts.typeTable().resolveType(genericType, typeArgs);
         });
-        put(DexInterfaceType.class, (ts, localTypeTable, elem) -> {
-            DexInterfaceType infType = (DexInterfaceType) elem;
+        put(DexAmsInfType.class, (ts, localTypeTable, elem) -> {
+            DexAmsInfType infType = (DexAmsInfType) elem;
             if (infType.functions().isEmpty() && infType.methods().isEmpty()) {
                 return ts.ANY;
             }

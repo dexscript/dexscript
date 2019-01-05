@@ -6,6 +6,7 @@ import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
 import com.dexscript.test.framework.Row;
 import com.dexscript.test.framework.Table;
+import com.dexscript.type.composite.InterfaceType;
 import org.junit.Assert;
 
 import static com.dexscript.test.framework.TestFramework.stripQuote;
@@ -26,7 +27,7 @@ public interface TestAssignable {
         FluentAPI testData = testDataFromMySection();
         for (String code : testData.codes()) {
             if (code.startsWith("interface")) {
-                ts.defineInterface(DexInterface.$(code));
+                new InterfaceType(ts, DexInterface.$(code));
             } else {
                 func(ts, code);
             }

@@ -3,7 +3,7 @@ package com.dexscript.shim.actor;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.*;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +29,7 @@ public class ActorTypeTest {
                 "function Hello(): string {\n" +
                 "   return 'hello'\n" +
                 "}"));
-        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
+        InterfaceType inf = new InterfaceType(ts, DexInterface.$("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
@@ -45,7 +45,7 @@ public class ActorTypeTest {
                 "       return 'hello'\n" +
                 "   }}\n" +
                 "}"));
-        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
+        InterfaceType inf = new InterfaceType(ts, DexInterface.$("" +
                 "interface HasAA {\n" +
                 "   AA(): string\n" +
                 "}"));

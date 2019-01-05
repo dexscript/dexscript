@@ -3,7 +3,7 @@ package com.dexscript.shim.struct;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.shim.TestAssignable;
-import com.dexscript.type.InterfaceType;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.TypeSystem;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class StructTypeTest {
     @Test
     public void one_field() {
         List<String> codes = testDataFromMySection().codes();
-        InterfaceType inf = ts.defineInterface(DexInterface.$(codes.get(0)));
+        InterfaceType inf = new InterfaceType(ts, DexInterface.$(codes.get(0)));
         StructType struct = new StructType(ts, DexStructExpr.$(codes.get(1)));
         TestAssignable.$(true, inf, struct);
     }
@@ -32,7 +32,7 @@ public class StructTypeTest {
     @Test
     public void two_fields() {
         List<String> codes = testDataFromMySection().codes();
-        InterfaceType inf = ts.defineInterface(DexInterface.$(codes.get(0)));
+        InterfaceType inf = new InterfaceType(ts, DexInterface.$(codes.get(0)));
         StructType struct = new StructType(ts, DexStructExpr.$(codes.get(1)));
         TestAssignable.$(true, inf, struct);
     }

@@ -2,7 +2,7 @@ package com.dexscript.shim.actor;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.*;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.DType;
 import com.dexscript.type.core.IsAssignable;
 import com.dexscript.type.core.ResolveType;
@@ -23,7 +23,7 @@ public class PromiseTypeTest {
     @Test
     public void consume_any() {
         DType promiseType = ResolveType.$(ts, "Promise");
-        InterfaceType inf = ts.defineInterface(DexInterface.$("" +
+        InterfaceType inf = new InterfaceType(ts, DexInterface.$("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
@@ -34,12 +34,12 @@ public class PromiseTypeTest {
     @Test
     public void consume_string() {
         DType promiseType = ResolveType.$(ts, "Promise<string>");
-        InterfaceType consumeString = ts.defineInterface(DexInterface.$("" +
+        InterfaceType consumeString = new InterfaceType(ts, DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Consume__(): string\n" +
                 "}"));
         Assert.assertTrue(IsAssignable.$(consumeString, promiseType));
-        InterfaceType consumeInt64 = ts.defineInterface(DexInterface.$("" +
+        InterfaceType consumeInt64 = new InterfaceType(ts, DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Consume__(): int64\n" +
                 "}"));

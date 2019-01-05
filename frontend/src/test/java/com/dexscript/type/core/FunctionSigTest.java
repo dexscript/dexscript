@@ -4,10 +4,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
-import com.dexscript.type.core.DType;
-import com.dexscript.type.core.FunctionSig;
-import com.dexscript.type.core.FunctionType;
-import com.dexscript.type.core.TypeSystem;
+import com.dexscript.type.composite.InterfaceType;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -94,7 +91,7 @@ public class FunctionSigTest {
         }
         for (int i = 0; i < codes.size() - 1; i++) {
             String code = codes.get(i);
-            ts.defineInterface(DexInterface.$(code));
+            new InterfaceType(ts, DexInterface.$(code));
         }
         FunctionSig sig = sig(codes.get(codes.size() - 1));
         if ("typeArgs".equals(testData.table().head.get(0))) {

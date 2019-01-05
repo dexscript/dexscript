@@ -5,10 +5,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.infer.ResolveNamedArgs;
 import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
-import com.dexscript.type.core.FunctionSig;
-import com.dexscript.type.core.FunctionType;
-import com.dexscript.type.core.Invocation;
-import com.dexscript.type.core.TypeSystem;
+import com.dexscript.type.composite.InterfaceType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,7 +77,7 @@ public class FunctionTableTest {
         FluentAPI testData = testDataFromMySection();
         for (String code : testData.codes()) {
             if (code.startsWith("interface")) {
-                ts.defineInterface(DexInterface.$(code));
+                new InterfaceType(ts, DexInterface.$(code));
             } else {
                 func(code);
             }

@@ -5,6 +5,7 @@ import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
 import com.dexscript.test.framework.Row;
 import com.dexscript.transpile.OutTown;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.DType;
 import com.dexscript.type.core.IsAssignable;
 import com.dexscript.type.core.TypeSystem;
@@ -23,7 +24,7 @@ public interface TestAssignable {
         FluentAPI testData = testDataFromMySection();
         TypeSystem ts = oTown.oShim().typeSystem();
         for (String code : testData.codes("dexscript")) {
-            ts.defineInterface(DexInterface.$(code));
+            new InterfaceType(ts, DexInterface.$(code));
         }
         for (Row row : testData.table().body) {
             DType to = ResolvePosArgs.$(ts, stripQuote(row.get(1))).get(0);

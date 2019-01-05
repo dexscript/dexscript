@@ -13,6 +13,7 @@ import com.dexscript.runtime.std.IOLib;
 import com.dexscript.shim.actor.ActorTable;
 import com.dexscript.shim.actor.ActorType;
 import com.dexscript.shim.java.*;
+import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.*;
 
 import java.lang.reflect.*;
@@ -94,14 +95,14 @@ public class OutShim {
                 "   Resolve__(value: T)\n" +
                 "}"));
         taskInf.attach(pkg);
-        ts.defineInterface(taskInf);
+        new InterfaceType(ts, taskInf);
         DexInterface promiseInf = new DexInterface(new Text("" +
                 "interface Promise {\n" +
                 "   <T>: interface{}\n" +
                 "   Consume__(): T\n" +
                 "}"));
         promiseInf.attach(pkg);
-        ts.defineInterface(promiseInf);
+        new InterfaceType(ts, promiseInf);
         DexInterface arrayInf = new DexInterface(new Text("" +
                 "interface Array {\n" +
                 "   <T>: interface{}\n" +
@@ -109,7 +110,7 @@ public class OutShim {
                 "   set(index: int32, element: T)\n" +
                 "}"));
         arrayInf.attach(pkg);
-        ts.defineInterface(arrayInf);
+        new InterfaceType(ts, arrayInf);
         ts.defineBuiltinTypes(pkg);
         return pkg;
     }
@@ -132,7 +133,7 @@ public class OutShim {
     }
 
     public void defineInterface(DexInterface inf) {
-        ts.defineInterface(inf);
+        new InterfaceType(ts, inf);
     }
 
     public void defineActor(DexActor actor) {

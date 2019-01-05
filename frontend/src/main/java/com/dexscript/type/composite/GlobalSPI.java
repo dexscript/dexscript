@@ -1,4 +1,4 @@
-package com.dexscript.type;
+package com.dexscript.type.composite;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.inf.DexInfMethod;
