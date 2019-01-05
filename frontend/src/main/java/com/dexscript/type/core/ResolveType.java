@@ -23,7 +23,6 @@ public interface ResolveType<E extends DexType> {
     }
 
     Map<Class<? extends DexElement>, ResolveType> handlers = new HashMap<Class<? extends DexElement>, ResolveType>() {{
-        put(DexVoidType.class, (ts, localTypeTable, elem) -> ts.VOID);
         put(DexTypeRef.class, (ts, localTypeTable, elem) -> {
             DexTypeRef typeRef = (DexTypeRef) elem;
             DexPackage pkg = elem.pkg();

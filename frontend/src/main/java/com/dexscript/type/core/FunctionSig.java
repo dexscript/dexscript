@@ -11,6 +11,178 @@ import java.util.*;
 // part of FunctionType
 public class FunctionSig {
 
+    private final TypeSystem ts;
+    private final DexPackage pkg;
+    private FunctionType func; // the function to expand from
+    private final List<PlaceholderType> typeParams;
+    private final List<FunctionParam> params;
+    private final DType ret;
+    private final DexSig dexSig;
+    private final Map<Object, FunctionType> expandedFuncs = new HashMap<>();
+
+    public FunctionSig(TypeSystem ts, DexPackage pkg, List<FunctionParam> params, DType ret) {
+        this.ts = ts;
+        this.typeParams = Collections.emptyList();
+        this.params = params;
+        this.pkg = pkg;
+        this.ret = ret;
+        this.dexSig = null;
+    }
+
+    public FunctionSig(TypeSystem ts, TypeTable localTypeTable, DexSig dexSig) {
+        this(ts, localTypeTable, null, dexSig);
+    }
+
+    public FunctionSig(TypeSystem ts, TypeTable localTypeTable, DType self, DexSig dexSig) {
+        this.ts = ts;
+        this.pkg = dexSig.pkg();
+        this.dexSig = dexSig;
+        typeParams = new ArrayList<>();
+        localTypeTable = new TypeTable(ts, localTypeTable);
+        for (DexTypeParam typeParam : dexSig.typeParams()) {
+            DType constraint = ResolveType.$(ts, null, typeParam.paramType());
+            String paramName = typeParam.paramName().toString();
+            if (localTypeTable.resolveType(pkg, paramName) != ts.UNDEFINED) {
+                continue;
+            }
+            PlaceholderType paramType = new PlaceholderType(ts, paramName, constraint);
+            localTypeTable.define(pkg, paramName, paramType);
+            typeParams.add(paramType);
+        }
+        params = new ArrayList<>();
+        if (self != null) {
+            params.add(new FunctionParam("self", self));
+        }
+        for (DexParam param : dexSig.params()) {
+            String name = param.paramName().toString();
+            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
+            params.add(new FunctionParam(name, type));
+        }
+        ret = ResolveType.$(ts, localTypeTable, dexSig.ret());
+    }
+
+    public void reparent(FunctionType functionType) {
+        this.func = functionType;
+    }
+
+    public List<FunctionParam> params() {
+        return params;
+    }
+
+    public DType ret() {
+        return ret;
+    }
+
+    public List<PlaceholderType> typeParams() {
+        return typeParams;
+    }
+
+    Invoked invoke(List<DType> typeArgs, List<DType> args, DType retHint) {
+        if (params.size() != args.size()) {
+            return new ArgumentsCountIncompatible();
+        }
+        if (!typeArgs.isEmpty() && typeParams.size() != typeArgs.size()) {
+            return new TypeArgumentsCountIncompatible();
+        }
+        Map<DType, DType> sub = initSub(typeArgs);
+        IsAssignable ctx = new IsAssignable(sub);
+        boolean needRuntimeCheck = false;
+        for (int i = 0; i < params.size(); i++) {
+            FunctionParam param = params.get(i);
+            DType arg = args.get(i);
+            IsAssignable paramArg = new IsAssignable(ctx, "#" + i + " param=arg", param.type(), arg);
+            IsAssignable argParam = null;
+            boolean argMatched = paramArg.result();
+            if (!argMatched) {
+                needRuntimeCheck = true;
+                argParam = new IsAssignable(ctx, "#" + i + " arg=param", arg, param.type());
+                argMatched = argParam.result();
+            }
+            if (!argMatched) {
+                return new ArgumentIncompatible(i, paramArg, argParam);
+            }
+        }
+        if (typeParams.isEmpty()) {
+            return new Compatible(needRuntimeCheck, func);
+        }
+        inferRetHint(retHint, ctx);
+        for (PlaceholderType typeParam : typeParams) {
+            if (!sub.containsKey(typeParam)) {
+                return new MissingTypeArgument(typeParam);
+            }
+        }
+        return new Compatible(needRuntimeCheck, expand(sub));
+    }
+
+    @NotNull
+    private FunctionType expand(Map<DType, DType> sub) {
+        FunctionType expanded = expandedFuncs.get(sub);
+        if (expanded != null) {
+            return expanded;
+        }
+        TypeTable localTypeTable = new TypeTable(ts);
+        for (Map.Entry<DType, DType> entry : sub.entrySet()) {
+            DType key = entry.getKey();
+            if (key instanceof PlaceholderType) {
+                localTypeTable.define(dexSig.pkg(), ((PlaceholderType)key).name(), entry.getValue());
+            }
+        }
+        expanded = new FunctionType(ts, func.name(), localTypeTable, dexSig);
+        expanded.implProvider(func.implProvider());
+        expanded.isGlobalSPI(func.isGlobalSPI());
+        expandedFuncs.put(sub, expanded);
+        return expanded;
+    }
+
+    @NotNull
+    private Map<DType, DType> initSub(List<DType> typeArgs) {
+        Map<DType, DType> collector = new HashMap<>();
+        if (typeParams.size() != typeArgs.size()) {
+            return collector;
+        }
+        for (int i = 0; i < typeParams.size(); i++) {
+            PlaceholderType typeParam = typeParams.get(i);
+            DType typeArg = typeArgs.get(i);
+            collector.put(typeParam, typeArg);
+        }
+        return collector;
+    }
+
+    private void inferRetHint(DType retHint, IsAssignable ctx) {
+        if (retHint != null) {
+            boolean assignable = new IsAssignable(ctx, "ret", retHint, ret).result();
+            if (!assignable) {
+                new IsAssignable(ctx, "ret", ret, retHint);
+            }
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder desc = new StringBuilder();
+        desc.append('(');
+        boolean isFirst = true;
+        for (PlaceholderType typeParam : typeParams()) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                desc.append(", ");
+            }
+            desc.append(typeParam.description());
+        }
+        for (FunctionParam param : params) {
+            if (isFirst) {
+                isFirst = false;
+            } else {
+                desc.append(", ");
+            }
+            desc.append(param.toString());
+        }
+        desc.append("): ");
+        desc.append(ret.toString());
+        return desc.toString();
+    }
+
     public abstract class Invoked {
 
         public abstract boolean success();
@@ -136,187 +308,5 @@ public class FunctionSig {
             return needRuntimeCheck;
         }
 
-    }
-
-    private final TypeSystem ts;
-    private final DexPackage pkg;
-    private FunctionType func;
-    private final List<PlaceholderType> typeParams;
-    private final List<FunctionParam> params;
-    private DType contextParam;
-    private final DType ret;
-    private final DexSig dexSig;
-    private final Map<Object, FunctionType> expandedFuncs = new HashMap<>();
-
-    public FunctionSig(TypeSystem ts, DexPackage pkg, List<FunctionParam> params, DType ret) {
-        this.ts = ts;
-        this.typeParams = Collections.emptyList();
-        this.params = params;
-        this.pkg = pkg;
-        this.ret = ret;
-        this.dexSig = null;
-    }
-
-    public FunctionSig(TypeSystem ts, TypeTable localTypeTable, DexSig dexSig) {
-        this(ts, localTypeTable, null, dexSig);
-    }
-
-    public FunctionSig(TypeSystem ts, TypeTable localTypeTable, DType self, DexSig dexSig) {
-        this.ts = ts;
-        this.pkg = dexSig.pkg();
-        this.dexSig = dexSig;
-        typeParams = new ArrayList<>();
-        localTypeTable = new TypeTable(ts, localTypeTable);
-        for (DexTypeParam typeParam : dexSig.typeParams()) {
-            DType constraint = ResolveType.$(ts, null, typeParam.paramType());
-            String paramName = typeParam.paramName().toString();
-            if (localTypeTable.resolveType(pkg, paramName) != ts.UNDEFINED) {
-                continue;
-            }
-            PlaceholderType paramType = new PlaceholderType(ts, paramName, constraint);
-            localTypeTable.define(pkg, paramName, paramType);
-            typeParams.add(paramType);
-        }
-        params = new ArrayList<>();
-        if (self != null) {
-            params.add(new FunctionParam("self", self));
-        }
-        for (DexParam param : dexSig.params()) {
-            String name = param.paramName().toString();
-            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
-            params.add(new FunctionParam(name, type));
-        }
-        contextParam = ts.context(dexSig.pkg());
-        ret = ResolveType.$(ts, localTypeTable, dexSig.ret());
-    }
-
-    public void reparent(FunctionType functionType) {
-        this.func = functionType;
-    }
-
-    public List<FunctionParam> params() {
-        return params;
-    }
-
-    public DType contextParam() {
-        if (contextParam != null) {
-            return contextParam;
-        }
-        contextParam = ts.context(pkg);
-        return contextParam;
-    }
-
-    public DType ret() {
-        return ret;
-    }
-
-    public List<PlaceholderType> typeParams() {
-        return typeParams;
-    }
-
-    Invoked invoke(List<DType> typeArgs, List<DType> args, DType retHint) {
-        if (params.size() != args.size()) {
-            return new ArgumentsCountIncompatible();
-        }
-        if (!typeArgs.isEmpty() && typeParams.size() != typeArgs.size()) {
-            return new TypeArgumentsCountIncompatible();
-        }
-        Map<DType, DType> sub = initSub(typeArgs);
-        IsAssignable ctx = new IsAssignable(sub);
-        boolean needRuntimeCheck = false;
-        for (int i = 0; i < params.size(); i++) {
-            FunctionParam param = params.get(i);
-            DType arg = args.get(i);
-            IsAssignable paramArg = new IsAssignable(ctx, "#" + i + " param=arg", param.type(), arg);
-            IsAssignable argParam = null;
-            boolean argMatched = paramArg.result();
-            if (!argMatched) {
-                needRuntimeCheck = true;
-                argParam = new IsAssignable(ctx, "#" + i + " arg=param", arg, param.type());
-                argMatched = argParam.result();
-            }
-            if (!argMatched) {
-                return new ArgumentIncompatible(i, paramArg, argParam);
-            }
-        }
-        if (typeParams.isEmpty()) {
-            return new Compatible(needRuntimeCheck, func);
-        }
-        inferRetHint(retHint, ctx);
-        for (PlaceholderType typeParam : typeParams) {
-            if (!sub.containsKey(typeParam)) {
-                return new MissingTypeArgument(typeParam);
-            }
-        }
-        return new Compatible(needRuntimeCheck, expand(sub));
-    }
-
-    @NotNull
-    private FunctionType expand(Map<DType, DType> sub) {
-        FunctionType expanded = expandedFuncs.get(sub);
-        if (expanded != null) {
-            return expanded;
-        }
-        TypeTable localTypeTable = new TypeTable(ts);
-        for (Map.Entry<DType, DType> entry : sub.entrySet()) {
-            DType key = entry.getKey();
-            if (key instanceof PlaceholderType) {
-                localTypeTable.define(dexSig.pkg(), ((PlaceholderType)key).name(), entry.getValue());
-            }
-        }
-        expanded = new FunctionType(ts, func.name(), localTypeTable, dexSig);
-        expanded.implProvider(func.implProvider());
-        expanded.isGlobalSPI(func.isGlobalSPI());
-        expandedFuncs.put(sub, expanded);
-        return expanded;
-    }
-
-    @NotNull
-    private Map<DType, DType> initSub(List<DType> typeArgs) {
-        Map<DType, DType> collector = new HashMap<>();
-        if (typeParams.size() != typeArgs.size()) {
-            return collector;
-        }
-        for (int i = 0; i < typeParams.size(); i++) {
-            PlaceholderType typeParam = typeParams.get(i);
-            DType typeArg = typeArgs.get(i);
-            collector.put(typeParam, typeArg);
-        }
-        return collector;
-    }
-
-    private void inferRetHint(DType retHint, IsAssignable ctx) {
-        if (retHint != null) {
-            boolean assignable = new IsAssignable(ctx, "ret", retHint, ret).result();
-            if (!assignable) {
-                new IsAssignable(ctx, "ret", ret, retHint);
-            }
-        }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder desc = new StringBuilder();
-        desc.append('(');
-        boolean isFirst = true;
-        for (PlaceholderType typeParam : typeParams()) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                desc.append(", ");
-            }
-            desc.append(typeParam.description());
-        }
-        for (FunctionParam param : params) {
-            if (isFirst) {
-                isFirst = false;
-            } else {
-                desc.append(", ");
-            }
-            desc.append(param.toString());
-        }
-        desc.append("): ");
-        desc.append(ret.toString());
-        return desc.toString();
     }
 }

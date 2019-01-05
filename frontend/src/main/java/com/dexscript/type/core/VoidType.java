@@ -1,6 +1,18 @@
 package com.dexscript.type.core;
 
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexIntegerConst;
+import com.dexscript.ast.type.DexVoidType;
+
+import java.util.HashMap;
+
 public class VoidType implements DType {
+
+    static {
+        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
+            put(DexVoidType.class, (ts, elemT) -> ts.VOID);
+        }});
+    }
 
     private final TypeSystem ts;
 

@@ -81,8 +81,11 @@ public interface InferValue<E extends DexElement> {
     static Value $(TypeSystem ts, DexValueRef ref) {
         String refName = ref.toString();
         if (refName.equals("$")) {
-            DType contextType = ts.context(ref.pkg());
-            return new Value("$", contextType, null);
+            DType context = ts.typeTable().resolveType(ref.pkg(), "$");
+            if (context instanceof UndefinedType) {
+                context = ts.ANY;
+            }
+            return new Value("$", context, null);
         }
         if (ref.isGlobalScope()) {
             return new Value(ref.toString(), InferType.$(ts, ref), null);
