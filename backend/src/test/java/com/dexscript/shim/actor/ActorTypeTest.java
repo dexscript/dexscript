@@ -2,6 +2,7 @@ package com.dexscript.shim.actor;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.type.DexType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.composite.ActorType;
 import com.dexscript.type.composite.InterfaceType;
@@ -79,7 +80,7 @@ public class ActorTypeTest {
         Dispatched dispatched = ts.dispatch(new Invocation("Hello",
                 null, Arrays.asList(ts.STRING), null, null));
         Assert.assertEquals(1, dispatched.candidates.size());
-        DType type = ResolveType.$(ts, "Hello<string>");
+        DType type = InferType.$(ts, null, DexType.$parse("Hello<string>"));
         Assert.assertNotNull(type);
     }
 

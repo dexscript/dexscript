@@ -1,8 +1,20 @@
 package com.dexscript.type.core;
 
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.type.DexIntegerLiteralType;
+import com.dexscript.ast.type.DexStringLiteralType;
+
+import java.util.HashMap;
 import java.util.Objects;
 
 public class IntegerLiteralType implements DType {
+
+    static {
+        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
+            put(DexIntegerLiteralType.class, (ts, localTypeTable, elem) ->
+                    new IntegerLiteralType(ts, elem.toString()));
+        }});
+    }
 
     private final TypeSystem ts;
     private final String val;

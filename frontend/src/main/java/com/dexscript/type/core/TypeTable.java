@@ -55,7 +55,7 @@ public class TypeTable {
     public TypeTable(TypeSystem ts, List<DexTypeParam> typeParams) {
         this.ts = ts;
         for (DexTypeParam typeParam : typeParams) {
-            DType type = ResolveType.$(ts, null, typeParam.paramType());
+            DType type = InferType.$(ts, null, typeParam.paramType());
             define(typeParam.pkg(), typeParam.paramName().toString(), type);
         }
     }
@@ -77,7 +77,7 @@ public class TypeTable {
         DexPackage pkg = sig.pkg();
         for (DexTypeParam typeParam : sig.typeParams()) {
             String paramName = typeParam.paramName().toString();
-            DType paramType = ResolveType.$(ts, parentTypeTable, typeParam.paramType());
+            DType paramType = InferType.$(ts, parentTypeTable, typeParam.paramType());
             if (resolveType(pkg, paramName) == ts.UNDEFINED) {
                 define(pkg, paramName, paramType);
             }

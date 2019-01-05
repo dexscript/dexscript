@@ -2,10 +2,7 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.elem.DexParam;
-import com.dexscript.type.core.ResolveType;
-import com.dexscript.type.core.DType;
-import com.dexscript.type.core.TypeSystem;
-import com.dexscript.type.core.TypeTable;
+import com.dexscript.type.core.*;
 
 class InferActor implements InferValue<DexActor> {
 
@@ -14,7 +11,7 @@ class InferActor implements InferValue<DexActor> {
         TypeTable localTypeTable = new TypeTable(ts, func.typeParams());
         for (DexParam param : func.sig().params()) {
             String name = param.paramName().toString();
-            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
+            DType type = InferType.$(ts, localTypeTable, param.paramType());
             table.define(new Value(name, type, param));
         }
     }

@@ -1,9 +1,24 @@
 package com.dexscript.type.core;
 
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.type.DexIntersectionType;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class IntersectionType implements DType {
+
+    static {
+        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
+            put(DexIntersectionType.class, (ts, localTypeTable, elem) -> {
+                DexIntersectionType intersectionType = (DexIntersectionType) elem;
+                DType left = InferType.$(ts, localTypeTable, intersectionType.left());
+                DType right = InferType.$(ts, localTypeTable, intersectionType.right());
+                return left.intersect(right);
+            });
+        }});
+    }
 
     private final TypeSystem ts;
     private final List<DType> members;

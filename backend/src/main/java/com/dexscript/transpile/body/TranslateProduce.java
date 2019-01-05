@@ -3,8 +3,7 @@ package com.dexscript.transpile.body;
 import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
-import com.dexscript.type.core.DType;
-import com.dexscript.type.core.ResolveType;
+import com.dexscript.type.core.*;
 
 public class TranslateProduce implements Translate<DexProduceStmt> {
     @Override
@@ -12,7 +11,7 @@ public class TranslateProduce implements Translate<DexProduceStmt> {
         String produced = "null";
         if (iProduceStmt.produced() != null) {
             Translate.$(oClass, iProduceStmt.produced());
-            DType retType = ResolveType.$(oClass.typeSystem(), null, iProduceStmt.sig().ret());
+            DType retType = InferType.$(oClass.typeSystem(), null, iProduceStmt.sig().ret());
             produced = Translate.translateExpr(oClass, iProduceStmt.produced(), retType);
         }
         Translate.$(oClass, iProduceStmt.target());

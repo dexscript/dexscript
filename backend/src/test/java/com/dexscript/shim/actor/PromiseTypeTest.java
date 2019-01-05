@@ -1,12 +1,10 @@
 package com.dexscript.shim.actor;
 
 import com.dexscript.ast.DexInterface;
+import com.dexscript.ast.type.DexType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.composite.InterfaceType;
-import com.dexscript.type.core.DType;
-import com.dexscript.type.core.IsAssignable;
-import com.dexscript.type.core.ResolveType;
-import com.dexscript.type.core.TypeSystem;
+import com.dexscript.type.core.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +20,7 @@ public class PromiseTypeTest {
 
     @Test
     public void consume_any() {
-        DType promiseType = ResolveType.$(ts, "Promise");
+        DType promiseType = InferType.$(ts, null, DexType.$parse("Promise"));
         InterfaceType inf = new InterfaceType(ts, DexInterface.$("" +
                 "interface PromiseString {\n" +
                 "   Consume__(): string\n" +
@@ -33,7 +31,7 @@ public class PromiseTypeTest {
 
     @Test
     public void consume_string() {
-        DType promiseType = ResolveType.$(ts, "Promise<string>");
+        DType promiseType = InferType.$(ts, null, DexType.$parse("Promise<string>"));
         InterfaceType consumeString = new InterfaceType(ts, DexInterface.$("" +
                 "interface TaskString {\n" +
                 "   Consume__(): string\n" +

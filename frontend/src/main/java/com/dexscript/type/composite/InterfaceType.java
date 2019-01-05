@@ -108,7 +108,7 @@ public class InterfaceType implements NamedType, GenericType, CompositeType {
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexInfTypeParam typeParam : inf.typeParams()) {
-                typeParams.add(ResolveType.$(ts, null, typeParam.paramType()));
+                typeParams.add(InferType.$(ts, null, typeParam.paramType()));
             }
         }
         return typeParams;

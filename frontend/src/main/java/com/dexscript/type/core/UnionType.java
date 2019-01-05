@@ -1,9 +1,24 @@
 package com.dexscript.type.core;
 
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.type.DexUnionType;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class UnionType implements DType {
+
+    static {
+        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
+            put(DexUnionType.class, (ts, localTypeTable, elem) -> {
+                DexUnionType unionType = (DexUnionType) elem;
+                DType left = InferType.$(ts, localTypeTable, unionType.left());
+                DType right = InferType.$(ts, localTypeTable, unionType.right());
+                return left.union(right);
+            });
+        }});
+    }
 
     private final TypeSystem ts;
     private final List<DType> members;

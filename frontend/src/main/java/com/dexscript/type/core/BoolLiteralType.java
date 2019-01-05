@@ -1,8 +1,20 @@
 package com.dexscript.type.core;
 
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.type.DexBoolLiteralType;
+import com.dexscript.ast.type.DexIntegerLiteralType;
+
+import java.util.HashMap;
 import java.util.Objects;
 
 class BoolLiteralType implements DType {
+
+    static {
+        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
+            put(DexBoolLiteralType.class, (ts, localTypeTable, elem) ->
+                    new BoolLiteralType(ts, elem.toString()));
+        }});
+    }
 
     private final TypeSystem ts;
     private final String val;

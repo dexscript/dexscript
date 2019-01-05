@@ -76,7 +76,7 @@ public class ActorType implements NamedType, GenericType, CompositeType {
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexTypeParam typeParam : actor.typeParams()) {
-                typeParams.add(ResolveType.$(ts, null, typeParam.paramType()));
+                typeParams.add(InferType.$(ts, null, typeParam.paramType()));
             }
         }
         return typeParams;
@@ -111,7 +111,7 @@ public class ActorType implements NamedType, GenericType, CompositeType {
         params.add(new FunctionParam("actor", new StringLiteralType(ts, name())));
         for (DexParam param : actor.sig().params()) {
             String name = param.paramName().toString();
-            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
+            DType type = InferType.$(ts, localTypeTable, param.paramType());
             params.add(new FunctionParam(name, type));
         }
         FunctionType functionType = new FunctionType(ts, "New__", params, this);
@@ -120,7 +120,7 @@ public class ActorType implements NamedType, GenericType, CompositeType {
     }
 
     private FunctionType consumeFunc(TypeTable localTypeTable) {
-        DType ret = ResolveType.$(ts, localTypeTable, actor.sig().ret());
+        DType ret = InferType.$(ts, localTypeTable, actor.sig().ret());
         ArrayList<FunctionParam> params = new ArrayList<>();
         params.add(new FunctionParam("self", this));
         return new FunctionType(ts, "Consume__", params, ret);
@@ -179,7 +179,7 @@ public class ActorType implements NamedType, GenericType, CompositeType {
             DexSig sig = awaitConsumer.produceSig();
             for (DexParam param : sig.params()) {
                 String paramName = param.paramName().toString();
-                DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
+                DType paramType = InferType.$(ts, localTypeTable, param.paramType());
                 params.add(new FunctionParam(paramName, paramType));
             }
             FunctionType functionType = new FunctionType(ts, "New__", params, nestedActor);
@@ -191,12 +191,12 @@ public class ActorType implements NamedType, GenericType, CompositeType {
         private FunctionType callFunc(DexAwaitConsumer awaitConsumer) {
             DexSig sig = awaitConsumer.produceSig();
             String funcName = awaitConsumer.identifier().toString();
-            DType ret = ResolveType.$(ts, localTypeTable, sig.ret());
+            DType ret = InferType.$(ts, localTypeTable, sig.ret());
             List<FunctionParam> params = new ArrayList<>();
             params.add(new FunctionParam("self", ActorType.this));
             for (DexParam param : sig.params()) {
                 String paramName = param.paramName().toString();
-                DType paramType = ResolveType.$(ts, localTypeTable, param.paramType());
+                DType paramType = InferType.$(ts, localTypeTable, param.paramType());
                 params.add(new FunctionParam(paramName, paramType));
             }
             FunctionType functionType = new FunctionType(ts, funcName, params, ret);

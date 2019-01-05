@@ -7,10 +7,7 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.type.DexType;
-import com.dexscript.type.core.InferType;
-import com.dexscript.type.core.NamedArg;
-import com.dexscript.type.core.ResolveType;
-import com.dexscript.type.core.TypeSystem;
+import com.dexscript.type.core.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +48,7 @@ public interface ResolveNamedArgs {
             if (!arg.matched()) {
                 throw new RuntimeException("unable to parse invocation args: " + src);
             }
-            args.add(new NamedArg(name.toString(), ResolveType.$(ts, null, arg)));
+            args.add(new NamedArg(name.toString(), InferType.$(ts, null, arg)));
             i = arg.end();
         }
         return args;

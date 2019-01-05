@@ -3,6 +3,7 @@ package com.dexscript.type.core;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.expr.*;
+import com.dexscript.ast.type.DexType;
 
 import java.util.*;
 
@@ -35,6 +36,14 @@ public class Invocation {
                 put((Class<? extends DexExpr>) JavaSuperTypeArgs.$(handler.getClass())[0], handler);
             }
         });
+    }
+
+    private static List<DType> resolveTypes(TypeSystem ts, TypeTable localTypeTable, List<DexType> dexTypes) {
+        List<DType> types = new ArrayList<>();
+        for (DexType dexType : dexTypes) {
+            types.add(InferType.$(ts, localTypeTable, dexType));
+        }
+        return types;
     }
 
     private static class InferInvocation<E extends DexExpr & DexInvocationExpr> implements InferType<E> {
@@ -77,7 +86,7 @@ public class Invocation {
 
     public static Invocation ivc(TypeSystem ts, DexInvocation dexIvc) {
         List<DType> posArgs = InferType.inferTypes(ts, dexIvc.posArgs());
-        List<DType> typeArgs = ResolveType.resolveTypes(ts, null, dexIvc.typeArgs());
+        List<DType> typeArgs = resolveTypes(ts, null, dexIvc.typeArgs());
         List<NamedArg> namedArgs = new ArrayList<>();
         DType context = null;
         for (DexNamedArg dexNamedArg : dexIvc.namedArgs()) {

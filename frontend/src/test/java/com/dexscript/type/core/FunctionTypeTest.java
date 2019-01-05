@@ -3,6 +3,7 @@ package com.dexscript.type.core;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.Text;
+import com.dexscript.ast.type.DexType;
 import com.dexscript.test.framework.FluentAPI;
 import com.dexscript.test.framework.Row;
 import com.dexscript.test.framework.Table;
@@ -93,9 +94,9 @@ public class FunctionTypeTest {
         for (Row row : table.body) {
             boolean isAssignable = "true".equals(row.get(0));
             String toSrc = stripQuote(row.get(1));
-            DType to = toSrc.contains(":") ? func(toSrc) : ResolveType.$(ts, toSrc);
+            DType to = toSrc.contains(":") ? func(toSrc) : InferType.$(ts, null, DexType.$parse(toSrc));
             String fromSrc = stripQuote(row.get(2));
-            DType from = fromSrc.contains(":") ? func(fromSrc) : ResolveType.$(ts, fromSrc);
+            DType from = fromSrc.contains(":") ? func(fromSrc) : InferType.$(ts, null, DexType.$parse(fromSrc));
             TestAssignable.$(isAssignable, to, from);
         }
     }

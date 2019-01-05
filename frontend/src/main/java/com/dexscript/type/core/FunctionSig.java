@@ -40,7 +40,7 @@ public class FunctionSig {
         typeParams = new ArrayList<>();
         localTypeTable = new TypeTable(ts, localTypeTable);
         for (DexTypeParam typeParam : dexSig.typeParams()) {
-            DType constraint = ResolveType.$(ts, null, typeParam.paramType());
+            DType constraint = InferType.$(ts, null, typeParam.paramType());
             String paramName = typeParam.paramName().toString();
             if (localTypeTable.resolveType(pkg, paramName) != ts.UNDEFINED) {
                 continue;
@@ -55,10 +55,10 @@ public class FunctionSig {
         }
         for (DexParam param : dexSig.params()) {
             String name = param.paramName().toString();
-            DType type = ResolveType.$(ts, localTypeTable, param.paramType());
+            DType type = InferType.$(ts, localTypeTable, param.paramType());
             params.add(new FunctionParam(name, type));
         }
-        ret = ResolveType.$(ts, localTypeTable, dexSig.ret());
+        ret = InferType.$(ts, localTypeTable, dexSig.ret());
     }
 
     public void reparent(FunctionType functionType) {
