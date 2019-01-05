@@ -1,7 +1,7 @@
 package com.dexscript.transpile.body;
 
 import com.dexscript.ast.expr.DexConsumeExpr;
-import com.dexscript.infer.InferType;
+import com.dexscript.type.core.InferType;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.type.core.DType;

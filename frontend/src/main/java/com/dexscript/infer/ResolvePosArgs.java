@@ -6,6 +6,7 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.type.DexType;
+import com.dexscript.type.core.InferType;
 import com.dexscript.type.core.DType;
 import com.dexscript.type.core.ResolveType;
 import com.dexscript.type.core.TypeSystem;

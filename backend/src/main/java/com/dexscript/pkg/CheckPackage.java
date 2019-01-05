@@ -9,7 +9,7 @@ import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.ast.token.Blank;
-import com.dexscript.infer.InferType;
+import com.dexscript.type.core.InferType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.composite.StructType;
 import com.dexscript.type.composite.GlobalSPI;

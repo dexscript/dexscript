@@ -2,7 +2,6 @@ package com.dexscript.transpile.body;
 
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexNewExpr;
-import com.dexscript.infer.InferInvocation;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
@@ -30,7 +29,7 @@ public class TranslateNew implements Translate<DexNewExpr> {
         TypeSystem ts = oClass.typeSystem();
 
         DexInvocation dexIvc = iNewExpr.invocation();
-        Invocation ivc = InferInvocation.ivc(ts, dexIvc);
+        Invocation ivc = Invocation.ivc(ts, dexIvc);
         Dispatched dispatched = ts.dispatch(ivc);
         if (dispatched.candidates.isEmpty()) {
             System.out.println("can not find candidates for: " + ivc);

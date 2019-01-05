@@ -1,8 +1,18 @@
 package com.dexscript.type.core;
 
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexStringConst;
+
+import java.util.HashMap;
 import java.util.Objects;
 
 public class StringConstType implements DType {
+
+    static {
+        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
+            put(DexStringConst.class, (ts, elem) -> ts.constOf(((DexStringConst) elem).constValue()));
+        }});
+    }
 
     private final TypeSystem ts;
     private final String val;

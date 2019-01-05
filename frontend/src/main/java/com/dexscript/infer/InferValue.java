@@ -6,9 +6,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexLessThanExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.*;
-import com.dexscript.type.core.DType;
-import com.dexscript.type.core.JavaSuperTypeArgs;
-import com.dexscript.type.core.TypeSystem;
+import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -30,6 +28,18 @@ public interface InferValue<E extends DexElement> {
 
     Map<Class<? extends DexElement>, InferValue> handlers = new HashMap<Class<? extends DexElement>, InferValue>() {
         {
+            InferType.handlers.put(DexValueRef.class, (ts, elem) -> {
+                DexValueRef valueRef = (DexValueRef) elem;
+                if (valueRef.isGlobalScope()) {
+                    return Invocation.infer(ts, valueRef.invocation());
+                }
+                Value val = InferValue.$(ts, valueRef);
+                if (val == null) {
+                    return ts.UNDEFINED;
+                }
+                return val.type();
+            });
+
             put(DexActorBody.class, (ts, elem, table) -> {
             });
             put(DexBlock.class, (ts, elem, table) -> {

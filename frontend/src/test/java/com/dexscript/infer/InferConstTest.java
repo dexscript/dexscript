@@ -1,6 +1,7 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.type.core.InferType;
 import com.dexscript.type.core.DType;
 import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;

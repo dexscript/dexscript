@@ -3,7 +3,6 @@ package com.dexscript.transpile.body;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
-import com.dexscript.infer.InferInvocation;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.gen.Indent;
 import com.dexscript.gen.Line;
@@ -30,7 +29,7 @@ public class TranslateInvocation<E extends DexElement & DexInvocationExpr> imple
     public static OutField invoke(OutClass oClass, DexInvocation dexIvc) {
         TypeSystem ts = oClass.typeSystem();
 
-        Invocation ivc = InferInvocation.ivc(ts, dexIvc).requireImpl(true);
+        Invocation ivc = Invocation.ivc(ts, dexIvc).requireImpl(true);
         Dispatched dispatched = ts.dispatch(ivc);
         if (dispatched.candidates.isEmpty()) {
             throw new DexRuntimeException("can not find candidates: " + ivc);

@@ -1,8 +1,50 @@
 package com.dexscript.type.core;
 
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.core.DexSyntaxException;
+import com.dexscript.ast.expr.*;
+
 import java.util.*;
 
 public class Invocation {
+
+    static {
+        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {
+            {
+                add(new InferInvocation<DexConsumeExpr>() {
+                });
+                add(new InferInvocation<DexNewExpr>() {
+                });
+                add(new InferInvocation<DexEqualExpr>() {
+                });
+                add(new InferInvocation<DexLessThanExpr>() {
+                });
+                add(new InferInvocation<DexMethodCallExpr>() {
+                });
+                add(new InferInvocation<DexFunctionCallExpr>() {
+                });
+                add(new InferInvocation<DexAddExpr>() {
+                });
+                add(new InferInvocation<DexIndexExpr>() {
+                });
+                add(new InferInvocation<DexFieldExpr>() {
+                });
+            }
+
+            private void add(InferType<?> handler) {
+                put((Class<? extends DexExpr>) JavaSuperTypeArgs.$(handler.getClass())[0], handler);
+            }
+        });
+    }
+
+    private static class InferInvocation<E extends DexExpr & DexInvocationExpr> implements InferType<E> {
+
+        @Override
+        public DType handle(TypeSystem ts, E elem) {
+            DexInvocation dexIvc = elem.invocation();
+            return Invocation.infer(ts, dexIvc);
+        }
+    }
 
     private final String funcName;
     private final List<DType> typeArgs;
@@ -31,6 +73,34 @@ public class Invocation {
                 providedFunctions.addAll(((CompositeType) allArg).functions());
             }
         }
+    }
+
+    public static Invocation ivc(TypeSystem ts, DexInvocation dexIvc) {
+        List<DType> posArgs = InferType.inferTypes(ts, dexIvc.posArgs());
+        List<DType> typeArgs = ResolveType.resolveTypes(ts, null, dexIvc.typeArgs());
+        List<NamedArg> namedArgs = new ArrayList<>();
+        DType context = null;
+        for (DexNamedArg dexNamedArg : dexIvc.namedArgs()) {
+            String argName = dexNamedArg.name().toString();
+            DType argType = InferType.$(ts, dexNamedArg.val());
+            if (argName.equals("$")) {
+                context = argType;
+            } else {
+                if (context != null) {
+                    throw new DexSyntaxException("context argument $ must be the last argument");
+                }
+                namedArgs.add(new NamedArg(argName, argType));
+            }
+        }
+        Invocation ivc = new Invocation(dexIvc.funcName(), typeArgs, posArgs, namedArgs, null);
+        ivc.isGlobalScope(dexIvc.isGlobalScope());
+        return ivc;
+    }
+
+    public static DType infer(TypeSystem ts, DexInvocation dexIvc) {
+        Invocation ivc = ivc(ts, dexIvc);
+        Dispatched dispatched = ts.dispatch(ivc);
+        return dispatched.ret == null ? ts.UNDEFINED : dispatched.ret;
     }
 
     // when checking semantic error, the interface function is assumed to have impl

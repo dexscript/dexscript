@@ -4,7 +4,7 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
 import com.dexscript.ast.stmt.DexBlock;
 import com.dexscript.ast.stmt.DexStatement;
-import com.dexscript.infer.InferType;
+import com.dexscript.type.core.InferType;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
 import com.dexscript.transpile.skeleton.OutClass;

@@ -1,8 +1,18 @@
 package com.dexscript.type.core;
 
+import com.dexscript.ast.core.DexElement;
+import com.dexscript.ast.expr.DexBoolConst;
+
+import java.util.HashMap;
 import java.util.Objects;
 
 class BoolConstType implements DType {
+
+    static {
+        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
+            put(DexBoolConst.class, (ts, elem) -> ts.constOfBool(elem.toString()));
+        }});
+    }
 
     private final TypeSystem ts;
     private final String val;

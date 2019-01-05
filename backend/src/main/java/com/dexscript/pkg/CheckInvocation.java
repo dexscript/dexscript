@@ -6,7 +6,6 @@ import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.ast.expr.DexNamedArg;
 import com.dexscript.ast.type.DexType;
-import com.dexscript.infer.InferInvocation;
 import com.dexscript.type.core.Dispatched;
 import com.dexscript.type.core.Invocation;
 import com.dexscript.type.core.TypeSystem;
@@ -36,7 +35,7 @@ public class CheckInvocation<E extends DexElement & DexInvocationExpr> implement
         for (DexNamedArg namedArg : dexIvc.namedArgs()) {
             cse.visit(namedArg.val());
         }
-        Invocation ivc = InferInvocation.ivc(ts, dexIvc);
+        Invocation ivc = Invocation.ivc(ts, dexIvc);
         Dispatched dispatched = ts.dispatch(ivc);
         if (dispatched.candidates.isEmpty()) {
             cse.report(elem, "no matching function: " + ivc);

@@ -4,7 +4,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
-import com.dexscript.infer.InferType;
+import com.dexscript.type.core.InferType;
 import com.dexscript.type.core.DType;
 import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.IsAssignable;
