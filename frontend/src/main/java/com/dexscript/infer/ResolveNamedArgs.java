@@ -7,9 +7,9 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.type.DexType;
-import com.dexscript.type.NamedArg;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.NamedArg;
+import com.dexscript.type.core.ResolveType;
+import com.dexscript.type.core.TypeSystem;
 
 import java.util.ArrayList;
 import java.util.List;

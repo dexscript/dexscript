@@ -2,7 +2,7 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexValueRef;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -2,10 +2,10 @@ package com.dexscript.pkg;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.inf.DexInfTypeParam;
-import com.dexscript.type.DType;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.TypeSystem;
-import com.dexscript.type.TypeTable;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.ResolveType;
+import com.dexscript.type.core.TypeSystem;
+import com.dexscript.type.core.TypeTable;
 
 public class CheckInterface implements CheckSemanticError.Handler<DexInterface> {
     @Override

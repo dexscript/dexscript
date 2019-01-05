@@ -13,7 +13,7 @@ import com.dexscript.runtime.std.IOLib;
 import com.dexscript.shim.actor.ActorTable;
 import com.dexscript.shim.actor.ActorType;
 import com.dexscript.shim.java.*;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 
 import java.lang.reflect.*;
 import java.nio.file.Path;

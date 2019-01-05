@@ -3,8 +3,8 @@ package com.dexscript.transpile.body;
 import com.dexscript.ast.stmt.DexProduceStmt;
 import com.dexscript.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
-import com.dexscript.type.DType;
-import com.dexscript.type.ResolveType;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.ResolveType;
 
 public class TranslateProduce implements Translate<DexProduceStmt> {
     @Override

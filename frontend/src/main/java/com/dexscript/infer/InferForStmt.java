@@ -2,7 +2,7 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.stmt.DexForStmt;
 import com.dexscript.ast.stmt.DexSimpleStatement;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 
 public class InferForStmt implements InferValue<DexForStmt> {
     @Override

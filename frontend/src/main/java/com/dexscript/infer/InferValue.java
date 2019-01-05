@@ -6,9 +6,9 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexLessThanExpr;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.*;
-import com.dexscript.type.DType;
-import com.dexscript.type.JavaSuperTypeArgs;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.JavaSuperTypeArgs;
+import com.dexscript.type.core.TypeSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

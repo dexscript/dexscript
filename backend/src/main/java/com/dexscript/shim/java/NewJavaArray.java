@@ -5,9 +5,7 @@ import com.dexscript.gen.Gen;
 import com.dexscript.gen.Indent;
 import com.dexscript.gen.Line;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.FunctionType;
-
-import java.lang.reflect.Constructor;
+import com.dexscript.type.core.FunctionType;
 
 public class NewJavaArray extends FunctionImpl {
 

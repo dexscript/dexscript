@@ -3,7 +3,7 @@ package com.dexscript.shim.java;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;

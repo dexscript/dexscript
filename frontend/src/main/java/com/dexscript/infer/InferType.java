@@ -2,7 +2,9 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
-import com.dexscript.type.*;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.JavaSuperTypeArgs;
+import com.dexscript.type.core.TypeSystem;
 
 import java.util.*;
 

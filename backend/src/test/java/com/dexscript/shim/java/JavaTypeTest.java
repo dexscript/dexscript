@@ -3,7 +3,7 @@ package com.dexscript.shim.java;
 import com.dexscript.shim.TestAssignable;
 import com.dexscript.transpile.OutTown;
 import com.dexscript.transpile.java.DefineJavaClass;
-import com.dexscript.type.DType;
+import com.dexscript.type.core.DType;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -5,9 +5,9 @@ import com.dexscript.infer.ResolvePosArgs;
 import com.dexscript.test.framework.FluentAPI;
 import com.dexscript.test.framework.Row;
 import com.dexscript.transpile.OutTown;
-import com.dexscript.type.DType;
-import com.dexscript.type.IsAssignable;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.IsAssignable;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 
 import static com.dexscript.test.framework.TestFramework.stripQuote;

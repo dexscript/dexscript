@@ -12,7 +12,7 @@ import com.dexscript.gen.DeclareParams;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Indent;
 import com.dexscript.gen.Line;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.dexscript.pkg;
 
 import com.dexscript.ast.inf.DexInfFunction;
-import com.dexscript.type.TypeTable;
+import com.dexscript.type.core.TypeTable;
 
 public class CheckInfFunction implements CheckSemanticError.Handler<DexInfFunction> {
 

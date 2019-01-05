@@ -4,7 +4,7 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexNamedArg;
 import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.infer.InferType;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

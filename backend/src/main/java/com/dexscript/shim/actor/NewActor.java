@@ -7,7 +7,7 @@ import com.dexscript.gen.Indent;
 import com.dexscript.gen.Line;
 import com.dexscript.shim.OutShim;
 import com.dexscript.shim.java.FunctionImpl;
-import com.dexscript.type.FunctionType;
+import com.dexscript.type.core.FunctionType;
 
 class NewActor extends FunctionImpl {
 

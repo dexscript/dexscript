@@ -2,7 +2,7 @@ package com.dexscript.transpile.skeleton;
 
 import com.dexscript.gen.Gen;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 
 public interface OutClass {
 

@@ -3,9 +3,9 @@ package com.dexscript.pkg;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
-import com.dexscript.type.JavaSuperTypeArgs;
-import com.dexscript.type.TypeSystem;
-import com.dexscript.type.TypeTable;
+import com.dexscript.type.core.JavaSuperTypeArgs;
+import com.dexscript.type.core.TypeSystem;
+import com.dexscript.type.core.TypeTable;
 
 import java.util.HashMap;
 import java.util.Map;

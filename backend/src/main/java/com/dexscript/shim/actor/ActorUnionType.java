@@ -1,7 +1,7 @@
 package com.dexscript.shim.actor;
 
 import com.dexscript.ast.DexPackage;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

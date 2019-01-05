@@ -8,7 +8,9 @@ import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
-import com.dexscript.type.*;
+import com.dexscript.type.core.Dispatched;
+import com.dexscript.type.core.Invocation;
+import com.dexscript.type.core.TypeSystem;
 
 import java.util.List;
 

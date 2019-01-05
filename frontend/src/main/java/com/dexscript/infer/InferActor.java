@@ -2,11 +2,10 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.elem.DexParam;
-import com.dexscript.ast.elem.DexTypeParam;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.DType;
-import com.dexscript.type.TypeSystem;
-import com.dexscript.type.TypeTable;
+import com.dexscript.type.core.ResolveType;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.TypeSystem;
+import com.dexscript.type.core.TypeTable;
 
 class InferActor implements InferValue<DexActor> {
 

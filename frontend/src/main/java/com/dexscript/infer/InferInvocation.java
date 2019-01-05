@@ -5,7 +5,7 @@ import com.dexscript.ast.expr.DexExpr;
 import com.dexscript.ast.expr.DexInvocation;
 import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.ast.expr.DexNamedArg;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 
 import java.util.ArrayList;
 import java.util.List;

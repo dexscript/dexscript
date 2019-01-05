@@ -2,9 +2,9 @@ package com.dexscript.pkg;
 
 import com.dexscript.ast.stmt.DexReturnStmt;
 import com.dexscript.infer.InferType;
-import com.dexscript.type.DType;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.ResolveType;
+import com.dexscript.type.core.TypeSystem;
 
 class CheckReturn implements CheckSemanticError.Handler<DexReturnStmt> {
     @Override

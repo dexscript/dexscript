@@ -5,6 +5,7 @@ import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.ast.inf.DexInfTypeParam;
+import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.dexscript.shim.actor;
 
 import com.dexscript.ast.stmt.DexAwaitConsumer;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 
 import java.util.ArrayList;
 import java.util.List;

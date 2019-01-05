@@ -4,6 +4,7 @@ import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.shim.OutShim;
 import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

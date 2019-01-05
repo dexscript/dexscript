@@ -3,9 +3,9 @@ package com.dexscript.shim;
 import com.dexscript.gen.*;
 import com.dexscript.shim.java.FunctionImpl;
 import com.dexscript.shim.java.JavaTypes;
-import com.dexscript.type.FunctionSig;
-import com.dexscript.type.FunctionType;
-import com.dexscript.type.Dispatched;
+import com.dexscript.type.core.FunctionSig;
+import com.dexscript.type.core.FunctionType;
+import com.dexscript.type.core.Dispatched;
 
 import java.util.ArrayList;
 import java.util.List;

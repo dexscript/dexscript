@@ -5,10 +5,10 @@ import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.infer.InferType;
-import com.dexscript.type.DType;
+import com.dexscript.type.core.DType;
 import com.dexscript.type.InterfaceType;
-import com.dexscript.type.IsAssignable;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.IsAssignable;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
 

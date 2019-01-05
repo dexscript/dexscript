@@ -2,6 +2,7 @@ package com.dexscript.type;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.inf.DexInfMethod;
+import com.dexscript.type.core.*;
 
 import java.util.ArrayList;
 import java.util.List;

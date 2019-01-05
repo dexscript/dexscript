@@ -3,8 +3,9 @@ package com.dexscript.shim.actor;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
-import com.dexscript.shim.actor.InnerActorType;
 import com.dexscript.type.*;
+import com.dexscript.type.core.IsAssignable;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
 

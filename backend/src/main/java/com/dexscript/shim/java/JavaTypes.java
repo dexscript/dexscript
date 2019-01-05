@@ -6,7 +6,7 @@ import com.dexscript.gen.Line;
 import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.runtime.UInt8;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.math.BigInteger;

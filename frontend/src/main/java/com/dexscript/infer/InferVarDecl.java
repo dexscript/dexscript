@@ -2,9 +2,9 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.stmt.DexVarDecl;
-import com.dexscript.type.DType;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.ResolveType;
+import com.dexscript.type.core.TypeSystem;
 
 public class InferVarDecl implements InferValue<DexVarDecl> {
 

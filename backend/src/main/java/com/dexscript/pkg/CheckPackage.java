@@ -12,7 +12,7 @@ import com.dexscript.ast.token.Blank;
 import com.dexscript.infer.InferType;
 import com.dexscript.shim.OutShim;
 import com.dexscript.shim.struct.StructType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 
 import java.io.IOException;
 import java.nio.file.Files;

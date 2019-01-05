@@ -1,5 +1,7 @@
 package com.dexscript.type;
 
+import com.dexscript.type.core.TestAssignable;
+import com.dexscript.type.core.TestEquals;
 import org.junit.Test;
 
 public class InterfaceTypeTest {

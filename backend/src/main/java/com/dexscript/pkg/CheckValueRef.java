@@ -3,7 +3,7 @@ package com.dexscript.pkg;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.infer.InferValue;
 import com.dexscript.infer.Value;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 
 class CheckValueRef implements CheckSemanticError.Handler<DexValueRef> {
     @Override

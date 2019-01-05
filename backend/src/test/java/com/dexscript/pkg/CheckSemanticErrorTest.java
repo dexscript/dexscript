@@ -3,7 +3,7 @@ package com.dexscript.pkg;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.DexTopLevelDecl;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
 

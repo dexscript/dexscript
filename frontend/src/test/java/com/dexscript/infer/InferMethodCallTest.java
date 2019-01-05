@@ -1,10 +1,10 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.type.DType;
-import com.dexscript.type.FunctionParam;
-import com.dexscript.type.FunctionType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.FunctionParam;
+import com.dexscript.type.core.FunctionType;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Test;
 

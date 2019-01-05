@@ -5,8 +5,8 @@ import com.dexscript.gen.Gen;
 import com.dexscript.gen.Indent;
 import com.dexscript.gen.Line;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.FunctionParam;
-import com.dexscript.type.FunctionType;
+import com.dexscript.type.core.FunctionParam;
+import com.dexscript.type.core.FunctionType;
 
 import java.util.ArrayList;
 import java.util.List;

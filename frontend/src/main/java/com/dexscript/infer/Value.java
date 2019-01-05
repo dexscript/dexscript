@@ -1,7 +1,7 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.type.DType;
+import com.dexscript.type.core.DType;
 import org.jetbrains.annotations.NotNull;
 
 public final class Value {

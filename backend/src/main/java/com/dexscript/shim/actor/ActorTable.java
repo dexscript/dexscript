@@ -2,9 +2,9 @@ package com.dexscript.shim.actor;
 
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexSyntaxException;
-import com.dexscript.type.NamedType;
-import com.dexscript.type.NamedTypesProvider;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.NamedType;
+import com.dexscript.type.core.NamedTypesProvider;
+import com.dexscript.type.core.TypeSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;

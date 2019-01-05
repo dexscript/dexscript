@@ -2,8 +2,6 @@ package com.dexscript.gen;
 
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.type.TypeSystem;
-import com.dexscript.type.TypeTable;
 
 public interface DeclareParams {
 

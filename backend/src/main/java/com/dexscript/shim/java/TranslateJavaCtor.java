@@ -2,8 +2,8 @@ package com.dexscript.shim.java;
 
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
-import com.dexscript.type.DType;
-import com.dexscript.type.NamedType;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.NamedType;
 
 import java.lang.reflect.*;
 

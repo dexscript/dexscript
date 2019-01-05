@@ -10,7 +10,7 @@ import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

@@ -1,7 +1,7 @@
 package com.dexscript.infer;
 
-import com.dexscript.type.NamedArg;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.NamedArg;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -5,7 +5,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.expr.DexValueRef;
 import com.dexscript.type.InterfaceType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

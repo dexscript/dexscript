@@ -2,12 +2,13 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.expr.DexExpr;
-import com.dexscript.type.*;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.FunctionSig;
+import com.dexscript.type.core.FunctionType;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.List;
 
 public class InferNewTest {
 

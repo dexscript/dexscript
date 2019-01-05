@@ -5,8 +5,8 @@ import com.dexscript.runtime.DexRuntimeException;
 import com.dexscript.shim.OutShim;
 import com.dexscript.shim.actor.ActorType;
 import com.dexscript.transpile.skeleton.OutTopLevelClass;
-import com.dexscript.type.FunctionType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.FunctionType;
+import com.dexscript.type.core.TypeSystem;
 import org.mdkt.compiler.InMemoryJavaCompiler;
 
 public class OutTown {

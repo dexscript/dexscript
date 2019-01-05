@@ -1,9 +1,9 @@
 package com.dexscript.infer;
 
 import com.dexscript.ast.stmt.DexAwaitConsumer;
-import com.dexscript.type.DType;
-import com.dexscript.type.ResolveType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.ResolveType;
+import com.dexscript.type.core.TypeSystem;
 
 import java.util.Arrays;
 

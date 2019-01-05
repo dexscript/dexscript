@@ -2,7 +2,8 @@ package com.dexscript.infer;
 
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.stmt.DexShortVarDecl;
-import com.dexscript.type.*;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.TypeSystem;
 
 public class InferShortVarDecl implements InferValue<DexShortVarDecl> {
 

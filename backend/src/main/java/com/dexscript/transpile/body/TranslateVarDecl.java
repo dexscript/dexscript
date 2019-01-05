@@ -4,8 +4,8 @@ import com.dexscript.ast.stmt.DexVarDecl;
 import com.dexscript.gen.Line;
 import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
-import com.dexscript.type.DType;
-import com.dexscript.type.ResolveType;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.ResolveType;
 
 public class TranslateVarDecl implements Translate<DexVarDecl> {
     @Override

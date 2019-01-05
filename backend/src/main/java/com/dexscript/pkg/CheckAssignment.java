@@ -4,9 +4,9 @@ import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.*;
 import com.dexscript.ast.stmt.DexAssignStmt;
 import com.dexscript.infer.InferType;
-import com.dexscript.type.DType;
-import com.dexscript.type.IsAssignable;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.IsAssignable;
+import com.dexscript.type.core.TypeSystem;
 
 public class CheckAssignment implements CheckSemanticError.Handler<DexAssignStmt> {
 

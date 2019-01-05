@@ -12,7 +12,7 @@ import com.dexscript.transpile.skeleton.OutClass;
 import com.dexscript.transpile.skeleton.OutField;
 import com.dexscript.transpile.skeleton.OutStateMachine;
 import com.dexscript.transpile.skeleton.OutStateMethod;
-import com.dexscript.type.*;
+import com.dexscript.type.core.*;
 
 import java.util.List;
 

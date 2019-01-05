@@ -7,9 +7,9 @@ import com.dexscript.ast.expr.DexInvocationExpr;
 import com.dexscript.ast.expr.DexNamedArg;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.infer.InferInvocation;
-import com.dexscript.type.Dispatched;
-import com.dexscript.type.Invocation;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.Dispatched;
+import com.dexscript.type.core.Invocation;
+import com.dexscript.type.core.TypeSystem;
 
 public class CheckInvocation<E extends DexElement & DexInvocationExpr> implements CheckSemanticError.Handler<E> {
 

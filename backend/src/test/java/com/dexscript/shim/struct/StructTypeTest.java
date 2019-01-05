@@ -4,7 +4,7 @@ import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.shim.TestAssignable;
 import com.dexscript.type.InterfaceType;
-import com.dexscript.type.TypeSystem;
+import com.dexscript.type.core.TypeSystem;
 import org.junit.Before;
 import org.junit.Test;
 
