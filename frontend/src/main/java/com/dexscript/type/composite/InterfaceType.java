@@ -13,6 +13,21 @@ import java.util.List;
 
 public class InterfaceType implements NamedType, GenericType, CompositeType {
 
+    static {
+        InferTypeTable.register(DexInterface.class, (ts, elem) -> {
+            TypeTable typeTable = new TypeTable(ts);
+            for (DexInfTypeParam typeParam : elem.typeParams()) {
+                String name = typeParam.paramName().toString();
+                DType type = InferType.$(ts, typeParam.paramType());
+                typeTable.define(elem.pkg(), name, type);
+            }
+            return typeTable;
+        });
+    }
+
+    public static void init() {
+    }
+
     private final TypeSystem ts;
     private final DexInterface inf;
     private List<DType> typeArgs;

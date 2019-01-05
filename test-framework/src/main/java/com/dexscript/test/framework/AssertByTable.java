@@ -9,6 +9,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import static com.dexscript.test.framework.TestFramework.stripQuote;
+
 public class AssertByTable {
 
     private static final Object UNDEFINED = new Object() {
@@ -23,7 +25,7 @@ public class AssertByTable {
         for (int i = from; i < size; i++) {
             String path = table.head.get(i);
             String expected = row.get(i);
-            Object actual = access(obj, trimPath(path));
+            Object actual = accessByPath(obj, path);
             String msg = path + ": " + row;
             if (isInteger(expected)) {
                 Assert.assertEquals(msg,
@@ -55,13 +57,10 @@ public class AssertByTable {
         }
     }
 
-    private static String trimPath(String path) {
-        path = path.trim();
-        if (path.startsWith("`")) {
-            return path.substring(1, path.length() - 1);
-        }
-        return path;
+    public static Object accessByPath(Object obj, String path) {
+        return access(obj, stripQuote(path));
     }
+
 
     private static Object access(Object obj, String path) {
         if (obj == null) {

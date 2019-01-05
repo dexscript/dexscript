@@ -23,7 +23,9 @@ public final class DexFile extends DexElement {
     }
 
     public static DexFile $(String src) {
-        return new DexFile(new Text(src));
+        DexFile dexFile = new DexFile(new Text(src));
+        dexFile.attach(DexPackage.DUMMY);
+        return dexFile;
     }
 
     public String fileName() {
