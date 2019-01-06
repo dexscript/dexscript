@@ -1,11 +1,13 @@
 package com.dexscript.type.composite;
 
 import com.dexscript.ast.DexActor;
+import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
+import com.dexscript.ast.inf.DexInfTypeParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
@@ -16,6 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActorType implements NamedType, GenericType, CompositeType {
+
+    static {
+        InferTypeTable.register(DexActor.class, (ts, elem) -> InferTypeTable.$(ts, elem.sig()));
+        InferTypeTable.register(DexAwaitConsumer.class, (ts, elem) -> InferTypeTable.$(ts, elem.produceSig()));
+    }
+
+    public static void init() {
+    }
 
     public interface Impl {
         TypeSystem typeSystem();

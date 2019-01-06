@@ -30,8 +30,24 @@ public class InferTypeTableTest {
         testInferTypeTable();
     }
 
+    @Test
+    public void actor_type_table() {
+        testInferTypeTable();
+    }
+
+    @Test
+    public void inner_actor_type_table() {
+        testInferTypeTable();
+    }
+
+    @Test
+    public void sig_type_table() {
+        testInferTypeTable();
+    }
+
     private static void testInferTypeTable() {
         InterfaceType.init();
+        ActorType.init();
         FluentAPI testData = testDataFromMySection();
         TypeSystem ts = new TypeSystem();
         DexFile dexFile = DexFile.$(testData.code());

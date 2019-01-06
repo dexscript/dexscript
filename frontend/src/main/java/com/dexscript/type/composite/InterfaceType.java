@@ -2,6 +2,7 @@ package com.dexscript.type.composite;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
@@ -24,24 +25,17 @@ public class InterfaceType implements NamedType, GenericType, CompositeType {
             }
             return typeTable;
         });
-        InferTypeTable.register(DexInfFunction.class, (ts, elem) -> {
+        InferTypeTable.register(DexSig.class, (ts, elem) -> {
             TypeTable typeTable = new TypeTable(ts);
-            for (DexTypeParam typeParam : elem.sig().typeParams()) {
+            for (DexTypeParam typeParam : elem.typeParams()) {
                 String name = typeParam.paramName().toString();
                 DType type = InferType.$(ts, typeParam.paramType());
                 typeTable.define(elem.pkg(), name, type);
             }
             return typeTable;
         });
-        InferTypeTable.register(DexInfMethod.class, (ts, elem) -> {
-            TypeTable typeTable = new TypeTable(ts);
-            for (DexTypeParam typeParam : elem.sig().typeParams()) {
-                String name = typeParam.paramName().toString();
-                DType type = InferType.$(ts, typeParam.paramType());
-                typeTable.define(elem.pkg(), name, type);
-            }
-            return typeTable;
-        });
+        InferTypeTable.register(DexInfFunction.class, (ts, elem) -> InferTypeTable.$(ts, elem.sig()));
+        InferTypeTable.register(DexInfMethod.class, (ts, elem) -> InferTypeTable.$(ts, elem.sig()));
     }
 
     public static void init() {

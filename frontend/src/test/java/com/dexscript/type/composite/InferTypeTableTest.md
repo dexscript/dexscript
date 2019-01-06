@@ -37,3 +37,38 @@ interface MyInf {
 | `topLevelDecls[0].inf.methods[0]` | T   | `string` |
 
 
+# actor_type_table
+
+```dexscript
+function MyFunc(<T>: string) {
+}
+```
+
+| path                   | name | type     |
+| ---------------------- | ---- | -------- |
+| `topLevelDecls[0].actor` | T   | `string` |
+
+# inner_actor_type_table
+
+```dexscript
+function MyFunc() {
+    await {
+    case MyInnerFunc(<T>: string) {
+    }}
+}
+```
+
+| path                   | name | type     |
+| ---------------------- | ---- | -------- |
+| `topLevelDecls[0].actor.stmts[0].cases[0]` | T   | `string` |
+
+# sig_type_table
+
+```dexscript
+function MyFunc(<T>: string) {
+}
+```
+
+| path                   | name | type     |
+| ---------------------- | ---- | -------- |
+| `topLevelDecls[0].actor.sig` | T   | `string` |
