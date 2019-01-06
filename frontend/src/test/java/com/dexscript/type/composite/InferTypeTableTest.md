@@ -24,3 +24,16 @@ interface MyInf {
 | ---------------------- | ---- | -------- |
 | `topLevelDecls[0].inf.functions[0]` | T   | `string` |
 
+# interface_method_type_table
+
+```dexscript
+interface MyInf {
+    MyMethod(<T>: string)
+}
+```
+
+| path                   | name | type     |
+| ---------------------- | ---- | -------- |
+| `topLevelDecls[0].inf.methods[0]` | T   | `string` |
+
+

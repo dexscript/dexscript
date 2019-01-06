@@ -33,6 +33,15 @@ public class InterfaceType implements NamedType, GenericType, CompositeType {
             }
             return typeTable;
         });
+        InferTypeTable.register(DexInfMethod.class, (ts, elem) -> {
+            TypeTable typeTable = new TypeTable(ts);
+            for (DexTypeParam typeParam : elem.sig().typeParams()) {
+                String name = typeParam.paramName().toString();
+                DType type = InferType.$(ts, typeParam.paramType());
+                typeTable.define(elem.pkg(), name, type);
+            }
+            return typeTable;
+        });
     }
 
     public static void init() {
