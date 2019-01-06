@@ -20,6 +20,11 @@ public class InferTypeTableTest {
         testInferTypeTable();
     }
 
+    @Test
+    public void interface_function_type_table() {
+        testInferTypeTable();
+    }
+
     private static void testInferTypeTable() {
         InterfaceType.init();
         FluentAPI testData = testDataFromMySection();

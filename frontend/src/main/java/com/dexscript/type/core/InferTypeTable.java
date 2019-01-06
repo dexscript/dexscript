@@ -1,6 +1,5 @@
 package com.dexscript.type.core;
 
-import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.core.DexElement;
 
 import java.util.HashMap;

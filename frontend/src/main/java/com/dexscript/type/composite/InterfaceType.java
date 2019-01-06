@@ -2,6 +2,7 @@ package com.dexscript.type.composite;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.inf.DexInfFunction;
 import com.dexscript.ast.inf.DexInfMethod;
 import com.dexscript.ast.inf.DexInfTypeParam;
@@ -17,6 +18,15 @@ public class InterfaceType implements NamedType, GenericType, CompositeType {
         InferTypeTable.register(DexInterface.class, (ts, elem) -> {
             TypeTable typeTable = new TypeTable(ts);
             for (DexInfTypeParam typeParam : elem.typeParams()) {
+                String name = typeParam.paramName().toString();
+                DType type = InferType.$(ts, typeParam.paramType());
+                typeTable.define(elem.pkg(), name, type);
+            }
+            return typeTable;
+        });
+        InferTypeTable.register(DexInfFunction.class, (ts, elem) -> {
+            TypeTable typeTable = new TypeTable(ts);
+            for (DexTypeParam typeParam : elem.sig().typeParams()) {
                 String name = typeParam.paramName().toString();
                 DType type = InferType.$(ts, typeParam.paramType());
                 typeTable.define(elem.pkg(), name, type);
