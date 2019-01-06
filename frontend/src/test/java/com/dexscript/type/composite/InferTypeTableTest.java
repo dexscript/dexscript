@@ -52,7 +52,7 @@ public class InferTypeTableTest {
         TypeSystem ts = new TypeSystem();
         DexFile dexFile = DexFile.$(testData.code());
         for (Row row : testData.table().body) {
-            TypeTable typeTable = InferTypeTable.$(ts, (DexElement) accessByPath(dexFile, row.get(0)));
+            TypeTable typeTable = InferTypeTable.$(ts, null, (DexElement) accessByPath(dexFile, row.get(0)));
             DType actual = typeTable.resolveType(DexPackage.DUMMY, row.get(1));
             DType expected = InferType.$(ts, DexType.$parse(stripQuote(row.get(2))));
             TestAssignable.$(true, actual, expected);

@@ -1,13 +1,11 @@
 package com.dexscript.type.composite;
 
 import com.dexscript.ast.DexActor;
-import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
-import com.dexscript.ast.inf.DexInfTypeParam;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.ast.stmt.DexAwaitStmt;
 import com.dexscript.ast.stmt.DexBlock;
@@ -20,8 +18,8 @@ import java.util.List;
 public class ActorType implements NamedType, GenericType, CompositeType {
 
     static {
-        InferTypeTable.register(DexActor.class, (ts, elem) -> InferTypeTable.$(ts, elem.sig()));
-        InferTypeTable.register(DexAwaitConsumer.class, (ts, elem) -> InferTypeTable.$(ts, elem.produceSig()));
+        InferTypeTable.register(DexActor.class, (ts, typeTableMap, elem) -> InferTypeTable.$(ts, null, elem.sig()));
+        InferTypeTable.register(DexAwaitConsumer.class, (ts, typeTableMap, elem) -> InferTypeTable.$(ts, null, elem.produceSig()));
     }
 
     public static void init() {
@@ -86,7 +84,7 @@ public class ActorType implements NamedType, GenericType, CompositeType {
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexTypeParam typeParam : actor.typeParams()) {
-                typeParams.add(InferType.$(ts, null, typeParam.paramType()));
+                typeParams.add(InferType.$(ts, typeParam.paramType()));
             }
         }
         return typeParams;

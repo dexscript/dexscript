@@ -94,9 +94,9 @@ public class FunctionTypeTest {
         for (Row row : table.body) {
             boolean isAssignable = "true".equals(row.get(0));
             String toSrc = stripQuote(row.get(1));
-            DType to = toSrc.contains(":") ? func(toSrc) : InferType.$(ts, null, DexType.$parse(toSrc));
+            DType to = toSrc.contains(":") ? func(toSrc) : InferType.$(ts, DexType.$parse(toSrc));
             String fromSrc = stripQuote(row.get(2));
-            DType from = fromSrc.contains(":") ? func(fromSrc) : InferType.$(ts, null, DexType.$parse(fromSrc));
+            DType from = fromSrc.contains(":") ? func(fromSrc) : InferType.$(ts, DexType.$parse(fromSrc));
             TestAssignable.$(isAssignable, to, from);
         }
     }

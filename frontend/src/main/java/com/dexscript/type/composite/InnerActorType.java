@@ -29,7 +29,7 @@ public class InnerActorType implements DType, CompositeType {
     }
 
     private FunctionType consumeFunc() {
-        DType ret = InferType.$(ts, null, awaitConsumer.produceSig().ret());
+        DType ret = InferType.$(ts, awaitConsumer.produceSig().ret());
         ArrayList<FunctionParam> params = new ArrayList<>();
         params.add(new FunctionParam("self", this));
         return new FunctionType(ts, "Consume__", params, ret);

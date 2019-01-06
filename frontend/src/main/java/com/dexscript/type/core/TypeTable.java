@@ -55,7 +55,7 @@ public class TypeTable {
     public TypeTable(TypeSystem ts, List<DexTypeParam> typeParams) {
         this.ts = ts;
         for (DexTypeParam typeParam : typeParams) {
-            DType type = InferType.$(ts, null, typeParam.paramType());
+            DType type = InferType.$(ts, typeParam.paramType());
             define(typeParam.pkg(), typeParam.paramName().toString(), type);
         }
     }

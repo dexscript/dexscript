@@ -29,43 +29,48 @@ public interface InferType<E extends DexElement> {
 
     Map<Class<? extends DexElement>, InferType> handlers = new HashMap<Class<? extends DexElement>, InferType>() {
         {
-            put(DexParenExpr.class, (ts, localTypeTable, elem) -> InferType.$(
-                    ts, localTypeTable, ((DexParenExpr) elem).body()));
-            put(DexParenType.class, (ts, localTypeTable, elem) -> $(ts, localTypeTable, ((DexParenType)elem).body()));
-            put(DexTypeRef.class, (ts, localTypeTable, elem) -> {
+            put(DexParenExpr.class, (ts, typeTableMap, elem) -> InferType.$(
+                    ts, typeTableMap, ((DexParenExpr) elem).body()));
+            put(DexParenType.class, (ts, typeTableMap, elem) -> $(ts, typeTableMap, ((DexParenType)elem).body()));
+            put(DexTypeRef.class, (ts, typeTableMap, elem) -> {
+                List<TypeTable> typeTables = InferTypeTable.typeTablesOf(ts, typeTableMap, elem);
                 DexTypeRef typeRef = (DexTypeRef) elem;
                 DexPackage pkg = elem.pkg();
                 if (!typeRef.pkgName().isEmpty()) {
                     pkg = new DexPackage(typeRef.pkgName());
                 }
                 String name = typeRef.typeName();
-                if (localTypeTable != null) {
-                    DType type = localTypeTable.resolveType(pkg, name);
-                    if (!(type instanceof UndefinedType)) {
+                for (TypeTable typeTable : typeTables) {
+                    DType type = typeTable.resolveType(pkg, name);
+                    if (type != ts.UNDEFINED) {
                         return type;
                     }
                 }
-                return ts.typeTable().resolveType(pkg, name);
+                return ts.UNDEFINED;
             });
-            put(DexParameterizedType.class, (ts, localTypeTable, elem) -> {
+            put(DexParameterizedType.class, (ts, typeTableMap, elem) -> {
                 DexParameterizedType parameterizedType = (DexParameterizedType) elem;
                 List<DType> typeArgs = new ArrayList<>();
                 for (DexType typeArg : parameterizedType.typeArgs()) {
-                    typeArgs.add($(ts, localTypeTable, typeArg));
+                    typeArgs.add(InferType.$(ts, typeTableMap, typeArg));
                 }
-                DType genericType = $(ts, localTypeTable, parameterizedType.genericType());
+                DType genericType = InferType.$(ts, typeTableMap, parameterizedType.genericType());
                 return ts.typeTable().resolveType(genericType, typeArgs);
             });
         }
     };
 
-    DType handle(TypeSystem ts, TypeTable localTypeTable, E elem);
+    DType handle(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, E elem);
 
     static DType $(TypeSystem ts, DexElement elem) {
-        return InferType.$(ts, null, elem);
+        return InferType.$(ts, new HashMap<>(), elem);
     }
 
     static DType $(TypeSystem ts, TypeTable localTypeTable, DexElement elem) {
+        throw new UnsupportedOperationException();
+    }
+
+    static DType $(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, DexElement elem) {
         DType type = elem.attachmentOfType(DType.class);
         if (type != null) {
             return type;
@@ -75,7 +80,7 @@ public interface InferType<E extends DexElement> {
             Events.ON_UNKNOWN_ELEM.handle(elem);
             return ts.UNDEFINED;
         }
-        type = inferType.handle(ts, localTypeTable, elem);
+        type = inferType.handle(ts, typeTableMap, elem);
         elem.attach(type);
         return type;
     }

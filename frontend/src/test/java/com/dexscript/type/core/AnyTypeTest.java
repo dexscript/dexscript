@@ -9,7 +9,7 @@ public class AnyTypeTest {
     @Test
     public void empty_interface_is_assignable_from_anything() {
         TypeSystem ts = new TypeSystem();
-        AnyType type = (AnyType) InferType.$(ts, null, DexType.$parse("interface {}"));
+        AnyType type = (AnyType) InferType.$(ts, DexType.$parse("interface {}"));
         Assert.assertTrue(IsAssignable.$(type, ts.STRING));
         Assert.assertTrue(IsAssignable.$(type, ts.INT64));
     }

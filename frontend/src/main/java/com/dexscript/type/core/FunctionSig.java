@@ -40,7 +40,7 @@ public class FunctionSig {
         typeParams = new ArrayList<>();
         localTypeTable = new TypeTable(ts, localTypeTable);
         for (DexTypeParam typeParam : dexSig.typeParams()) {
-            DType constraint = InferType.$(ts, null, typeParam.paramType());
+            DType constraint = InferType.$(ts, typeParam.paramType());
             String paramName = typeParam.paramName().toString();
             if (localTypeTable.resolveType(pkg, paramName) != ts.UNDEFINED) {
                 continue;

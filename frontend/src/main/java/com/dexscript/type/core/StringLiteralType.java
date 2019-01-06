@@ -1,7 +1,6 @@
 package com.dexscript.type.core;
 
 import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.expr.DexStringConst;
 import com.dexscript.ast.type.DexStringLiteralType;
 import org.jetbrains.annotations.NotNull;
 

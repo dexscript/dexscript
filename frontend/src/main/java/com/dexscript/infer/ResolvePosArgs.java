@@ -39,7 +39,7 @@ public interface ResolvePosArgs {
             if (!arg.matched()) {
                 throw new RuntimeException("unable to parse invocation args: " + src);
             }
-            args.add(InferType.$(ts, null, arg));
+            args.add(InferType.$(ts, arg));
             i = arg.end();
         }
         return args;

@@ -2,7 +2,6 @@ package com.dexscript.type.core;
 
 import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.type.DexIntegerLiteralType;
-import com.dexscript.ast.type.DexStringLiteralType;
 
 import java.util.HashMap;
 import java.util.Objects;

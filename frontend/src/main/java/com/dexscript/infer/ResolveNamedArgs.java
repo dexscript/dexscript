@@ -48,7 +48,7 @@ public interface ResolveNamedArgs {
             if (!arg.matched()) {
                 throw new RuntimeException("unable to parse invocation args: " + src);
             }
-            args.add(new NamedArg(name.toString(), InferType.$(ts, null, arg)));
+            args.add(new NamedArg(name.toString(), InferType.$(ts, arg)));
             i = arg.end();
         }
         return args;

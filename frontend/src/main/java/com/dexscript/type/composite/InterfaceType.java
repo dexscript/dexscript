@@ -2,6 +2,7 @@ package com.dexscript.type.composite;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.inf.DexInfFunction;
@@ -11,31 +12,52 @@ import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class InterfaceType implements NamedType, GenericType, CompositeType {
 
     static {
-        InferTypeTable.register(DexInterface.class, (ts, elem) -> {
+        InferTypeTable.register(DexInterface.class, (ts, typeTableMap, elem) -> {
+            if (typeTableMap == null) {
+                typeTableMap = new HashMap<>();
+            }
             TypeTable typeTable = new TypeTable(ts);
+            typeTableMap.put(elem, typeTable);
             for (DexInfTypeParam typeParam : elem.typeParams()) {
                 String name = typeParam.paramName().toString();
-                DType type = InferType.$(ts, typeParam.paramType());
+                DType type = InferType.$(ts, typeTableMap, typeParam.paramType());
                 typeTable.define(elem.pkg(), name, type);
             }
             return typeTable;
         });
-        InferTypeTable.register(DexSig.class, (ts, elem) -> {
+        InferTypeTable.register(DexSig.class, (ts, typeTableMap, elem) -> {
+            if (typeTableMap == null) {
+                typeTableMap = new HashMap<>();
+            }
             TypeTable typeTable = new TypeTable(ts);
+            typeTableMap.put(elem, typeTable);
             for (DexTypeParam typeParam : elem.typeParams()) {
                 String name = typeParam.paramName().toString();
-                DType type = InferType.$(ts, typeParam.paramType());
+                DType type = InferType.$(ts, typeTableMap, typeParam.paramType());
                 typeTable.define(elem.pkg(), name, type);
             }
             return typeTable;
         });
-        InferTypeTable.register(DexInfFunction.class, (ts, elem) -> InferTypeTable.$(ts, elem.sig()));
-        InferTypeTable.register(DexInfMethod.class, (ts, elem) -> InferTypeTable.$(ts, elem.sig()));
+        InferTypeTable.register(DexInfFunction.class, (ts, typeTableMap, elem) -> {
+            if (typeTableMap == null) {
+                typeTableMap = new HashMap<>();
+            }
+            typeTableMap.put(elem, null);
+            return InferTypeTable.$(ts, typeTableMap, elem.sig());
+        });
+        InferTypeTable.register(DexInfMethod.class, (ts, typeTableMap, elem) -> {
+            if (typeTableMap == null) {
+                typeTableMap = new HashMap<>();
+            }
+            typeTableMap.put(elem, null);
+            return InferTypeTable.$(ts, typeTableMap, elem.sig());
+        });
     }
 
     public static void init() {
@@ -136,7 +158,7 @@ public class InterfaceType implements NamedType, GenericType, CompositeType {
         if (typeParams == null) {
             typeParams = new ArrayList<>();
             for (DexInfTypeParam typeParam : inf.typeParams()) {
-                typeParams.add(InferType.$(ts, null, typeParam.paramType()));
+                typeParams.add(InferType.$(ts, typeParam.paramType()));
             }
         }
         return typeParams;

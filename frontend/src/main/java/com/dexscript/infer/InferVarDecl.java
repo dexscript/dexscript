@@ -10,7 +10,7 @@ public class InferVarDecl implements InferValue<DexVarDecl> {
     public void handle(TypeSystem ts, DexVarDecl varDecl, ValueTable table) {
         DexIdentifier decl = varDecl.identifier();
         String valueName = decl.toString();
-        DType valueType = InferType.$(ts, null, varDecl.type());
+        DType valueType = InferType.$(ts, varDecl.type());
         table.define(new Value(valueName, valueType, decl));
     }
 }
