@@ -10,7 +10,7 @@ public class CheckActor implements CheckSemanticError.Handler<DexActor> {
         TypeSystem ts = cse.typeSystem();
         TypeTable localTypeTable = new TypeTable(ts);
         for (DexTypeParam typeParam : actor.typeParams()) {
-            DType type = InferType.$(ts, null, typeParam.paramType());
+            DType type = InferType.$(ts, typeParam.paramType());
             localTypeTable.define(actor.pkg(), typeParam.paramName().toString(), type);
         }
         cse.withTypeTable(localTypeTable, () -> actor.walkDown(cse));

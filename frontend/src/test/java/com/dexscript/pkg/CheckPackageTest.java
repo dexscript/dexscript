@@ -26,13 +26,13 @@ public class CheckPackageTest {
 
     @Test
     public void package_dir_not_found() {
-        Assert.assertFalse(CheckPackage.$("/pkg1"));
+        Assert.assertFalse(CheckPackage.$(FakeImportPackageImpl::new, "/pkg1"));
     }
 
     @Test
     public void spi_file_not_found() throws IOException {
         Files.createDirectory($p("/pkg1"));
-        Assert.assertFalse(CheckPackage.$("/pkg1"));
+        Assert.assertFalse(CheckPackage.$(FakeImportPackageImpl::new,"/pkg1"));
     }
 
     @Test
@@ -117,6 +117,6 @@ public class CheckPackageTest {
             Files.createDirectories($p(filePath).getParent());
             Files.write($p(filePath), code.substring(newLinePos).getBytes());
         }
-        return CheckPackage.$("/pkg1");
+        return CheckPackage.$(FakeImportPackageImpl::new, "/pkg1");
     }
 }

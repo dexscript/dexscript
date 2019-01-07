@@ -10,7 +10,7 @@ public class CheckInterface implements CheckSemanticError.Handler<DexInterface> 
         TypeSystem ts = cse.typeSystem();
         TypeTable localTypeTable = new TypeTable(ts);
         for (DexInfTypeParam typeParam : inf.typeParams()) {
-            DType type = InferType.$(ts, null, typeParam.paramType());
+            DType type = InferType.$(ts, typeParam.paramType());
             localTypeTable.define(inf.pkg(), typeParam.paramName().toString(), type);
         }
         cse.withTypeTable(localTypeTable, () -> inf.walkDown(cse));

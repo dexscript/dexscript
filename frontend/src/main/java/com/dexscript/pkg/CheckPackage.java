@@ -8,7 +8,6 @@ import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.token.Blank;
-import com.dexscript.shim.OutShim;
 import com.dexscript.type.composite.ActorType;
 import com.dexscript.type.composite.GlobalSPI;
 import com.dexscript.type.composite.InterfaceType;

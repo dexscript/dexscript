@@ -48,6 +48,6 @@ public class CheckAssignmentTest {
         Files.createDirectories($p("/pkg1"));
         Files.write($p("/pkg1/__spi__.ds"), "interface :: {}".getBytes());
         Files.write($p("/pkg1/123.ds"), testDataFromMySection().code().getBytes());
-        return CheckPackage.$("/pkg1");
+        return CheckPackage.$(FakeImportPackageImpl::new, "/pkg1");
     }
 }
