@@ -3,17 +3,20 @@ package com.dexscript.shim;
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
+import com.dexscript.pkg.CheckPackage;
 import com.dexscript.pkg.ImportPackage;
 import com.dexscript.runtime.std.ArithmeticLib;
 import com.dexscript.runtime.std.ComparisonLib;
 import com.dexscript.runtime.std.IOLib;
 import com.dexscript.shim.actor.*;
 import com.dexscript.shim.java.*;
+import com.dexscript.transpile.OutTown;
 import com.dexscript.type.composite.ActorTable;
 import com.dexscript.type.composite.ActorType;
 import com.dexscript.type.composite.InterfaceType;
@@ -61,6 +64,13 @@ public class OutShim implements ImportPackage.Impl {
 
     public static String qualifiedClassNameOf(DexActor actor) {
         return "com.dexscript.transpiled." + actor.actorName();
+    }
+
+    public void importPackage(String path) {
+        if (!CheckPackage.$(() -> new OutShim(new TypeSystem()), path)) {
+            throw new DexSyntaxException("there is error in package: " + path);
+        }
+        ImportPackage.$(this, path);
     }
 
     private void defineNewArray() {

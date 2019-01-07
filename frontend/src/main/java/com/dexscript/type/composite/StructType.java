@@ -13,6 +13,18 @@ import java.util.List;
 
 public class StructType implements CompositeType {
 
+    static {
+        InferType.register(DexStructExpr.class, (ts, localTypeTable, elem) -> {
+            StructType structType = elem.attachmentOfType(StructType.class);
+            if (structType != null) {
+                return structType;
+            }
+            structType = new StructType(ts, elem);
+            elem.attach(structType);
+            return structType;
+        });
+    }
+
     private final TypeSystem ts;
     private final DexStructExpr structExpr;
     private List<FunctionType> functions;

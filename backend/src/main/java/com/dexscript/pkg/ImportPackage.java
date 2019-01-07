@@ -3,9 +3,7 @@ package com.dexscript.pkg;
 import com.dexscript.ast.DexFile;
 import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.DexTopLevelDecl;
-import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
-import com.dexscript.shim.OutShim;
 import com.dexscript.type.composite.ActorType;
 import com.dexscript.type.composite.InterfaceType;
 
@@ -23,9 +21,6 @@ public class ImportPackage {
     }
 
     public static void $(Impl impl, String pkgPathStr) {
-        if (!CheckPackage.$(pkgPathStr)) {
-            throw new DexSyntaxException("there is error in package: " + pkgPathStr);
-        }
         ArrayList<DexFile> dexFiles = new ArrayList<>();
         Path pkgPath = $p(pkgPathStr);
         DexPackage pkg = impl.pkg(pkgPath);

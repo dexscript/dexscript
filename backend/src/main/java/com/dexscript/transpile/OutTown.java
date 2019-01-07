@@ -25,7 +25,7 @@ public class OutTown {
     private final OutShim oShim = new OutShim(ts);
 
     public OutTown importPackage(String path) {
-        ImportPackage.$(oShim, path);
+        oShim.importPackage(path);
         return this;
     }
 

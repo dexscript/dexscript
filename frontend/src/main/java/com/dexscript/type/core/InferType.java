@@ -60,6 +60,10 @@ public interface InferType<E extends DexElement> {
         }
     };
 
+    static <T extends DexElement> void register(Class<T> clazz, InferType<T> inferType) {
+        handlers.put(clazz, inferType);
+    }
+
     DType handle(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, E elem);
 
     static DType $(TypeSystem ts, DexElement elem) {

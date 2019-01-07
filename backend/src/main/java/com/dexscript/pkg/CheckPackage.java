@@ -7,11 +7,9 @@ import com.dexscript.ast.DexPackage;
 import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
-import com.dexscript.ast.expr.DexStructExpr;
 import com.dexscript.ast.token.Blank;
-import com.dexscript.type.core.InferType;
 import com.dexscript.shim.OutShim;
-import com.dexscript.type.composite.StructType;
+import com.dexscript.type.composite.ActorType;
 import com.dexscript.type.composite.GlobalSPI;
 import com.dexscript.type.composite.InterfaceType;
 import com.dexscript.type.core.TypeSystem;
@@ -21,29 +19,18 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static com.dexscript.pkg.DexPackages.$p;
 
 public class CheckPackage {
 
-    static {
-        InferType.handlers.put(DexStructExpr.class, (ts, localTypeTable, elem) -> {
-            StructType structType = elem.attachmentOfType(StructType.class);
-            if (structType != null) {
-                return structType;
-            }
-            structType = new StructType(ts, (DexStructExpr) elem);
-            elem.attach(structType);
-            return structType;
-        });
-    }
-
     static class Failed extends RuntimeException {
     }
 
-    public static boolean $(String pathStr) {
+    public static boolean $(Supplier<ImportPackage.Impl> implSupplier, String pathStr) {
         try {
-            return check(pathStr);
+            return check(implSupplier, pathStr);
         } catch (DexSyntaxException e) {
             System.out.println(e.getMessage());
             return false;
@@ -52,16 +39,15 @@ public class CheckPackage {
         }
     }
 
-    private static boolean check(String pathStr) {
+    private static boolean check(Supplier<ImportPackage.Impl> implSupplier, String pathStr) {
         List<DexFile> dexFiles = new ArrayList<>();
         Path pkgPath = $p(pathStr);
         if (!Files.isDirectory(pkgPath)) {
             System.out.println("package directory not found: " + pkgPath);
             return false;
         }
-        TypeSystem ts = new TypeSystem();
-        OutShim oShim = new OutShim(ts);
-        DexPackage pkg = oShim.pkg(pkgPath);
+        ImportPackage.Impl impl = implSupplier.get();
+        DexPackage pkg = impl.pkg(pkgPath);
         try {
             Files.list(pkgPath).forEach(path -> {
                 try {
@@ -82,7 +68,7 @@ public class CheckPackage {
         if (hasSyntaxError(dexFiles)) {
             return false;
         }
-        if (hasSemanticError(oShim, dexFiles)) {
+        if (hasSemanticError(impl, dexFiles)) {
             return false;
         }
         return true;
@@ -99,14 +85,14 @@ public class CheckPackage {
         throw new Failed();
     }
 
-    private static boolean hasSemanticError(OutShim oShim, List<DexFile> dexFiles) {
+    private static boolean hasSemanticError(ImportPackage.Impl impl, List<DexFile> dexFiles) {
         boolean foundSpi = false;
         for (DexFile dexFile : dexFiles) {
             if (dexFile.fileName().equals("__spi__.ds")) {
-                defineSpiFile(oShim, dexFile);
+                defineSpiFile(impl, dexFile);
                 foundSpi = true;
             } else {
-                defineNormalFile(oShim, dexFile);
+                defineNormalFile(impl, dexFile);
             }
         }
         if (!foundSpi) {
@@ -114,29 +100,29 @@ public class CheckPackage {
             return true;
         }
         for (DexFile dexFile : dexFiles) {
-            if (new CheckSemanticError(oShim.typeSystem(), dexFile).hasError()) {
+            if (new CheckSemanticError(impl.typeSystem(), dexFile).hasError()) {
                 return true;
             }
         }
         return false;
     }
 
-    private static void defineNormalFile(OutShim oShim, DexFile dexFile) {
+    private static void defineNormalFile(ImportPackage.Impl impl, DexFile dexFile) {
         for (DexTopLevelDecl topLevelDecl : dexFile.topLevelDecls()) {
             if (topLevelDecl.inf() != null) {
                 if (topLevelDecl.inf().isGlobalSPI()) {
                     System.out.println("can not define interface :: in file other than __spi__.ds");
                     throw new Failed();
                 }
-                oShim.defineInterface(topLevelDecl.inf());
+                new InterfaceType(impl.typeSystem(), topLevelDecl.inf());
             } else if (topLevelDecl.actor() != null) {
-                oShim.defineActor(topLevelDecl.actor());
+                new ActorType(impl, topLevelDecl.actor());
             }
         }
     }
 
-    private static void defineSpiFile(OutShim oShim, DexFile dexFile) {
-        TypeSystem ts = oShim.typeSystem();
+    private static void defineSpiFile(ImportPackage.Impl impl, DexFile dexFile) {
+        TypeSystem ts = impl.typeSystem();
         for (DexTopLevelDecl topLevelDecl : dexFile.topLevelDecls()) {
             if (topLevelDecl.actor() != null) {
                 System.out.println("can not define function in __spi__.ds");
