@@ -6,6 +6,8 @@ import com.dexscript.ast.DexTopLevelDecl;
 import com.dexscript.ast.core.DexSyntaxException;
 import com.dexscript.ast.core.Text;
 import com.dexscript.shim.OutShim;
+import com.dexscript.type.composite.ActorType;
+import com.dexscript.type.composite.InterfaceType;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,13 +17,18 @@ import java.util.ArrayList;
 import static com.dexscript.pkg.DexPackages.$p;
 
 public class ImportPackage {
-    public static void $(OutShim oShim, String pkgPathStr) {
+
+    public interface Impl extends ActorType.Impl {
+        DexPackage pkg(Path pkgPath);
+    }
+
+    public static void $(Impl impl, String pkgPathStr) {
         if (!CheckPackage.$(pkgPathStr)) {
             throw new DexSyntaxException("there is error in package: " + pkgPathStr);
         }
         ArrayList<DexFile> dexFiles = new ArrayList<>();
         Path pkgPath = $p(pkgPathStr);
-        DexPackage pkg = oShim.pkg(pkgPath);
+        DexPackage pkg = impl.pkg(pkgPath);
         try {
             Files.list(pkgPath).forEach(path -> {
                 try {
@@ -40,12 +47,12 @@ public class ImportPackage {
         for (DexFile dexFile : dexFiles) {
             for (DexTopLevelDecl topLevelDecl : dexFile.topLevelDecls()) {
                 if (topLevelDecl.actor() != null) {
-                    oShim.defineActor(topLevelDecl.actor());
+                    new ActorType(impl, topLevelDecl.actor());
                 } else if (topLevelDecl.inf() != null) {
                     if (topLevelDecl.inf().isGlobalSPI()) {
                         continue;
                     }
-                    oShim.defineInterface(topLevelDecl.inf());
+                    new InterfaceType(impl.typeSystem(), topLevelDecl.inf());
                 }
             }
         }

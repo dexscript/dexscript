@@ -8,6 +8,7 @@ import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.stmt.DexAwaitConsumer;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Line;
+import com.dexscript.pkg.ImportPackage;
 import com.dexscript.runtime.std.ArithmeticLib;
 import com.dexscript.runtime.std.ComparisonLib;
 import com.dexscript.runtime.std.IOLib;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OutShim implements ActorType.Impl {
+public class OutShim implements ImportPackage.Impl {
 
     public static final String CLASSNAME = "Shim";
     public static final String PACKAGE_NAME = "com.dexscript.transpiled.";
@@ -143,7 +144,7 @@ public class OutShim implements ActorType.Impl {
     }
 
     public void defineActor(DexActor actor) {
-        actorTable.define(new ActorType(this, actor));
+        new ActorType(this, actor);
     }
 
     public List<ActorType> actors() {
@@ -214,6 +215,7 @@ public class OutShim implements ActorType.Impl {
     @Override
     public void addActorType(ActorType actorType) {
         javaTypes().add(qualifiedClassNameOf(actorType.actor()), actorType);
+        actorTable.define(actorType);
     }
 
     @Override
