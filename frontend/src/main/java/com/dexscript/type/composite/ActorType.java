@@ -13,13 +13,26 @@ import com.dexscript.type.core.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ActorType implements NamedType, GenericType, CompositeType {
 
     static {
-        InferTypeTable.register(DexActor.class, (ts, typeTableMap, elem) -> InferTypeTable.$(ts, null, elem.sig()));
-        InferTypeTable.register(DexAwaitConsumer.class, (ts, typeTableMap, elem) -> InferTypeTable.$(ts, null, elem.produceSig()));
+        InferTypeTable.register(DexActor.class, (ts, typeTableMap, elem) -> {
+            if (typeTableMap == null) {
+                typeTableMap = new HashMap<>();
+            }
+            typeTableMap.put(elem, null);
+            return InferTypeTable.$(ts, typeTableMap, elem.sig());
+        });
+        InferTypeTable.register(DexAwaitConsumer.class, (ts, typeTableMap, elem) -> {
+            if (typeTableMap == null) {
+                typeTableMap = new HashMap<>();
+            }
+            typeTableMap.put(elem, null);
+            return InferTypeTable.$(ts, typeTableMap, elem.produceSig());
+        });
     }
 
     public static void init() {

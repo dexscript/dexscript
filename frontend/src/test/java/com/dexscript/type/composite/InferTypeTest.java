@@ -22,6 +22,11 @@ public class InferTypeTest {
         testInferType();
     }
 
+    @Test
+    public void actor_local_variable() {
+        testInferType();
+    }
+
     private static void testInferType() {
         InterfaceType.init();
         ActorType.init();
