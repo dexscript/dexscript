@@ -33,6 +33,7 @@ public class TypeSystem {
         FloatConstType.init();
         StringConstType.init();
         StringLiteralType.init();
+        Invocation.init();
     }
 
     public TypeTable typeTable() {

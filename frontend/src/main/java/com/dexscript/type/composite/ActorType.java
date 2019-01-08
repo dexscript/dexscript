@@ -132,7 +132,7 @@ public class ActorType implements NamedType, GenericType, CompositeType {
     }
 
     private FunctionType callFunc(Map<DexElement, TypeTable> typeTableMap) {
-        FunctionType functionType = new FunctionType(ts, name(), typeTableMap, actor.sig());
+        FunctionType functionType = new FunctionType(ts, actor().functionName(), typeTableMap, actor.sig());
         functionType.implProvider(expandedFunc -> impl.callActor(expandedFunc, actor));
         return functionType;
     }

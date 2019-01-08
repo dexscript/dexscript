@@ -2,31 +2,41 @@ package com.dexscript.type.composite;
 
 import com.dexscript.ast.DexActor;
 import com.dexscript.ast.DexInterface;
-import com.dexscript.type.core.IsAssignable;
-import org.junit.Assert;
-import org.junit.Before;
+import com.dexscript.ast.expr.DexExpr;
+import com.dexscript.ast.type.DexType;
+import com.dexscript.test.framework.FluentAPI;
+import com.dexscript.test.framework.Row;
+import com.dexscript.type.core.DType;
+import com.dexscript.type.core.InferType;
+import com.dexscript.type.core.TestAssignable;
 import org.junit.Test;
+
+import static com.dexscript.test.framework.TestFramework.stripQuote;
+import static com.dexscript.test.framework.TestFramework.testDataFromMySection;
 
 public class ActorTypeTest {
 
-    private ActorType.Impl impl;
-
-    @Before
-    public void setup() {
-        impl = new FakeActorTypeImpl();
+    @Test
+    public void no_type_param() {
+        testActorType();
     }
 
-    @Test
-    public void can_consume_from_actor() {
-        ActorType actor = new ActorType(impl, DexActor.$("" +
-                "function Hello(): string {\n" +
-                "   return 'hello'\n" +
-                "}"));
-        InterfaceType inf = new InterfaceType(impl.typeSystem(), DexInterface.$("" +
-                "interface PromiseString {\n" +
-                "   Consume__(): string\n" +
-                "}"));
-        Assert.assertTrue(IsAssignable.$(inf, actor));
+    public void testActorType() {
+        FakeActorTypeImpl impl = new FakeActorTypeImpl();
+        FluentAPI testData = testDataFromMySection();
+        for (String code : testData.codes()) {
+            if (code.startsWith("interface")) {
+                new InterfaceType(impl.typeSystem(), DexInterface.$(code));
+            } else {
+                new ActorType(impl, DexActor.$(code));
+            }
+        }
+        for (Row row : testData.table().body) {
+            boolean isAssignable = "true".equals(row.get(0));
+            DType to = InferType.$(impl.typeSystem(), DexType.$parse(stripQuote(row.get(1))));
+            DType from = InferType.$(impl.typeSystem(), DexExpr.$parse(stripQuote(row.get(2))));
+            TestAssignable.$(isAssignable, to, from);
+        }
     }
 }
 //

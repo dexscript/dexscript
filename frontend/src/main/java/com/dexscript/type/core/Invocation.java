@@ -46,6 +46,9 @@ public class Invocation {
         return types;
     }
 
+    public static void init() {
+    }
+
     private static class InferInvocation<E extends DexExpr & DexInvocationExpr> implements InferType<E> {
 
         @Override
