@@ -21,6 +21,11 @@ public class ActorTypeTest {
         testActorType();
     }
 
+    @Test
+    public void one_type_param() {
+        testActorType();
+    }
+
     public void testActorType() {
         FakeActorTypeImpl impl = new FakeActorTypeImpl();
         FluentAPI testData = testDataFromMySection();

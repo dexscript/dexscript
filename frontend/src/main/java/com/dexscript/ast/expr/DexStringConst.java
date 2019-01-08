@@ -112,7 +112,11 @@ public class DexStringConst extends DexLeafExpr {
                 }
                 if (b == '\'') {
                     matched = src.slice(strBegin, i + 1);
-                    constVal = new String(valBuffer, 0, valLen);
+                    if (valBuffer == null) {
+                        constVal = "";
+                    } else {
+                        constVal = new String(valBuffer, 0, valLen);
+                    }
                     return null;
                 }
                 append(b);

@@ -29,4 +29,9 @@ public class DexStringConstTest {
     public void without_left_quote() {
         TestFramework.assertParsedAST(DexStringConst::$);
     }
+
+    @Test
+    public void empty() {
+        TestFramework.assertParsedAST(DexStringConst::$);
+    }
 }

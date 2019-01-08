@@ -46,5 +46,11 @@ hello'
 <unmatched>hello'</unmatched>
 ```
 
+# empty
+
+```dexscript
+''
+```
+
 
 
