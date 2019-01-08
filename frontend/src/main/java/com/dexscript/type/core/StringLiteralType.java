@@ -1,21 +1,17 @@
 package com.dexscript.type.core;
 
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.type.DexStringLiteralType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public final class StringLiteralType implements DType {
 
     static {
-        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
-            put(DexStringLiteralType.class, (ts, localTypeTable, elem) -> {
-                String literalValue = ((DexStringLiteralType) (elem)).literalValue();
-                return new StringLiteralType(ts, literalValue);
-            });
-        }});
+        InferType.register(DexStringLiteralType.class, (ts, localTypeTable, elem) -> {
+            String literalValue = elem.literalValue();
+            return new StringLiteralType(ts, literalValue);
+        });
     }
 
     private final TypeSystem ts;
@@ -25,6 +21,9 @@ public final class StringLiteralType implements DType {
     public StringLiteralType(TypeSystem ts, @NotNull String val) {
         this.ts = ts;
         this.val = val;
+    }
+
+    public static void init() {
     }
 
     @Override

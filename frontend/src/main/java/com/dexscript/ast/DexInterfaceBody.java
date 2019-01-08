@@ -19,9 +19,11 @@ public class DexInterfaceBody extends DexElement {
     private List<DexInfFunction> functions;
     private List<DexInfField> fields;
     private DexSyntaxError syntaxError;
+    private String infTypeName;
 
-    public DexInterfaceBody(Text src) {
+    public DexInterfaceBody(String infTypeName, Text src) {
         super(src);
+        this.infTypeName = infTypeName;
         DexTopLevelDecl nextRootDecl = new DexTopLevelDecl(src);
         if (nextRootDecl.matched()) {
             matched = new Text(src.bytes, src.begin, nextRootDecl.begin());
@@ -164,7 +166,7 @@ public class DexInterfaceBody extends DexElement {
                 return this::methodOrFunctionOrFieldOrRightBrace;
             }
             DexInfMethod method = new DexInfMethod(src.slice(i));
-            method.reparent(DexInterfaceBody.this);
+            method.reparent(DexInterfaceBody.this, infTypeName);
             if (method.matched()) {
                 methods.add(method);
                 i = method.end();

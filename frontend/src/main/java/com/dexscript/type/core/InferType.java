@@ -70,10 +70,6 @@ public interface InferType<E extends DexElement> {
         return InferType.$(ts, new HashMap<>(), elem);
     }
 
-    static DType $(TypeSystem ts, TypeTable localTypeTable, DexElement elem) {
-        throw new UnsupportedOperationException();
-    }
-
     static DType $(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, DexElement elem) {
         DType type = elem.attachmentOfType(DType.class);
         if (type != null) {

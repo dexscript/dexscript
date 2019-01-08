@@ -1,4 +1,4 @@
-package com.dexscript.shim.actor;
+package com.dexscript.infer;
 
 import com.dexscript.ast.DexInterface;
 import com.dexscript.ast.expr.DexValueRef;

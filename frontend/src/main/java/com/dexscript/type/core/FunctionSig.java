@@ -1,6 +1,7 @@
 package com.dexscript.type.core;
 
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import com.dexscript.ast.elem.DexTypeParam;
@@ -17,7 +18,6 @@ public class FunctionSig {
     private final List<PlaceholderType> typeParams;
     private final List<FunctionParam> params;
     private final DType ret;
-    private final DexSig dexSig;
     private final Map<Object, FunctionType> expandedFuncs = new HashMap<>();
 
     public FunctionSig(TypeSystem ts, DexPackage pkg, List<FunctionParam> params, DType ret) {
@@ -26,39 +26,31 @@ public class FunctionSig {
         this.params = params;
         this.pkg = pkg;
         this.ret = ret;
-        this.dexSig = null;
     }
 
-    public FunctionSig(TypeSystem ts, TypeTable localTypeTable, DexSig dexSig) {
-        this(ts, localTypeTable, null, dexSig);
-    }
-
-    public FunctionSig(TypeSystem ts, TypeTable localTypeTable, DType self, DexSig dexSig) {
+    public FunctionSig(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, DexSig dexSig) {
         this.ts = ts;
         this.pkg = dexSig.pkg();
-        this.dexSig = dexSig;
         typeParams = new ArrayList<>();
-        localTypeTable = new TypeTable(ts, localTypeTable);
+        TypeTable localTypeTable = new TypeTable(ts);
         for (DexTypeParam typeParam : dexSig.typeParams()) {
             DType constraint = InferType.$(ts, typeParam.paramType());
             String paramName = typeParam.paramName().toString();
-            if (localTypeTable.resolveType(pkg, paramName) != ts.UNDEFINED) {
-                continue;
-            }
             PlaceholderType paramType = new PlaceholderType(ts, paramName, constraint);
             localTypeTable.define(pkg, paramName, paramType);
             typeParams.add(paramType);
         }
-        params = new ArrayList<>();
-        if (self != null) {
-            params.add(new FunctionParam("self", self));
+        if (typeTableMap == null) {
+            typeTableMap = new HashMap<>();
         }
+        typeTableMap.put(dexSig, localTypeTable);
+        params = new ArrayList<>();
         for (DexParam param : dexSig.params()) {
             String name = param.paramName().toString();
-            DType type = InferType.$(ts, localTypeTable, param.paramType());
+            DType type = InferType.$(ts, typeTableMap, param.paramType());
             params.add(new FunctionParam(name, type));
         }
-        ret = InferType.$(ts, dexSig.ret());
+        ret = InferType.$(ts, typeTableMap, dexSig.ret());
     }
 
     public void reparent(FunctionType functionType) {
@@ -124,12 +116,10 @@ public class FunctionSig {
         for (Map.Entry<DType, DType> entry : sub.entrySet()) {
             DType key = entry.getKey();
             if (key instanceof PlaceholderType) {
-                localTypeTable.define(dexSig.pkg(), ((PlaceholderType)key).name(), entry.getValue());
+                localTypeTable.define(pkg, ((PlaceholderType) key).name(), entry.getValue());
             }
         }
-        expanded = new FunctionType(ts, func.name(), localTypeTable, dexSig);
-        expanded.implProvider(func.implProvider());
-        expanded.isGlobalSPI(func.isGlobalSPI());
+        expanded = func.expand(localTypeTable);
         expandedFuncs.put(sub, expanded);
         return expanded;
     }

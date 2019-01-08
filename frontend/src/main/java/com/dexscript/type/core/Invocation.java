@@ -38,10 +38,10 @@ public class Invocation {
         });
     }
 
-    private static List<DType> resolveTypes(TypeSystem ts, TypeTable localTypeTable, List<DexType> dexTypes) {
+    private static List<DType> resolveTypes(TypeSystem ts, List<DexType> dexTypes) {
         List<DType> types = new ArrayList<>();
         for (DexType dexType : dexTypes) {
-            types.add(InferType.$(ts, localTypeTable, dexType));
+            types.add(InferType.$(ts, dexType));
         }
         return types;
     }
@@ -86,7 +86,7 @@ public class Invocation {
 
     public static Invocation ivc(TypeSystem ts, DexInvocation dexIvc) {
         List<DType> posArgs = InferType.inferTypes(ts, dexIvc.posArgs());
-        List<DType> typeArgs = resolveTypes(ts, null, dexIvc.typeArgs());
+        List<DType> typeArgs = resolveTypes(ts, dexIvc.typeArgs());
         List<NamedArg> namedArgs = new ArrayList<>();
         DType context = null;
         for (DexNamedArg dexNamedArg : dexIvc.namedArgs()) {

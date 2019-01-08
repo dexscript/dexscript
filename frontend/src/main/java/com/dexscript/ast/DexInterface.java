@@ -62,7 +62,7 @@ public class DexInterface extends DexElement {
             throw new IllegalStateException();
         }
         if (body == null) {
-            body = new DexInterfaceBody(src.slice(bodyBegin));
+            body = new DexInterfaceBody(identifier.toString(), src.slice(bodyBegin));
             body.reparent(this);
         }
         return body;

@@ -24,6 +24,7 @@ public final class DexActor extends DexElement {
     private DexIdentifier identifier;
     private DexActorBody body;
     private String actorName;
+    private DexSig newFuncSig;
 
     public DexActor(Text src) {
         super(src);
@@ -119,6 +120,40 @@ public final class DexActor extends DexElement {
 
     public String functionName() {
         return identifier.toString();
+    }
+
+    public DexSig newFuncSig() {
+        if (newFuncSig != null) {
+            return newFuncSig;
+        }
+        StringBuilder sig = new StringBuilder("(");
+        boolean isFirst = true;
+        for (DexTypeParam typeParam : sig().typeParams()) {
+            isFirst = appendMore(sig, isFirst);
+            sig.append(typeParam.toString());
+        }
+        appendMore(sig, isFirst);
+        sig.append("actor: '");
+        sig.append(functionName());
+        sig.append("'");
+        for (DexParam param : sig().params()) {
+            sig.append(", ");
+            sig.append(param.toString());
+        }
+        sig.append("): ");
+        sig.append(actorName());
+        newFuncSig = new DexSig(new Text(sig.toString()));
+        newFuncSig.reparent(this);
+        return newFuncSig;
+    }
+
+    private static boolean appendMore(StringBuilder sig, boolean isFirst) {
+        if (isFirst) {
+            isFirst = false;
+        } else {
+            sig.append(", ");
+        }
+        return isFirst;
     }
 
     private class Parser {

@@ -1,12 +1,14 @@
 package com.dexscript.type.core;
 
 import com.dexscript.ast.DexPackage;
+import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 // Function DType: test type compatibility, more permissive than signature
 // Function Signature: generic type constraint & where condition
@@ -33,6 +35,7 @@ public final class FunctionType implements DType {
     private Object impl;
 
     private ImplProvider implProvider;
+
     private boolean isGlobalSPI;
 
     public FunctionType(TypeSystem ts,
@@ -61,33 +64,19 @@ public final class FunctionType implements DType {
     // generic function
     public FunctionType(TypeSystem ts,
                         String name,
-                        TypeTable localTypeTable,
-                        DexSig sig) {
-        this(ts, name, localTypeTable, null, sig);
-    }
-
-    // method
-    public FunctionType(TypeSystem ts,
-                        String name,
-                        TypeTable localTypeTable,
-                        DType self,
+                        Map<DexElement, TypeTable> typeTableMap,
                         DexSig sig) {
         this.ts = ts;
         this.pkg = sig.pkg();
         this.name = name;
         this.params = new ArrayList<>();
-        if (self != null) {
-            this.params.add(new FunctionParam("self", self));
-        }
-        TypeTable parentTypeTable = localTypeTable;
-        localTypeTable = new TypeTable(ts, parentTypeTable, sig);
         for (DexParam param : sig.params()) {
             String paramName = param.paramName().toString();
-            DType paramType = InferType.$(ts, localTypeTable, param.paramType());
+            DType paramType = InferType.$(ts, typeTableMap, param.paramType());
             this.params.add(new FunctionParam(paramName, paramType));
         }
-        this.ret = InferType.$(ts, sig.ret());
-        this.sig = new FunctionSig(ts, parentTypeTable, self, sig);
+        this.ret = InferType.$(ts, typeTableMap, sig.ret());
+        this.sig = new FunctionSig(ts, typeTableMap, sig);
         this.sig.reparent(this);
         ts.defineFunction(this);
     }
@@ -172,10 +161,6 @@ public final class FunctionType implements DType {
         return description;
     }
 
-    public ImplProvider implProvider() {
-        return implProvider;
-    }
-
     public boolean hasImpl() {
         return implProvider != null;
     }
@@ -190,6 +175,10 @@ public final class FunctionType implements DType {
 
     public DexPackage pkg() {
         return pkg;
+    }
+
+    public FunctionType expand(TypeTable localTypeTable) {
+        throw new UnsupportedOperationException("not implemented");
     }
 
     public interface ImplProvider {

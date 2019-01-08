@@ -46,42 +46,9 @@ public class TypeTable {
     // package => providers
     private final Map<DexPackage, List<NamedTypesProvider>> providers = new HashMap<>();
     private final Map<Expansion, DType> expanded = new HashMap<>();
-    private TypeTable parentTypeTable;
 
     public TypeTable(TypeSystem ts) {
         this.ts = ts;
-    }
-
-    public TypeTable(TypeSystem ts, List<DexTypeParam> typeParams) {
-        this.ts = ts;
-        for (DexTypeParam typeParam : typeParams) {
-            DType type = InferType.$(ts, typeParam.paramType());
-            define(typeParam.pkg(), typeParam.paramName().toString(), type);
-        }
-    }
-
-    public TypeTable(TypeSystem ts, TypeTable parentTypeTable) {
-        this.ts = ts;
-        this.parentTypeTable = parentTypeTable;
-        if (parentTypeTable != null) {
-            for (Map.Entry<DexPackage, Map<String, DType>> entry : parentTypeTable.defined.entrySet()) {
-                defined.put(entry.getKey(), new HashMap<>(entry.getValue()));
-            }
-            this.providers.putAll(parentTypeTable.providers);
-            this.expanded.putAll(parentTypeTable.expanded);
-        }
-    }
-
-    public TypeTable(TypeSystem ts, TypeTable parentTypeTable, DexSig sig) {
-        this(ts, parentTypeTable);
-        DexPackage pkg = sig.pkg();
-        for (DexTypeParam typeParam : sig.typeParams()) {
-            String paramName = typeParam.paramName().toString();
-            DType paramType = InferType.$(ts, parentTypeTable, typeParam.paramType());
-            if (resolveType(pkg, paramName) == ts.UNDEFINED) {
-                define(pkg, paramName, paramType);
-            }
-        }
     }
 
     public DType resolveType(DexPackage pkg, String name) {
@@ -154,7 +121,7 @@ public class TypeTable {
 
     public void define(DexPackage pkg, String typeName, DType type) {
         Map<String, DType> pkgTypes = defined.computeIfAbsent(pkg, k -> new HashMap<>());
-        if (parentTypeTable == null && pkgTypes.containsKey(typeName)) {
+        if (pkgTypes.containsKey(typeName)) {
             throw new DexSyntaxException("redefine type: " + typeName + " in package: " + pkg);
         }
         pkgTypes.put(typeName, type);

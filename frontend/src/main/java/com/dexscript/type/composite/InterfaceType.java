@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InterfaceType implements NamedType, GenericType, CompositeType {
 
@@ -109,24 +110,26 @@ public class InterfaceType implements NamedType, GenericType, CompositeType {
             String typeParamName = typeParam.paramName().toString();
             localTypeTable.define(inf.pkg(), typeParamName, typeArgs.get(i));
         }
+        Map<DexElement, TypeTable> typeTableMap = new HashMap<>();
+        typeTableMap.put(inf, localTypeTable);
         for (DexInfMethod method : inf.methods()) {
-            addInfMethod(localTypeTable, method);
+            addInfMethod(typeTableMap, method);
         }
         for (DexInfFunction function : inf.functions()) {
-            addInfFunction(localTypeTable, function);
+            addInfFunction(typeTableMap, function);
         }
         return functions;
     }
 
-    private void addInfFunction(TypeTable localTypeTable, DexInfFunction infFunction) {
+    private void addInfFunction(Map<DexElement, TypeTable> typeTableMap, DexInfFunction infFunction) {
         String name = infFunction.identifier().toString();
-        FunctionType functionType = new FunctionType(ts, name, localTypeTable, infFunction.sig());
+        FunctionType functionType = new FunctionType(ts, name, typeTableMap, infFunction.sig());
         functions.add(functionType);
     }
 
-    private void addInfMethod(TypeTable localTypeTable, DexInfMethod infMethod) {
+    private void addInfMethod(Map<DexElement, TypeTable> typeTableMap, DexInfMethod infMethod) {
         String name = infMethod.identifier().toString();
-        FunctionType functionType = new FunctionType(ts, name, localTypeTable, this, infMethod.sig());
+        FunctionType functionType = new FunctionType(ts, name, typeTableMap, infMethod.asFuncSig());
         functions.add(functionType);
     }
 

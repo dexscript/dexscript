@@ -26,9 +26,13 @@ public class TypeSystem {
     }
 
     public static void init() {
+        BoolConstType.init();
+        BoolLiteralType.init();
         IntegerConstType.init();
+        IntegerLiteralType.init();
         FloatConstType.init();
         StringConstType.init();
+        StringLiteralType.init();
     }
 
     public TypeTable typeTable() {

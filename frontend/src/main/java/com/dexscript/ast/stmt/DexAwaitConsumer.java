@@ -1,12 +1,11 @@
 package com.dexscript.ast.stmt;
 
+import com.dexscript.ast.DexActor;
+import com.dexscript.ast.core.*;
 import com.dexscript.ast.elem.DexParam;
-import com.dexscript.ast.core.DexSyntaxError;
-import com.dexscript.ast.core.Expect;
-import com.dexscript.ast.core.State;
-import com.dexscript.ast.core.Text;
 import com.dexscript.ast.elem.DexIdentifier;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.ast.elem.DexTypeParam;
 import com.dexscript.ast.token.Blank;
 import com.dexscript.ast.token.Keyword;
 import com.dexscript.ast.token.LineEnd;
@@ -20,6 +19,7 @@ public class DexAwaitConsumer extends DexAwaitCase {
     private DexSig produceSig;
     private DexBlock blk;
     private DexSyntaxError syntaxError;
+    private DexSig callFuncSig;
     private int stmtEnd = -1;
 
     public DexAwaitConsumer(Text src) {
@@ -83,6 +83,50 @@ public class DexAwaitConsumer extends DexAwaitCase {
 
     public List<DexStatement> stmts() {
         return blk().stmts();
+    }
+
+    public DexActor actor() {
+        DexElement current = parent;
+        while (current != null) {
+            if (current instanceof DexActor) {
+                return (DexActor) current;
+            }
+            current = current.parent();
+        }
+        throw new DexSyntaxException("actor not found");
+    }
+
+    public DexSig callFuncSig() {
+        if (callFuncSig != null) {
+            return callFuncSig;
+        }
+        StringBuilder sig = new StringBuilder("(");
+        boolean isFirst = true;
+        for (DexTypeParam typeParam : produceSig.typeParams()) {
+            isFirst = appendMore(sig, isFirst);
+            sig.append(typeParam.toString());
+        }
+        appendMore(sig, isFirst);
+        sig.append("self: ");
+        sig.append(actor().actorName());
+        for (DexParam param : produceSig.params()) {
+            sig.append(", ");
+            sig.append(param.toString());
+        }
+        sig.append("): ");
+        sig.append(ret().toString());
+        callFuncSig = new DexSig(new Text(sig.toString()));
+        callFuncSig.reparent(this);
+        return callFuncSig;
+    }
+
+    private static boolean appendMore(StringBuilder sig, boolean isFirst) {
+        if (isFirst) {
+            isFirst = false;
+        } else {
+            sig.append(", ");
+        }
+        return isFirst;
     }
 
     private class Parser {

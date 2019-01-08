@@ -146,7 +146,7 @@ public class DexAmsInfType extends DexType {
                 break;
             }
             DexInfMethod method = new DexInfMethod(src.slice(i));
-            method.reparent(DexAmsInfType.this);
+            method.reparent(DexAmsInfType.this, "");
             if (method.matched()) {
                 methods.add(method);
                 i = method.end();

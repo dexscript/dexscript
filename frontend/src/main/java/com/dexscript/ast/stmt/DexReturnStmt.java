@@ -67,7 +67,7 @@ public class DexReturnStmt extends DexStatement {
             }
             current = current.parent();
         }
-        return null;
+        throw new DexSyntaxException("actor not found");
     }
 
     private class Parser {
