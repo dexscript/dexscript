@@ -123,6 +123,7 @@ public class ActorType implements NamedType, GenericType, CompositeType {
         }
         Map<DexElement, TypeTable> typeTableMap = new HashMap<>();
         typeTableMap.put(actor, localTypeTable);
+        typeTableMap.put(actor.sig(), localTypeTable);
         functions = new ArrayList<>();
         new AwaitConsumerCollector(typeTableMap).visit(actor.blk());
         functions.add(consumeFunc(typeTableMap));

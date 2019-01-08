@@ -142,6 +142,15 @@ public final class DexActor extends DexElement {
         }
         sig.append("): ");
         sig.append(actorName());
+        if (!typeParams().isEmpty()) {
+            sig.append('<');
+            isFirst = true;
+            for (DexTypeParam typeParam : typeParams()) {
+                isFirst = appendMore(sig, isFirst);
+                sig.append(typeParam.paramName().toString());
+            }
+            sig.append('>');
+        }
         newFuncSig = new DexSig(new Text(sig.toString()));
         newFuncSig.reparent(this);
         return newFuncSig;

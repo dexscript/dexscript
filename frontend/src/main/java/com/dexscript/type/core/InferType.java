@@ -67,20 +67,22 @@ public interface InferType<E extends DexElement> {
     DType handle(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, E elem);
 
     static DType $(TypeSystem ts, DexElement elem) {
-        return InferType.$(ts, new HashMap<>(), elem);
+        return InferType.$(ts, null, elem);
     }
 
     static DType $(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, DexElement elem) {
-        DType type = elem.attachmentOfType(DType.class);
-        if (type != null) {
-            return type;
+        if (typeTableMap == null) {
+            DType type = elem.attachmentOfType(DType.class);
+            if (type != null) {
+                return type;
+            }
         }
         InferType inferType = handlers.get(elem.getClass());
         if (inferType == null) {
             Events.ON_UNKNOWN_ELEM.handle(elem);
             return ts.UNDEFINED;
         }
-        type = inferType.handle(ts, typeTableMap, elem);
+        DType type = inferType.handle(ts, typeTableMap, elem);
         elem.attach(type);
         return type;
     }

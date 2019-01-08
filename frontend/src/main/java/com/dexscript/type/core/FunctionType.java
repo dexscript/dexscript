@@ -7,6 +7,7 @@ import com.dexscript.ast.elem.DexSig;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +19,14 @@ public final class FunctionType implements DType {
 
     private final TypeSystem ts;
 
+    private Map<DexElement, TypeTable> typeTableMap;
+
     private final DexPackage pkg;
 
     @NotNull
     private final String name;
+
+    private DexSig dexSig;
 
     @NotNull
     private final List<FunctionParam> params;
@@ -65,18 +70,20 @@ public final class FunctionType implements DType {
     public FunctionType(TypeSystem ts,
                         String name,
                         Map<DexElement, TypeTable> typeTableMap,
-                        DexSig sig) {
+                        DexSig dexSig) {
         this.ts = ts;
-        this.pkg = sig.pkg();
+        this.typeTableMap = new HashMap<>(typeTableMap);
+        this.pkg = dexSig.pkg();
         this.name = name;
+        this.dexSig = dexSig;
         this.params = new ArrayList<>();
-        for (DexParam param : sig.params()) {
+        for (DexParam param : dexSig.params()) {
             String paramName = param.paramName().toString();
             DType paramType = InferType.$(ts, typeTableMap, param.paramType());
             this.params.add(new FunctionParam(paramName, paramType));
         }
-        this.ret = InferType.$(ts, typeTableMap, sig.ret());
-        this.sig = new FunctionSig(ts, typeTableMap, sig);
+        this.ret = InferType.$(ts, typeTableMap, dexSig.ret());
+        this.sig = new FunctionSig(ts, typeTableMap, dexSig);
         this.sig.reparent(this);
         ts.defineFunction(this);
     }
@@ -178,7 +185,15 @@ public final class FunctionType implements DType {
     }
 
     public FunctionType expand(TypeTable localTypeTable) {
-        throw new UnsupportedOperationException("not implemented");
+        Map<DexElement, TypeTable> localTypeTableMap = typeTableMap;
+        if (localTypeTableMap == null) {
+            localTypeTableMap = new HashMap<>();
+        }
+        localTypeTableMap.put(dexSig, localTypeTable);
+        FunctionType expanded = new FunctionType(ts, name, localTypeTableMap, dexSig);
+        expanded.implProvider = this.implProvider;
+        expanded.isGlobalSPI = this.isGlobalSPI;
+        return expanded;
     }
 
     public interface ImplProvider {

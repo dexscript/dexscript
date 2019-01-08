@@ -42,6 +42,8 @@ public class FunctionSig {
         }
         if (typeTableMap == null) {
             typeTableMap = new HashMap<>();
+        } else {
+            typeTableMap = new HashMap<>(typeTableMap);
         }
         typeTableMap.put(dexSig, localTypeTable);
         params = new ArrayList<>();
