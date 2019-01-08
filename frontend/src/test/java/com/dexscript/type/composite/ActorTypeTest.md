@@ -7,7 +7,7 @@ function Hello(): string {
 ```
 
 ```dexscript
-interface PromiseString {
+interface MyInf {
     Consume__(): string
 }
 ```
@@ -15,7 +15,7 @@ interface PromiseString {
 | assignable | to           | from         |
 | ---------- | ------------ | ------------ |
 | true       | `string`   | `Hello()`      |
-| true       | `PromiseString`   | `new Hello()`      |
+| true       | `MyInf`   | `new Hello()`      |
 
 # one_type_param
 
@@ -26,7 +26,7 @@ function Hello(<T>: interface{}): T {
 ```
 
 ```dexscript
-interface PromiseString {
+interface MyInf {
     Consume__(): string
 }
 ```
@@ -34,5 +34,27 @@ interface PromiseString {
 | assignable | to           | from         |
 | ---------- | ------------ | ------------ |
 | true       | `string`   | `Hello<string>()`      |
-| true       | `PromiseString`   | `new Hello<string>()`      |
+| true       | `MyInf`   | `new Hello<string>()`      |
+
+# await_consumer_without_type_param
+
+```dexscript
+function Hello() {
+    await {
+    case Say(): string {
+        return ''
+    }}
+}
+```
+
+```dexscript
+interface MyInf {
+    Consume__(): void
+    Say(): string
+}
+```
+
+| assignable | to           | from         |
+| ---------- | ------------ | ------------ |
+| true       | `MyInf`   | `new Hello()`      |
 
