@@ -7,7 +7,7 @@ class CheckTypeRef implements CheckSemanticError.Handler<DexTypeRef> {
     @Override
     public void handle(CheckSemanticError cse, DexTypeRef elem) {
         TypeSystem ts = cse.typeSystem();
-        DType type = InferType.$(ts, cse.localTypeTable(), elem);
+        DType type = InferType.$(ts, elem);
         if (ts.UNDEFINED.equals(type)) {
             cse.report(elem, "reference type not found: " + type);
         }

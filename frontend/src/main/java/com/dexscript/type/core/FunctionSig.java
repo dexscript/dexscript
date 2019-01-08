@@ -58,7 +58,7 @@ public class FunctionSig {
             DType type = InferType.$(ts, localTypeTable, param.paramType());
             params.add(new FunctionParam(name, type));
         }
-        ret = InferType.$(ts, localTypeTable, dexSig.ret());
+        ret = InferType.$(ts, dexSig.ret());
     }
 
     public void reparent(FunctionType functionType) {

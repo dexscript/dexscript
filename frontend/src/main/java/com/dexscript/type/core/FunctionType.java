@@ -86,7 +86,7 @@ public final class FunctionType implements DType {
             DType paramType = InferType.$(ts, localTypeTable, param.paramType());
             this.params.add(new FunctionParam(paramName, paramType));
         }
-        this.ret = InferType.$(ts, localTypeTable, sig.ret());
+        this.ret = InferType.$(ts, sig.ret());
         this.sig = new FunctionSig(ts, parentTypeTable, self, sig);
         this.sig.reparent(this);
         ts.defineFunction(this);

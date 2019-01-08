@@ -1,17 +1,13 @@
 package com.dexscript.type.core;
 
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexIntegerConst;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public class IntegerConstType implements DType {
 
     static {
-        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
-            put(DexIntegerConst.class, (ts, localTypeTable, elem) -> ts.constOfInteger(elem.toString()));
-        }});
+        InferType.register(DexIntegerConst.class, (ts, localTypeTable, elem) -> ts.constOfInteger(elem.toString()));
     }
 
     private final TypeSystem ts;
@@ -20,6 +16,9 @@ public class IntegerConstType implements DType {
     public IntegerConstType(TypeSystem ts, String val) {
         this.ts = ts;
         this.val = val;
+    }
+
+    public static void init() {
     }
 
     @Override

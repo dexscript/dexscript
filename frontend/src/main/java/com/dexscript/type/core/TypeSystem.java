@@ -20,8 +20,15 @@ public class TypeSystem {
     public final DType UNDEFINED = new UndefinedType(this);
 
     public TypeSystem() {
+        init();
         defineBuiltinTypes(DexPackage.DUMMY);
         defineBuiltinTypes(DexPackage.BUILTIN);
+    }
+
+    public static void init() {
+        IntegerConstType.init();
+        FloatConstType.init();
+        StringConstType.init();
     }
 
     public TypeTable typeTable() {

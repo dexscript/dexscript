@@ -1,17 +1,13 @@
 package com.dexscript.type.core;
 
-import com.dexscript.ast.core.DexElement;
 import com.dexscript.ast.expr.DexFloatConst;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 class FloatConstType implements DType {
 
     static {
-        InferType.handlers.putAll(new HashMap<Class<? extends DexElement>, InferType>() {{
-            put(DexFloatConst.class, (ts, localTypeTable, elem) -> ts.constOfFloat(elem.toString()));
-        }});
+        InferType.register(DexFloatConst.class, (ts, localTypeTable, elem) -> ts.constOfFloat(elem.toString()));
     }
 
     private final TypeSystem ts;
@@ -20,6 +16,9 @@ class FloatConstType implements DType {
     public FloatConstType(TypeSystem ts, String val) {
         this.ts = ts;
         this.val = val;
+    }
+
+    public static void init() {
     }
 
     @Override
