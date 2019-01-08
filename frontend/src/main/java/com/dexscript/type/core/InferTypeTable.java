@@ -19,17 +19,22 @@ public interface InferTypeTable<E extends DexElement> {
     TypeTable handle(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, E elem);
 
     static TypeTable $(TypeSystem ts, Map<DexElement, TypeTable> typeTableMap, DexElement elem) {
-        TypeTable typeTable = elem.attachmentOfType(TypeTable.class);
-        if (typeTable != null) {
-            return typeTable;
+        if (typeTableMap == null) {
+            TypeTable typeTable = elem.attachmentOfType(TypeTable.class);
+            if (typeTable != null) {
+                return typeTable;
+            }
         }
+        TypeTable typeTable;
         InferTypeTable inferTypeTable = handlers.get(elem.getClass());
         if (inferTypeTable == null) {
-            typeTable = new TypeTable(ts);
+            typeTable = null;
         } else {
             typeTable = inferTypeTable.handle(ts, typeTableMap, elem);
         }
-        elem.attach(typeTable);
+        if (typeTableMap == null && typeTable != null) {
+            elem.attach(typeTable);
+        }
         return typeTable;
     }
 

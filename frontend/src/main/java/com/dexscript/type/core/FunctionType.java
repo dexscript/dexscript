@@ -71,6 +71,14 @@ public final class FunctionType implements DType {
                         String name,
                         Map<DexElement, TypeTable> typeTableMap,
                         DexSig dexSig) {
+        this(ts, name, typeTableMap, dexSig, new FunctionSig(ts, typeTableMap, dexSig));
+    }
+
+    public FunctionType(TypeSystem ts,
+                        String name,
+                        Map<DexElement, TypeTable> typeTableMap,
+                        DexSig dexSig,
+                        FunctionSig sig) {
         this.ts = ts;
         this.typeTableMap = new HashMap<>(typeTableMap);
         this.pkg = dexSig.pkg();
@@ -83,7 +91,7 @@ public final class FunctionType implements DType {
             this.params.add(new FunctionParam(paramName, paramType));
         }
         this.ret = InferType.$(ts, typeTableMap, dexSig.ret());
-        this.sig = new FunctionSig(ts, typeTableMap, dexSig);
+        this.sig = sig;
         this.sig.reparent(this);
         ts.defineFunction(this);
     }
@@ -190,7 +198,7 @@ public final class FunctionType implements DType {
             localTypeTableMap = new HashMap<>();
         }
         localTypeTableMap.put(dexSig, localTypeTable);
-        FunctionType expanded = new FunctionType(ts, name, localTypeTableMap, dexSig);
+        FunctionType expanded = new FunctionType(ts, name, localTypeTableMap, dexSig, sig);
         expanded.implProvider = this.implProvider;
         expanded.isGlobalSPI = this.isGlobalSPI;
         return expanded;

@@ -63,7 +63,7 @@ interface MyInf {
 ```dexscript
 function Hello(<T1>: interface{}, <T2>: interface{}): T1 {
     await {
-    case Say(): T2 {
+    case Say(): T {
         return ''
     }}
     return ''

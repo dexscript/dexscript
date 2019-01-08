@@ -83,7 +83,9 @@ public interface InferType<E extends DexElement> {
             return ts.UNDEFINED;
         }
         DType type = inferType.handle(ts, typeTableMap, elem);
-        elem.attach(type);
+        if (typeTableMap == null) {
+            elem.attach(type);
+        }
         return type;
     }
 
