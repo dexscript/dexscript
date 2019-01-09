@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -21,6 +22,8 @@ public class Observability {
     private static final Map<Qualifier, WeakReference<Resource>> resources = new ConcurrentHashMap<>();
     private static final List<Predicate<Transaction>> whilteList = new CopyOnWriteArrayList<>();
     private static final List<Predicate<Transaction>> blackList = new CopyOnWriteArrayList<>();
+    private static AtomicLong seqCounter = new AtomicLong();
+
     private static volatile boolean isFrozen = false;
     private static final List<Consumer<Transaction>> txHandlers = new ArrayList<>();
     private static final List<Consumer<Event>> eventHandlers = new ArrayList<>();
@@ -50,6 +53,7 @@ public class Observability {
         event.attributes = tx.attributes;
         event.argNames = tx.argNames;
         event.argValues = new String[tx.argValues.length];
+        event.seq = seqCounter.incrementAndGet();
         for (int i = 0; i < tx.argValues.length; i++) {
             event.argValues[i] = formatter.apply(tx.argValues[i]);
         }
