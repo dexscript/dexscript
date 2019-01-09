@@ -1,6 +1,8 @@
 package com.dexscript.shim;
 
 import com.dexscript.gen.*;
+import com.dexscript.shim.gen.DeclareParams;
+import com.dexscript.shim.gen.InvokeParams;
 import com.dexscript.shim.java.FunctionImpl;
 import com.dexscript.shim.java.JavaTypes;
 

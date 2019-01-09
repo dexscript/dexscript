@@ -1,7 +1,7 @@
 package com.dexscript.shim.actor;
 
 import com.dexscript.ast.DexActor;
-import com.dexscript.gen.DeclareParams;
+import com.dexscript.shim.gen.DeclareParams;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Indent;
 import com.dexscript.gen.Line;

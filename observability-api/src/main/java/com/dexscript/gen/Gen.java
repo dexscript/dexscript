@@ -1,11 +1,5 @@
 package com.dexscript.gen;
 
-import com.dexscript.ast.elem.DexParam;
-import com.dexscript.ast.core.DexElement;
-import com.dexscript.ast.elem.DexSig;
-
-import java.util.List;
-
 public final class Gen {
 
     private final StringBuilder gen = new StringBuilder();
@@ -42,29 +36,14 @@ public final class Gen {
         return this;
     }
 
-    public Gen __(DexSig sig) {
-        __('(');
-        List<DexParam> params = sig.params();
-        for (int i = 0; i < params.size(); i++) {
-            if (i > 0) {
-                __(", ");
-            }
-            DexParam param = params.get(i);
-            __(param.paramName());
-        }
-        __(')');
-        return this;
-    }
-
-    public Gen __(DexElement elem) {
-        gen.append(elem.toString());
-        return this;
-    }
-
     public Gen __(Line line) {
         gen.append(line.line);
         gen.append(System.lineSeparator());
         gen.append(indention);
+        return this;
+    }
+
+    public Gen __(Join join) {
         return this;
     }
 

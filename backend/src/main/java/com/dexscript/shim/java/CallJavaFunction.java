@@ -2,6 +2,7 @@ package com.dexscript.shim.java;
 
 import com.dexscript.gen.*;
 import com.dexscript.shim.OutShim;
+import com.dexscript.shim.gen.DeclareParams;
 import com.dexscript.type.core.FunctionType;
 
 import java.lang.reflect.Method;

@@ -8,7 +8,7 @@ import com.dexscript.ast.stmt.DexStatement;
 import com.dexscript.ast.type.DexType;
 import com.dexscript.ast.type.DexVoidType;
 import com.dexscript.transpile.body.Translate;
-import com.dexscript.gen.DeclareParams;
+import com.dexscript.shim.gen.DeclareParams;
 import com.dexscript.gen.Gen;
 import com.dexscript.gen.Indent;
 import com.dexscript.gen.Line;

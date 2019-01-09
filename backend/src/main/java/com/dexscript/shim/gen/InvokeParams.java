@@ -1,7 +1,8 @@
-package com.dexscript.gen;
+package com.dexscript.shim.gen;
 
 import com.dexscript.ast.elem.DexParam;
 import com.dexscript.ast.elem.DexSig;
+import com.dexscript.gen.Gen;
 
 public interface InvokeParams {
 

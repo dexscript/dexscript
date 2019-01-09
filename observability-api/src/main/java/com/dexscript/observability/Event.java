@@ -1,11 +1,10 @@
 package com.dexscript.observability;
 
-import java.util.List;
 import java.util.Map;
 
-public class Event {
+public final class Event {
     public String ns;
     public Map<String, String> attributes;
-    public List<String> argNames;
-    public List<String> argValues;
+    public String[] argNames;
+    public String[] argValues;
 }
