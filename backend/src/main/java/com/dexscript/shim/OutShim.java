@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.dexscript.pkg.ImportPackage.IMPORT_PACKAGE;
+
 public class OutShim implements ImportPackage.Impl {
 
     public static final String CLASSNAME = "Shim";
@@ -70,7 +72,7 @@ public class OutShim implements ImportPackage.Impl {
         if (!CheckPackage.$(() -> new OutShim(new TypeSystem()), path)) {
             throw new DexSyntaxException("there is error in package: " + path);
         }
-        ImportPackage.$(this, path);
+        IMPORT_PACKAGE.$(this, path);
     }
 
     private void defineNewArray() {

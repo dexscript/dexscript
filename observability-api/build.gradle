@@ -2,9 +2,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    compile(
-            'org.jetbrains:annotations:16.0.2',
-            project(':observability-api'))
+    compile('org.jetbrains:annotations:16.0.2')
     testCompile(
             'com.google.jimfs:jimfs:1.1',
             'junit:junit:4.12',

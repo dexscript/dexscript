@@ -16,11 +16,16 @@ import static com.dexscript.pkg.DexPackages.$p;
 
 public class ImportPackage {
 
+    public static ImportPackage IMPORT_PACKAGE = new ImportPackage();
+
+    private ImportPackage() {
+    }
+
     public interface Impl extends ActorType.Impl {
         DexPackage pkg(Path pkgPath);
     }
 
-    public static void $(Impl impl, String pkgPathStr) {
+    public void $(Impl impl, String pkgPathStr) {
         ArrayList<DexFile> dexFiles = new ArrayList<>();
         Path pkgPath = $p(pkgPathStr);
         DexPackage pkg = impl.pkg(pkgPath);

@@ -10,4 +10,8 @@
 /debug/build
 /test-framework/out
 /test-framework/build
+/observability-api/out
+/observability-api/build
+/observability-http/out
+/observability-http/build
 *.java~
