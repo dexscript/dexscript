@@ -44,6 +44,13 @@ public final class Gen {
     }
 
     public Gen __(Join join) {
+        for (int i = 0; i < join.objs.size(); i++) {
+            if (i > 0) {
+                this.__(join.separator);
+            }
+            Object obj = join.objs.get(i);
+            this.__(join.printer.apply(obj));
+        }
         return this;
     }
 

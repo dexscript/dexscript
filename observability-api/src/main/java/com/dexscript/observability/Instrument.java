@@ -69,9 +69,9 @@ class Instrument {
             g.__("private static final String[] "
             ).__(id
             ).__("_ARG_NAMES = new String[]{"
-            ).__(new Join(", ", method.getParameters(), Parameter::getName)
+            ).__(new Join(", ", method.getParameters(), parameter -> "\"" + parameter.getName() + "\"")
             ).__(new Line("};"));
-            g.__("public "
+            g.__("public final "
             ).__(method.getReturnType().getCanonicalName()
             ).__(" "
             ).__(method.getName()
