@@ -7,4 +7,5 @@ public final class Transaction {
     public Map<String, String> attributes;
     public String[] argNames;
     public Object[] argValues;
+    public long statValue;
 }

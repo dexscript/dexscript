@@ -7,5 +7,6 @@ public final class Event {
     public Map<String, String> attributes;
     public String[] argNames;
     public String[] argValues;
+    public long statValue;
     public long seq;
 }
